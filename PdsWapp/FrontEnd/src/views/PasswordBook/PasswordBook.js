@@ -64,7 +64,7 @@ class PasswordBook extends Component {
 
   requestFetch(query) {
     const parentState = this;
-    const reqUri = 'http://localhost:28080/pwdata.do?q=' +
+    const reqUri = '/pwdata.do?q=' +
       (query === null || query === undefined ? '' : query);
 
     fetch(reqUri, {

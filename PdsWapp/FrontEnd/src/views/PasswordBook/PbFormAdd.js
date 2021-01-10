@@ -17,7 +17,7 @@ const PbFormAdd = props => {
     const onSubmit = (data, e) => {
         const formData = new FormData(e.target);
 
-        fetch('http://localhost:28080/pwdata.do', {
+        fetch('/pwdata.do', {
             method: 'POST',
             headers: new Headers({
                 'Authorization': 'Basic ' + btoa('username:password'),

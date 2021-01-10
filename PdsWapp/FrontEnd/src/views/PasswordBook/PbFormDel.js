@@ -34,7 +34,7 @@ const PbFormDel = props => {
     }
 
     const onSubmit = (data, e) => {
-        fetch('http://localhost:28080/pwdata.do?siteId=' + data.siteId, {
+        fetch('/pwdata.do?siteId=' + data.siteId, {
             method: 'DELETE',
             headers: new Headers({
                 'Authorization': 'Basic ' + btoa('username:password'),

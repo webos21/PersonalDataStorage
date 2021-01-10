@@ -33,7 +33,7 @@ const PbLoginForm = props => {
         const formData = new FormData(e.target);
 
         formData.pbpwd = base64Result;
-        fetch('http://0.0.0.0:28080/login.do', {
+        fetch('/login.do', {
             method: 'POST',
             body: formData,
         }).then(function (res) {
