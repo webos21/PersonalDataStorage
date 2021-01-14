@@ -1,0 +1,5 @@
+include 'webos21-java'
+include 'webos21-android'
+include 'WebFront'
+include 'WebNano'
+include ':app'

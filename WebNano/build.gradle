@@ -1,0 +1,11 @@
+apply plugin: 'java'
+
+dependencies {
+    implementation project(':webos21-java')
+    implementation 'com.h2database:h2:1.4.200'
+    testImplementation 'junit:junit:4.13'
+}
+
+jar {
+    from configurations.compileClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+}
