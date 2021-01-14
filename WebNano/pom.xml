@@ -14,7 +14,7 @@
 	<url>https://github.com/webos21/PersonalDataStorage</url>
 
 	<properties>
-		<main.class>com.gmail.webos21.pds.Main</main.class>
+		<main.class>com.gmail.webos21.pds.web.Main</main.class>
 
 		<!-- UTF-8 use on Source / Report-Output -->
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

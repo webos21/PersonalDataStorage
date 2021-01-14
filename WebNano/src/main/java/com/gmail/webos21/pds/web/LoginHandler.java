@@ -1,0 +1,111 @@
+package com.gmail.webos21.pds.web;
+
+import com.gmail.webos21.crypto.Base64;
+import com.gmail.webos21.nano.NanoHTTPD.IHTTPSession;
+import com.gmail.webos21.nano.NanoHTTPD.Response.Status;
+import com.gmail.webos21.nano.RouteResult;
+import com.gmail.webos21.nano.UriHandler;
+
+import java.security.InvalidAlgorithmParameterException;
+import java.security.InvalidKeyException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.Map;
+
+import javax.crypto.BadPaddingException;
+import javax.crypto.Cipher;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
+import javax.crypto.spec.IvParameterSpec;
+import javax.crypto.spec.SecretKeySpec;
+
+public class LoginHandler implements UriHandler {
+
+    public static int DEF_AES_BYTELEN = 32;
+
+    private static String ALG_AES_KEY = "AES";
+
+    private static String ALG_AES_CIPHER = "AES/CBC/PKCS5Padding";
+
+    private static String PLAIN_PASSWORD = "test1234";
+
+    private String validPassword;
+
+    public LoginHandler() {
+        byte[] keyBytes = "PasswordBook".getBytes();
+        byte[] iv = "PasswordBook1234".getBytes();
+
+        try {
+            MessageDigest sha256 = MessageDigest.getInstance("SHA-256");
+            byte[] aesKeyBytes = sha256.digest(keyBytes);
+
+            SecretKeySpec secretKey = new SecretKeySpec(aesKeyBytes, ALG_AES_KEY);
+
+            Cipher cipher = Cipher.getInstance(ALG_AES_CIPHER);
+            cipher.init(Cipher.ENCRYPT_MODE, secretKey, new IvParameterSpec(iv));
+            cipher.update(PLAIN_PASSWORD.getBytes());
+            byte[] encryptBytes = cipher.doFinal();
+
+            validPassword = Base64.encodeToString(encryptBytes, Base64.DEFAULT);
+
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        } catch (NoSuchPaddingException e) {
+            e.printStackTrace();
+        } catch (InvalidKeyException e) {
+            e.printStackTrace();
+        } catch (InvalidAlgorithmParameterException e) {
+            e.printStackTrace();
+        } catch (IllegalBlockSizeException e) {
+            e.printStackTrace();
+        } catch (BadPaddingException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public RouteResult process(Map<String, String> headers, IHTTPSession session, String uri,
+                               Map<String, String> files) {
+        System.out.println("URI : " + uri);
+
+        StringBuilder sb = new StringBuilder();
+
+        @SuppressWarnings("deprecation")
+        Map<String, String> parms = session.getParms();
+        String pbpwd = parms.get("pbpwd");
+
+        System.out.println("validPassword : " + validPassword + " / pbpwd :" + pbpwd);
+
+        RouteResult rr = null;
+        if (validPassword.equals(pbpwd)) {
+            sb.append("{\n");
+            sb.append("  \"result\": \"OK\",\n");
+            sb.append("  \"auth\": {\n");
+            sb.append("    \"ckey\": \"X-PB-AUTH\",\n");
+            sb.append("    \"cval\": \"test\"\n");
+            sb.append("  }\n");
+            sb.append("}\n");
+
+            rr = RouteResult.newRouteResult(Status.OK, "application/json", sb.toString());
+            rr.addHeader("Set-Cookies", "X-PB-AUTH=test;");
+        } else {
+            sb.append("{\n");
+            sb.append("  \"result\": \"FAIL\"\n");
+            sb.append("}\n");
+            rr = RouteResult.newRouteResult(Status.UNAUTHORIZED, "application/json", sb.toString());
+            rr.addHeader("Set-Cookies", "X-PB-AUTH=;");
+        }
+
+        rr.addHeader("Access-Control-Allow-Origin", "*");
+        rr.addHeader("Access-Control-Allow-Credentials", "true");
+        rr.addHeader("Access-Control-Allow-Headers", "true");
+        rr.addHeader("Access-Control-Allow-Methods", "GET,DELETE,POST,PUT,HEAD,OPTIONS");
+        rr.addHeader("Access-Control-Max-Age", "86400");
+
+        RouteResult.print(rr);
+        System.out.println(sb.toString());
+
+        return rr;
+    }
+
+}

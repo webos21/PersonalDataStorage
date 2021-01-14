@@ -3,7 +3,3 @@ apply plugin: 'java'
 dependencies {
     testImplementation 'junit:junit:4.13'
 }
-
-jar {
-    from configurations.compileClasspath.collect { it.isDirectory() ? it : zipTree(it) }
-}
