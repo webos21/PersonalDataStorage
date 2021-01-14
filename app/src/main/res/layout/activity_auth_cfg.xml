@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:layout_gravity="center"
     android:orientation="vertical"
-    tools:context=".app.AuthConfigActivity">
+    tools:context=".AuthConfigActivity">
 
     <TextView
         android:id="@+id/lblTitle"

@@ -14,13 +14,11 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.gmail.webos21.nano.NanoHTTPD;
-import com.gmail.webos21.pds.R;
 import com.gmail.webos21.pds.app.web.DroidUiLog;
 import com.gmail.webos21.pds.app.web.StaticResourceExtractor;
 import com.gmail.webos21.pds.web.DirWebServer;
 import com.gmail.webos21.pds.web.HttpNewClientListener;
 import com.gmail.webos21.pds.web.PbWebServer;
-import com.gmail.webos21.pds.web.log.UiLog;
 
 import java.io.File;
 import java.io.IOException;

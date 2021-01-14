@@ -8,8 +8,10 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.core.content.res.ResourcesCompat;
+
 import com.gmail.webos21.android.ild.ImageLoader;
-import com.gmail.webos21.pds.R;
+import com.gmail.webos21.pds.app.R;
 import com.gmail.webos21.pds.web.db.PbDbInterface;
 import com.gmail.webos21.pds.web.db.PbDbManager;
 import com.gmail.webos21.pds.web.db.PbRow;
@@ -76,7 +78,7 @@ public class PbRowAdapter extends BaseAdapter {
         if (bShowIcon) {
             imgLoader.DisplayImage("http://www.google.com/s2/favicons?domain_url=" + pbData.getSiteUrl(), iconImageView);
         } else {
-            iconImageView.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_gt));
+            iconImageView.setImageDrawable(ResourcesCompat.getDrawable(context.getResources(), R.drawable.ic_gt, null));
         }
         titleTextView.setText("[" + pbData.getSiteType() + "] " + pbData.getSiteName());
         descTextView.setText(pbData.getSiteUrl());

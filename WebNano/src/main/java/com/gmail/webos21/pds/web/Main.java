@@ -1,5 +1,7 @@
 package com.gmail.webos21.pds.web;
 
+import com.gmail.webos21.pds.web.db.PbDbManager;
+
 import java.io.File;
 import java.io.IOException;
 
@@ -24,6 +26,9 @@ public class Main {
 
 			File htdoc = new File(sitePath);
 			System.out.println("htdoc = " + htdoc.getAbsolutePath());
+
+			PbDbManager dbMan = PbDbManager.getInstance();
+			dbMan.open(Consts.DB_FILE, Consts.DB_USER, Consts.DB_PASS, Consts.DB_VERSION);
 
 			new PbWebServer("0.0.0.0", 28080, htdoc);
 		} catch (IOException ioe) {

@@ -14,7 +14,6 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.gmail.webos21.pds.R;
 import com.gmail.webos21.pds.app.crypt.PbCryptHelper;
 import com.gmail.webos21.pds.web.Consts;
 import com.gmail.webos21.pds.web.db.PbDbInterface;

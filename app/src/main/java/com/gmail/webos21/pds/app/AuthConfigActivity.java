@@ -16,7 +16,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
-import com.gmail.webos21.pds.R;
 import com.gmail.webos21.pds.app.crypt.PbCryptHelper;
 import com.gmail.webos21.pds.app.db.PbKeyChanger;
 import com.gmail.webos21.pds.web.db.PbDbInterface;
@@ -72,6 +71,7 @@ public class AuthConfigActivity extends AppCompatActivity implements View.OnClic
                 finish();
             }
         }
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 
     @Override

@@ -1,9 +1,14 @@
 package com.gmail.webos21.pds.app;
 
 import android.app.Application;
+import android.os.Environment;
 import android.util.Log;
 
 import androidx.appcompat.app.AppCompatDelegate;
+
+import com.gmail.webos21.pds.web.db.PbDbManager;
+
+import java.io.File;
 
 public class PbApp extends Application {
 
@@ -22,6 +27,9 @@ public class PbApp extends Application {
             Log.i(TAG, "onCreate!!!!!!");
         }
 
+        PbDbManager dbMan = PbDbManager.getInstance();
+        File dataDir = new File(Environment.getDataDirectory(), "pds");
+        dbMan.open(dataDir.getAbsolutePath(), "sa", "filekey sa", Consts.DB_VERSION);
     }
 
     @Override

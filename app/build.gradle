@@ -42,3 +42,14 @@ dependencies {
     androidTestUtil 'androidx.test:orchestrator:1.1.0'
     testImplementation 'junit:junit:4.13'
 }
+
+configurations.all {
+    resolutionStrategy.eachDependency { DependencyResolveDetails details ->
+        def requested = details.requested
+        if (requested.group == "androidx.appcompat") {
+            if (!requested.name.startsWith("multidex")) {
+                details.useVersion "1.+"
+            }
+        }
+    }
+}

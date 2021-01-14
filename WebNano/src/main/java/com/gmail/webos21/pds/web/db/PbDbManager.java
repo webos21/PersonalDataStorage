@@ -1,41 +1,49 @@
 package com.gmail.webos21.pds.web.db;
 
-import com.gmail.webos21.pds.web.Consts;
-
 public class PbDbManager {
 
-	private static volatile PbDbManager instance;
+    private static volatile PbDbManager instance;
 
-	private PbDbHelper dbHelper;
+    private PbDbHelper dbHelper;
 
-	private PbDbManager() {
-		this.dbHelper = new PbDbHelper(Consts.DB_FILE, Consts.DB_USER, Consts.DB_PASS, Consts.DB_VERSION);
-	}
+    private PbDbManager() {
+    }
 
-	public static PbDbManager getInstance() {
-		if (instance != null) {
-			return instance;
-		}
-		synchronized (PbDbManager.class) {
-			if (instance != null) {
-				return instance;
-			}
-			instance = new PbDbManager();
-		}
-		return instance;
-	}
+    public static PbDbManager getInstance() {
+        if (instance != null) {
+            return instance;
+        }
+        synchronized (PbDbManager.class) {
+            if (instance != null) {
+                return instance;
+            }
+            instance = new PbDbManager();
+        }
+        return instance;
+    }
 
-	public void destroy() {
-		if (dbHelper != null) {
-			dbHelper.close();
-			dbHelper = null;
-		}
-		if (instance != null) {
-			instance = null;
-		}
-	}
+    public void destroy() {
+        if (dbHelper != null) {
+            dbHelper.close();
+            dbHelper = null;
+        }
+        if (instance != null) {
+            instance = null;
+        }
+    }
 
-	public PbDbInterface getPbDbInterface() {
-		return this.dbHelper;
-	}
+    public void open(String dbPath, String dbUser, String dbPass, int dbVersion) {
+        this.dbHelper = new PbDbHelper(dbPath, dbUser, dbPass, dbVersion);
+    }
+
+    public void close() {
+        if (this.dbHelper != null) {
+            this.dbHelper.close();
+            this.dbHelper = null;
+        }
+    }
+
+    public PbDbInterface getPbDbInterface() {
+        return this.dbHelper;
+    }
 }

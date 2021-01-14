@@ -47,6 +47,7 @@ public class LoginHandler implements UriHandler {
             byte[] encryptBytes = cipher.doFinal();
 
             validPassword = Base64.encodeToString(encryptBytes, Base64.DEFAULT);
+            validPassword = validPassword.trim();
 
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();

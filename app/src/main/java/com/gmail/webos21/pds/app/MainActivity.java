@@ -30,7 +30,6 @@ import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.gmail.webos21.android.patch.PRNGFixes;
 import com.gmail.webos21.android.widget.ChooseFileDialog;
-import com.gmail.webos21.pds.R;
 import com.gmail.webos21.pds.app.crypt.PbCryptHelper;
 import com.gmail.webos21.pds.app.db.PbExporter;
 import com.gmail.webos21.pds.app.db.PbImporter;
@@ -241,6 +240,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 finish();
             }
         }
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 
     @Override

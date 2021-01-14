@@ -24,7 +24,6 @@ import androidx.biometric.BiometricPrompt;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
-import com.gmail.webos21.pds.R;
 import com.gmail.webos21.pds.app.crypt.PbCryptHelper;
 import com.gmail.webos21.pds.app.keypad.KeypadAdapter;
 import com.gmail.webos21.pds.app.keypad.KeypadButton;
@@ -142,6 +141,7 @@ public class AuthActivity extends AppCompatActivity {
                 finish();
             }
         }
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 
     private void showFingerDialog() {
