@@ -1,4 +1,4 @@
-package com.gmail.webos21.pds.web.h2;
+package com.gmail.webos21.pds.db.h2;
 
 import java.io.File;
 import java.sql.Connection;
@@ -7,12 +7,13 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 
-import com.gmail.webos21.pds.web.db.ContentValues;
+import com.gmail.webos21.pds.db.ContentValues;
 
 public final class H2Database {
 	private final String filePath;
 	private final String user;
 	private final String pass;
+	private final String opts;
 
 	private Object mLock;
 	private Connection mConn;
@@ -21,22 +22,23 @@ public final class H2Database {
 	private boolean mOpened;
 	private boolean mMemoryDb;
 
-	public H2Database(String filePath, String user, String pass) {
+	public H2Database(String filePath, String user, String pass, String opts) {
 		this.filePath = filePath;
 		this.user = user;
 		this.pass = pass;
+		this.opts = opts;
 
 		this.mLock = new Object();
 	}
 
-	public static H2Database openDatabase(String filePath, String user, String pass) {
-		H2Database db = new H2Database(filePath, user, pass);
+	public static H2Database openDatabase(String filePath, String user, String pass, String opts) {
+		H2Database db = new H2Database(filePath, user, pass, opts);
 		db.open();
 		return db;
 	}
 
-	public static H2Database createInMemory(String user, String pass) {
-		return openDatabase(null, user, pass);
+	public static H2Database createInMemory(String user, String pass, String opts) {
+		return openDatabase(null, user, pass, opts);
 	}
 
 	private void open() {
@@ -46,9 +48,9 @@ public final class H2Database {
 				mMemoryDb = true;
 				jdbcUrl += "mem:";
 			} else {
-				jdbcUrl += filePath + ";CIPHER=AES;TRACE_LEVEL_FILE=0;TRACE_LEVEL_SYSTEM_OUT=0";
+				jdbcUrl += filePath + (opts == null ? "" : opts);
 			}
-			mConn = com.gmail.webos21.pds.web.h2.H2Helper.getConnection(jdbcUrl, user, pass);
+			mConn = com.gmail.webos21.pds.db.h2.H2Helper.getConnection(jdbcUrl, user, pass);
 			if (mConn != null) {
 				mOpened = true;
 			} else {
@@ -61,7 +63,7 @@ public final class H2Database {
 		synchronized (mLock) {
 			if (mOpened == true && mConn != null) {
 				clearBeforeTransaction();
-				com.gmail.webos21.pds.web.h2.H2Helper.releaseConnection(mConn);
+				com.gmail.webos21.pds.db.h2.H2Helper.releaseConnection(mConn);
 				mOpened = false;
 				mConn = null;
 			}
@@ -93,25 +95,25 @@ public final class H2Database {
 
 	public void beginTransaction() {
 		synchronized (mLock) {
-			com.gmail.webos21.pds.web.h2.H2Helper.beginTransaction(mConn);
+			com.gmail.webos21.pds.db.h2.H2Helper.beginTransaction(mConn);
 		}
 	}
 
 	public void endTransaction() {
 		synchronized (mLock) {
-			com.gmail.webos21.pds.web.h2.H2Helper.endTransaction(mConn);
+			com.gmail.webos21.pds.db.h2.H2Helper.endTransaction(mConn);
 		}
 	}
 
 	public void setTransactionSuccessful() {
 		synchronized (mLock) {
-			com.gmail.webos21.pds.web.h2.H2Helper.setTransactionSuccessful(mConn);
+			com.gmail.webos21.pds.db.h2.H2Helper.setTransactionSuccessful(mConn);
 		}
 	}
 
 	public boolean inTransaction() {
 		synchronized (mLock) {
-			return com.gmail.webos21.pds.web.h2.H2Helper.inTransaction(mConn);
+			return com.gmail.webos21.pds.db.h2.H2Helper.inTransaction(mConn);
 		}
 	}
 
@@ -129,19 +131,19 @@ public final class H2Database {
 
 	public int getVersion() {
 		synchronized (mLock) {
-			return com.gmail.webos21.pds.web.h2.H2Helper.getVersion(mConn);
+			return com.gmail.webos21.pds.db.h2.H2Helper.getVersion(mConn);
 		}
 	}
 
 	public void setVersion(int version) {
 		synchronized (mLock) {
-			com.gmail.webos21.pds.web.h2.H2Helper.dbUpdateDone(mConn, version);
+			com.gmail.webos21.pds.db.h2.H2Helper.dbUpdateDone(mConn, version);
 		}
 	}
 
 	private void clearBeforeTransaction() {
 		if (mStmt != null) {
-			com.gmail.webos21.pds.web.h2.H2Helper.closeStatement(mStmt);
+			com.gmail.webos21.pds.db.h2.H2Helper.closeStatement(mStmt);
 			mStmt = null;
 		}
 	}
@@ -154,21 +156,21 @@ public final class H2Database {
 
 			clearBeforeTransaction();
 
-			mStmt = com.gmail.webos21.pds.web.h2.H2Helper.preparedStatement(mConn, sql);
+			mStmt = com.gmail.webos21.pds.db.h2.H2Helper.preparedStatement(mConn, sql);
 			if (selectionArgs != null && selectionArgs.length > 0) {
 				for (int i = 0; i < selectionArgs.length; i++) {
 					try {
 						mStmt.setString(i + 1, selectionArgs[i]);
 					} catch (SQLException e) {
 						e.printStackTrace();
-						com.gmail.webos21.pds.web.h2.H2Helper.closeStatement(mStmt);
+						com.gmail.webos21.pds.db.h2.H2Helper.closeStatement(mStmt);
 						mStmt = null;
 						return null;
 					}
 				}
 			}
 
-			return com.gmail.webos21.pds.web.h2.H2Helper.executeQuery(mStmt);
+			return com.gmail.webos21.pds.db.h2.H2Helper.executeQuery(mStmt);
 		}
 	}
 
@@ -208,7 +210,7 @@ public final class H2Database {
 			}
 			sql.append(')');
 
-			mStmt = com.gmail.webos21.pds.web.h2.H2Helper.preparedStatement(mConn, sql.toString());
+			mStmt = com.gmail.webos21.pds.db.h2.H2Helper.preparedStatement(mConn, sql.toString());
 			for (int i = 0; i < size; i++) {
 				try {
 					Object o = bindArgs[i];
@@ -238,16 +240,16 @@ public final class H2Database {
 					}
 				} catch (SQLException e) {
 					e.printStackTrace();
-					com.gmail.webos21.pds.web.h2.H2Helper.closeStatement(mStmt);
+					com.gmail.webos21.pds.db.h2.H2Helper.closeStatement(mStmt);
 					mStmt = null;
 					return rows;
 				}
 			}
 
 			if (mStmt != null) {
-				rows = com.gmail.webos21.pds.web.h2.H2Helper.executeUpdate(mStmt);
+				rows = com.gmail.webos21.pds.db.h2.H2Helper.executeUpdate(mStmt);
 
-				com.gmail.webos21.pds.web.h2.H2Helper.closeStatement(mStmt);
+				com.gmail.webos21.pds.db.h2.H2Helper.closeStatement(mStmt);
 				mStmt = null;
 			}
 
@@ -270,14 +272,14 @@ public final class H2Database {
 				sql += " WHERE " + whereClause;
 			}
 
-			mStmt = com.gmail.webos21.pds.web.h2.H2Helper.preparedStatement(mConn, sql);
+			mStmt = com.gmail.webos21.pds.db.h2.H2Helper.preparedStatement(mConn, sql);
 			if (whereArgs != null) {
 				for (int i = 0; i < whereArgs.length; i++) {
 					try {
 						mStmt.setString(i + 1, whereArgs[i]);
 					} catch (SQLException e) {
 						e.printStackTrace();
-						com.gmail.webos21.pds.web.h2.H2Helper.closeStatement(mStmt);
+						com.gmail.webos21.pds.db.h2.H2Helper.closeStatement(mStmt);
 						mStmt = null;
 						return rows;
 					}
@@ -285,9 +287,9 @@ public final class H2Database {
 			}
 
 			if (mStmt != null) {
-				rows = com.gmail.webos21.pds.web.h2.H2Helper.executeUpdate(mStmt);
+				rows = com.gmail.webos21.pds.db.h2.H2Helper.executeUpdate(mStmt);
 
-				com.gmail.webos21.pds.web.h2.H2Helper.closeStatement(mStmt);
+				com.gmail.webos21.pds.db.h2.H2Helper.closeStatement(mStmt);
 				mStmt = null;
 			}
 
@@ -330,7 +332,7 @@ public final class H2Database {
 				sql.append(whereClause);
 			}
 
-			mStmt = com.gmail.webos21.pds.web.h2.H2Helper.preparedStatement(mConn, sql.toString());
+			mStmt = com.gmail.webos21.pds.db.h2.H2Helper.preparedStatement(mConn, sql.toString());
 			for (i = 0; i < bindArgsSize; i++) {
 				try {
 					Object o = bindArgs[i];
@@ -360,16 +362,16 @@ public final class H2Database {
 					}
 				} catch (SQLException e) {
 					e.printStackTrace();
-					com.gmail.webos21.pds.web.h2.H2Helper.closeStatement(mStmt);
+					com.gmail.webos21.pds.db.h2.H2Helper.closeStatement(mStmt);
 					mStmt = null;
 					return rows;
 				}
 			}
 
 			if (mStmt != null) {
-				rows = com.gmail.webos21.pds.web.h2.H2Helper.executeUpdate(mStmt);
+				rows = com.gmail.webos21.pds.db.h2.H2Helper.executeUpdate(mStmt);
 
-				com.gmail.webos21.pds.web.h2.H2Helper.closeStatement(mStmt);
+				com.gmail.webos21.pds.db.h2.H2Helper.closeStatement(mStmt);
 				mStmt = null;
 			}
 
@@ -398,7 +400,7 @@ public final class H2Database {
 
 			clearBeforeTransaction();
 
-			mStmt = com.gmail.webos21.pds.web.h2.H2Helper.preparedStatement(mConn, sql);
+			mStmt = com.gmail.webos21.pds.db.h2.H2Helper.preparedStatement(mConn, sql);
 			if (bindArgs != null && bindArgs.length > 0) {
 				for (int i = 0; i < bindArgs.length; i++) {
 					try {
@@ -429,7 +431,7 @@ public final class H2Database {
 						}
 					} catch (SQLException e) {
 						e.printStackTrace();
-						com.gmail.webos21.pds.web.h2.H2Helper.closeStatement(mStmt);
+						com.gmail.webos21.pds.db.h2.H2Helper.closeStatement(mStmt);
 						mStmt = null;
 						return rows;
 					}
@@ -437,9 +439,9 @@ public final class H2Database {
 			}
 
 			if (mStmt != null) {
-				rows = com.gmail.webos21.pds.web.h2.H2Helper.executeUpdate(mStmt);
+				rows = com.gmail.webos21.pds.db.h2.H2Helper.executeUpdate(mStmt);
 
-				com.gmail.webos21.pds.web.h2.H2Helper.closeStatement(mStmt);
+				com.gmail.webos21.pds.db.h2.H2Helper.closeStatement(mStmt);
 				mStmt = null;
 			}
 

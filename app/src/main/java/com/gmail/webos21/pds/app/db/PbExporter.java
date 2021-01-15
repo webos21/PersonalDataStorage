@@ -5,8 +5,8 @@ import android.util.Log;
 
 import com.gmail.webos21.pds.app.Consts;
 import com.gmail.webos21.pds.app.crypt.PbCryptHelper;
-import com.gmail.webos21.pds.web.db.PbDbInterface;
-import com.gmail.webos21.pds.web.db.PbRow;
+import com.gmail.webos21.pds.db.model.PbRow;
+import com.gmail.webos21.pds.db.PdsDbInterface;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -19,13 +19,13 @@ public class PbExporter extends AsyncTask<Void, Void, Void> {
 
     private static final String TAG = "PbExporter";
 
-    private com.gmail.webos21.pds.web.db.PbDbInterface pdi;
+    private PdsDbInterface pdi;
     private File csvFile;
     private byte[] pkBytes;
 
     private Runnable postRun;
 
-    public PbExporter(PbDbInterface pdi, File csvFile, byte[] pkBytes, Runnable postRun) {
+    public PbExporter(PdsDbInterface pdi, File csvFile, byte[] pkBytes, Runnable postRun) {
         this.pdi = pdi;
         this.csvFile = csvFile;
         this.pkBytes = pkBytes;
@@ -35,12 +35,12 @@ public class PbExporter extends AsyncTask<Void, Void, Void> {
     @Override
     protected Void doInBackground(Void... voids) {
         BufferedWriter bwo = null;
-        List<com.gmail.webos21.pds.web.db.PbRow> pblist = pdi.findRows();
+        List<PbRow> pblist = pdi.findRows();
         StringBuffer sb = new StringBuffer();
 
         try {
             bwo = new BufferedWriter(new FileWriter(csvFile));
-            for (com.gmail.webos21.pds.web.db.PbRow pbrow : pblist) {
+            for (PbRow pbrow : pblist) {
                 String l = makeLine(pbrow, sb, pkBytes);
                 if (Consts.DEBUG) {
                     Log.i(TAG, l);

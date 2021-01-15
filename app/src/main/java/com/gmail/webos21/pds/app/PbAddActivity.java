@@ -15,10 +15,10 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.gmail.webos21.pds.app.crypt.PbCryptHelper;
-import com.gmail.webos21.pds.web.Consts;
-import com.gmail.webos21.pds.web.db.PbDbInterface;
-import com.gmail.webos21.pds.web.db.PbDbManager;
-import com.gmail.webos21.pds.web.db.PbRow;
+import com.gmail.webos21.pds.db.DbConsts;
+import com.gmail.webos21.pds.db.PdsDbInterface;
+import com.gmail.webos21.pds.db.PdsDbManager;
+import com.gmail.webos21.pds.db.model.PbRow;
 
 import java.text.ParseException;
 import java.util.Calendar;
@@ -156,19 +156,19 @@ public class PbAddActivity extends AppCompatActivity implements View.OnClickList
 
         Date rd = null;
         try {
-            rd = Consts.SDF_DATE.parse(regDate);
+            rd = DbConsts.SDF_DATE.parse(regDate);
         } catch (ParseException e) {
             e.printStackTrace();
         }
 
-        PbApp app = (PbApp) edMyPw.getContext().getApplicationContext();
+        PdsApp app = (PdsApp) edMyPw.getContext().getApplicationContext();
         byte[] pkBytes = app.getPkBytes();
 
         String encId = PbCryptHelper.encData(myid, pkBytes);
         String encPw = PbCryptHelper.encData(mypw, pkBytes);
 
         PbRow pbr = new PbRow(null, surl, sname, stype, encId, encPw, rd.getTime(), System.currentTimeMillis(), memo);
-        PbDbInterface pdi = PbDbManager.getInstance().getPbDbInterface();
+        PdsDbInterface pdi = PdsDbManager.getInstance().getPbDbInterface();
         pdi.updateRow(pbr);
 
         Intent i = new Intent();

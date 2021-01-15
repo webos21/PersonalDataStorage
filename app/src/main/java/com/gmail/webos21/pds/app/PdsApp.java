@@ -1,18 +1,18 @@
 package com.gmail.webos21.pds.app;
 
 import android.app.Application;
-import android.os.Environment;
 import android.util.Log;
 
 import androidx.appcompat.app.AppCompatDelegate;
 
-import com.gmail.webos21.pds.web.db.PbDbManager;
+import com.gmail.webos21.pds.db.DbConsts;
+import com.gmail.webos21.pds.db.PdsDbManager;
 
 import java.io.File;
 
-public class PbApp extends Application {
+public class PdsApp extends Application {
 
-    private static final String TAG = "PbApp";
+    private static final String TAG = "PdsApp";
 
     static {
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
@@ -27,9 +27,9 @@ public class PbApp extends Application {
             Log.i(TAG, "onCreate!!!!!!");
         }
 
-        PbDbManager dbMan = PbDbManager.getInstance();
+        PdsDbManager dbMan = PdsDbManager.getInstance();
         File dataDir = new File(getFilesDir(), "pds");
-        dbMan.open(dataDir.getAbsolutePath(), "sa", "filekey sa", Consts.DB_VERSION);
+        dbMan.open(dataDir.getAbsolutePath(), DbConsts.DB_USER, DbConsts.DB_PASS, DbConsts.DB_OPTS, DbConsts.DB_VERSION);
     }
 
     @Override

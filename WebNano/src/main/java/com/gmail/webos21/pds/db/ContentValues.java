@@ -1,4 +1,4 @@
-package com.gmail.webos21.pds.web.db;
+package com.gmail.webos21.pds.db;
 
 import com.gmail.webos21.pds.web.log.Log;
 

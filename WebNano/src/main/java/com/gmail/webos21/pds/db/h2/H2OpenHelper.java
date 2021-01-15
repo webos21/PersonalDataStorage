@@ -1,4 +1,4 @@
-package com.gmail.webos21.pds.web.h2;
+package com.gmail.webos21.pds.db.h2;
 
 import java.io.File;
 
@@ -10,6 +10,7 @@ public abstract class H2OpenHelper {
 	private final String filePath;
 	private final String user;
 	private final String pass;
+	private final String opts;
 
 	private final int mNewVersion;
 	private final int mMinimumSupportedVersion;
@@ -17,11 +18,11 @@ public abstract class H2OpenHelper {
 	private H2Database mDatabase;
 	private boolean mIsInitializing;
 
-	public H2OpenHelper(String filePath, String user, String pass, int version) {
-		this(filePath, user, pass, version, 0);
+	public H2OpenHelper(String filePath, String user, String pass, String opts, int version) {
+		this(filePath, user, pass, opts, version, 0);
 	}
 
-	public H2OpenHelper(String filePath, String user, String pass, int version, int minimumSupportedVersion) {
+	public H2OpenHelper(String filePath, String user, String pass, String opts, int version, int minimumSupportedVersion) {
 		if (version < 1) {
 			throw new IllegalArgumentException("Version must be >= 1, was " + version);
 		}
@@ -29,6 +30,7 @@ public abstract class H2OpenHelper {
 		this.filePath = filePath;
 		this.user = user;
 		this.pass = pass;
+		this.opts = opts;
 
 		this.mNewVersion = version;
 		this.mMinimumSupportedVersion = Math.max(0, minimumSupportedVersion);
@@ -78,10 +80,10 @@ public abstract class H2OpenHelper {
 					db.reopenReadWrite();
 				}
 			} else if (filePath == null) {
-				db = H2Database.createInMemory(user, pass);
+				db = H2Database.createInMemory(user, pass, opts);
 			} else {
 				try {
-					db = H2Database.openDatabase(filePath, user, pass);
+					db = H2Database.openDatabase(filePath, user, pass, opts);
 				} catch (Exception ex) {
 					if (writable) {
 						throw ex;

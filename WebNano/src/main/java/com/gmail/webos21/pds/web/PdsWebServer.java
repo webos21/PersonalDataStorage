@@ -13,7 +13,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
-public class PbWebServer extends NanoHTTPD {
+public class PdsWebServer extends NanoHTTPD {
 
 	private static final boolean DEBUG = true;
 
@@ -27,14 +27,14 @@ public class PbWebServer extends NanoHTTPD {
 	private Map<String, Boolean> whiteMap;
 	private HttpNewClientListener cl;
 
-	public PbWebServer(String ipaddr, int port, File wwwroot) throws IOException {
+	public PdsWebServer(String ipaddr, int port, File wwwroot) throws IOException {
 		super(ipaddr, port);
 
 		staticRouter = new StaticRouter(wwwroot);
 		dynamicRouter = new DynamicRouter();
 
 		dynamicRouter.addDynamicPage("/login.do", LoginHandler.class);
-		dynamicRouter.addDynamicPage("/pwdata.do", PbDataHandler.class);
+		dynamicRouter.addDynamicPage("/pwdata.do", PdsDataHandler.class);
 
 		mimeTypes().put("xhtml", "application/xhtml+xml");
 		mimeTypes().put("opf", "application/oebps-package+xml");

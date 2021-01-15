@@ -1,23 +1,23 @@
-package com.gmail.webos21.pds.web.db;
+package com.gmail.webos21.pds.db;
 
-public class PbDbManager {
+public class PdsDbManager {
 
-    private static volatile PbDbManager instance;
+    private static volatile PdsDbManager instance;
 
-    private PbDbHelper dbHelper;
+    private PdsDbHelper dbHelper;
 
-    private PbDbManager() {
+    private PdsDbManager() {
     }
 
-    public static PbDbManager getInstance() {
+    public static PdsDbManager getInstance() {
         if (instance != null) {
             return instance;
         }
-        synchronized (PbDbManager.class) {
+        synchronized (PdsDbManager.class) {
             if (instance != null) {
                 return instance;
             }
-            instance = new PbDbManager();
+            instance = new PdsDbManager();
         }
         return instance;
     }
@@ -32,8 +32,8 @@ public class PbDbManager {
         }
     }
 
-    public void open(String dbPath, String dbUser, String dbPass, int dbVersion) {
-        this.dbHelper = new PbDbHelper(dbPath, dbUser, dbPass, dbVersion);
+    public void open(String dbPath, String dbUser, String dbPass, String dbOpts, int dbVersion) {
+        this.dbHelper = new PdsDbHelper(dbPath, dbUser, dbPass, dbOpts, dbVersion);
     }
 
     public void close() {
@@ -43,7 +43,7 @@ public class PbDbManager {
         }
     }
 
-    public PbDbInterface getPbDbInterface() {
+    public PdsDbInterface getPbDbInterface() {
         return this.dbHelper;
     }
 }

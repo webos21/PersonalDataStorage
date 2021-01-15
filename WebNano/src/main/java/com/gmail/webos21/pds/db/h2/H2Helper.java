@@ -1,4 +1,4 @@
-package com.gmail.webos21.pds.web.h2;
+package com.gmail.webos21.pds.db.h2;
 
 import java.sql.Connection;
 import java.sql.DriverManager;

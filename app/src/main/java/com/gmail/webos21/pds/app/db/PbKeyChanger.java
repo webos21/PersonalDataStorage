@@ -3,8 +3,8 @@ package com.gmail.webos21.pds.app.db;
 import android.os.AsyncTask;
 
 import com.gmail.webos21.pds.app.crypt.PbCryptHelper;
-import com.gmail.webos21.pds.web.db.PbDbInterface;
-import com.gmail.webos21.pds.web.db.PbRow;
+import com.gmail.webos21.pds.db.PdsDbInterface;
+import com.gmail.webos21.pds.db.model.PbRow;
 
 import java.util.List;
 
@@ -12,13 +12,13 @@ public class PbKeyChanger extends AsyncTask<Void, Void, Void> {
 
     private static final String TAG = "PbKeyChanger";
 
-    private com.gmail.webos21.pds.web.db.PbDbInterface pdi;
+    private PdsDbInterface pdi;
     private byte[] oldKey;
     private byte[] newKey;
 
     private Runnable postRun;
 
-    public PbKeyChanger(PbDbInterface pdi, byte[] oldKey, byte[] newKey, Runnable postRun) {
+    public PbKeyChanger(PdsDbInterface pdi, byte[] oldKey, byte[] newKey, Runnable postRun) {
         this.pdi = pdi;
         this.oldKey = oldKey;
         this.newKey = newKey;
@@ -27,7 +27,7 @@ public class PbKeyChanger extends AsyncTask<Void, Void, Void> {
 
     @Override
     protected Void doInBackground(Void... voids) {
-        List<com.gmail.webos21.pds.web.db.PbRow> pblist = pdi.findRows();
+        List<PbRow> pblist = pdi.findRows();
 
         for (PbRow pbrow : pblist) {
             String oldId = pbrow.getMyId();

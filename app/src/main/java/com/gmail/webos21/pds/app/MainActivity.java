@@ -34,9 +34,9 @@ import com.gmail.webos21.pds.app.crypt.PbCryptHelper;
 import com.gmail.webos21.pds.app.db.PbExporter;
 import com.gmail.webos21.pds.app.db.PbImporter;
 import com.gmail.webos21.pds.app.db.PbRowAdapter;
-import com.gmail.webos21.pds.web.db.PbDbInterface;
-import com.gmail.webos21.pds.web.db.PbDbManager;
-import com.gmail.webos21.pds.web.db.PbRow;
+import com.gmail.webos21.pds.db.PdsDbInterface;
+import com.gmail.webos21.pds.db.PdsDbManager;
+import com.gmail.webos21.pds.db.model.PbRow;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 
@@ -161,7 +161,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             startActivityForResult(i, Consts.ACTION_PASS_CFG);
             return;
         } else {
-            PbApp app = (PbApp) getApplicationContext();
+            PdsApp app = (PdsApp) getApplicationContext();
             if (app.getPkBytes() == null) {
                 byte[] pkBytes = PbCryptHelper.restorePkBytes(passkey);
                 app.setPkBytes(pkBytes);
@@ -315,12 +315,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             return;
         }
 
-        PbApp app = (PbApp) getApplicationContext();
+        PdsApp app = (PdsApp) getApplicationContext();
         byte[] pkBytes = app.getPkBytes();
 
         String mountPoint = Environment.getExternalStorageDirectory().toString();
         File csvFile = new File(mountPoint + "/Download", "exp.csv");
-        PbDbInterface pdi = PbDbManager.getInstance().getPbDbInterface();
+        PdsDbInterface pdi = PdsDbManager.getInstance().getPbDbInterface();
 
         new PbExporter(pdi, csvFile, pkBytes, new Runnable() {
             @Override
@@ -427,7 +427,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         new DialogInterface.OnClickListener() {
                             public void onClick(
                                     DialogInterface dialog, int id) {
-                                PbDbInterface pdi = PbDbManager.getInstance().getPbDbInterface();
+                                PdsDbInterface pdi = PdsDbManager.getInstance().getPbDbInterface();
                                 pdi.deleteRow(pbrow);
                                 MainActivity.this.refreshListView();
                             }
@@ -480,9 +480,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private class CsvFileSelectedListener implements ChooseFileDialog.FileChosenListener {
         @Override
         public void onFileChosen(File chosenFile) {
-            PbApp app = (PbApp) MainActivity.this.getApplicationContext();
+            PdsApp app = (PdsApp) MainActivity.this.getApplicationContext();
             byte[] pkBytes = app.getPkBytes();
-            PbDbInterface pdi = PbDbManager.getInstance().getPbDbInterface();
+            PdsDbInterface pdi = PdsDbManager.getInstance().getPbDbInterface();
             new PbImporter(pdi, chosenFile, pkBytes, new Runnable() {
                 @Override
                 public void run() {

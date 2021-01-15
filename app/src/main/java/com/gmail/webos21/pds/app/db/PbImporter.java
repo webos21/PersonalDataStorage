@@ -5,8 +5,8 @@ import android.util.Log;
 
 import com.gmail.webos21.pds.app.Consts;
 import com.gmail.webos21.pds.app.crypt.PbCryptHelper;
-import com.gmail.webos21.pds.web.db.PbDbInterface;
-import com.gmail.webos21.pds.web.db.PbRow;
+import com.gmail.webos21.pds.db.model.PbRow;
+import com.gmail.webos21.pds.db.PdsDbInterface;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -20,13 +20,13 @@ public class PbImporter extends AsyncTask<Void, Void, Void> {
 
     private static final String TAG = "PbImporter";
 
-    private com.gmail.webos21.pds.web.db.PbDbInterface pdi;
+    private PdsDbInterface pdi;
     private File csvFile;
     private byte[] pkBytes;
 
     private Runnable postRun;
 
-    public PbImporter(com.gmail.webos21.pds.web.db.PbDbInterface pdi, File csvFile, byte[] pkBytes, Runnable postRun) {
+    public PbImporter(PdsDbInterface pdi, File csvFile, byte[] pkBytes, Runnable postRun) {
         this.pdi = pdi;
         this.csvFile = csvFile;
         this.pkBytes = pkBytes;
@@ -74,7 +74,7 @@ public class PbImporter extends AsyncTask<Void, Void, Void> {
         postRun.run();
     }
 
-    private void processLine(PbDbInterface pdi, String s, byte[] encKey) {
+    private void processLine(PdsDbInterface pdi, String s, byte[] encKey) {
         String[] strArr = s.split(",");
 
         Long id = null;
@@ -152,7 +152,7 @@ public class PbImporter extends AsyncTask<Void, Void, Void> {
             return;
         }
 
-        com.gmail.webos21.pds.web.db.PbRow pbrow = new PbRow(id, surl, sname, stype, myid, mypw, regdate.getTime(), fixdate.getTime(), memo);
+        PbRow pbrow = new PbRow(id, surl, sname, stype, myid, mypw, regdate.getTime(), fixdate.getTime(), memo);
         pdi.updateRow(pbrow);
     }
 }

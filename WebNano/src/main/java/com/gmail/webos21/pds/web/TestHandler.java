@@ -5,7 +5,7 @@ import com.gmail.webos21.nano.NanoHTTPD.IHTTPSession;
 import com.gmail.webos21.nano.NanoHTTPD.Response.Status;
 import com.gmail.webos21.nano.RouteResult;
 import com.gmail.webos21.nano.UriHandler;
-import com.gmail.webos21.pds.web.h2.H2Helper;
+import com.gmail.webos21.pds.db.h2.H2Helper;
 
 import java.sql.Connection;
 import java.util.Map;

@@ -7,21 +7,22 @@ import com.gmail.webos21.nano.NanoHTTPD.Response.IStatus;
 import com.gmail.webos21.nano.NanoHTTPD.Response.Status;
 import com.gmail.webos21.nano.RouteResult;
 import com.gmail.webos21.nano.UriHandler;
-import com.gmail.webos21.pds.web.db.PbDbInterface;
-import com.gmail.webos21.pds.web.db.PbDbManager;
-import com.gmail.webos21.pds.web.db.PbRow;
+import com.gmail.webos21.pds.db.DbConsts;
+import com.gmail.webos21.pds.db.PdsDbInterface;
+import com.gmail.webos21.pds.db.PdsDbManager;
+import com.gmail.webos21.pds.db.model.PbRow;
 
 import java.text.ParseException;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-public class PbDataHandler implements UriHandler {
+public class PdsDataHandler implements UriHandler {
 
-    private PbDbInterface pdbi;
+    private PdsDbInterface pdbi;
 
-    public PbDataHandler() {
-        PbDbManager pdb = PbDbManager.getInstance();
+    public PdsDataHandler() {
+        PdsDbManager pdb = PdsDbManager.getInstance();
         pdbi = pdb.getPbDbInterface();
     }
 
@@ -151,7 +152,7 @@ public class PbDataHandler implements UriHandler {
 
         Date rd = null;
         try {
-            rd = Consts.SDF_DATE.parse(regDate);
+            rd = DbConsts.SDF_DATE.parse(regDate);
         } catch (ParseException e) {
             e.printStackTrace();
         }
@@ -213,7 +214,7 @@ public class PbDataHandler implements UriHandler {
 
         Date rd = null;
         try {
-            rd = Consts.SDF_DATE.parse(regDate);
+            rd = DbConsts.SDF_DATE.parse(regDate);
         } catch (ParseException e) {
             e.printStackTrace();
         }

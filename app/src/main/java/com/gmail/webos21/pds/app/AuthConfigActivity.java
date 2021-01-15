@@ -18,8 +18,8 @@ import androidx.core.content.ContextCompat;
 
 import com.gmail.webos21.pds.app.crypt.PbCryptHelper;
 import com.gmail.webos21.pds.app.db.PbKeyChanger;
-import com.gmail.webos21.pds.web.db.PbDbInterface;
-import com.gmail.webos21.pds.web.db.PbDbManager;
+import com.gmail.webos21.pds.db.PdsDbInterface;
+import com.gmail.webos21.pds.db.PdsDbManager;
 
 public class AuthConfigActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -120,12 +120,12 @@ public class AuthConfigActivity extends AppCompatActivity implements View.OnClic
         prefEdit.putString(Consts.PREF_PASSKEY, newPasskey);
         prefEdit.commit();
 
-        PbApp app = (PbApp) tvMessage.getContext().getApplicationContext();
+        PdsApp app = (PdsApp) tvMessage.getContext().getApplicationContext();
 
         byte[] oldKey = app.getPkBytes();
         byte[] newKey = PbCryptHelper.restorePkBytes(newPasskey);
         if (oldKey != null) {
-            PbDbInterface pdi = PbDbManager.getInstance().getPbDbInterface();
+            PdsDbInterface pdi = PdsDbManager.getInstance().getPbDbInterface();
             new PbKeyChanger(pdi, oldKey, newKey, new Runnable() {
                 @Override
                 public void run() {

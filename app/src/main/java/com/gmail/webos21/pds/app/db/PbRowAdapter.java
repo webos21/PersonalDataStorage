@@ -12,23 +12,23 @@ import androidx.core.content.res.ResourcesCompat;
 
 import com.gmail.webos21.android.ild.ImageLoader;
 import com.gmail.webos21.pds.app.R;
-import com.gmail.webos21.pds.web.db.PbDbInterface;
-import com.gmail.webos21.pds.web.db.PbDbManager;
-import com.gmail.webos21.pds.web.db.PbRow;
+import com.gmail.webos21.pds.db.PdsDbInterface;
+import com.gmail.webos21.pds.db.PdsDbManager;
+import com.gmail.webos21.pds.db.model.PbRow;
 
 import java.util.List;
 
 public class PbRowAdapter extends BaseAdapter {
 
-    private List<com.gmail.webos21.pds.web.db.PbRow> pbRows;
-    private PbDbInterface pbDb;
+    private List<PbRow> pbRows;
+    private PdsDbInterface pbDb;
 
     private ImageLoader imgLoader;
 
     private boolean bShowIcon;
 
     public PbRowAdapter(Context context, boolean showIcon) {
-        PbDbManager dbMan = PbDbManager.getInstance();
+        PdsDbManager dbMan = PdsDbManager.getInstance();
 
         pbDb = dbMan.getPbDbInterface();
         pbRows = pbDb.findRows();
