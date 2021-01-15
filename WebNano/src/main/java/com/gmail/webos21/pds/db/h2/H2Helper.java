@@ -15,7 +15,7 @@ public class H2Helper {
 
 	private static final String TB_VERSION_CREATE = /* Indent -------------------- */
 			/* Indent */"CREATE TABLE IF NOT EXISTS " + TB_VERSION + " (" +
-			/* Indent */"	version          INTEGER  PRIMARY KEY" +
+			/* Indent */"	version          INTEGER" +
 			/* Indent */");";
 
 	private static final String TB_VERSION_CHECK = /* Indent -------------------- */
