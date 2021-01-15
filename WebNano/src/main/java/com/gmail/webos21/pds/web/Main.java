@@ -1,5 +1,6 @@
 package com.gmail.webos21.pds.web;
 
+import com.gmail.webos21.nano.NanoHTTPD;
 import com.gmail.webos21.pds.web.db.PbDbManager;
 
 import java.io.File;
@@ -22,15 +23,16 @@ public class Main {
 			}
 		}
 		try {
-			String sitePath = (DEBUG) ? "../FrontEnd/build/" : args[0];
+			String sitePath = (DEBUG) ? "../WebFront/build/" : args[0];
 
 			File htdoc = new File(sitePath);
 			System.out.println("htdoc = " + htdoc.getAbsolutePath());
 
 			PbDbManager dbMan = PbDbManager.getInstance();
-			dbMan.open(Consts.DB_FILE, Consts.DB_USER, Consts.DB_PASS, Consts.DB_VERSION);
+			dbMan.open(Consts.DB_PATH, Consts.DB_USER, Consts.DB_PASS, Consts.DB_VERSION);
 
-			new PbWebServer("0.0.0.0", 28080, htdoc);
+			PbWebServer ws = new PbWebServer("0.0.0.0", 28080, htdoc);
+			ws.start(NanoHTTPD.SOCKET_READ_TIMEOUT, false);
 		} catch (IOException ioe) {
 			System.err.println("Couldn't start server:\n" + ioe);
 		}

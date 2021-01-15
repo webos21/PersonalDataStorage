@@ -5,7 +5,7 @@ import java.text.SimpleDateFormat;
 public class Consts {
     public static final boolean DB_DEBUG = true;
 
-    public static final String DB_FILE = "~/test";
+    public static final String DB_PATH = "~/pds";
     public static final String DB_USER = "sa";
     public static final String DB_PASS = "filekey sa";
 

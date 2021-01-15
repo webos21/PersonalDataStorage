@@ -28,7 +28,7 @@ public class PbApp extends Application {
         }
 
         PbDbManager dbMan = PbDbManager.getInstance();
-        File dataDir = new File(Environment.getDataDirectory(), "pds");
+        File dataDir = new File(getFilesDir(), "pds");
         dbMan.open(dataDir.getAbsolutePath(), "sa", "filekey sa", Consts.DB_VERSION);
     }
 

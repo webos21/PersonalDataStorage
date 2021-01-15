@@ -3,19 +3,17 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>com.gmail.webos21.pds</groupId>
-	<artifactId>WebNano</artifactId>
-	<version>1.0.1</version>
+	<groupId>com.gmail.webos21</groupId>
+	<artifactId>javalib</artifactId>
+	<version>1.0.0</version>
 	<packaging>jar</packaging>
 
-	<name>Web Service for PDS</name>
-	<description>WebServer with NanoHTTPD</description>
+	<name>Java Library</name>
+	<description>Library for Java</description>
 
-	<url>https://github.com/webos21/PersonalDataStorage</url>
+	<url>https://github.com/webos21/</url>
 
 	<properties>
-		<main.class>com.gmail.webos21.pds.web.Main</main.class>
-
 		<!-- UTF-8 use on Source / Report-Output -->
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
@@ -47,9 +45,6 @@
 		<version.maven.pmd>3.4</version.maven.pmd>
 		<version.maven.javadoc>2.10.3</version.maven.javadoc>
 
-		<!-- Version : DB -->
-		<version.db.h2db>1.4.200</version.db.h2db>
-
 		<!-- Version : Report (Cobertura) -->
 		<version.report.cobertura>2.7</version.report.cobertura>
 
@@ -73,20 +68,6 @@
 
 	<dependencyManagement>
 		<dependencies>
-
-			<!-- webos21 : javalib -->
-			<dependency>
-				<groupId>com.gmail.webos21</groupId>
-				<artifactId>javalib</artifactId>
-				<version>1.0.0</version>
-			</dependency>
-
-			<!-- H2 DB -->
-			<dependency>
-				<groupId>com.h2database</groupId>
-				<artifactId>h2</artifactId>
-				<version>${version.db.h2db}</version>
-			</dependency>
 
 			<!-- JUnit -->
 			<dependency>
@@ -241,45 +222,10 @@
 
 		<plugins>
 
-			<!-- Maven-Dependency -->
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-dependency-plugin</artifactId>
-				<executions>
-					<!-- for real packaging -->
-					<execution>
-						<id>unpack</id>
-						<phase>prepare-package</phase>
-						<goals>
-							<goal>unpack</goal>
-						</goals>
-						<configuration>
-							<artifactItems>
-								<artifactItem>
-									<groupId>com.h2database</groupId>
-									<artifactId>h2</artifactId>
-									<version>${version.db.h2db}</version>
-									<overWrite>false</overWrite>
-									<outputDirectory>${project.build.directory}/classes</outputDirectory>
-									<excludes>**META-INF/**</excludes>
-								</artifactItem>
-							</artifactItems>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-
 			<!-- Maven-JAR -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-jar-plugin</artifactId>
-				<configuration>
-					<archive>
-						<manifest>
-							<mainClass>${main.class}</mainClass>
-						</manifest>
-					</archive>
-				</configuration>
 			</plugin>
 
 			<!-- Maven-Surefire -->
