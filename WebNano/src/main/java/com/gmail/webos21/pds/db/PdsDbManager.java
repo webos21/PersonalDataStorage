@@ -1,5 +1,7 @@
 package com.gmail.webos21.pds.db;
 
+import java.lang.reflect.Type;
+
 public class PdsDbManager {
 
     private static volatile PdsDbManager instance;
@@ -43,7 +45,8 @@ public class PdsDbManager {
         }
     }
 
-    public PdsDbInterface getPbDbInterface() {
-        return this.dbHelper;
+    public <T> T getRepository(Class<T> in) {
+        return dbHelper.getRepository(in);
     }
+
 }

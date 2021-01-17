@@ -18,8 +18,8 @@ import androidx.core.content.ContextCompat;
 
 import com.gmail.webos21.pds.app.crypt.PbCryptHelper;
 import com.gmail.webos21.pds.app.db.PbKeyChanger;
-import com.gmail.webos21.pds.db.PdsDbInterface;
 import com.gmail.webos21.pds.db.PdsDbManager;
+import com.gmail.webos21.pds.db.repo.PbRepo;
 
 public class AuthConfigActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -125,8 +125,8 @@ public class AuthConfigActivity extends AppCompatActivity implements View.OnClic
         byte[] oldKey = app.getPkBytes();
         byte[] newKey = PbCryptHelper.restorePkBytes(newPasskey);
         if (oldKey != null) {
-            PdsDbInterface pdi = PdsDbManager.getInstance().getPbDbInterface();
-            new PbKeyChanger(pdi, oldKey, newKey, new Runnable() {
+            PbRepo pbRepo = PdsDbManager.getInstance().getRepository(PbRepo.class);
+            new PbKeyChanger(pbRepo, oldKey, newKey, new Runnable() {
                 @Override
                 public void run() {
                     Toast.makeText(tvMessage.getContext(), "New key is applyed!!!", Toast.LENGTH_LONG);

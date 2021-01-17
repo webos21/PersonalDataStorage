@@ -6,7 +6,7 @@ import android.util.Log;
 import com.gmail.webos21.pds.app.Consts;
 import com.gmail.webos21.pds.app.crypt.PbCryptHelper;
 import com.gmail.webos21.pds.db.model.PbRow;
-import com.gmail.webos21.pds.db.PdsDbInterface;
+import com.gmail.webos21.pds.db.repo.PbRepo;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -20,14 +20,14 @@ public class PbImporter extends AsyncTask<Void, Void, Void> {
 
     private static final String TAG = "PbImporter";
 
-    private PdsDbInterface pdi;
+    private PbRepo pbRepo;
     private File csvFile;
     private byte[] pkBytes;
 
     private Runnable postRun;
 
-    public PbImporter(PdsDbInterface pdi, File csvFile, byte[] pkBytes, Runnable postRun) {
-        this.pdi = pdi;
+    public PbImporter(PbRepo pbRepo, File csvFile, byte[] pkBytes, Runnable postRun) {
+        this.pbRepo = pbRepo;
         this.csvFile = csvFile;
         this.pkBytes = pkBytes;
         this.postRun = postRun;
@@ -44,7 +44,7 @@ public class PbImporter extends AsyncTask<Void, Void, Void> {
                 if (Consts.DEBUG) {
                     Log.i(TAG, "[FileRead] " + s);
                 }
-                processLine(pdi, s, pkBytes);
+                processLine(pbRepo, s, pkBytes);
             }
 
             bri.close();
@@ -63,7 +63,7 @@ public class PbImporter extends AsyncTask<Void, Void, Void> {
                 bri = null;
             }
         }
-        pdi = null;
+        pbRepo = null;
 
         return null;
     }
@@ -74,7 +74,7 @@ public class PbImporter extends AsyncTask<Void, Void, Void> {
         postRun.run();
     }
 
-    private void processLine(PdsDbInterface pdi, String s, byte[] encKey) {
+    private void processLine(PbRepo pbRepo, String s, byte[] encKey) {
         String[] strArr = s.split(",");
 
         Long id = null;
@@ -153,6 +153,6 @@ public class PbImporter extends AsyncTask<Void, Void, Void> {
         }
 
         PbRow pbrow = new PbRow(id, surl, sname, stype, myid, mypw, regdate.getTime(), fixdate.getTime(), memo);
-        pdi.updateRow(pbrow);
+        pbRepo.updateRow(pbrow);
     }
 }

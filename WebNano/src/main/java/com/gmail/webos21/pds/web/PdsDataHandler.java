@@ -8,9 +8,9 @@ import com.gmail.webos21.nano.NanoHTTPD.Response.Status;
 import com.gmail.webos21.nano.RouteResult;
 import com.gmail.webos21.nano.UriHandler;
 import com.gmail.webos21.pds.db.DbConsts;
-import com.gmail.webos21.pds.db.PdsDbInterface;
 import com.gmail.webos21.pds.db.PdsDbManager;
 import com.gmail.webos21.pds.db.model.PbRow;
+import com.gmail.webos21.pds.db.repo.PbRepo;
 
 import java.text.ParseException;
 import java.util.Date;
@@ -19,11 +19,11 @@ import java.util.Map;
 
 public class PdsDataHandler implements UriHandler {
 
-    private PdsDbInterface pdbi;
+    private PbRepo pbRepo;
 
     public PdsDataHandler() {
         PdsDbManager pdb = PdsDbManager.getInstance();
-        pdbi = pdb.getPbDbInterface();
+        pbRepo = pdb.getRepository(PbRepo.class);
     }
 
     @Override
@@ -98,7 +98,7 @@ public class PdsDataHandler implements UriHandler {
         }
 
         String siteId = params.get("siteId");
-        int deletedRows = pdbi.deleteRow(Long.parseLong(siteId));
+        int deletedRows = pbRepo.deleteRow(Long.parseLong(siteId));
 
         StringBuilder sb = new StringBuilder();
 
@@ -159,7 +159,7 @@ public class PdsDataHandler implements UriHandler {
 
         PbRow aRow = new PbRow(Long.parseLong(siteId), siteUrl, siteName, siteType, myId, myPw, rd.getTime(),
                 System.currentTimeMillis(), memo);
-        pdbi.updateRow(aRow);
+        pbRepo.updateRow(aRow);
 
         StringBuilder sb = new StringBuilder();
 
@@ -221,7 +221,7 @@ public class PdsDataHandler implements UriHandler {
 
         PbRow aRow = new PbRow(null, siteUrl, siteName, siteType, myId, myPw, rd.getTime(), System.currentTimeMillis(),
                 memo);
-        pdbi.updateRow(aRow);
+        pbRepo.updateRow(aRow);
 
         StringBuilder sb = new StringBuilder();
 
@@ -270,9 +270,9 @@ public class PdsDataHandler implements UriHandler {
 
         List<PbRow> rows = null;
         if (keyword != null && keyword.length() > 0) {
-            rows = pdbi.findRows(keyword);
+            rows = pbRepo.findRows(keyword);
         } else {
-            rows = pdbi.findRows();
+            rows = pbRepo.findRows();
         }
 
         int i = 0;

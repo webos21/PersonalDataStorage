@@ -1,10 +1,10 @@
-package com.gmail.webos21.pds.db;
+package com.gmail.webos21.pds.db.repo;
 
 import com.gmail.webos21.pds.db.model.PbRow;
 
 import java.util.List;
 
-public interface PdsDbInterface {
+public interface PbRepo {
 
     List<PbRow> findRows();
     List<PbRow> findRows(String keyString);

@@ -6,7 +6,7 @@ import android.util.Log;
 import com.gmail.webos21.pds.app.Consts;
 import com.gmail.webos21.pds.app.crypt.PbCryptHelper;
 import com.gmail.webos21.pds.db.model.PbRow;
-import com.gmail.webos21.pds.db.PdsDbInterface;
+import com.gmail.webos21.pds.db.repo.PbRepo;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -19,14 +19,14 @@ public class PbExporter extends AsyncTask<Void, Void, Void> {
 
     private static final String TAG = "PbExporter";
 
-    private PdsDbInterface pdi;
+    private PbRepo pbRepo;
     private File csvFile;
     private byte[] pkBytes;
 
     private Runnable postRun;
 
-    public PbExporter(PdsDbInterface pdi, File csvFile, byte[] pkBytes, Runnable postRun) {
-        this.pdi = pdi;
+    public PbExporter(PbRepo pbRepo, File csvFile, byte[] pkBytes, Runnable postRun) {
+        this.pbRepo = pbRepo;
         this.csvFile = csvFile;
         this.pkBytes = pkBytes;
         this.postRun = postRun;
@@ -35,7 +35,7 @@ public class PbExporter extends AsyncTask<Void, Void, Void> {
     @Override
     protected Void doInBackground(Void... voids) {
         BufferedWriter bwo = null;
-        List<PbRow> pblist = pdi.findRows();
+        List<PbRow> pblist = pbRepo.findRows();
         StringBuffer sb = new StringBuffer();
 
         try {
@@ -65,7 +65,7 @@ public class PbExporter extends AsyncTask<Void, Void, Void> {
         }
 
         sb = null;
-        pdi = null;
+        pbRepo = null;
 
         return null;
     }

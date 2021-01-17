@@ -34,9 +34,9 @@ import com.gmail.webos21.pds.app.crypt.PbCryptHelper;
 import com.gmail.webos21.pds.app.db.PbExporter;
 import com.gmail.webos21.pds.app.db.PbImporter;
 import com.gmail.webos21.pds.app.db.PbRowAdapter;
-import com.gmail.webos21.pds.db.PdsDbInterface;
 import com.gmail.webos21.pds.db.PdsDbManager;
 import com.gmail.webos21.pds.db.model.PbRow;
+import com.gmail.webos21.pds.db.repo.PbRepo;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 
@@ -320,9 +320,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         String mountPoint = Environment.getExternalStorageDirectory().toString();
         File csvFile = new File(mountPoint + "/Download", "exp.csv");
-        PdsDbInterface pdi = PdsDbManager.getInstance().getPbDbInterface();
+        PbRepo pbRepo = PdsDbManager.getInstance().getRepository(PbRepo.class);
 
-        new PbExporter(pdi, csvFile, pkBytes, new Runnable() {
+        new PbExporter(pbRepo, csvFile, pkBytes, new Runnable() {
             @Override
             public void run() {
                 Toast.makeText(MainActivity.this, "File is exported!!", Toast.LENGTH_SHORT).show();
@@ -427,8 +427,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         new DialogInterface.OnClickListener() {
                             public void onClick(
                                     DialogInterface dialog, int id) {
-                                PdsDbInterface pdi = PdsDbManager.getInstance().getPbDbInterface();
-                                pdi.deleteRow(pbrow);
+                                PbRepo pbRepo = PdsDbManager.getInstance().getRepository(PbRepo.class);
+                                pbRepo.deleteRow(pbrow);
                                 MainActivity.this.refreshListView();
                             }
                         });
@@ -482,8 +482,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         public void onFileChosen(File chosenFile) {
             PdsApp app = (PdsApp) MainActivity.this.getApplicationContext();
             byte[] pkBytes = app.getPkBytes();
-            PdsDbInterface pdi = PdsDbManager.getInstance().getPbDbInterface();
-            new PbImporter(pdi, chosenFile, pkBytes, new Runnable() {
+            PbRepo pbRepo = PdsDbManager.getInstance().getRepository(PbRepo.class);
+            new PbImporter(pbRepo, chosenFile, pkBytes, new Runnable() {
                 @Override
                 public void run() {
                     Toast.makeText(MainActivity.this, "File is imported!!", Toast.LENGTH_SHORT).show();

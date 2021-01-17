@@ -119,7 +119,7 @@ class PasswordBook extends Component {
     if (dataArray.length === 0) {
       return (
         <tr key="row-nodata">
-          <td colSpan="4" className="text-center align-middle" height="200">No Data</td>
+          <td colSpan="5" className="text-center align-middle" height="200">No Data</td>
         </tr>
       )
     } else {

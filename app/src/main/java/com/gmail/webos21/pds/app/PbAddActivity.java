@@ -16,9 +16,9 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.gmail.webos21.pds.app.crypt.PbCryptHelper;
 import com.gmail.webos21.pds.db.DbConsts;
-import com.gmail.webos21.pds.db.PdsDbInterface;
 import com.gmail.webos21.pds.db.PdsDbManager;
 import com.gmail.webos21.pds.db.model.PbRow;
+import com.gmail.webos21.pds.db.repo.PbRepo;
 
 import java.text.ParseException;
 import java.util.Calendar;
@@ -168,8 +168,8 @@ public class PbAddActivity extends AppCompatActivity implements View.OnClickList
         String encPw = PbCryptHelper.encData(mypw, pkBytes);
 
         PbRow pbr = new PbRow(null, surl, sname, stype, encId, encPw, rd.getTime(), System.currentTimeMillis(), memo);
-        PdsDbInterface pdi = PdsDbManager.getInstance().getPbDbInterface();
-        pdi.updateRow(pbr);
+        PbRepo pbRepo = PdsDbManager.getInstance().getRepository(PbRepo.class);
+        pbRepo.updateRow(pbr);
 
         Intent i = new Intent();
         setResult(Activity.RESULT_OK, i);
