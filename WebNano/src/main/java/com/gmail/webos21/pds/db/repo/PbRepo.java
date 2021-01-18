@@ -1,6 +1,6 @@
 package com.gmail.webos21.pds.db.repo;
 
-import com.gmail.webos21.pds.db.model.PbRow;
+import com.gmail.webos21.pds.db.domain.PbRow;
 
 import java.util.List;
 

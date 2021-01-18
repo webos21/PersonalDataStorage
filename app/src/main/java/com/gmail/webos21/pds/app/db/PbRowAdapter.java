@@ -13,7 +13,7 @@ import androidx.core.content.res.ResourcesCompat;
 import com.gmail.webos21.android.ild.ImageLoader;
 import com.gmail.webos21.pds.app.R;
 import com.gmail.webos21.pds.db.PdsDbManager;
-import com.gmail.webos21.pds.db.model.PbRow;
+import com.gmail.webos21.pds.db.domain.PbRow;
 import com.gmail.webos21.pds.db.repo.PbRepo;
 
 import java.util.List;

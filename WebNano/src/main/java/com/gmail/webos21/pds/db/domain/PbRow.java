@@ -1,4 +1,4 @@
-package com.gmail.webos21.pds.db.model;
+package com.gmail.webos21.pds.db.domain;
 
 import java.util.Date;
 

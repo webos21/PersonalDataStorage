@@ -5,7 +5,7 @@ import android.util.Log;
 
 import com.gmail.webos21.pds.app.Consts;
 import com.gmail.webos21.pds.app.crypt.PbCryptHelper;
-import com.gmail.webos21.pds.db.model.PbRow;
+import com.gmail.webos21.pds.db.domain.PbRow;
 import com.gmail.webos21.pds.db.repo.PbRepo;
 
 import java.io.BufferedWriter;

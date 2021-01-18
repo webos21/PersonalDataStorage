@@ -35,7 +35,7 @@ import com.gmail.webos21.pds.app.db.PbExporter;
 import com.gmail.webos21.pds.app.db.PbImporter;
 import com.gmail.webos21.pds.app.db.PbRowAdapter;
 import com.gmail.webos21.pds.db.PdsDbManager;
-import com.gmail.webos21.pds.db.model.PbRow;
+import com.gmail.webos21.pds.db.domain.PbRow;
 import com.gmail.webos21.pds.db.repo.PbRepo;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;

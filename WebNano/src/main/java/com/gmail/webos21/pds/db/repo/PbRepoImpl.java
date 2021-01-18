@@ -4,7 +4,7 @@ import com.gmail.webos21.pds.db.ContentValues;
 import com.gmail.webos21.pds.db.DbConsts;
 import com.gmail.webos21.pds.db.PdsDbHelper;
 import com.gmail.webos21.pds.db.h2.H2Database;
-import com.gmail.webos21.pds.db.model.PbRow;
+import com.gmail.webos21.pds.db.domain.PbRow;
 
 import java.sql.ResultSet;
 import java.util.ArrayList;

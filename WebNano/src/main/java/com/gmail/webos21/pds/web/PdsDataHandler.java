@@ -9,7 +9,7 @@ import com.gmail.webos21.nano.RouteResult;
 import com.gmail.webos21.nano.UriHandler;
 import com.gmail.webos21.pds.db.DbConsts;
 import com.gmail.webos21.pds.db.PdsDbManager;
-import com.gmail.webos21.pds.db.model.PbRow;
+import com.gmail.webos21.pds.db.domain.PbRow;
 import com.gmail.webos21.pds.db.repo.PbRepo;
 
 import java.text.ParseException;
