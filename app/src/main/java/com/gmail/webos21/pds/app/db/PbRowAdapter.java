@@ -13,15 +13,15 @@ import androidx.core.content.res.ResourcesCompat;
 import com.gmail.webos21.android.ild.ImageLoader;
 import com.gmail.webos21.pds.app.R;
 import com.gmail.webos21.pds.db.PdsDbManager;
-import com.gmail.webos21.pds.db.domain.PbRow;
-import com.gmail.webos21.pds.db.repo.PbRepo;
+import com.gmail.webos21.pds.db.domain.PasswordBook;
+import com.gmail.webos21.pds.db.repo.PasswordBookRepo;
 
 import java.util.List;
 
 public class PbRowAdapter extends BaseAdapter {
 
-    private List<PbRow> pbRows;
-    private PbRepo pbDb;
+    private List<PasswordBook> passwordBooks;
+    private PasswordBookRepo pbDb;
 
     private ImageLoader imgLoader;
 
@@ -30,25 +30,25 @@ public class PbRowAdapter extends BaseAdapter {
     public PbRowAdapter(Context context, boolean showIcon) {
         PdsDbManager dbMan = PdsDbManager.getInstance();
 
-        pbDb = dbMan.getRepository(PbRepo.class);
-        pbRows = pbDb.findRows();
+        pbDb = dbMan.getRepository(PasswordBookRepo.class);
+        passwordBooks = pbDb.findRows();
 
         this.bShowIcon = showIcon;
     }
 
     @Override
     public int getCount() {
-        return pbRows.size();
+        return passwordBooks.size();
     }
 
     @Override
     public Object getItem(int position) {
-        return pbRows.get(position);
+        return passwordBooks.get(position);
     }
 
     @Override
     public long getItemId(int position) {
-        return pbRows.get(position).getId();
+        return passwordBooks.get(position).getId();
     }
 
     @Override
@@ -72,7 +72,7 @@ public class PbRowAdapter extends BaseAdapter {
         TextView descTextView = (TextView) convertView.findViewById(R.id.tv_url);
 
         // Data Set(listViewItemList)에서 position에 위치한 데이터 참조 획득
-        PbRow pbData = pbRows.get(position);
+        PasswordBook pbData = passwordBooks.get(position);
 
         // 아이템 내 각 위젯에 데이터 반영
         if (bShowIcon) {
@@ -91,14 +91,14 @@ public class PbRowAdapter extends BaseAdapter {
     }
 
     public void searchItems(String w) {
-        pbRows.clear();
-        pbRows = pbDb.findRows(w);
+        passwordBooks.clear();
+        passwordBooks = pbDb.findRows(w);
         notifyDataSetChanged();
     }
 
     public void searchAll() {
-        pbRows.clear();
-        pbRows = pbDb.findRows();
+        passwordBooks.clear();
+        passwordBooks = pbDb.findRows();
         notifyDataSetChanged();
     }
 

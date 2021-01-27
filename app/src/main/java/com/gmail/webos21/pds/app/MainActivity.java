@@ -35,8 +35,8 @@ import com.gmail.webos21.pds.app.db.PbExporter;
 import com.gmail.webos21.pds.app.db.PbImporter;
 import com.gmail.webos21.pds.app.db.PbRowAdapter;
 import com.gmail.webos21.pds.db.PdsDbManager;
-import com.gmail.webos21.pds.db.domain.PbRow;
-import com.gmail.webos21.pds.db.repo.PbRepo;
+import com.gmail.webos21.pds.db.domain.PasswordBook;
+import com.gmail.webos21.pds.db.repo.PasswordBookRepo;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 
@@ -320,7 +320,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         String mountPoint = Environment.getExternalStorageDirectory().toString();
         File csvFile = new File(mountPoint + "/Download", "exp.csv");
-        PbRepo pbRepo = PdsDbManager.getInstance().getRepository(PbRepo.class);
+        PasswordBookRepo pbRepo = PdsDbManager.getInstance().getRepository(PasswordBookRepo.class);
 
         new PbExporter(pbRepo, csvFile, pkBytes, new Runnable() {
             @Override
@@ -381,8 +381,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
             Object o = parent.getItemAtPosition(position);
-            if (o instanceof PbRow) {
-                final PbRow pbrow = (PbRow) o;
+            if (o instanceof PasswordBook) {
+                final PasswordBook pbrow = (PasswordBook) o;
                 if (Consts.DEBUG) {
                     Log.i(TAG, "o is PbRow!!!!!!");
                     Log.i(TAG, "id = " + pbrow.getId());
@@ -404,8 +404,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         @Override
         public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
             Object o = parent.getItemAtPosition(position);
-            if (o instanceof PbRow) {
-                final PbRow pbrow = (PbRow) o;
+            if (o instanceof PasswordBook) {
+                final PasswordBook pbrow = (PasswordBook) o;
                 if (Consts.DEBUG) {
                     Log.i(TAG, "o is PbRow!!!!!!");
                     Log.i(TAG, "id = " + pbrow.getId());
@@ -427,7 +427,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         new DialogInterface.OnClickListener() {
                             public void onClick(
                                     DialogInterface dialog, int id) {
-                                PbRepo pbRepo = PdsDbManager.getInstance().getRepository(PbRepo.class);
+                                PasswordBookRepo pbRepo = PdsDbManager.getInstance().getRepository(PasswordBookRepo.class);
                                 pbRepo.deleteRow(pbrow);
                                 MainActivity.this.refreshListView();
                             }
@@ -482,7 +482,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         public void onFileChosen(File chosenFile) {
             PdsApp app = (PdsApp) MainActivity.this.getApplicationContext();
             byte[] pkBytes = app.getPkBytes();
-            PbRepo pbRepo = PdsDbManager.getInstance().getRepository(PbRepo.class);
+            PasswordBookRepo pbRepo = PdsDbManager.getInstance().getRepository(PasswordBookRepo.class);
             new PbImporter(pbRepo, chosenFile, pkBytes, new Runnable() {
                 @Override
                 public void run() {

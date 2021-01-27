@@ -4,23 +4,23 @@ import com.gmail.webos21.pds.db.ContentValues;
 import com.gmail.webos21.pds.db.DbConsts;
 import com.gmail.webos21.pds.db.PdsDbHelper;
 import com.gmail.webos21.pds.db.h2.H2Database;
-import com.gmail.webos21.pds.db.domain.PbRow;
+import com.gmail.webos21.pds.db.domain.PasswordBook;
 
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PbRepoImpl implements PbRepo {
+public class PasswordBookRepoImpl implements PasswordBookRepo {
 
     private PdsDbHelper opener;
 
-    public PbRepoImpl(PdsDbHelper opener) {
+    public PasswordBookRepoImpl(PdsDbHelper opener) {
         this.opener = opener;
     }
 
     @Override
-    public List<PbRow> findRows() {
-        List<PbRow> aList = new ArrayList<PbRow>();
+    public List<PasswordBook> findRows() {
+        List<PasswordBook> aList = new ArrayList<PasswordBook>();
 
         try {
             H2Database db = opener.getReadableDatabase();
@@ -30,7 +30,7 @@ public class PbRepoImpl implements PbRepo {
             }
 
             do {
-                PbRow aRow = new PbRow(/* id ------------- */rset.getLong(1), /* surl ----------- */rset.getString(2),
+                PasswordBook aRow = new PasswordBook(/* id ------------- */rset.getLong(1), /* surl ----------- */rset.getString(2),
                         /* sname ---------- */rset.getString(3), /* stype ---------- */rset.getString(4),
                         /* myid ----------- */rset.getString(5), /* mypw ----------- */rset.getString(6),
                         /* reg_date ------- */rset.getLong(7), /* fix_date ------- */rset.getLong(8),
@@ -54,8 +54,8 @@ public class PbRepoImpl implements PbRepo {
     }
 
     @Override
-    public List<PbRow> findRows(String keyString) {
-        List<PbRow> aList = new ArrayList<PbRow>();
+    public List<PasswordBook> findRows(String keyString) {
+        List<PasswordBook> aList = new ArrayList<PasswordBook>();
 
         try {
             H2Database db = opener.getReadableDatabase();
@@ -70,7 +70,7 @@ public class PbRepoImpl implements PbRepo {
             }
 
             do {
-                PbRow aRow = new PbRow(/* id ------------- */rset.getLong(1), /* surl ----------- */rset.getString(2),
+                PasswordBook aRow = new PasswordBook(/* id ------------- */rset.getLong(1), /* surl ----------- */rset.getString(2),
                         /* sname ---------- */rset.getString(3), /* stype ---------- */rset.getString(4),
                         /* myid ----------- */rset.getString(5), /* mypw ----------- */rset.getString(6),
                         /* reg_date ------- */rset.getLong(7), /* fix_date ------- */rset.getLong(8),
@@ -90,8 +90,8 @@ public class PbRepoImpl implements PbRepo {
     }
 
     @Override
-    public PbRow getRow(Long id) {
-        PbRow aRow = null;
+    public PasswordBook getRow(Long id) {
+        PasswordBook aRow = null;
 
         try {
             H2Database db = opener.getReadableDatabase();
@@ -100,7 +100,7 @@ public class PbRepoImpl implements PbRepo {
                 return null;
             }
 
-            aRow = new PbRow(/* id ------------- */rset.getLong(1), /* surl ----------- */rset.getString(2),
+            aRow = new PasswordBook(/* id ------------- */rset.getLong(1), /* surl ----------- */rset.getString(2),
                     /* sname ---------- */rset.getString(3), /* stype ---------- */rset.getString(4),
                     /* myid ----------- */rset.getString(5), /* mypw ----------- */rset.getString(6),
                     /* reg_date ------- */rset.getLong(7), /* fix_date ------- */rset.getLong(8),
@@ -115,12 +115,12 @@ public class PbRepoImpl implements PbRepo {
     }
 
     @Override
-    public PbRow getRow(PbRow aRow) {
+    public PasswordBook getRow(PasswordBook aRow) {
         return getRow(aRow.getId());
     }
 
     @Override
-    public boolean updateRow(PbRow newRow) {
+    public boolean updateRow(PasswordBook newRow) {
         try {
             H2Database db = opener.getWritableDatabase();
             ResultSet rset = null;
@@ -184,7 +184,7 @@ public class PbRepoImpl implements PbRepo {
     }
 
     @Override
-    public int deleteRow(PbRow aRow) {
+    public int deleteRow(PasswordBook aRow) {
         return deleteRow(aRow.getId());
     }
 

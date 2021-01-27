@@ -18,8 +18,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.gmail.webos21.pds.app.crypt.PbCryptHelper;
 import com.gmail.webos21.pds.db.DbConsts;
 import com.gmail.webos21.pds.db.PdsDbManager;
-import com.gmail.webos21.pds.db.domain.PbRow;
-import com.gmail.webos21.pds.db.repo.PbRepo;
+import com.gmail.webos21.pds.db.domain.PasswordBook;
+import com.gmail.webos21.pds.db.repo.PasswordBookRepo;
 
 import java.text.ParseException;
 import java.util.Calendar;
@@ -86,7 +86,7 @@ public class PbEditActivity extends AppCompatActivity implements View.OnClickLis
             Long pbId = i.getLongExtra(Consts.EXTRA_ARG_ID, -1);
             Log.i(TAG, "pbId = " + pbId);
             if (pbId > 0) {
-                PbRepo pbRepo = PdsDbManager.getInstance().getRepository(PbRepo.class);
+                PasswordBookRepo pbRepo = PdsDbManager.getInstance().getRepository(PasswordBookRepo.class);
                 setValues(pbRepo.getRow(pbId));
             } else {
                 finish();
@@ -116,7 +116,7 @@ public class PbEditActivity extends AppCompatActivity implements View.OnClickLis
         }
     }
 
-    private void setValues(PbRow pb) {
+    private void setValues(PasswordBook pb) {
         PdsApp app = (PdsApp) getApplicationContext();
         byte[] pkBytes = app.getPkBytes();
 
@@ -208,8 +208,8 @@ public class PbEditActivity extends AppCompatActivity implements View.OnClickLis
         String encId = PbCryptHelper.encData(myid, pkBytes);
         String encPw = PbCryptHelper.encData(mypw, pkBytes);
 
-        PbRow pbr = new PbRow(Long.parseLong(id), surl, sname, stype, encId, encPw, rd.getTime(), System.currentTimeMillis(), memo);
-        PbRepo pbRepo = PdsDbManager.getInstance().getRepository(PbRepo.class);
+        PasswordBook pbr = new PasswordBook(Long.parseLong(id), surl, sname, stype, encId, encPw, rd.getTime(), System.currentTimeMillis(), memo);
+        PasswordBookRepo pbRepo = PdsDbManager.getInstance().getRepository(PasswordBookRepo.class);
         pbRepo.updateRow(pbr);
 
         Intent i = new Intent();

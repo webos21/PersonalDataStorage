@@ -5,8 +5,8 @@ import android.util.Log;
 
 import com.gmail.webos21.pds.app.Consts;
 import com.gmail.webos21.pds.app.crypt.PbCryptHelper;
-import com.gmail.webos21.pds.db.domain.PbRow;
-import com.gmail.webos21.pds.db.repo.PbRepo;
+import com.gmail.webos21.pds.db.domain.PasswordBook;
+import com.gmail.webos21.pds.db.repo.PasswordBookRepo;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -20,13 +20,13 @@ public class PbImporter extends AsyncTask<Void, Void, Void> {
 
     private static final String TAG = "PbImporter";
 
-    private PbRepo pbRepo;
+    private PasswordBookRepo pbRepo;
     private File csvFile;
     private byte[] pkBytes;
 
     private Runnable postRun;
 
-    public PbImporter(PbRepo pbRepo, File csvFile, byte[] pkBytes, Runnable postRun) {
+    public PbImporter(PasswordBookRepo pbRepo, File csvFile, byte[] pkBytes, Runnable postRun) {
         this.pbRepo = pbRepo;
         this.csvFile = csvFile;
         this.pkBytes = pkBytes;
@@ -74,7 +74,7 @@ public class PbImporter extends AsyncTask<Void, Void, Void> {
         postRun.run();
     }
 
-    private void processLine(PbRepo pbRepo, String s, byte[] encKey) {
+    private void processLine(PasswordBookRepo pbRepo, String s, byte[] encKey) {
         String[] strArr = s.split(",");
 
         Long id = null;
@@ -152,7 +152,7 @@ public class PbImporter extends AsyncTask<Void, Void, Void> {
             return;
         }
 
-        PbRow pbrow = new PbRow(id, surl, sname, stype, myid, mypw, regdate.getTime(), fixdate.getTime(), memo);
+        PasswordBook pbrow = new PasswordBook(id, surl, sname, stype, myid, mypw, regdate.getTime(), fixdate.getTime(), memo);
         pbRepo.updateRow(pbrow);
     }
 }

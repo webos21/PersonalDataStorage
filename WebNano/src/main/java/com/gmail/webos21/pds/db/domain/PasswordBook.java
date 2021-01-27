@@ -2,7 +2,7 @@ package com.gmail.webos21.pds.db.domain;
 
 import java.util.Date;
 
-public class PbRow {
+public class PasswordBook {
     private Long id;
     private String siteUrl;
     private String siteName;
@@ -13,8 +13,8 @@ public class PbRow {
     private Date fixDate;
     private String memo;
 
-    public PbRow(Long id, String siteUrl, String siteName, String siteType, String myId, String myPw,
-                 Long regDate, Long fixDate, String memo) {
+    public PasswordBook(Long id, String siteUrl, String siteName, String siteType, String myId, String myPw,
+                        Long regDate, Long fixDate, String memo) {
         this.id = id;
         this.siteUrl = siteUrl;
         this.siteName = siteName;

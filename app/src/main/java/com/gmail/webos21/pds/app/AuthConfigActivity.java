@@ -19,7 +19,7 @@ import androidx.core.content.ContextCompat;
 import com.gmail.webos21.pds.app.crypt.PbCryptHelper;
 import com.gmail.webos21.pds.app.db.PbKeyChanger;
 import com.gmail.webos21.pds.db.PdsDbManager;
-import com.gmail.webos21.pds.db.repo.PbRepo;
+import com.gmail.webos21.pds.db.repo.PasswordBookRepo;
 
 public class AuthConfigActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -125,7 +125,7 @@ public class AuthConfigActivity extends AppCompatActivity implements View.OnClic
         byte[] oldKey = app.getPkBytes();
         byte[] newKey = PbCryptHelper.restorePkBytes(newPasskey);
         if (oldKey != null) {
-            PbRepo pbRepo = PdsDbManager.getInstance().getRepository(PbRepo.class);
+            PasswordBookRepo pbRepo = PdsDbManager.getInstance().getRepository(PasswordBookRepo.class);
             new PbKeyChanger(pbRepo, oldKey, newKey, new Runnable() {
                 @Override
                 public void run() {

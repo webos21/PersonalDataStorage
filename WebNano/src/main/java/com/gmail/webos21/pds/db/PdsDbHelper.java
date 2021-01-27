@@ -2,8 +2,8 @@ package com.gmail.webos21.pds.db;
 
 import com.gmail.webos21.pds.db.h2.H2Database;
 import com.gmail.webos21.pds.db.h2.H2OpenHelper;
-import com.gmail.webos21.pds.db.repo.PbRepo;
-import com.gmail.webos21.pds.db.repo.PbRepoImpl;
+import com.gmail.webos21.pds.db.repo.PasswordBookRepo;
+import com.gmail.webos21.pds.db.repo.PasswordBookRepoImpl;
 import com.gmail.webos21.pds.web.log.Log;
 
 import java.sql.ResultSet;
@@ -24,7 +24,7 @@ public class PdsDbHelper extends H2OpenHelper {
 	}
 
 	private void initRepository() {
-		domainRepo.put(PbRepo.class, new PbRepoImpl(this));
+		domainRepo.put(PasswordBookRepo.class, new PasswordBookRepoImpl(this));
 	}
 
 	@Override

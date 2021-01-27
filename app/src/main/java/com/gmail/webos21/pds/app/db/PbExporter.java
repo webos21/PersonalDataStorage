@@ -5,8 +5,8 @@ import android.util.Log;
 
 import com.gmail.webos21.pds.app.Consts;
 import com.gmail.webos21.pds.app.crypt.PbCryptHelper;
-import com.gmail.webos21.pds.db.domain.PbRow;
-import com.gmail.webos21.pds.db.repo.PbRepo;
+import com.gmail.webos21.pds.db.domain.PasswordBook;
+import com.gmail.webos21.pds.db.repo.PasswordBookRepo;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -19,13 +19,13 @@ public class PbExporter extends AsyncTask<Void, Void, Void> {
 
     private static final String TAG = "PbExporter";
 
-    private PbRepo pbRepo;
+    private PasswordBookRepo pbRepo;
     private File csvFile;
     private byte[] pkBytes;
 
     private Runnable postRun;
 
-    public PbExporter(PbRepo pbRepo, File csvFile, byte[] pkBytes, Runnable postRun) {
+    public PbExporter(PasswordBookRepo pbRepo, File csvFile, byte[] pkBytes, Runnable postRun) {
         this.pbRepo = pbRepo;
         this.csvFile = csvFile;
         this.pkBytes = pkBytes;
@@ -35,12 +35,12 @@ public class PbExporter extends AsyncTask<Void, Void, Void> {
     @Override
     protected Void doInBackground(Void... voids) {
         BufferedWriter bwo = null;
-        List<PbRow> pblist = pbRepo.findRows();
+        List<PasswordBook> pblist = pbRepo.findRows();
         StringBuffer sb = new StringBuffer();
 
         try {
             bwo = new BufferedWriter(new FileWriter(csvFile));
-            for (PbRow pbrow : pblist) {
+            for (PasswordBook pbrow : pblist) {
                 String l = makeLine(pbrow, sb, pkBytes);
                 if (Consts.DEBUG) {
                     Log.i(TAG, l);
@@ -76,21 +76,21 @@ public class PbExporter extends AsyncTask<Void, Void, Void> {
         postRun.run();
     }
 
-    private String makeLine(PbRow pbRow, StringBuffer sb, byte[] decKey) {
+    private String makeLine(PasswordBook passwordBook, StringBuffer sb, byte[] decKey) {
         sb.delete(0, sb.length());
 
-        String decId = PbCryptHelper.decData(pbRow.getMyId(), decKey);
-        String decPw = PbCryptHelper.decData(pbRow.getMyPw(), decKey);
+        String decId = PbCryptHelper.decData(passwordBook.getMyId(), decKey);
+        String decPw = PbCryptHelper.decData(passwordBook.getMyPw(), decKey);
 
-        sb.append(Long.toString(pbRow.getId())).append(',');
-        sb.append(pbRow.getSiteUrl()).append(',');
-        sb.append(pbRow.getSiteName()).append(',');
-        sb.append(pbRow.getSiteType()).append(',');
+        sb.append(Long.toString(passwordBook.getId())).append(',');
+        sb.append(passwordBook.getSiteUrl()).append(',');
+        sb.append(passwordBook.getSiteName()).append(',');
+        sb.append(passwordBook.getSiteType()).append(',');
         sb.append(decId).append(',');
         sb.append(decPw).append(',');
-        sb.append(Consts.SDF_DATE.format(pbRow.getRegDate())).append(',');
-        sb.append(Consts.SDF_DATE.format(pbRow.getFixDate())).append(',');
-        String memo = (pbRow.getMemo() == null || pbRow.getMemo().length() == 0) ? "null" : pbRow.getMemo();
+        sb.append(Consts.SDF_DATE.format(passwordBook.getRegDate())).append(',');
+        sb.append(Consts.SDF_DATE.format(passwordBook.getFixDate())).append(',');
+        String memo = (passwordBook.getMemo() == null || passwordBook.getMemo().length() == 0) ? "null" : passwordBook.getMemo();
         sb.append(memo);
         sb.append("\r\n");
 

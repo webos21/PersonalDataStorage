@@ -9,8 +9,8 @@ import com.gmail.webos21.nano.RouteResult;
 import com.gmail.webos21.nano.UriHandler;
 import com.gmail.webos21.pds.db.DbConsts;
 import com.gmail.webos21.pds.db.PdsDbManager;
-import com.gmail.webos21.pds.db.domain.PbRow;
-import com.gmail.webos21.pds.db.repo.PbRepo;
+import com.gmail.webos21.pds.db.domain.PasswordBook;
+import com.gmail.webos21.pds.db.repo.PasswordBookRepo;
 
 import java.text.ParseException;
 import java.util.Date;
@@ -19,11 +19,11 @@ import java.util.Map;
 
 public class PdsDataHandler implements UriHandler {
 
-    private PbRepo pbRepo;
+    private PasswordBookRepo pbRepo;
 
     public PdsDataHandler() {
         PdsDbManager pdb = PdsDbManager.getInstance();
-        pbRepo = pdb.getRepository(PbRepo.class);
+        pbRepo = pdb.getRepository(PasswordBookRepo.class);
     }
 
     @Override
@@ -157,7 +157,7 @@ public class PdsDataHandler implements UriHandler {
             e.printStackTrace();
         }
 
-        PbRow aRow = new PbRow(Long.parseLong(siteId), siteUrl, siteName, siteType, myId, myPw, rd.getTime(),
+        PasswordBook aRow = new PasswordBook(Long.parseLong(siteId), siteUrl, siteName, siteType, myId, myPw, rd.getTime(),
                 System.currentTimeMillis(), memo);
         pbRepo.updateRow(aRow);
 
@@ -219,7 +219,7 @@ public class PdsDataHandler implements UriHandler {
             e.printStackTrace();
         }
 
-        PbRow aRow = new PbRow(null, siteUrl, siteName, siteType, myId, myPw, rd.getTime(), System.currentTimeMillis(),
+        PasswordBook aRow = new PasswordBook(null, siteUrl, siteName, siteType, myId, myPw, rd.getTime(), System.currentTimeMillis(),
                 memo);
         pbRepo.updateRow(aRow);
 
@@ -268,7 +268,7 @@ public class PdsDataHandler implements UriHandler {
         sb.append("  \"result\": \"OK\",\n");
         sb.append("  \"data\": [\n");
 
-        List<PbRow> rows = null;
+        List<PasswordBook> rows = null;
         if (keyword != null && keyword.length() > 0) {
             rows = pbRepo.findRows(keyword);
         } else {
@@ -276,7 +276,7 @@ public class PdsDataHandler implements UriHandler {
         }
 
         int i = 0;
-        for (PbRow r : rows) {
+        for (PasswordBook r : rows) {
             if (i == 0) {
                 sb.append(r.toJson()).append('\n');
             } else {

@@ -3,8 +3,8 @@ package com.gmail.webos21.pds.app.db;
 import android.os.AsyncTask;
 
 import com.gmail.webos21.pds.app.crypt.PbCryptHelper;
-import com.gmail.webos21.pds.db.domain.PbRow;
-import com.gmail.webos21.pds.db.repo.PbRepo;
+import com.gmail.webos21.pds.db.domain.PasswordBook;
+import com.gmail.webos21.pds.db.repo.PasswordBookRepo;
 
 import java.util.List;
 
@@ -12,13 +12,13 @@ public class PbKeyChanger extends AsyncTask<Void, Void, Void> {
 
     private static final String TAG = "PbKeyChanger";
 
-    private PbRepo pbRepo;
+    private PasswordBookRepo pbRepo;
     private byte[] oldKey;
     private byte[] newKey;
 
     private Runnable postRun;
 
-    public PbKeyChanger(PbRepo pbRepo, byte[] oldKey, byte[] newKey, Runnable postRun) {
+    public PbKeyChanger(PasswordBookRepo pbRepo, byte[] oldKey, byte[] newKey, Runnable postRun) {
         this.pbRepo = pbRepo;
         this.oldKey = oldKey;
         this.newKey = newKey;
@@ -27,9 +27,9 @@ public class PbKeyChanger extends AsyncTask<Void, Void, Void> {
 
     @Override
     protected Void doInBackground(Void... voids) {
-        List<PbRow> pblist = pbRepo.findRows();
+        List<PasswordBook> pblist = pbRepo.findRows();
 
-        for (PbRow pbrow : pblist) {
+        for (PasswordBook pbrow : pblist) {
             String oldId = pbrow.getMyId();
             String oldPw = pbrow.getMyPw();
 
