@@ -1,6 +1,7 @@
 package com.gmail.webos21.pds.db.domain;
 
 public class AddressBook {
+
     private Long id;
     private String fullName;
     private String mobile;
