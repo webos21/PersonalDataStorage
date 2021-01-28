@@ -23,6 +23,17 @@ public class StockRecord {
         this.memo = memo;
     }
 
+    public StockRecord(Long id, Long stockId, Long transactionDate, String title,
+                       Long deposit, Long withdrawal, String memo) {
+        this.id = id;
+        this.stockId = stockId;
+        this.transactionDate = new Date(transactionDate);
+        this.title = title;
+        this.deposit = deposit;
+        this.withdrawal = withdrawal;
+        this.memo = memo;
+    }
+
     public Long getId() {
         return id;
     }
@@ -85,11 +96,11 @@ public class StockRecord {
 
         sb.append('{').append('\n');
         sb.append("  \"id\": ").append(id).append(",\n");
-        sb.append("  \"stockId\": \"").append(stockId).append("\",\n");
-        sb.append("  \"transactionDate\": \"").append(transactionDate).append("\",\n");
+        sb.append("  \"stockId\": ").append(stockId).append(",\n");
+        sb.append("  \"transactionDate\": ").append(transactionDate.getTime()).append(",\n");
         sb.append("  \"title\": \"").append(title).append("\",\n");
-        sb.append("  \"deposit\": \"").append(deposit).append("\",\n");
-        sb.append("  \"withdrawal\": \"").append(withdrawal).append("\",\n");
+        sb.append("  \"deposit\": ").append(deposit).append(",\n");
+        sb.append("  \"withdrawal\": ").append(withdrawal).append(",\n");
         sb.append("  \"memo\": \"").append(memo).append("\"\n");
         sb.append('}').append('\n');
 

@@ -25,6 +25,18 @@ public class RegularRecord {
         this.memo = memo;
     }
 
+    public RegularRecord(Long id, Long regularPayId, Long wdate, String title,
+                         Long deposit, Long withdrawal, String accountCode, String memo) {
+        this.id = id;
+        this.regularPayId = regularPayId;
+        this.wdate = new Date(wdate);
+        this.title = title;
+        this.deposit = deposit;
+        this.withdrawal = withdrawal;
+        this.accountCode = accountCode;
+        this.memo = memo;
+    }
+
     public Long getId() {
         return id;
     }
@@ -94,11 +106,11 @@ public class RegularRecord {
 
         sb.append('{').append('\n');
         sb.append("  \"id\": ").append(id).append(",\n");
-        sb.append("  \"regularPayId\": \"").append(regularPayId).append("\",\n");
-        sb.append("  \"wdate\": \"").append(wdate).append("\",\n");
+        sb.append("  \"regularPayId\": ").append(regularPayId).append(",\n");
+        sb.append("  \"wdate\": ").append(wdate.getTime()).append(",\n");
         sb.append("  \"title\": \"").append(title).append("\",\n");
-        sb.append("  \"deposit\": \"").append(deposit).append("\",\n");
-        sb.append("  \"withdrawal\": \"").append(withdrawal).append("\",\n");
+        sb.append("  \"deposit\": ").append(deposit).append(",\n");
+        sb.append("  \"withdrawal\": ").append(withdrawal).append(",\n");
         sb.append("  \"accountCode\": \"").append(accountCode).append("\",\n");
         sb.append("  \"memo\": \"").append(memo).append("\"\n");
         sb.append('}').append('\n');

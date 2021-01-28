@@ -14,6 +14,19 @@ public class PasswordBook {
     private String memo;
 
     public PasswordBook(Long id, String siteUrl, String siteName, String siteType, String myId, String myPw,
+                        Date regDate, Date fixDate, String memo) {
+        this.id = id;
+        this.siteUrl = siteUrl;
+        this.siteName = siteName;
+        this.siteType = siteType;
+        this.myId = myId;
+        this.myPw = myPw;
+        this.regDate = regDate;
+        this.fixDate = fixDate;
+        this.memo = memo;
+    }
+
+    public PasswordBook(Long id, String siteUrl, String siteName, String siteType, String myId, String myPw,
                         Long regDate, Long fixDate, String memo) {
         this.id = id;
         this.siteUrl = siteUrl;

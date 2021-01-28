@@ -23,6 +23,17 @@ public class RealEstateRecord {
         this.memo = memo;
     }
 
+    public RealEstateRecord(Long id, Long realEstateId, Long transactionDate,
+                            String title, Long deposit, Long withdrawal, String memo) {
+        this.id = id;
+        this.realEstateId = realEstateId;
+        this.transactionDate = new Date(transactionDate);
+        this.title = title;
+        this.deposit = deposit;
+        this.withdrawal = withdrawal;
+        this.memo = memo;
+    }
+
     public Long getId() {
         return id;
     }
@@ -84,11 +95,11 @@ public class RealEstateRecord {
 
         sb.append('{').append('\n');
         sb.append("  \"id\": ").append(id).append(",\n");
-        sb.append("  \"realEstateId\": \"").append(realEstateId).append("\",\n");
-        sb.append("  \"transactionDate\": \"").append(transactionDate).append("\",\n");
+        sb.append("  \"realEstateId\": ").append(realEstateId).append(",\n");
+        sb.append("  \"transactionDate\": ").append(transactionDate.getTime()).append(",\n");
         sb.append("  \"title\": \"").append(title).append("\",\n");
-        sb.append("  \"deposit\": \"").append(deposit).append("\",\n");
-        sb.append("  \"withdrawal\": \"").append(withdrawal).append("\",\n");
+        sb.append("  \"deposit\": ").append(deposit).append(",\n");
+        sb.append("  \"withdrawal\": ").append(withdrawal).append(",\n");
         sb.append("  \"memo\": \"").append(memo).append("\"\n");
         sb.append('}').append('\n');
 

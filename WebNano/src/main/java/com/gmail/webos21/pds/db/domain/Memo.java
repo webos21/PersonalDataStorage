@@ -16,6 +16,13 @@ public class Memo {
         this.content = content;
     }
 
+    public Memo(Long id, Long wdate, String title, String content) {
+        this.id = id;
+        this.wdate = new Date(wdate);
+        this.title = title;
+        this.content = content;
+    }
+
     public Long getId() {
         return id;
     }
@@ -54,7 +61,7 @@ public class Memo {
 
         sb.append('{').append('\n');
         sb.append("  \"id\": ").append(id).append(",\n");
-        sb.append("  \"wdate\": \"").append(wdate).append("\",\n");
+        sb.append("  \"wdate\": ").append(wdate.getTime()).append(",\n");
         sb.append("  \"title\": \"").append(title).append("\",\n");
         sb.append("  \"content\": \"").append(content).append("\"\n");
         sb.append('}').append('\n');

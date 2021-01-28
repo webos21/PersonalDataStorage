@@ -20,6 +20,15 @@ public class Budget {
         this.memo = memo;
     }
 
+    public Budget(Long id, Long budgetDate, Long deposit, Long withdrawal, String accountCode, String memo) {
+        this.id = id;
+        this.budgetDate = new Date(budgetDate);
+        this.deposit = deposit;
+        this.withdrawal = withdrawal;
+        this.accountCode = accountCode;
+        this.memo = memo;
+    }
+
     public Long getId() {
         return id;
     }
@@ -73,9 +82,9 @@ public class Budget {
 
         sb.append('{').append('\n');
         sb.append("  \"id\": ").append(id).append(",\n");
-        sb.append("  \"budgetDate\": \"").append(budgetDate).append("\",\n");
-        sb.append("  \"deposit\": \"").append(deposit).append("\",\n");
-        sb.append("  \"withdrawal\": \"").append(withdrawal).append("\",\n");
+        sb.append("  \"budgetDate\": ").append(budgetDate.getTime()).append(",\n");
+        sb.append("  \"deposit\": ").append(deposit).append(",\n");
+        sb.append("  \"withdrawal\": ").append(withdrawal).append(",\n");
         sb.append("  \"accountCode\": \"").append(accountCode).append("\",\n");
         sb.append("  \"memo\": \"").append(memo).append("\"\n");
         sb.append('}').append('\n');

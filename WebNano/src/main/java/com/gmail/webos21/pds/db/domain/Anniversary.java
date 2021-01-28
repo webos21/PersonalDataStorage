@@ -8,7 +8,7 @@ public class Anniversary {
     private Integer lunar;
     private Integer holiday;
 
-    public Anniversary(Long id, String title, String applyDate, int lunar, int holiday) {
+    public Anniversary(Long id, String title, String applyDate, Integer lunar, Integer holiday) {
         this.id = id;
         this.title = title;
         this.applyDate = applyDate;
@@ -64,8 +64,8 @@ public class Anniversary {
         sb.append("  \"id\": ").append(id).append(",\n");
         sb.append("  \"title\": \"").append(title).append("\",\n");
         sb.append("  \"applyDate\": \"").append(applyDate).append("\",\n");
-        sb.append("  \"lunar\": \"").append(lunar).append("\",\n");
-        sb.append("  \"holiday\": \"").append(holiday).append("\"\n");
+        sb.append("  \"lunar\": ").append(lunar).append(",\n");
+        sb.append("  \"holiday\": ").append(holiday).append("\n");
         sb.append('}').append('\n');
 
         return sb.toString();

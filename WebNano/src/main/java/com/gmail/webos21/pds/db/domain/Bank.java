@@ -18,7 +18,8 @@ public class Bank {
     private String memo;
 
     public Bank(Long id, String bankName, String accountName, String holder, String accountNumber,
-                Long initialBalance, String accountPassword, Date issueDate, Date expireDate, Long arrange, Integer notUsed, String memo) {
+                Long initialBalance, String accountPassword, Date issueDate, Date expireDate,
+                Long arrange, Integer notUsed, String memo) {
         this.id = id;
         this.bankName = bankName;
         this.accountName = accountName;
@@ -28,6 +29,23 @@ public class Bank {
         this.accountPassword = accountPassword;
         this.issueDate = issueDate;
         this.expireDate = expireDate;
+        this.arrange = arrange;
+        this.notUsed = notUsed;
+        this.memo = memo;
+    }
+
+    public Bank(Long id, String bankName, String accountName, String holder, String accountNumber,
+                Long initialBalance, String accountPassword, Long issueDate, Long expireDate,
+                Long arrange, Integer notUsed, String memo) {
+        this.id = id;
+        this.bankName = bankName;
+        this.accountName = accountName;
+        this.holder = holder;
+        this.accountNumber = accountNumber;
+        this.initialBalance = initialBalance;
+        this.accountPassword = accountPassword;
+        this.issueDate = new Date(issueDate);
+        this.expireDate = new Date(expireDate);
         this.arrange = arrange;
         this.notUsed = notUsed;
         this.memo = memo;
@@ -138,12 +156,12 @@ public class Bank {
         sb.append("  \"accountName\": \"").append(accountName).append("\",\n");
         sb.append("  \"holder\": \"").append(holder).append("\",\n");
         sb.append("  \"accountNumber\": \"").append(accountNumber).append("\",\n");
-        sb.append("  \"initialBalance\": \"").append(initialBalance).append("\",\n");
+        sb.append("  \"initialBalance\": ").append(initialBalance).append(",\n");
         sb.append("  \"accountPassword\": \"").append(accountPassword).append("\",\n");
-        sb.append("  \"issueDate\": \"").append(issueDate).append("\",\n");
-        sb.append("  \"expireDate\": \"").append(expireDate).append("\",\n");
-        sb.append("  \"arrange\": \"").append(arrange).append("\",\n");
-        sb.append("  \"notUsed\": \"").append(notUsed).append("\",\n");
+        sb.append("  \"issueDate\": ").append(issueDate.getTime()).append(",\n");
+        sb.append("  \"expireDate\": ").append(expireDate.getTime()).append(",\n");
+        sb.append("  \"arrange\": ").append(arrange).append(",\n");
+        sb.append("  \"notUsed\": ").append(notUsed).append(",\n");
         sb.append("  \"memo\": \"").append(memo).append("\"\n");
         sb.append('}').append('\n');
 

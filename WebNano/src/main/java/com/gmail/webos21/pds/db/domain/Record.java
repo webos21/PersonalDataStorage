@@ -23,6 +23,17 @@ public class Record {
         this.memo = memo;
     }
 
+    public Record(Long id, Long wdate, String title,
+                  Long deposit, Long withdrawal, String accountCode, String memo) {
+        this.id = id;
+        this.wdate = new Date(wdate);
+        this.title = title;
+        this.deposit = deposit;
+        this.withdrawal = withdrawal;
+        this.accountCode = accountCode;
+        this.memo = memo;
+    }
+
     public Long getId() {
         return id;
     }
@@ -85,10 +96,10 @@ public class Record {
 
         sb.append('{').append('\n');
         sb.append("  \"id\": ").append(id).append(",\n");
-        sb.append("  \"wdate\": \"").append(wdate).append("\",\n");
+        sb.append("  \"wdate\": ").append(wdate.getTime()).append(",\n");
         sb.append("  \"title\": \"").append(title).append("\",\n");
-        sb.append("  \"deposit\": \"").append(deposit).append("\",\n");
-        sb.append("  \"withdrawal\": \"").append(withdrawal).append("\",\n");
+        sb.append("  \"deposit\": ").append(deposit).append(",\n");
+        sb.append("  \"withdrawal\": ").append(withdrawal).append(",\n");
         sb.append("  \"accountCode\": \"").append(accountCode).append("\",\n");
         sb.append("  \"memo\": \"").append(memo).append("\"\n");
         sb.append('}').append('\n');

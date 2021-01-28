@@ -47,6 +47,30 @@ public class Card {
         this.memo = memo;
     }
 
+    public Card(Long id, String company, String cardName, String cardNumber, String cardPassword,
+                Integer validYear, Integer validMonth, Integer chargeDate, Integer cvcNumber,
+                Long bankId, Long creditLimit, Long cashAdvance, Long cardLoan, Long issueDate,
+                Integer refreshNormal, Integer refreshShort, Long arrange, String memo) {
+        this.id = id;
+        this.company = company;
+        this.cardName = cardName;
+        this.cardNumber = cardNumber;
+        this.cardPassword = cardPassword;
+        this.validYear = validYear;
+        this.validMonth = validMonth;
+        this.chargeDate = chargeDate;
+        this.cvcNumber = cvcNumber;
+        this.bankId = bankId;
+        this.creditLimit = creditLimit;
+        this.cashAdvance = cashAdvance;
+        this.cardLoan = cardLoan;
+        this.issueDate = new Date(issueDate);
+        this.refreshNormal = refreshNormal;
+        this.refreshShort = refreshShort;
+        this.arrange = arrange;
+        this.memo = memo;
+    }
+
     public Long getId() {
         return id;
     }
@@ -200,18 +224,18 @@ public class Card {
         sb.append("  \"cardName\": \"").append(cardName).append("\",\n");
         sb.append("  \"cardNumber\": \"").append(cardNumber).append("\",\n");
         sb.append("  \"cardPassword\": \"").append(cardPassword).append("\",\n");
-        sb.append("  \"validYear\": \"").append(validYear).append("\",\n");
-        sb.append("  \"validMonth\": \"").append(validMonth).append("\",\n");
-        sb.append("  \"chargeDate\": \"").append(chargeDate).append("\",\n");
-        sb.append("  \"cvcNumber\": \"").append(cvcNumber).append("\",\n");
-        sb.append("  \"bankId\": \"").append(bankId).append("\",\n");
-        sb.append("  \"creditLimit\": \"").append(creditLimit).append("\",\n");
-        sb.append("  \"cashAdvance\": \"").append(cashAdvance).append("\",\n");
-        sb.append("  \"cardLoan\": \"").append(cardLoan).append("\",\n");
-        sb.append("  \"issueDate\": \"").append(issueDate).append("\",\n");
-        sb.append("  \"refreshNormal\": \"").append(refreshNormal).append("\",\n");
-        sb.append("  \"refreshShort\": \"").append(refreshShort).append("\",\n");
-        sb.append("  \"arrange\": \"").append(arrange).append("\",\n");
+        sb.append("  \"validYear\": ").append(validYear).append(",\n");
+        sb.append("  \"validMonth\": ").append(validMonth).append(",\n");
+        sb.append("  \"chargeDate\": ").append(chargeDate).append(",\n");
+        sb.append("  \"cvcNumber\": ").append(cvcNumber).append(",\n");
+        sb.append("  \"bankId\": ").append(bankId).append(",\n");
+        sb.append("  \"creditLimit\": ").append(creditLimit).append(",\n");
+        sb.append("  \"cashAdvance\": ").append(cashAdvance).append(",\n");
+        sb.append("  \"cardLoan\": ").append(cardLoan).append(",\n");
+        sb.append("  \"issueDate\": ").append(issueDate.getTime()).append(",\n");
+        sb.append("  \"refreshNormal\": ").append(refreshNormal).append(",\n");
+        sb.append("  \"refreshShort\": ").append(refreshShort).append(",\n");
+        sb.append("  \"arrange\": ").append(arrange).append(",\n");
         sb.append("  \"memo\": \"").append(memo).append("\"\n");
         sb.append('}').append('\n');
 

@@ -3,24 +3,24 @@ package com.gmail.webos21.pds.db.repo;
 import com.gmail.webos21.pds.db.ContentValues;
 import com.gmail.webos21.pds.db.DbConsts;
 import com.gmail.webos21.pds.db.PdsDbHelper;
-import com.gmail.webos21.pds.db.domain.PasswordBook;
+import com.gmail.webos21.pds.db.domain.Budget;
 import com.gmail.webos21.pds.db.h2.H2Database;
 
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PasswordBookRepoImpl implements PasswordBookRepo {
+public class BudgetRepoImpl implements BudgetRepo {
 
     private PdsDbHelper opener;
 
-    public PasswordBookRepoImpl(PdsDbHelper opener) {
+    public BudgetRepoImpl(PdsDbHelper opener) {
         this.opener = opener;
     }
 
     @Override
-    public List<PasswordBook> findRows() {
-        List<PasswordBook> aList = new ArrayList<PasswordBook>();
+    public List<Budget> findRows() {
+        List<Budget> aList = new ArrayList<Budget>();
 
         try {
             H2Database db = opener.getReadableDatabase();
@@ -30,7 +30,7 @@ public class PasswordBookRepoImpl implements PasswordBookRepo {
             }
 
             do {
-                PasswordBook aRow = new PasswordBook(
+                Budget aRow = new Budget(
                         /* id ------------- */rset.getLong(1),
                         /* surl ----------- */rset.getString(2),
                         /* sname ---------- */rset.getString(3),
@@ -59,8 +59,8 @@ public class PasswordBookRepoImpl implements PasswordBookRepo {
     }
 
     @Override
-    public List<PasswordBook> findRows(String keyString) {
-        List<PasswordBook> aList = new ArrayList<PasswordBook>();
+    public List<Budget> findRows(String keyString) {
+        List<Budget> aList = new ArrayList<Budget>();
 
         try {
             H2Database db = opener.getReadableDatabase();
@@ -76,7 +76,7 @@ public class PasswordBookRepoImpl implements PasswordBookRepo {
             }
 
             do {
-                PasswordBook aRow = new PasswordBook(
+                Budget aRow = new Budget(
                         /* id ------------- */rset.getLong(1),
                         /* surl ----------- */rset.getString(2),
                         /* sname ---------- */rset.getString(3),
@@ -101,8 +101,8 @@ public class PasswordBookRepoImpl implements PasswordBookRepo {
     }
 
     @Override
-    public PasswordBook getRow(Long id) {
-        PasswordBook aRow = null;
+    public Budget getRow(Long id) {
+        Budget aRow = null;
 
         try {
             H2Database db = opener.getReadableDatabase();
@@ -111,7 +111,7 @@ public class PasswordBookRepoImpl implements PasswordBookRepo {
                 return null;
             }
 
-            aRow = new PasswordBook(
+            aRow = new Budget(
                     /* id ------------- */rset.getLong(1),
                     /* surl ----------- */rset.getString(2),
                     /* sname ---------- */rset.getString(3),
@@ -131,12 +131,12 @@ public class PasswordBookRepoImpl implements PasswordBookRepo {
     }
 
     @Override
-    public PasswordBook getRow(PasswordBook aRow) {
+    public Budget getRow(Budget aRow) {
         return getRow(aRow.getId());
     }
 
     @Override
-    public boolean updateRow(PasswordBook newRow) {
+    public boolean updateRow(Budget newRow) {
         try {
             H2Database db = opener.getWritableDatabase();
             ResultSet rset = null;
@@ -200,7 +200,7 @@ public class PasswordBookRepoImpl implements PasswordBookRepo {
     }
 
     @Override
-    public int deleteRow(PasswordBook aRow) {
+    public int deleteRow(Budget aRow) {
         return deleteRow(aRow.getId());
     }
 

@@ -41,7 +41,7 @@ public class Titles {
 
         sb.append('{').append('\n');
         sb.append("  \"id\": ").append(id).append(",\n");
-        sb.append("  \"used\": \"").append(used).append("\",\n");
+        sb.append("  \"used\": ").append(used).append(",\n");
         sb.append("  \"title\": \"").append(title).append("\"\n");
         sb.append('}').append('\n');
 

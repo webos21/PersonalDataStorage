@@ -29,6 +29,20 @@ public class RealEstate {
         this.memo = memo;
     }
 
+    public RealEstate(Long id, String estateType, String title, String holder, Long estimate,
+                      Long loan, Long acquisitionDate, Long estimateDate, Long arrange, String memo) {
+        this.id = id;
+        this.estateType = estateType;
+        this.title = title;
+        this.holder = holder;
+        this.estimate = estimate;
+        this.loan = loan;
+        this.acquisitionDate = new Date(acquisitionDate);
+        this.estimateDate = new Date(estimateDate);
+        this.arrange = arrange;
+        this.memo = memo;
+    }
+
     public Long getId() {
         return id;
     }
@@ -117,11 +131,11 @@ public class RealEstate {
         sb.append("  \"estateType\": \"").append(estateType).append("\",\n");
         sb.append("  \"title\": \"").append(title).append("\",\n");
         sb.append("  \"holder\": \"").append(holder).append("\",\n");
-        sb.append("  \"estimate\": \"").append(estimate).append("\",\n");
-        sb.append("  \"loan\": \"").append(loan).append("\",\n");
-        sb.append("  \"acquisitionDate\": \"").append(acquisitionDate).append("\",\n");
-        sb.append("  \"estimateDate\": \"").append(estimateDate).append("\",\n");
-        sb.append("  \"arrange\": \"").append(arrange).append("\",\n");
+        sb.append("  \"estimate\": ").append(estimate).append(",\n");
+        sb.append("  \"loan\": ").append(loan).append(",\n");
+        sb.append("  \"acquisitionDate\": ").append(acquisitionDate.getTime()).append(",\n");
+        sb.append("  \"estimateDate\": ").append(estimateDate.getTime()).append(",\n");
+        sb.append("  \"arrange\": ").append(arrange).append(",\n");
         sb.append("  \"memo\": \"").append(memo).append("\"\n");
         sb.append('}').append('\n');
 

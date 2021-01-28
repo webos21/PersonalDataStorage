@@ -23,6 +23,17 @@ public class InsuranceRecord {
         this.memo = memo;
     }
 
+    public InsuranceRecord(Long id, Long insuranceId, Long transactionDate, String title,
+                           Long deposit, Long withdrawal, String memo) {
+        this.id = id;
+        this.insuranceId = insuranceId;
+        this.transactionDate = new Date(transactionDate);
+        this.title = title;
+        this.deposit = deposit;
+        this.withdrawal = withdrawal;
+        this.memo = memo;
+    }
+
     public Long getId() {
         return id;
     }
@@ -85,11 +96,11 @@ public class InsuranceRecord {
 
         sb.append('{').append('\n');
         sb.append("  \"id\": ").append(id).append(",\n");
-        sb.append("  \"insuranceId\": \"").append(insuranceId).append("\",\n");
-        sb.append("  \"transactionDate\": \"").append(transactionDate).append("\",\n");
+        sb.append("  \"insuranceId\": ").append(insuranceId).append(",\n");
+        sb.append("  \"transactionDate\": ").append(transactionDate.getTime()).append(",\n");
         sb.append("  \"title\": \"").append(title).append("\",\n");
-        sb.append("  \"deposit\": \"").append(deposit).append("\",\n");
-        sb.append("  \"withdrawal\": \"").append(withdrawal).append("\",\n");
+        sb.append("  \"deposit\": ").append(deposit).append(",\n");
+        sb.append("  \"withdrawal\": ").append(withdrawal).append(",\n");
         sb.append("  \"memo\": \"").append(memo).append("\"\n");
         sb.append('}').append('\n');
 

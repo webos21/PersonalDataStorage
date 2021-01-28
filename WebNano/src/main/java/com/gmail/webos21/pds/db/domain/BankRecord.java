@@ -12,10 +12,22 @@ public class BankRecord {
     private Long withdrawal;
     private String memo;
 
-    public BankRecord(Long id, Long accountId, Date transactionDate, String title, Long deposit, Long withdrawal, String memo) {
+    public BankRecord(Long id, Long accountId, Date transactionDate,
+                      String title, Long deposit, Long withdrawal, String memo) {
         this.id = id;
         this.accountId = accountId;
         this.transactionDate = transactionDate;
+        this.title = title;
+        this.deposit = deposit;
+        this.withdrawal = withdrawal;
+        this.memo = memo;
+    }
+
+    public BankRecord(Long id, Long accountId, Long transactionDate,
+                      String title, Long deposit, Long withdrawal, String memo) {
+        this.id = id;
+        this.accountId = accountId;
+        this.transactionDate = new Date(transactionDate);
         this.title = title;
         this.deposit = deposit;
         this.withdrawal = withdrawal;
@@ -83,11 +95,11 @@ public class BankRecord {
 
         sb.append('{').append('\n');
         sb.append("  \"id\": ").append(id).append(",\n");
-        sb.append("  \"accountId\": \"").append(accountId).append("\",\n");
-        sb.append("  \"transactionDate\": \"").append(transactionDate).append("\",\n");
+        sb.append("  \"accountId\": ").append(accountId).append(",\n");
+        sb.append("  \"transactionDate\": ").append(transactionDate.getTime()).append(",\n");
         sb.append("  \"title\": \"").append(title).append("\",\n");
-        sb.append("  \"deposit\": \"").append(deposit).append("\",\n");
-        sb.append("  \"withdrawal\": \"").append(withdrawal).append("\",\n");
+        sb.append("  \"deposit\": ").append(deposit).append(",\n");
+        sb.append("  \"withdrawal\": ").append(withdrawal).append(",\n");
         sb.append("  \"memo\": \"").append(memo).append("\"\n");
         sb.append('}').append('\n');
 

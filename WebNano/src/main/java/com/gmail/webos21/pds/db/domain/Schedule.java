@@ -18,6 +18,14 @@ public class Schedule {
         this.memo = memo;
     }
 
+    public Schedule(Long id, String title, Long pdate, Integer readOk, String memo) {
+        this.id = id;
+        this.title = title;
+        this.pdate = new Date(pdate);
+        this.readOk = readOk;
+        this.memo = memo;
+    }
+
     public Long getId() {
         return id;
     }
@@ -65,8 +73,8 @@ public class Schedule {
         sb.append('{').append('\n');
         sb.append("  \"id\": ").append(id).append(",\n");
         sb.append("  \"title\": \"").append(title).append("\",\n");
-        sb.append("  \"pdate\": \"").append(pdate).append("\",\n");
-        sb.append("  \"readOk\": \"").append(readOk).append("\",\n");
+        sb.append("  \"pdate\": ").append(pdate.getTime()).append(",\n");
+        sb.append("  \"readOk\": ").append(readOk).append(",\n");
         sb.append("  \"memo\": \"").append(memo).append("\"\n");
         sb.append('}').append('\n');
 

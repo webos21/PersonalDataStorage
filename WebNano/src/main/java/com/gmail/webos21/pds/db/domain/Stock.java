@@ -29,6 +29,20 @@ public class Stock {
         this.memo = memo;
     }
 
+    public Stock(Long id, String company, String accountName, String accountNumber, String holder,
+                 Long deposit, Long estimate, Long estimateDate, Long arrange, String memo) {
+        this.id = id;
+        this.company = company;
+        this.accountName = accountName;
+        this.accountNumber = accountNumber;
+        this.holder = holder;
+        this.deposit = deposit;
+        this.estimate = estimate;
+        this.estimateDate = new Date(estimateDate);
+        this.arrange = arrange;
+        this.memo = memo;
+    }
+
     public Long getId() {
         return id;
     }
@@ -119,10 +133,10 @@ public class Stock {
         sb.append("  \"accountName\": \"").append(accountName).append("\",\n");
         sb.append("  \"accountNumber\": \"").append(accountNumber).append("\",\n");
         sb.append("  \"holder\": \"").append(holder).append("\",\n");
-        sb.append("  \"deposit\": \"").append(deposit).append("\",\n");
-        sb.append("  \"estimate\": \"").append(estimate).append("\",\n");
-        sb.append("  \"estimateDate\": \"").append(estimateDate).append("\",\n");
-        sb.append("  \"arrange\": \"").append(arrange).append("\",\n");
+        sb.append("  \"deposit\": ").append(deposit).append(",\n");
+        sb.append("  \"estimate\": ").append(estimate).append(",\n");
+        sb.append("  \"estimateDate\": ").append(estimateDate.getTime()).append(",\n");
+        sb.append("  \"arrange\": ").append(arrange).append(",\n");
         sb.append("  \"memo\": \"").append(memo).append("\"\n");
         sb.append('}').append('\n');
 

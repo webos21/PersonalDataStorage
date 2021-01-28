@@ -18,6 +18,14 @@ public class Diary {
         this.content = content;
     }
 
+    public Diary(Long id, Long wdate, Integer weather, String title, String content) {
+        this.id = id;
+        this.wdate = new Date(wdate);
+        this.weather = weather;
+        this.title = title;
+        this.content = content;
+    }
+
     public Long getId() {
         return id;
     }
@@ -63,8 +71,8 @@ public class Diary {
 
         sb.append('{').append('\n');
         sb.append("  \"id\": ").append(id).append(",\n");
-        sb.append("  \"wdate\": \"").append(wdate).append("\",\n");
-        sb.append("  \"weather\": \"").append(weather).append("\",\n");
+        sb.append("  \"wdate\": ").append(wdate.getTime()).append(",\n");
+        sb.append("  \"weather\": ").append(weather).append(",\n");
         sb.append("  \"title\": \"").append(title).append("\",\n");
         sb.append("  \"content\": \"").append(content).append("\"\n");
         sb.append('}').append('\n');

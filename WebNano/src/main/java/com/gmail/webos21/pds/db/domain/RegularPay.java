@@ -30,6 +30,21 @@ public class RegularPay {
         this.memo = memo;
     }
 
+    public RegularPay(Long id, Long wdate, String title,
+                      Long deposit, Long withdrawal, String accountCode,
+                      Integer monthDay, Long sdate, Long edate, String memo) {
+        this.id = id;
+        this.wdate = new Date(wdate);
+        this.title = title;
+        this.deposit = deposit;
+        this.withdrawal = withdrawal;
+        this.accountCode = accountCode;
+        this.monthDay = monthDay;
+        this.sdate = new Date(sdate);
+        this.edate = new Date(edate);
+        this.memo = memo;
+    }
+
     public Long getId() {
         return id;
     }
@@ -116,14 +131,14 @@ public class RegularPay {
 
         sb.append('{').append('\n');
         sb.append("  \"id\": ").append(id).append(",\n");
-        sb.append("  \"wdate\": \"").append(wdate).append("\",\n");
+        sb.append("  \"wdate\": ").append(wdate.getTime()).append(",\n");
         sb.append("  \"title\": \"").append(title).append("\",\n");
-        sb.append("  \"deposit\": \"").append(deposit).append("\",\n");
-        sb.append("  \"withdrawal\": \"").append(withdrawal).append("\",\n");
+        sb.append("  \"deposit\": ").append(deposit).append(",\n");
+        sb.append("  \"withdrawal\": ").append(withdrawal).append(",\n");
         sb.append("  \"accountCode\": \"").append(accountCode).append("\",\n");
-        sb.append("  \"monthDay\": \"").append(monthDay).append("\",\n");
-        sb.append("  \"sdate\": \"").append(sdate).append("\",\n");
-        sb.append("  \"edate\": \"").append(edate).append("\",\n");
+        sb.append("  \"monthDay\": ").append(monthDay).append(",\n");
+        sb.append("  \"sdate\": ").append(sdate.getTime()).append(",\n");
+        sb.append("  \"edate\": ").append(edate.getTime()).append(",\n");
         sb.append("  \"memo\": \"").append(memo).append("\"\n");
         sb.append('}').append('\n');
 

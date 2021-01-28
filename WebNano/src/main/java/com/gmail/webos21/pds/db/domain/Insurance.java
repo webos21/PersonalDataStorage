@@ -46,6 +46,30 @@ public class Insurance {
         this.memo = memo;
     }
 
+    public Insurance(Long id, String company, String product, String insuranceType,
+                     String policyType, String contractId, String policyHolder, String insured,
+                     Integer payCountTotal, Integer payCountDone, Long premiumVolume,
+                     String premiumMode, String arranger, Integer contractStatus,
+                     Long contractDate, Long maturityDate, String memo) {
+        this.id = id;
+        this.company = company;
+        this.product = product;
+        this.insuranceType = insuranceType;
+        this.policyType = policyType;
+        this.contractId = contractId;
+        this.policyHolder = policyHolder;
+        this.insured = insured;
+        this.payCountTotal = payCountTotal;
+        this.payCountDone = payCountDone;
+        this.premiumVolume = premiumVolume;
+        this.premiumMode = premiumMode;
+        this.arranger = arranger;
+        this.contractStatus = contractStatus;
+        this.contractDate = new Date(contractDate);
+        this.maturityDate = new Date(maturityDate);
+        this.memo = memo;
+    }
+
     public Long getId() {
         return id;
     }
@@ -195,14 +219,14 @@ public class Insurance {
         sb.append("  \"contractId\": \"").append(contractId).append("\",\n");
         sb.append("  \"policyHolder\": \"").append(policyHolder).append("\",\n");
         sb.append("  \"insured\": \"").append(insured).append("\",\n");
-        sb.append("  \"payCountTotal\": \"").append(payCountTotal).append("\",\n");
-        sb.append("  \"payCountDone\": \"").append(payCountDone).append("\",\n");
-        sb.append("  \"premiumVolume\": \"").append(premiumVolume).append("\",\n");
+        sb.append("  \"payCountTotal\": ").append(payCountTotal).append(",\n");
+        sb.append("  \"payCountDone\": ").append(payCountDone).append(",\n");
+        sb.append("  \"premiumVolume\": ").append(premiumVolume).append(",\n");
         sb.append("  \"premiumMode\": \"").append(premiumMode).append("\",\n");
         sb.append("  \"arranger\": \"").append(arranger).append("\",\n");
-        sb.append("  \"contractStatus\": \"").append(contractStatus).append("\",\n");
-        sb.append("  \"contractDate\": \"").append(contractDate).append("\",\n");
-        sb.append("  \"maturityDate\": \"").append(maturityDate).append("\",\n");
+        sb.append("  \"contractStatus\": ").append(contractStatus).append(",\n");
+        sb.append("  \"contractDate\": ").append(contractDate.getTime()).append(",\n");
+        sb.append("  \"maturityDate\": ").append(maturityDate.getTime()).append(",\n");
         sb.append("  \"memo\": \"").append(memo).append("\"\n");
         sb.append('}').append('\n');
 
