@@ -24,7 +24,7 @@ public class TitlesRepoImpl implements TitlesRepo {
 
         try {
             H2Database db = opener.getReadableDatabase();
-            ResultSet rset = db.rawQuery("SELECT * FROM " + DbConsts.TB_PASSWORD_BOOK, null);
+            ResultSet rset = db.rawQuery("SELECT * FROM " + DbConsts.TB_TITLES, null);
             if (rset == null || !rset.first()) {
                 return aList;
             }
@@ -32,14 +32,8 @@ public class TitlesRepoImpl implements TitlesRepo {
             do {
                 Titles aRow = new Titles(
                         /* id ------------- */rset.getLong(1),
-                        /* surl ----------- */rset.getString(2),
-                        /* sname ---------- */rset.getString(3),
-                        /* stype ---------- */rset.getString(4),
-                        /* myid ----------- */rset.getString(5),
-                        /* mypw ----------- */rset.getString(6),
-                        /* reg_date ------- */rset.getLong(7),
-                        /* fix_date ------- */rset.getLong(8),
-                        /* memo ----------- */rset.getString(9));
+                        /* used ----------- */rset.getLong(2),
+                        /* title ---------- */rset.getString(3));
                 aList.add(aRow);
             } while (rset.next());
 
@@ -52,7 +46,7 @@ public class TitlesRepoImpl implements TitlesRepo {
         }
 
         if (DbConsts.DB_DEBUG) {
-            opener.debugDump(DbConsts.TB_PASSWORD_BOOK);
+            opener.debugDump(DbConsts.TB_TITLES);
         }
 
         return aList;
@@ -66,11 +60,9 @@ public class TitlesRepoImpl implements TitlesRepo {
             H2Database db = opener.getReadableDatabase();
             ResultSet rset = db.rawQuery(
                     /* intent -------- */ "SELECT * " +
-                            /* intent -------- */ " FROM " + DbConsts.TB_PASSWORD_BOOK + " " +
-                            /* intent -------- */ " WHERE (surl LIKE ?) OR " +
-                            /* intent -------- */ "        (sname LIKE ?) OR " +
-                            /* intent -------- */ "        (stype LIKE ?)",
-                    new String[]{"%" + keyString + "%", "%" + keyString + "%", "%" + keyString + "%"});
+                            /* intent -------- */ " FROM " + DbConsts.TB_TITLES + " " +
+                            /* intent -------- */ " WHERE (title LIKE ?)",
+                    new String[]{"%" + keyString + "%"});
             if (rset == null || !rset.first()) {
                 return aList;
             }
@@ -78,14 +70,8 @@ public class TitlesRepoImpl implements TitlesRepo {
             do {
                 Titles aRow = new Titles(
                         /* id ------------- */rset.getLong(1),
-                        /* surl ----------- */rset.getString(2),
-                        /* sname ---------- */rset.getString(3),
-                        /* stype ---------- */rset.getString(4),
-                        /* myid ----------- */rset.getString(5),
-                        /* mypw ----------- */rset.getString(6),
-                        /* reg_date ------- */rset.getLong(7),
-                        /* fix_date ------- */rset.getLong(8),
-                        /* memo ----------- */rset.getString(9));
+                        /* used ----------- */rset.getLong(2),
+                        /* title ---------- */rset.getString(3));
                 aList.add(aRow);
             } while (rset.next());
 
@@ -106,21 +92,15 @@ public class TitlesRepoImpl implements TitlesRepo {
 
         try {
             H2Database db = opener.getReadableDatabase();
-            ResultSet rset = db.rawQuery("SELECT * FROM " + DbConsts.TB_PASSWORD_BOOK + " WHERE id = " + id, null);
+            ResultSet rset = db.rawQuery("SELECT * FROM " + DbConsts.TB_TITLES + " WHERE id = " + id, null);
             if (rset == null || !rset.first()) {
                 return null;
             }
 
             aRow = new Titles(
                     /* id ------------- */rset.getLong(1),
-                    /* surl ----------- */rset.getString(2),
-                    /* sname ---------- */rset.getString(3),
-                    /* stype ---------- */rset.getString(4),
-                    /* myid ----------- */rset.getString(5),
-                    /* mypw ----------- */rset.getString(6),
-                    /* reg_date ------- */rset.getLong(7),
-                    /* fix_date ------- */rset.getLong(8),
-                    /* memo ----------- */rset.getString(9));
+                    /* used ----------- */rset.getLong(2),
+                    /* title ---------- */rset.getString(3));
             rset.close();
             db.close();
         } catch (Exception e) {
@@ -142,44 +122,26 @@ public class TitlesRepoImpl implements TitlesRepo {
             ResultSet rset = null;
 
             if (newRow.getId() != null) {
-                rset = db.rawQuery("SELECT * FROM " + DbConsts.TB_PASSWORD_BOOK + " WHERE id = " + newRow.getId(), null);
+                rset = db.rawQuery("SELECT * FROM " + DbConsts.TB_TITLES + " WHERE id = " + newRow.getId(), null);
                 if (rset != null && rset.first()) {
                     rset.close();
 
                     ContentValues cv = new ContentValues();
-                    cv.put("surl", newRow.getSiteUrl());
-                    cv.put("sname", newRow.getSiteName());
-                    cv.put("stype", newRow.getSiteType());
-                    cv.put("myid", newRow.getMyId());
-                    cv.put("mypw", newRow.getMyPw());
-                    cv.put("reg_date", newRow.getRegDate().getTime());
-                    cv.put("fix_date", newRow.getFixDate().getTime());
-                    cv.put("memo", newRow.getMemo());
-                    db.update(DbConsts.TB_PASSWORD_BOOK, cv, " id = ? ", new String[]{Long.toString(newRow.getId())});
+                    cv.put("used", newRow.getUsed());
+                    cv.put("title", newRow.getTitle());
+                    db.update(DbConsts.TB_TITLES, cv, " id = ? ", new String[]{Long.toString(newRow.getId())});
                 } else {
                     ContentValues cv = new ContentValues();
                     // cv.put("id", newRow.getId());
-                    cv.put("surl", newRow.getSiteUrl());
-                    cv.put("sname", newRow.getSiteName());
-                    cv.put("stype", newRow.getSiteType());
-                    cv.put("myid", newRow.getMyId());
-                    cv.put("mypw", newRow.getMyPw());
-                    cv.put("reg_date", newRow.getRegDate().getTime());
-                    cv.put("fix_date", newRow.getFixDate().getTime());
-                    cv.put("memo", newRow.getMemo());
-                    db.insert(DbConsts.TB_PASSWORD_BOOK, null, cv);
+                    cv.put("used", newRow.getUsed());
+                    cv.put("title", newRow.getTitle());
+                    db.insert(DbConsts.TB_TITLES, null, cv);
                 }
             } else {
                 ContentValues cv = new ContentValues();
-                cv.put("surl", newRow.getSiteUrl());
-                cv.put("sname", newRow.getSiteName());
-                cv.put("stype", newRow.getSiteType());
-                cv.put("myid", newRow.getMyId());
-                cv.put("mypw", newRow.getMyPw());
-                cv.put("reg_date", newRow.getRegDate().getTime());
-                cv.put("fix_date", newRow.getFixDate().getTime());
-                cv.put("memo", newRow.getMemo());
-                db.insert(DbConsts.TB_PASSWORD_BOOK, null, cv);
+                cv.put("used", newRow.getUsed());
+                cv.put("title", newRow.getTitle());
+                db.insert(DbConsts.TB_TITLES, null, cv);
             }
 
             db.close();
@@ -193,7 +155,7 @@ public class TitlesRepoImpl implements TitlesRepo {
     @Override
     public int deleteRow(Long id) {
         H2Database db = opener.getWritableDatabase();
-        int result = db.delete(DbConsts.TB_PASSWORD_BOOK, "id = " + id, null);
+        int result = db.delete(DbConsts.TB_TITLES, "id = " + id, null);
         db.close();
 
         return result;

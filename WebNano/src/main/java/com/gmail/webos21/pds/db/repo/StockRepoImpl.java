@@ -24,7 +24,7 @@ public class StockRepoImpl implements StockRepo {
 
         try {
             H2Database db = opener.getReadableDatabase();
-            ResultSet rset = db.rawQuery("SELECT * FROM " + DbConsts.TB_PASSWORD_BOOK, null);
+            ResultSet rset = db.rawQuery("SELECT * FROM " + DbConsts.TB_STOCK, null);
             if (rset == null || !rset.first()) {
                 return aList;
             }
@@ -32,14 +32,15 @@ public class StockRepoImpl implements StockRepo {
             do {
                 Stock aRow = new Stock(
                         /* id ------------- */rset.getLong(1),
-                        /* surl ----------- */rset.getString(2),
-                        /* sname ---------- */rset.getString(3),
-                        /* stype ---------- */rset.getString(4),
-                        /* myid ----------- */rset.getString(5),
-                        /* mypw ----------- */rset.getString(6),
-                        /* reg_date ------- */rset.getLong(7),
-                        /* fix_date ------- */rset.getLong(8),
-                        /* memo ----------- */rset.getString(9));
+                        /* company -------- */rset.getString(2),
+                        /* account_name --- */rset.getString(3),
+                        /* account_number - */rset.getString(4),
+                        /* holder --------- */rset.getString(5),
+                        /* deposit -------- */rset.getLong(6),
+                        /* estimate ------- */rset.getLong(7),
+                        /* estimate_date -- */rset.getLong(8),
+                        /* arrange -------- */rset.getLong(9),
+                        /* memo ----------- */rset.getString(10));
                 aList.add(aRow);
             } while (rset.next());
 
@@ -52,7 +53,7 @@ public class StockRepoImpl implements StockRepo {
         }
 
         if (DbConsts.DB_DEBUG) {
-            opener.debugDump(DbConsts.TB_PASSWORD_BOOK);
+            opener.debugDump(DbConsts.TB_STOCK);
         }
 
         return aList;
@@ -66,10 +67,10 @@ public class StockRepoImpl implements StockRepo {
             H2Database db = opener.getReadableDatabase();
             ResultSet rset = db.rawQuery(
                     /* intent -------- */ "SELECT * " +
-                            /* intent -------- */ " FROM " + DbConsts.TB_PASSWORD_BOOK + " " +
-                            /* intent -------- */ " WHERE (surl LIKE ?) OR " +
-                            /* intent -------- */ "        (sname LIKE ?) OR " +
-                            /* intent -------- */ "        (stype LIKE ?)",
+                            /* intent -------- */ " FROM " + DbConsts.TB_STOCK + " " +
+                            /* intent -------- */ " WHERE (company LIKE ?) OR " +
+                            /* intent -------- */ "        (account_name LIKE ?) OR " +
+                            /* intent -------- */ "        (memo LIKE ?)",
                     new String[]{"%" + keyString + "%", "%" + keyString + "%", "%" + keyString + "%"});
             if (rset == null || !rset.first()) {
                 return aList;
@@ -78,14 +79,15 @@ public class StockRepoImpl implements StockRepo {
             do {
                 Stock aRow = new Stock(
                         /* id ------------- */rset.getLong(1),
-                        /* surl ----------- */rset.getString(2),
-                        /* sname ---------- */rset.getString(3),
-                        /* stype ---------- */rset.getString(4),
-                        /* myid ----------- */rset.getString(5),
-                        /* mypw ----------- */rset.getString(6),
-                        /* reg_date ------- */rset.getLong(7),
-                        /* fix_date ------- */rset.getLong(8),
-                        /* memo ----------- */rset.getString(9));
+                        /* company -------- */rset.getString(2),
+                        /* account_name --- */rset.getString(3),
+                        /* account_number - */rset.getString(4),
+                        /* holder --------- */rset.getString(5),
+                        /* deposit -------- */rset.getLong(6),
+                        /* estimate ------- */rset.getLong(7),
+                        /* estimate_date -- */rset.getLong(8),
+                        /* arrange -------- */rset.getLong(9),
+                        /* memo ----------- */rset.getString(10));
                 aList.add(aRow);
             } while (rset.next());
 
@@ -106,21 +108,22 @@ public class StockRepoImpl implements StockRepo {
 
         try {
             H2Database db = opener.getReadableDatabase();
-            ResultSet rset = db.rawQuery("SELECT * FROM " + DbConsts.TB_PASSWORD_BOOK + " WHERE id = " + id, null);
+            ResultSet rset = db.rawQuery("SELECT * FROM " + DbConsts.TB_STOCK + " WHERE id = " + id, null);
             if (rset == null || !rset.first()) {
                 return null;
             }
 
             aRow = new Stock(
                     /* id ------------- */rset.getLong(1),
-                    /* surl ----------- */rset.getString(2),
-                    /* sname ---------- */rset.getString(3),
-                    /* stype ---------- */rset.getString(4),
-                    /* myid ----------- */rset.getString(5),
-                    /* mypw ----------- */rset.getString(6),
-                    /* reg_date ------- */rset.getLong(7),
-                    /* fix_date ------- */rset.getLong(8),
-                    /* memo ----------- */rset.getString(9));
+                    /* company -------- */rset.getString(2),
+                    /* account_name --- */rset.getString(3),
+                    /* account_number - */rset.getString(4),
+                    /* holder --------- */rset.getString(5),
+                    /* deposit -------- */rset.getLong(6),
+                    /* estimate ------- */rset.getLong(7),
+                    /* estimate_date -- */rset.getLong(8),
+                    /* arrange -------- */rset.getLong(9),
+                    /* memo ----------- */rset.getString(10));
             rset.close();
             db.close();
         } catch (Exception e) {
@@ -142,44 +145,47 @@ public class StockRepoImpl implements StockRepo {
             ResultSet rset = null;
 
             if (newRow.getId() != null) {
-                rset = db.rawQuery("SELECT * FROM " + DbConsts.TB_PASSWORD_BOOK + " WHERE id = " + newRow.getId(), null);
+                rset = db.rawQuery("SELECT * FROM " + DbConsts.TB_STOCK + " WHERE id = " + newRow.getId(), null);
                 if (rset != null && rset.first()) {
                     rset.close();
 
                     ContentValues cv = new ContentValues();
-                    cv.put("surl", newRow.getSiteUrl());
-                    cv.put("sname", newRow.getSiteName());
-                    cv.put("stype", newRow.getSiteType());
-                    cv.put("myid", newRow.getMyId());
-                    cv.put("mypw", newRow.getMyPw());
-                    cv.put("reg_date", newRow.getRegDate().getTime());
-                    cv.put("fix_date", newRow.getFixDate().getTime());
+                    cv.put("company", newRow.getCompany());
+                    cv.put("account_name", newRow.getAccountName());
+                    cv.put("account_number", newRow.getAccountNumber());
+                    cv.put("holder", newRow.getHolder());
+                    cv.put("deposit", newRow.getDeposit());
+                    cv.put("estimate", newRow.getEstimate());
+                    cv.put("estimate_date", newRow.getEstimateDate().getTime());
+                    cv.put("arrange", newRow.getArrange());
                     cv.put("memo", newRow.getMemo());
-                    db.update(DbConsts.TB_PASSWORD_BOOK, cv, " id = ? ", new String[]{Long.toString(newRow.getId())});
+                    db.update(DbConsts.TB_STOCK, cv, " id = ? ", new String[]{Long.toString(newRow.getId())});
                 } else {
                     ContentValues cv = new ContentValues();
                     // cv.put("id", newRow.getId());
-                    cv.put("surl", newRow.getSiteUrl());
-                    cv.put("sname", newRow.getSiteName());
-                    cv.put("stype", newRow.getSiteType());
-                    cv.put("myid", newRow.getMyId());
-                    cv.put("mypw", newRow.getMyPw());
-                    cv.put("reg_date", newRow.getRegDate().getTime());
-                    cv.put("fix_date", newRow.getFixDate().getTime());
+                    cv.put("company", newRow.getCompany());
+                    cv.put("account_name", newRow.getAccountName());
+                    cv.put("account_number", newRow.getAccountNumber());
+                    cv.put("holder", newRow.getHolder());
+                    cv.put("deposit", newRow.getDeposit());
+                    cv.put("estimate", newRow.getEstimate());
+                    cv.put("estimate_date", newRow.getEstimateDate().getTime());
+                    cv.put("arrange", newRow.getArrange());
                     cv.put("memo", newRow.getMemo());
-                    db.insert(DbConsts.TB_PASSWORD_BOOK, null, cv);
+                    db.insert(DbConsts.TB_STOCK, null, cv);
                 }
             } else {
                 ContentValues cv = new ContentValues();
-                cv.put("surl", newRow.getSiteUrl());
-                cv.put("sname", newRow.getSiteName());
-                cv.put("stype", newRow.getSiteType());
-                cv.put("myid", newRow.getMyId());
-                cv.put("mypw", newRow.getMyPw());
-                cv.put("reg_date", newRow.getRegDate().getTime());
-                cv.put("fix_date", newRow.getFixDate().getTime());
+                cv.put("company", newRow.getCompany());
+                cv.put("account_name", newRow.getAccountName());
+                cv.put("account_number", newRow.getAccountNumber());
+                cv.put("holder", newRow.getHolder());
+                cv.put("deposit", newRow.getDeposit());
+                cv.put("estimate", newRow.getEstimate());
+                cv.put("estimate_date", newRow.getEstimateDate().getTime());
+                cv.put("arrange", newRow.getArrange());
                 cv.put("memo", newRow.getMemo());
-                db.insert(DbConsts.TB_PASSWORD_BOOK, null, cv);
+                db.insert(DbConsts.TB_STOCK, null, cv);
             }
 
             db.close();
@@ -193,7 +199,7 @@ public class StockRepoImpl implements StockRepo {
     @Override
     public int deleteRow(Long id) {
         H2Database db = opener.getWritableDatabase();
-        int result = db.delete(DbConsts.TB_PASSWORD_BOOK, "id = " + id, null);
+        int result = db.delete(DbConsts.TB_STOCK, "id = " + id, null);
         db.close();
 
         return result;

@@ -32,14 +32,10 @@ public class DiaryRepoImpl implements DiaryRepo {
             do {
                 Diary aRow = new Diary(
                         /* id ------------- */rset.getLong(1),
-                        /* surl ----------- */rset.getString(2),
-                        /* sname ---------- */rset.getString(3),
-                        /* stype ---------- */rset.getString(4),
-                        /* myid ----------- */rset.getString(5),
-                        /* mypw ----------- */rset.getString(6),
-                        /* reg_date ------- */rset.getLong(7),
-                        /* fix_date ------- */rset.getLong(8),
-                        /* memo ----------- */rset.getString(9));
+                        /* wdate ---------- */rset.getLong(2),
+                        /* weather -------- */rset.getInt(3),
+                        /* title ---------- */rset.getString(4),
+                        /* content -------- */rset.getString(5));
                 aList.add(aRow);
             } while (rset.next());
 
@@ -67,10 +63,9 @@ public class DiaryRepoImpl implements DiaryRepo {
             ResultSet rset = db.rawQuery(
                     /* intent -------- */ "SELECT * " +
                             /* intent -------- */ " FROM " + DbConsts.TB_PASSWORD_BOOK + " " +
-                            /* intent -------- */ " WHERE (surl LIKE ?) OR " +
-                            /* intent -------- */ "        (sname LIKE ?) OR " +
-                            /* intent -------- */ "        (stype LIKE ?)",
-                    new String[]{"%" + keyString + "%", "%" + keyString + "%", "%" + keyString + "%"});
+                            /* intent -------- */ " WHERE (title LIKE ?) OR " +
+                            /* intent -------- */ "        (content LIKE ?)",
+                    new String[]{"%" + keyString + "%", "%" + keyString + "%"});
             if (rset == null || !rset.first()) {
                 return aList;
             }
@@ -78,14 +73,10 @@ public class DiaryRepoImpl implements DiaryRepo {
             do {
                 Diary aRow = new Diary(
                         /* id ------------- */rset.getLong(1),
-                        /* surl ----------- */rset.getString(2),
-                        /* sname ---------- */rset.getString(3),
-                        /* stype ---------- */rset.getString(4),
-                        /* myid ----------- */rset.getString(5),
-                        /* mypw ----------- */rset.getString(6),
-                        /* reg_date ------- */rset.getLong(7),
-                        /* fix_date ------- */rset.getLong(8),
-                        /* memo ----------- */rset.getString(9));
+                        /* wdate ---------- */rset.getLong(2),
+                        /* weather -------- */rset.getInt(3),
+                        /* title ---------- */rset.getString(4),
+                        /* content -------- */rset.getString(5));
                 aList.add(aRow);
             } while (rset.next());
 
@@ -113,14 +104,10 @@ public class DiaryRepoImpl implements DiaryRepo {
 
             aRow = new Diary(
                     /* id ------------- */rset.getLong(1),
-                    /* surl ----------- */rset.getString(2),
-                    /* sname ---------- */rset.getString(3),
-                    /* stype ---------- */rset.getString(4),
-                    /* myid ----------- */rset.getString(5),
-                    /* mypw ----------- */rset.getString(6),
-                    /* reg_date ------- */rset.getLong(7),
-                    /* fix_date ------- */rset.getLong(8),
-                    /* memo ----------- */rset.getString(9));
+                    /* wdate ---------- */rset.getLong(2),
+                    /* weather -------- */rset.getInt(3),
+                    /* title ---------- */rset.getString(4),
+                    /* content -------- */rset.getString(5));
             rset.close();
             db.close();
         } catch (Exception e) {
@@ -147,38 +134,26 @@ public class DiaryRepoImpl implements DiaryRepo {
                     rset.close();
 
                     ContentValues cv = new ContentValues();
-                    cv.put("surl", newRow.getSiteUrl());
-                    cv.put("sname", newRow.getSiteName());
-                    cv.put("stype", newRow.getSiteType());
-                    cv.put("myid", newRow.getMyId());
-                    cv.put("mypw", newRow.getMyPw());
-                    cv.put("reg_date", newRow.getRegDate().getTime());
-                    cv.put("fix_date", newRow.getFixDate().getTime());
-                    cv.put("memo", newRow.getMemo());
+                    cv.put("wdate", newRow.getWdate().getTime());
+                    cv.put("weather", newRow.getWeather());
+                    cv.put("title", newRow.getTitle());
+                    cv.put("content", newRow.getContent());
                     db.update(DbConsts.TB_PASSWORD_BOOK, cv, " id = ? ", new String[]{Long.toString(newRow.getId())});
                 } else {
                     ContentValues cv = new ContentValues();
                     // cv.put("id", newRow.getId());
-                    cv.put("surl", newRow.getSiteUrl());
-                    cv.put("sname", newRow.getSiteName());
-                    cv.put("stype", newRow.getSiteType());
-                    cv.put("myid", newRow.getMyId());
-                    cv.put("mypw", newRow.getMyPw());
-                    cv.put("reg_date", newRow.getRegDate().getTime());
-                    cv.put("fix_date", newRow.getFixDate().getTime());
-                    cv.put("memo", newRow.getMemo());
+                    cv.put("wdate", newRow.getWdate().getTime());
+                    cv.put("weather", newRow.getWeather());
+                    cv.put("title", newRow.getTitle());
+                    cv.put("content", newRow.getContent());
                     db.insert(DbConsts.TB_PASSWORD_BOOK, null, cv);
                 }
             } else {
                 ContentValues cv = new ContentValues();
-                cv.put("surl", newRow.getSiteUrl());
-                cv.put("sname", newRow.getSiteName());
-                cv.put("stype", newRow.getSiteType());
-                cv.put("myid", newRow.getMyId());
-                cv.put("mypw", newRow.getMyPw());
-                cv.put("reg_date", newRow.getRegDate().getTime());
-                cv.put("fix_date", newRow.getFixDate().getTime());
-                cv.put("memo", newRow.getMemo());
+                cv.put("wdate", newRow.getWdate().getTime());
+                cv.put("weather", newRow.getWeather());
+                cv.put("title", newRow.getTitle());
+                cv.put("content", newRow.getContent());
                 db.insert(DbConsts.TB_PASSWORD_BOOK, null, cv);
             }
 

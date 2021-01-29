@@ -10,7 +10,7 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 
-public class RealEstateRecordRepoImpl implements RealEstateRecordøRepo {
+public class RealEstateRecordRepoImpl implements RealEstateRecordRepo {
 
     private PdsDbHelper opener;
 
@@ -24,7 +24,7 @@ public class RealEstateRecordRepoImpl implements RealEstateRecordøRepo {
 
         try {
             H2Database db = opener.getReadableDatabase();
-            ResultSet rset = db.rawQuery("SELECT * FROM " + DbConsts.TB_PASSWORD_BOOK, null);
+            ResultSet rset = db.rawQuery("SELECT * FROM " + DbConsts.TB_REALESTATE_RECORD, null);
             if (rset == null || !rset.first()) {
                 return aList;
             }
@@ -32,14 +32,12 @@ public class RealEstateRecordRepoImpl implements RealEstateRecordøRepo {
             do {
                 RealEstateRecord aRow = new RealEstateRecord(
                         /* id ------------- */rset.getLong(1),
-                        /* surl ----------- */rset.getString(2),
-                        /* sname ---------- */rset.getString(3),
-                        /* stype ---------- */rset.getString(4),
-                        /* myid ----------- */rset.getString(5),
-                        /* mypw ----------- */rset.getString(6),
-                        /* reg_date ------- */rset.getLong(7),
-                        /* fix_date ------- */rset.getLong(8),
-                        /* memo ----------- */rset.getString(9));
+                        /* realestate_id -- */rset.getLong(2),
+                        /* transaction_date */rset.getLong(3),
+                        /* title ---------- */rset.getString(4),
+                        /* deposit -------- */rset.getLong(5),
+                        /* withdrawal ----- */rset.getLong(6),
+                        /* memo ----------- */rset.getString(7));
                 aList.add(aRow);
             } while (rset.next());
 
@@ -52,7 +50,7 @@ public class RealEstateRecordRepoImpl implements RealEstateRecordøRepo {
         }
 
         if (DbConsts.DB_DEBUG) {
-            opener.debugDump(DbConsts.TB_PASSWORD_BOOK);
+            opener.debugDump(DbConsts.TB_REALESTATE_RECORD);
         }
 
         return aList;
@@ -66,11 +64,10 @@ public class RealEstateRecordRepoImpl implements RealEstateRecordøRepo {
             H2Database db = opener.getReadableDatabase();
             ResultSet rset = db.rawQuery(
                     /* intent -------- */ "SELECT * " +
-                            /* intent -------- */ " FROM " + DbConsts.TB_PASSWORD_BOOK + " " +
-                            /* intent -------- */ " WHERE (surl LIKE ?) OR " +
-                            /* intent -------- */ "        (sname LIKE ?) OR " +
-                            /* intent -------- */ "        (stype LIKE ?)",
-                    new String[]{"%" + keyString + "%", "%" + keyString + "%", "%" + keyString + "%"});
+                            /* intent -------- */ " FROM " + DbConsts.TB_REALESTATE_RECORD + " " +
+                            /* intent -------- */ " WHERE (title LIKE ?) OR " +
+                            /* intent -------- */ "        (memo LIKE ?)",
+                    new String[]{"%" + keyString + "%", "%" + keyString + "%"});
             if (rset == null || !rset.first()) {
                 return aList;
             }
@@ -78,14 +75,12 @@ public class RealEstateRecordRepoImpl implements RealEstateRecordøRepo {
             do {
                 RealEstateRecord aRow = new RealEstateRecord(
                         /* id ------------- */rset.getLong(1),
-                        /* surl ----------- */rset.getString(2),
-                        /* sname ---------- */rset.getString(3),
-                        /* stype ---------- */rset.getString(4),
-                        /* myid ----------- */rset.getString(5),
-                        /* mypw ----------- */rset.getString(6),
-                        /* reg_date ------- */rset.getLong(7),
-                        /* fix_date ------- */rset.getLong(8),
-                        /* memo ----------- */rset.getString(9));
+                        /* realestate_id -- */rset.getLong(2),
+                        /* transaction_date */rset.getLong(3),
+                        /* title ---------- */rset.getString(4),
+                        /* deposit -------- */rset.getLong(5),
+                        /* withdrawal ----- */rset.getLong(6),
+                        /* memo ----------- */rset.getString(7));
                 aList.add(aRow);
             } while (rset.next());
 
@@ -106,21 +101,19 @@ public class RealEstateRecordRepoImpl implements RealEstateRecordøRepo {
 
         try {
             H2Database db = opener.getReadableDatabase();
-            ResultSet rset = db.rawQuery("SELECT * FROM " + DbConsts.TB_PASSWORD_BOOK + " WHERE id = " + id, null);
+            ResultSet rset = db.rawQuery("SELECT * FROM " + DbConsts.TB_REALESTATE_RECORD + " WHERE id = " + id, null);
             if (rset == null || !rset.first()) {
                 return null;
             }
 
             aRow = new RealEstateRecord(
                     /* id ------------- */rset.getLong(1),
-                    /* surl ----------- */rset.getString(2),
-                    /* sname ---------- */rset.getString(3),
-                    /* stype ---------- */rset.getString(4),
-                    /* myid ----------- */rset.getString(5),
-                    /* mypw ----------- */rset.getString(6),
-                    /* reg_date ------- */rset.getLong(7),
-                    /* fix_date ------- */rset.getLong(8),
-                    /* memo ----------- */rset.getString(9));
+                    /* realestate_id -- */rset.getLong(2),
+                    /* transaction_date */rset.getLong(3),
+                    /* title ---------- */rset.getString(4),
+                    /* deposit -------- */rset.getLong(5),
+                    /* withdrawal ----- */rset.getLong(6),
+                    /* memo ----------- */rset.getString(7));
             rset.close();
             db.close();
         } catch (Exception e) {
@@ -142,44 +135,38 @@ public class RealEstateRecordRepoImpl implements RealEstateRecordøRepo {
             ResultSet rset = null;
 
             if (newRow.getId() != null) {
-                rset = db.rawQuery("SELECT * FROM " + DbConsts.TB_PASSWORD_BOOK + " WHERE id = " + newRow.getId(), null);
+                rset = db.rawQuery("SELECT * FROM " + DbConsts.TB_REALESTATE_RECORD + " WHERE id = " + newRow.getId(), null);
                 if (rset != null && rset.first()) {
                     rset.close();
 
                     ContentValues cv = new ContentValues();
-                    cv.put("surl", newRow.getSiteUrl());
-                    cv.put("sname", newRow.getSiteName());
-                    cv.put("stype", newRow.getSiteType());
-                    cv.put("myid", newRow.getMyId());
-                    cv.put("mypw", newRow.getMyPw());
-                    cv.put("reg_date", newRow.getRegDate().getTime());
-                    cv.put("fix_date", newRow.getFixDate().getTime());
+                    cv.put("realestate_id", newRow.getRealEstateId());
+                    cv.put("transaction_date", newRow.getTransactionDate().getTime());
+                    cv.put("title", newRow.getTitle());
+                    cv.put("deposit", newRow.getDeposit());
+                    cv.put("withdrawal", newRow.getWithdrawal());
                     cv.put("memo", newRow.getMemo());
-                    db.update(DbConsts.TB_PASSWORD_BOOK, cv, " id = ? ", new String[]{Long.toString(newRow.getId())});
+                    db.update(DbConsts.TB_REALESTATE_RECORD, cv, " id = ? ", new String[]{Long.toString(newRow.getId())});
                 } else {
                     ContentValues cv = new ContentValues();
                     // cv.put("id", newRow.getId());
-                    cv.put("surl", newRow.getSiteUrl());
-                    cv.put("sname", newRow.getSiteName());
-                    cv.put("stype", newRow.getSiteType());
-                    cv.put("myid", newRow.getMyId());
-                    cv.put("mypw", newRow.getMyPw());
-                    cv.put("reg_date", newRow.getRegDate().getTime());
-                    cv.put("fix_date", newRow.getFixDate().getTime());
+                    cv.put("realestate_id", newRow.getRealEstateId());
+                    cv.put("transaction_date", newRow.getTransactionDate().getTime());
+                    cv.put("title", newRow.getTitle());
+                    cv.put("deposit", newRow.getDeposit());
+                    cv.put("withdrawal", newRow.getWithdrawal());
                     cv.put("memo", newRow.getMemo());
-                    db.insert(DbConsts.TB_PASSWORD_BOOK, null, cv);
+                    db.insert(DbConsts.TB_REALESTATE_RECORD, null, cv);
                 }
             } else {
                 ContentValues cv = new ContentValues();
-                cv.put("surl", newRow.getSiteUrl());
-                cv.put("sname", newRow.getSiteName());
-                cv.put("stype", newRow.getSiteType());
-                cv.put("myid", newRow.getMyId());
-                cv.put("mypw", newRow.getMyPw());
-                cv.put("reg_date", newRow.getRegDate().getTime());
-                cv.put("fix_date", newRow.getFixDate().getTime());
+                cv.put("realestate_id", newRow.getRealEstateId());
+                cv.put("transaction_date", newRow.getTransactionDate().getTime());
+                cv.put("title", newRow.getTitle());
+                cv.put("deposit", newRow.getDeposit());
+                cv.put("withdrawal", newRow.getWithdrawal());
                 cv.put("memo", newRow.getMemo());
-                db.insert(DbConsts.TB_PASSWORD_BOOK, null, cv);
+                db.insert(DbConsts.TB_REALESTATE_RECORD, null, cv);
             }
 
             db.close();
@@ -193,7 +180,7 @@ public class RealEstateRecordRepoImpl implements RealEstateRecordøRepo {
     @Override
     public int deleteRow(Long id) {
         H2Database db = opener.getWritableDatabase();
-        int result = db.delete(DbConsts.TB_PASSWORD_BOOK, "id = " + id, null);
+        int result = db.delete(DbConsts.TB_REALESTATE_RECORD, "id = " + id, null);
         db.close();
 
         return result;

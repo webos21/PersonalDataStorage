@@ -4,6 +4,8 @@ import com.gmail.webos21.nano.DynamicRouter;
 import com.gmail.webos21.nano.NanoHTTPD;
 import com.gmail.webos21.nano.RouteResult;
 import com.gmail.webos21.nano.StaticRouter;
+import com.gmail.webos21.pds.web.handler.AuthHandler;
+import com.gmail.webos21.pds.web.handler.PasswordBookHandler;
 import com.gmail.webos21.pds.web.log.UiLog;
 
 import java.io.File;
@@ -33,8 +35,8 @@ public class PdsWebServer extends NanoHTTPD {
 		staticRouter = new StaticRouter(wwwroot);
 		dynamicRouter = new DynamicRouter();
 
-		dynamicRouter.addDynamicPage("/login.do", LoginHandler.class);
-		dynamicRouter.addDynamicPage("/pwdata.do", PdsDataHandler.class);
+		dynamicRouter.addDynamicPage("/pds/v1/auth", AuthHandler.class);
+		dynamicRouter.addDynamicPage("/pds/v1/pwbook", PasswordBookHandler.class);
 
 		mimeTypes().put("xhtml", "application/xhtml+xml");
 		mimeTypes().put("opf", "application/oebps-package+xml");
@@ -115,9 +117,7 @@ public class PdsWebServer extends NanoHTTPD {
 			}
 		}
 
-		RouteResult res;
-
-		res = dynamicRouter.route(header, session, uri, files);
+		RouteResult res = dynamicRouter.route(header, session, uri, files);
 		if (res == null) {
 			StringBuilder sb = new StringBuilder();
 			res = staticRouter.route(header, session, uri);

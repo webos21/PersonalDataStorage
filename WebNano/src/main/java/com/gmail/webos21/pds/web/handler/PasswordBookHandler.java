@@ -1,4 +1,4 @@
-package com.gmail.webos21.pds.web;
+package com.gmail.webos21.pds.web.handler;
 
 import com.gmail.webos21.crypto.Base64;
 import com.gmail.webos21.nano.NanoHTTPD;
@@ -17,11 +17,11 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-public class PdsDataHandler implements UriHandler {
+public class PasswordBookHandler implements UriHandler {
 
     private PasswordBookRepo pbRepo;
 
-    public PdsDataHandler() {
+    public PasswordBookHandler() {
         PdsDbManager pdb = PdsDbManager.getInstance();
         pbRepo = pdb.getRepository(PasswordBookRepo.class);
     }

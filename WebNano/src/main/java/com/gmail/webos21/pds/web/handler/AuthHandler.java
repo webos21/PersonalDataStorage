@@ -1,4 +1,4 @@
-package com.gmail.webos21.pds.web;
+package com.gmail.webos21.pds.web.handler;
 
 import com.gmail.webos21.crypto.Base64;
 import com.gmail.webos21.nano.NanoHTTPD.IHTTPSession;
@@ -19,7 +19,7 @@ import javax.crypto.NoSuchPaddingException;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 
-public class LoginHandler implements UriHandler {
+public class AuthHandler implements UriHandler {
 
     public static int DEF_AES_BYTELEN = 32;
 
@@ -31,7 +31,7 @@ public class LoginHandler implements UriHandler {
 
     private String validPassword;
 
-    public LoginHandler() {
+    public AuthHandler() {
         byte[] keyBytes = "PasswordBook".getBytes();
         byte[] iv = "PasswordBook1234".getBytes();
 
