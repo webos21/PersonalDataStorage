@@ -79,7 +79,7 @@ public class NanoActivity extends AppCompatActivity {
             dws.setUiLog(logger);
             dws.setClientListener(nhcl);
 
-            pws = new PdsWebServer(WEB_ADDR_ANY, WEB_PORT, pwdir);
+            pws = new PdsWebServer(WEB_ADDR_ANY, WEB_PORT, pwdir, exdir);
             pws.setUiLog(logger);
             pws.setClientListener(nhcl);
 

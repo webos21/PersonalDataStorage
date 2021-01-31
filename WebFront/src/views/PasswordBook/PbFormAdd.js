@@ -1,8 +1,12 @@
 import React, { useState } from 'react';
 import { Modal, ModalHeader, ModalBody, ModalFooter, Button, Col, Form, FormGroup, FormFeedback, Label } from 'reactstrap';
 import { useForm } from "react-hook-form";
+import Cookies from 'universal-cookie';
 
 const PbFormAdd = props => {
+    
+    const REQ_URI = (process.env.NODE_ENV !== 'production') ? 'http://localhost:28080/pds/v1/pwbook' : '/pds/v1/pwbook';
+
     const { register, handleSubmit, errors, setError } = useForm({
         submitFocusError: true,
         nativeValidation: false,
@@ -16,14 +20,16 @@ const PbFormAdd = props => {
 
     const onSubmit = (data, e) => {
         const formData = new FormData(e.target);
+        const cookies = new Cookies();
 
-        fetch('/pwdata.do', {
+        fetch(REQ_URI, {
             method: 'POST',
             headers: new Headers({
+                'X-PDS-AUTH': cookies.get("X-PDS-AUTH"),
                 'Authorization': 'Basic ' + btoa('username:password'),
             }),
-            credentials: 'include',
-            body: formData,
+            credentials: "include",
+            body: formData
         }).then(function (res) {
             if (!res.ok) {
                 throw Error("서버응답 : " + res.statusText + "(" + res.status + ")");

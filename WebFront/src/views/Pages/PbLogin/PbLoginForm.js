@@ -7,6 +7,8 @@ import Cookies from 'universal-cookie';
 const PbLoginForm = props => {
     const crypto = require('crypto');
 
+    const REQ_URI = (process.env.NODE_ENV !== 'production') ? 'http://localhost:28080/pds/v1/auth' : '/pds/v1/auth';
+
     const { register, handleSubmit, errors, setError } = useForm({
         submitFocusError: true,
         nativeValidation: false,
@@ -17,10 +19,6 @@ const PbLoginForm = props => {
         var sha256 = crypto.createHash('sha256');
         sha256.update('PasswordBook');
 
-        // console.log("iv = " + iv);
-        // console.log("sha256 = " + sha256);
-        // console.log("e.target.pbpwd.value = " + e.target.pbpwd.value);
-    
         var aesCipher = crypto.createCipheriv('aes-256-cbc', sha256.digest(), iv);
         aesCipher.update(e.target.pbpwd.value);
         var cryptBytes = aesCipher.final();
@@ -33,15 +31,11 @@ const PbLoginForm = props => {
         const formData = new FormData(e.target);
 
         formData.pbpwd = base64Result;
-        fetch('/login.do', {
+        fetch(REQ_URI, {
             method: 'POST',
             body: formData,
+            credentials: "include"
         }).then(function (res) {
-            // console.log(res.status);
-            // console.log(res.statusText);
-            // console.log(res.headers);
-            // console.log(res.url);
-
             if (!res.ok) {
                 throw Error("서버응답 : " + res.statusText + "(" + res.status + ")");
             }

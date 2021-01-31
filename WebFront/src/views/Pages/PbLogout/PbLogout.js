@@ -7,7 +7,7 @@ class PbLogout extends Component {
 
   componentDidMount() {
     let cookies = new Cookies();
-    cookies.remove('X-PB-AUTH');
+    cookies.remove('X-PDS-AUTH');
     this.props.history.push('/');
   }
 

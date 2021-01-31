@@ -1,9 +1,13 @@
 package com.gmail.webos21.pds.web.handler;
 
+import java.text.ParseException;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+
 import com.gmail.webos21.crypto.Base64;
 import com.gmail.webos21.nano.NanoHTTPD;
 import com.gmail.webos21.nano.NanoHTTPD.IHTTPSession;
-import com.gmail.webos21.nano.NanoHTTPD.Response.IStatus;
 import com.gmail.webos21.nano.NanoHTTPD.Response.Status;
 import com.gmail.webos21.nano.RouteResult;
 import com.gmail.webos21.nano.UriHandler;
@@ -12,289 +16,259 @@ import com.gmail.webos21.pds.db.PdsDbManager;
 import com.gmail.webos21.pds.db.domain.PasswordBook;
 import com.gmail.webos21.pds.db.repo.PasswordBookRepo;
 
-import java.text.ParseException;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-
 public class PasswordBookHandler implements UriHandler {
 
-    private PasswordBookRepo pbRepo;
+	private PasswordBookRepo pbRepo;
 
-    public PasswordBookHandler() {
-        PdsDbManager pdb = PdsDbManager.getInstance();
-        pbRepo = pdb.getRepository(PasswordBookRepo.class);
-    }
+	public PasswordBookHandler() {
+		PdsDbManager pdb = PdsDbManager.getInstance();
+		pbRepo = pdb.getRepository(PasswordBookRepo.class);
+	}
 
-    @Override
-    public RouteResult process(Map<String, String> headers, IHTTPSession session, String uri,
-                               Map<String, String> files) {
-        System.out.println("\n=========================================\n");
-        System.out.println("Response) " + session.getMethod() + " " + uri);
+	@Override
+	public RouteResult process(Map<String, String> headers, IHTTPSession session, String uri,
+			Map<String, String> files) {
+		System.out.println("\n=========================================\n");
+		System.out.println("Response) " + session.getMethod() + " " + uri);
 
-        switch (session.getMethod()) {
-            case OPTIONS:
-                return processSimple(Status.OK);
-            case POST:
-                return processPost(headers, session, uri, files);
-            case GET:
-                return processGet(headers, session, uri, files);
-            case PUT:
-                return processPut(headers, session, uri, files);
-            case DELETE:
-                return processDelete(headers, session, uri);
-            default:
-                return processSimple(Status.METHOD_NOT_ALLOWED);
-        }
-    }
+		switch (session.getMethod()) {
+		case OPTIONS:
+			return WebHelper.processSimple(headers.get("origin"), Status.OK);
+		case POST:
+			return processPost(headers, session, uri, files);
+		case GET:
+			return processGet(headers, session, uri, files);
+		case PUT:
+			return processPut(headers, session, uri, files);
+		case DELETE:
+			return processDelete(headers, session, uri);
+		default:
+			return WebHelper.processSimple(headers.get("origin"), Status.METHOD_NOT_ALLOWED);
+		}
+	}
 
-    private void addCorsHeader(RouteResult rr) {
-        rr.addHeader("Access-Control-Allow-Origin", "*");
-        rr.addHeader("Access-Control-Allow-Credentials", "true");
-        rr.addHeader("Access-Control-Allow-Headers", "origin,accept,content-type,authorization");
-        rr.addHeader("Access-Control-Allow-Methods", "GET,DELETE,POST,PUT,HEAD,OPTIONS");
-        rr.addHeader("Access-Control-Max-Age", "86400");
-    }
+	private RouteResult processDelete(Map<String, String> headers, IHTTPSession session, String uri) {
+		String origin = headers.get("origin");
+		String authVal = headers.get("authorization");
+		if (authVal == null) {
+			return WebHelper.processSimple(origin, Status.UNAUTHORIZED);
+		}
+		String[] authArr = authVal.split(" ");
+		if (authArr == null || authArr.length != 2) {
+			return WebHelper.processSimple(origin, Status.UNAUTHORIZED);
+		}
 
-    private RouteResult processSimple(IStatus status) {
-        StringBuilder sb = new StringBuilder();
+		String auth = new String(Base64.decode(authArr[1], Base64.DEFAULT));
+		System.out.println("auth = " + auth);
+		if (!"username:password".equals(auth)) {
+			return WebHelper.processSimple(origin, Status.UNAUTHORIZED);
+		}
 
-        sb.append("{\n");
-        sb.append("  \"result\": ").append(status.getRequestStatus()).append(",\n");
-        sb.append("  \"description\": \"").append(status).append("\"\n");
-        sb.append("}\n");
+		@SuppressWarnings("deprecation")
+		Map<String, String> params = session.getParms();
 
-        RouteResult rr = RouteResult.newRouteResult(status, "application/json", sb.toString());
-        addCorsHeader(rr);
+		for (String key : params.keySet()) {
+			System.out.println(key + " = " + params.get(key));
+		}
 
-        RouteResult.print(rr);
-        System.out.println(sb.toString());
+		String siteId = params.get("siteId");
+		int deletedRows = pbRepo.deleteRow(Long.parseLong(siteId));
 
-        return rr;
-    }
+		StringBuilder sb = new StringBuilder();
 
-    private RouteResult processDelete(Map<String, String> headers, IHTTPSession session, String uri) {
-        Map<String, String> reqHeaders = session.getHeaders();
-        String authVal = reqHeaders.get("authorization");
-        if (authVal == null) {
-            return processSimple(Status.UNAUTHORIZED);
-        }
-        String[] authArr = authVal.split(" ");
-        if (authArr == null || authArr.length != 2) {
-            return processSimple(Status.UNAUTHORIZED);
-        }
+		sb.append("{\n");
+		sb.append("  \"result\": \"OK\",\n");
+		sb.append("  \"deletedRows\": ").append(deletedRows);
+		sb.append("}\n");
 
-        String auth = new String(Base64.decode(authArr[1], Base64.DEFAULT));
-        System.out.println("auth = " + auth);
-        if (!"username:password".equals(auth)) {
-            return processSimple(Status.UNAUTHORIZED);
-        }
+		RouteResult rr = RouteResult.newRouteResult(Status.OK, "application/json", sb.toString());
+		WebHelper.addCorsHeader(origin, rr);
 
-        @SuppressWarnings("deprecation")
-        Map<String, String> params = session.getParms();
+		RouteResult.print(rr);
+		System.out.println(sb.toString());
 
-        for (String key : params.keySet()) {
-            System.out.println(key + " = " + params.get(key));
-        }
+		return rr;
+	}
 
-        String siteId = params.get("siteId");
-        int deletedRows = pbRepo.deleteRow(Long.parseLong(siteId));
+	private RouteResult processPut(Map<String, String> headers, NanoHTTPD.IHTTPSession session, String uri,
+			Map<String, String> files) {
+		String origin = headers.get("origin");
+		String authVal = headers.get("authorization");
+		if (authVal == null) {
+			return WebHelper.processSimple(origin, Status.UNAUTHORIZED);
+		}
+		String[] authArr = authVal.split(" ");
+		if (authArr == null || authArr.length != 2) {
+			return WebHelper.processSimple(origin, Status.UNAUTHORIZED);
+		}
 
-        StringBuilder sb = new StringBuilder();
+		String auth = new String(Base64.decode(authArr[1], Base64.DEFAULT));
+		System.out.println("auth = " + auth);
+		if (!"username:password".equals(auth)) {
+			return WebHelper.processSimple(origin, Status.UNAUTHORIZED);
+		}
 
-        sb.append("{\n");
-        sb.append("  \"result\": \"OK\",\n");
-        sb.append("  \"deletedRows\": ").append(deletedRows);
-        sb.append("}\n");
+		@SuppressWarnings("deprecation")
+		Map<String, String> params = session.getParms();
 
-        RouteResult rr = RouteResult.newRouteResult(Status.OK, "application/json", sb.toString());
-        addCorsHeader(rr);
+		for (String key : params.keySet()) {
+			System.out.println(key + " = " + params.get(key));
+		}
 
-        RouteResult.print(rr);
-        System.out.println(sb.toString());
+		String siteId = params.get("siteId");
+		String siteUrl = params.get("siteUrl");
+		String siteName = params.get("siteName");
+		String siteType = params.get("siteType");
+		String myId = params.get("myId");
+		String myPw = params.get("myPw");
+		String regDate = params.get("regDate");
+		String memo = params.get("memo");
 
-        return rr;
-    }
+		Date rd = null;
+		try {
+			rd = DbConsts.SDF_DATE.parse(regDate);
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
 
-    private RouteResult processPut(Map<String, String> headers, NanoHTTPD.IHTTPSession session, String uri,
-                                   Map<String, String> files) {
-        Map<String, String> reqHeaders = session.getHeaders();
-        String authVal = reqHeaders.get("authorization");
-        if (authVal == null) {
-            return processSimple(Status.UNAUTHORIZED);
-        }
-        String[] authArr = authVal.split(" ");
-        if (authArr == null || authArr.length != 2) {
-            return processSimple(Status.UNAUTHORIZED);
-        }
+		PasswordBook aRow = new PasswordBook(Long.parseLong(siteId), siteUrl, siteName, siteType, myId, myPw,
+				rd.getTime(), System.currentTimeMillis(), memo);
+		pbRepo.updateRow(aRow);
 
-        String auth = new String(Base64.decode(authArr[1], Base64.DEFAULT));
-        System.out.println("auth = " + auth);
-        if (!"username:password".equals(auth)) {
-            return processSimple(Status.UNAUTHORIZED);
-        }
+		StringBuilder sb = new StringBuilder();
 
-        @SuppressWarnings("deprecation")
-        Map<String, String> params = session.getParms();
+		sb.append("{\n");
+		sb.append("  \"result\": \"OK\",\n");
+		sb.append("  \"data\": [\n");
+		sb.append(aRow.toJson());
+		sb.append("  ]\n");
+		sb.append("}\n");
 
-        for (String key : params.keySet()) {
-            System.out.println(key + " = " + params.get(key));
-        }
+		RouteResult rr = RouteResult.newRouteResult(Status.OK, "application/json", sb.toString());
+		WebHelper.addCorsHeader(origin, rr);
 
-        String siteId = params.get("siteId");
-        String siteUrl = params.get("siteUrl");
-        String siteName = params.get("siteName");
-        String siteType = params.get("siteType");
-        String myId = params.get("myId");
-        String myPw = params.get("myPw");
-        String regDate = params.get("regDate");
-        String memo = params.get("memo");
+		RouteResult.print(rr);
+		System.out.println(sb.toString());
 
-        Date rd = null;
-        try {
-            rd = DbConsts.SDF_DATE.parse(regDate);
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
+		return rr;
+	}
 
-        PasswordBook aRow = new PasswordBook(Long.parseLong(siteId), siteUrl, siteName, siteType, myId, myPw, rd.getTime(),
-                System.currentTimeMillis(), memo);
-        pbRepo.updateRow(aRow);
+	private RouteResult processPost(Map<String, String> headers, NanoHTTPD.IHTTPSession session, String uri,
+			Map<String, String> files) {
+		String origin = headers.get("origin");
+		String authVal = headers.get("authorization");
+		if (authVal == null) {
+			return WebHelper.processSimple(origin, Status.UNAUTHORIZED);
+		}
+		String[] authArr = authVal.split(" ");
+		if (authArr == null || authArr.length != 2) {
+			return WebHelper.processSimple(origin, Status.UNAUTHORIZED);
+		}
 
-        StringBuilder sb = new StringBuilder();
+		String auth = new String(Base64.decode(authArr[1], Base64.DEFAULT));
+		System.out.println("auth = " + auth);
+		if (!"username:password".equals(auth)) {
+			return WebHelper.processSimple(origin, Status.UNAUTHORIZED);
+		}
 
-        sb.append("{\n");
-        sb.append("  \"result\": \"OK\",\n");
-        sb.append("  \"data\": [\n");
-        sb.append(aRow.toJson());
-        sb.append("  ]\n");
-        sb.append("}\n");
+		@SuppressWarnings("deprecation")
+		Map<String, String> params = session.getParms();
 
-        RouteResult rr = RouteResult.newRouteResult(Status.OK, "application/json", sb.toString());
-        addCorsHeader(rr);
+		for (String key : params.keySet()) {
+			System.out.println(key + " = " + params.get(key));
+		}
 
-        RouteResult.print(rr);
-        System.out.println(sb.toString());
+		String siteUrl = params.get("siteUrl");
+		String siteName = params.get("siteName");
+		String siteType = params.get("siteType");
+		String myId = params.get("myId");
+		String myPw = params.get("myPw");
+		String regDate = params.get("regDate");
+		String memo = params.get("memo");
 
-        return rr;
-    }
+		Date rd = null;
+		try {
+			rd = DbConsts.SDF_DATE.parse(regDate);
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
 
-    private RouteResult processPost(Map<String, String> headers, NanoHTTPD.IHTTPSession session, String uri,
-                                    Map<String, String> files) {
-        Map<String, String> reqHeaders = session.getHeaders();
-        String authVal = reqHeaders.get("authorization");
-        if (authVal == null) {
-            return processSimple(Status.UNAUTHORIZED);
-        }
-        String[] authArr = authVal.split(" ");
-        if (authArr == null || authArr.length != 2) {
-            return processSimple(Status.UNAUTHORIZED);
-        }
+		PasswordBook aRow = new PasswordBook(null, siteUrl, siteName, siteType, myId, myPw, rd.getTime(),
+				System.currentTimeMillis(), memo);
+		pbRepo.updateRow(aRow);
 
-        String auth = new String(Base64.decode(authArr[1], Base64.DEFAULT));
-        System.out.println("auth = " + auth);
-        if (!"username:password".equals(auth)) {
-            return processSimple(Status.UNAUTHORIZED);
-        }
+		StringBuilder sb = new StringBuilder();
 
-        @SuppressWarnings("deprecation")
-        Map<String, String> params = session.getParms();
+		sb.append("{\n");
+		sb.append("  \"result\": \"OK\",\n");
+		sb.append("  \"data\": [\n");
+		sb.append(aRow.toJson());
+		sb.append("  ]\n");
+		sb.append("}\n");
 
-        for (String key : params.keySet()) {
-            System.out.println(key + " = " + params.get(key));
-        }
+		RouteResult rr = RouteResult.newRouteResult(Status.OK, "application/json", sb.toString());
+		WebHelper.addCorsHeader(origin, rr);
 
-        String siteUrl = params.get("siteUrl");
-        String siteName = params.get("siteName");
-        String siteType = params.get("siteType");
-        String myId = params.get("myId");
-        String myPw = params.get("myPw");
-        String regDate = params.get("regDate");
-        String memo = params.get("memo");
+		RouteResult.print(rr);
+		System.out.println(sb.toString());
 
-        Date rd = null;
-        try {
-            rd = DbConsts.SDF_DATE.parse(regDate);
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
+		return rr;
+	}
 
-        PasswordBook aRow = new PasswordBook(null, siteUrl, siteName, siteType, myId, myPw, rd.getTime(), System.currentTimeMillis(),
-                memo);
-        pbRepo.updateRow(aRow);
+	private RouteResult processGet(Map<String, String> headers, IHTTPSession session, String uri,
+			Map<String, String> files) {
+		String origin = headers.get("origin");
+		String authVal = headers.get("authorization");
+		if (authVal == null) {
+			return WebHelper.processSimple(origin, Status.UNAUTHORIZED);
+		}
+		String[] authArr = authVal.split(" ");
+		if (authArr == null || authArr.length != 2) {
+			return WebHelper.processSimple(origin, Status.UNAUTHORIZED);
+		}
 
-        StringBuilder sb = new StringBuilder();
+		String auth = new String(Base64.decode(authArr[1], Base64.DEFAULT));
+		System.out.println("auth = " + auth);
+		if (!"username:password".equals(auth)) {
+			return WebHelper.processSimple(origin, Status.UNAUTHORIZED);
+		}
 
-        sb.append("{\n");
-        sb.append("  \"result\": \"OK\",\n");
-        sb.append("  \"data\": [\n");
-        sb.append(aRow.toJson());
-        sb.append("  ]\n");
-        sb.append("}\n");
+		@SuppressWarnings("deprecation")
+		String keyword = session.getParms().get("q");
 
-        RouteResult rr = RouteResult.newRouteResult(Status.OK, "application/json", sb.toString());
-        addCorsHeader(rr);
+		StringBuilder sb = new StringBuilder();
 
-        RouteResult.print(rr);
-        System.out.println(sb.toString());
+		sb.append("{\n");
+		sb.append("  \"result\": \"OK\",\n");
+		sb.append("  \"data\": [\n");
 
-        return rr;
-    }
+		List<PasswordBook> rows = null;
+		if (keyword != null && keyword.length() > 0) {
+			rows = pbRepo.findRows(keyword);
+		} else {
+			rows = pbRepo.findRows();
+		}
 
-    private RouteResult processGet(Map<String, String> headers, IHTTPSession session, String uri,
-                                   Map<String, String> files) {
-        Map<String, String> reqHeaders = session.getHeaders();
-        String authVal = reqHeaders.get("authorization");
-        if (authVal == null) {
-            return processSimple(Status.UNAUTHORIZED);
-        }
-        String[] authArr = authVal.split(" ");
-        if (authArr == null || authArr.length != 2) {
-            return processSimple(Status.UNAUTHORIZED);
-        }
+		int i = 0;
+		for (PasswordBook r : rows) {
+			if (i == 0) {
+				sb.append(r.toJson()).append('\n');
+			} else {
+				sb.append(',').append(r.toJson()).append('\n');
+			}
+			i++;
+		}
 
-        String auth = new String(Base64.decode(authArr[1], Base64.DEFAULT));
-        System.out.println("auth = " + auth);
-        if (!"username:password".equals(auth)) {
-            return processSimple(Status.UNAUTHORIZED);
-        }
+		sb.append("  ]\n");
+		sb.append("}\n");
 
-        @SuppressWarnings("deprecation")
-        String keyword = session.getParms().get("q");
+		RouteResult rr = RouteResult.newRouteResult(Status.OK, "application/json", sb.toString());
+		WebHelper.addCorsHeader(origin, rr);
 
-        StringBuilder sb = new StringBuilder();
+		RouteResult.print(rr);
+		System.out.println(sb.toString());
 
-        sb.append("{\n");
-        sb.append("  \"result\": \"OK\",\n");
-        sb.append("  \"data\": [\n");
-
-        List<PasswordBook> rows = null;
-        if (keyword != null && keyword.length() > 0) {
-            rows = pbRepo.findRows(keyword);
-        } else {
-            rows = pbRepo.findRows();
-        }
-
-        int i = 0;
-        for (PasswordBook r : rows) {
-            if (i == 0) {
-                sb.append(r.toJson()).append('\n');
-            } else {
-                sb.append(',').append(r.toJson()).append('\n');
-            }
-            i++;
-        }
-
-        sb.append("  ]\n");
-        sb.append("}\n");
-
-        RouteResult rr = RouteResult.newRouteResult(Status.OK, "application/json", sb.toString());
-        addCorsHeader(rr);
-
-        RouteResult.print(rr);
-        System.out.println(sb.toString());
-
-        return rr;
-    }
+		return rr;
+	}
 
 }

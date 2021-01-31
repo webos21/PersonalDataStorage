@@ -6,7 +6,7 @@ import './App.scss';
 
 const isAuthenticated = () => {
   let cookies = new Cookies();
-  let data = cookies.get('X-PB-AUTH');
+  let data = cookies.get('X-PDS-AUTH');
   console.log(data);
   return (data !== undefined && data !== null);
 }

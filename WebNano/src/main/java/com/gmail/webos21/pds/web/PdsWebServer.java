@@ -1,19 +1,21 @@
 package com.gmail.webos21.pds.web;
 
-import com.gmail.webos21.nano.DynamicRouter;
-import com.gmail.webos21.nano.NanoHTTPD;
-import com.gmail.webos21.nano.RouteResult;
-import com.gmail.webos21.nano.StaticRouter;
-import com.gmail.webos21.pds.web.handler.AuthHandler;
-import com.gmail.webos21.pds.web.handler.PasswordBookHandler;
-import com.gmail.webos21.pds.web.log.UiLog;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
+
+import com.gmail.webos21.nano.DynamicRouter;
+import com.gmail.webos21.nano.NanoHTTPD;
+import com.gmail.webos21.nano.RouteResult;
+import com.gmail.webos21.nano.StaticRouter;
+import com.gmail.webos21.pds.web.handler.AuthHandler;
+import com.gmail.webos21.pds.web.handler.FsHandler;
+import com.gmail.webos21.pds.web.handler.PasswordBookHandler;
+import com.gmail.webos21.pds.web.handler.WebHelper;
+import com.gmail.webos21.pds.web.log.UiLog;
 
 public class PdsWebServer extends NanoHTTPD {
 
@@ -29,13 +31,18 @@ public class PdsWebServer extends NanoHTTPD {
 	private Map<String, Boolean> whiteMap;
 	private HttpNewClientListener cl;
 
-	public PdsWebServer(String ipaddr, int port, File wwwroot) throws IOException {
+	private String accessCode;
+
+	public PdsWebServer(String ipaddr, int port, String otp, File wwwroot, File fsroot) throws IOException {
 		super(ipaddr, port);
+
+		this.accessCode = OnetimePass.encryptOtp(otp);
 
 		staticRouter = new StaticRouter(wwwroot);
 		dynamicRouter = new DynamicRouter();
 
-		dynamicRouter.addDynamicPage("/pds/v1/auth", AuthHandler.class);
+		dynamicRouter.addDynamicPage("/pds/v1/auth", AuthHandler.class, accessCode);
+		dynamicRouter.addDynamicPage("/pds/v1/fs", FsHandler.class, "/pds/v1/fs", fsroot);
 		dynamicRouter.addDynamicPage("/pds/v1/pwbook", PasswordBookHandler.class);
 
 		mimeTypes().put("xhtml", "application/xhtml+xml");
@@ -100,6 +107,11 @@ public class PdsWebServer extends NanoHTTPD {
 				return newFixedLengthResponse(Response.Status.UNAUTHORIZED, NanoHTTPD.MIME_PLAINTEXT,
 						"Granting is processing on App!!");
 			}
+		}
+
+		RouteResult chkAuth = WebHelper.checkAuth(session, uri, accessCode);
+		if (chkAuth != null) {
+			return routeToResponse(chkAuth);
 		}
 
 		if (DEBUG) {

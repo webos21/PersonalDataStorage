@@ -8,6 +8,7 @@ import PbFormAdd from './PbFormAdd.js';
 import PbFormEdit from './PbFormEdit.js';
 import PbFormDel from './PbFormDel.js';
 import update from 'immutability-helper';
+import Cookies from 'universal-cookie';
 
 class PasswordBook extends Component {
   constructor(props) {
@@ -64,15 +65,17 @@ class PasswordBook extends Component {
 
   requestFetch(query) {
     const parentState = this;
-    const reqUri = '/pwdata.do?q=' +
-      (query === null || query === undefined ? '' : query);
+    const REQ_URI = (process.env.NODE_ENV !== 'production') ? 'http://localhost:28080/pds/v1/pwbook' : '/pds/v1/pwbook';
+
+    const reqUri = REQ_URI + ((query === null || query === undefined) ? '' : '?q=' + query);
+    const cookies = new Cookies();
 
     fetch(reqUri, {
       method: 'GET',
       headers: new Headers({
+        'X-PDS-AUTH': cookies.get("X-PDS-AUTH"),
         'Authorization': 'Basic ' + btoa('username:password'),
-      }),
-      credentials: 'include',
+      })
     }).then(function (res) {
       if (!res.ok) {
         throw Error("서버응답 : " + res.statusText + "(" + res.status + ")");

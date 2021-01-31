@@ -58,7 +58,6 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
-import java.net.URL;
 import java.net.URLDecoder;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
@@ -70,14 +69,12 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
-import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Properties;
 import java.util.StringTokenizer;
 import java.util.TimeZone;
 import java.util.logging.Level;
@@ -532,8 +529,6 @@ public abstract class NanoHTTPD {
 			.compile(CONTENT_DISPOSITION_ATTRIBUTE_REGEX);
 
 	protected static class ContentType {
-
-		private static final String ASCII_ENCODING = "US-ASCII";
 
 		private static final String MULTIPART_FORM_DATA_HEADER = "multipart/form-data";
 

@@ -1,10 +1,14 @@
 import React, { useState } from 'react';
 import { Modal, ModalHeader, ModalBody, ModalFooter, Button, Col, Form, FormGroup, FormFeedback, Label } from 'reactstrap';
 import { useForm } from "react-hook-form";
+import Cookies from 'universal-cookie';
 
 const PbFormEdit = props => {
 
+    const REQ_URI = (process.env.NODE_ENV !== 'production') ? 'http://localhost:28080/pds/v1/pwbook' : '/pds/v1/pwbook';
+
     const initValues = props.dataFromParent;
+    const cookies = new Cookies();
 
     const dateFormat = (dateObj) => {
         var year = dateObj.getFullYear();
@@ -43,13 +47,14 @@ const PbFormEdit = props => {
     const onSubmit = (data, e) => {
         const formData = new FormData(e.target);
 
-        fetch('/pwdata.do', {
+        fetch(REQ_URI, {
             method: 'PUT',
             headers: new Headers({
+                'X-PDS-AUTH': cookies.get("X-PDS-AUTH"),
                 'Authorization': 'Basic ' + btoa('username:password'),
             }),
-            credentials: 'include',
-            body: formData,
+            credentials: "include",
+            body: formData
         }).then(function (res) {
             if (!res.ok) {
                 throw Error("서버응답 : " + res.statusText + "(" + res.status + ")");

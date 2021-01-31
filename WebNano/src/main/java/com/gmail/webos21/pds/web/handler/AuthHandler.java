@@ -1,112 +1,93 @@
 package com.gmail.webos21.pds.web.handler;
 
-import com.gmail.webos21.crypto.Base64;
+import java.util.Map;
+
+import com.gmail.webos21.nano.NanoHTTPD;
 import com.gmail.webos21.nano.NanoHTTPD.IHTTPSession;
 import com.gmail.webos21.nano.NanoHTTPD.Response.Status;
 import com.gmail.webos21.nano.RouteResult;
 import com.gmail.webos21.nano.UriHandler;
 
-import java.security.InvalidAlgorithmParameterException;
-import java.security.InvalidKeyException;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.util.Map;
-
-import javax.crypto.BadPaddingException;
-import javax.crypto.Cipher;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.NoSuchPaddingException;
-import javax.crypto.spec.IvParameterSpec;
-import javax.crypto.spec.SecretKeySpec;
-
 public class AuthHandler implements UriHandler {
 
-    public static int DEF_AES_BYTELEN = 32;
+	private String accessCode;
 
-    private static String ALG_AES_KEY = "AES";
+	public AuthHandler(String accessCode) {
+		this.accessCode = accessCode;
+	}
 
-    private static String ALG_AES_CIPHER = "AES/CBC/PKCS5Padding";
+	@Override
+	public RouteResult process(Map<String, String> headers, IHTTPSession session, String uri,
+			Map<String, String> files) {
+		System.out.println("\n=========================================\n");
+		System.out.println("Response) " + session.getMethod() + " " + uri);
 
-    private static String PLAIN_PASSWORD = "test1234";
+		switch (session.getMethod()) {
+		case OPTIONS:
+			return WebHelper.processSimple(headers.get("origin"), Status.OK);
+		case POST:
+			return processPost(headers, session, uri, files);
+		case GET:
+			return processGet(headers, session, uri, files);
+		case PUT:
+			return processPut(headers, session, uri, files);
+		case DELETE:
+			return processDelete(headers, session, uri);
+		default:
+			return WebHelper.processSimple(headers.get("origin"), Status.METHOD_NOT_ALLOWED);
+		}
+	}
 
-    private String validPassword;
+	private RouteResult processDelete(Map<String, String> headers, IHTTPSession session, String uri) {
+		return WebHelper.processSimple(headers.get("origin"), Status.BAD_REQUEST);
+	}
 
-    public AuthHandler() {
-        byte[] keyBytes = "PasswordBook".getBytes();
-        byte[] iv = "PasswordBook1234".getBytes();
+	private RouteResult processPut(Map<String, String> headers, NanoHTTPD.IHTTPSession session, String uri,
+			Map<String, String> files) {
+		return WebHelper.processSimple(headers.get("origin"), Status.BAD_REQUEST);
+	}
 
-        try {
-            MessageDigest sha256 = MessageDigest.getInstance("SHA-256");
-            byte[] aesKeyBytes = sha256.digest(keyBytes);
+	private RouteResult processPost(Map<String, String> headers, NanoHTTPD.IHTTPSession session, String uri,
+			Map<String, String> files) {
 
-            SecretKeySpec secretKey = new SecretKeySpec(aesKeyBytes, ALG_AES_KEY);
+		StringBuilder sb = new StringBuilder();
 
-            Cipher cipher = Cipher.getInstance(ALG_AES_CIPHER);
-            cipher.init(Cipher.ENCRYPT_MODE, secretKey, new IvParameterSpec(iv));
-            cipher.update(PLAIN_PASSWORD.getBytes());
-            byte[] encryptBytes = cipher.doFinal();
+		@SuppressWarnings("deprecation")
+		Map<String, String> parms = session.getParms();
+		String pbpwd = parms.get("pbpwd");
+		String origin = headers.get("origin");
 
-            validPassword = Base64.encodeToString(encryptBytes, Base64.DEFAULT);
-            validPassword = validPassword.trim();
+		RouteResult rr = null;
+		if (accessCode.equals(pbpwd)) {
+			sb.append("{\n");
+			sb.append("  \"result\": \"OK\",\n");
+			sb.append("  \"auth\": {\n");
+			sb.append("    \"ckey\": \"X-PDS-AUTH\",\n");
+			sb.append("    \"cval\": \"" + accessCode + "\"\n");
+			sb.append("  }\n");
+			sb.append("}\n");
 
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        } catch (NoSuchPaddingException e) {
-            e.printStackTrace();
-        } catch (InvalidKeyException e) {
-            e.printStackTrace();
-        } catch (InvalidAlgorithmParameterException e) {
-            e.printStackTrace();
-        } catch (IllegalBlockSizeException e) {
-            e.printStackTrace();
-        } catch (BadPaddingException e) {
-            e.printStackTrace();
-        }
-    }
+			rr = RouteResult.newRouteResult(Status.OK, "application/json", sb.toString());
+			rr.addHeader("Set-Cookies", "X-PDS-AUTH=" + accessCode + "; SameSite=None; Secure");
+		} else {
+			sb.append("{\n");
+			sb.append("  \"result\": \"FAIL\"\n");
+			sb.append("}\n");
+			rr = RouteResult.newRouteResult(Status.UNAUTHORIZED, "application/json", sb.toString());
+			rr.addHeader("Set-Cookies", "X-PDS-AUTH=; SameSite=None; Secure");
+		}
 
-    @Override
-    public RouteResult process(Map<String, String> headers, IHTTPSession session, String uri,
-                               Map<String, String> files) {
-        System.out.println("URI : " + uri);
+		WebHelper.addCorsHeader(origin, rr);
 
-        StringBuilder sb = new StringBuilder();
+		RouteResult.print(rr);
+		System.out.println(sb.toString());
 
-        @SuppressWarnings("deprecation")
-        Map<String, String> parms = session.getParms();
-        String pbpwd = parms.get("pbpwd");
+		return rr;
+	}
 
-        System.out.println("validPassword : " + validPassword + " / pbpwd :" + pbpwd);
-
-        RouteResult rr = null;
-        if (validPassword.equals(pbpwd)) {
-            sb.append("{\n");
-            sb.append("  \"result\": \"OK\",\n");
-            sb.append("  \"auth\": {\n");
-            sb.append("    \"ckey\": \"X-PB-AUTH\",\n");
-            sb.append("    \"cval\": \"test\"\n");
-            sb.append("  }\n");
-            sb.append("}\n");
-
-            rr = RouteResult.newRouteResult(Status.OK, "application/json", sb.toString());
-            rr.addHeader("Set-Cookies", "X-PB-AUTH=test;");
-        } else {
-            sb.append("{\n");
-            sb.append("  \"result\": \"FAIL\"\n");
-            sb.append("}\n");
-            rr = RouteResult.newRouteResult(Status.UNAUTHORIZED, "application/json", sb.toString());
-            rr.addHeader("Set-Cookies", "X-PB-AUTH=;");
-        }
-
-        rr.addHeader("Access-Control-Allow-Origin", "*");
-        rr.addHeader("Access-Control-Allow-Credentials", "true");
-        rr.addHeader("Access-Control-Allow-Headers", "true");
-        rr.addHeader("Access-Control-Allow-Methods", "GET,DELETE,POST,PUT,HEAD,OPTIONS");
-        rr.addHeader("Access-Control-Max-Age", "86400");
-
-        RouteResult.print(rr);
-        System.out.println(sb.toString());
-
-        return rr;
-    }
+	private RouteResult processGet(Map<String, String> headers, IHTTPSession session, String uri,
+			Map<String, String> files) {
+		return WebHelper.processSimple(headers.get("origin"), Status.BAD_REQUEST);
+	}
 
 }

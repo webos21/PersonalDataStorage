@@ -18,11 +18,11 @@ class PbLogin extends Component {
                 <Card className="text-white bg-primary py-5 d-md-down-none" style={{ width: '44%' }}>
                   <CardBody className="text-center">
                     <div>
-                      <h2>PasswordBook Web</h2>
+                      <h2>PersonalDataStorage Web</h2>
                       <hr />
-                      <p className="text-left">암호책 App은 비밀번호를 보관하게 하는 유용한 도구입니다.
+                      <p className="text-left">개인자료보관소 App은 개인의 다양한 데이터를 보관하게 하는 유용한 도구입니다.
                          여기에 사용 편의성을 돕는 웹페이지를 App이 서비스 해 줍니다.</p>
-                      <a href="https://webos21.github.io/PasswordBook" target="_blank" rel="noopener noreferrer">
+                      <a href="https://webos21.github.io/PersonalDataStorage" target="_blank" rel="noopener noreferrer">
                         <Button color="primary" className="mt-3" active tabIndex={-1}>홈페이지 가기</Button>
                       </a>
                     </div>
