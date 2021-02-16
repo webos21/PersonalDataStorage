@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Button, Card, CardBody, CardGroup, Col, Container, Row } from 'reactstrap';
-import PbLoginForm from './PbLoginForm';
+import PbLoginForm from './LoginForm';
 
 class PbLogin extends Component {
   render() {

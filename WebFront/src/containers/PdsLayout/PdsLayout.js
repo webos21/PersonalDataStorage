@@ -16,12 +16,12 @@ import {
   AppSidebarNav2 as AppSidebarNav,
 } from '@coreui/react';
 // sidebar nav config
-import navigation from '../../_pbnav';
+import navigation from '../../_nav';
 // routes config
-import routes from '../../pbroutes';
+import routes from '../../routes';
 
-const PbFooter = React.lazy(() => import('./PbFooter'));
-const PbHeader = React.lazy(() => import('./PbHeader'));
+const PbFooter = React.lazy(() => import('./PdsFooter'));
+const PbHeader = React.lazy(() => import('./PdsHeader'));
 
 class PbLayout extends Component {
 

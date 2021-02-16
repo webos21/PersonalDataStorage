@@ -957,13 +957,8 @@ public abstract class NanoHTTPD {
 						&& (connection == null || !connection.matches("(?i).*close.*"));
 
 				// Ok, now do the serve()
-
-				// TODO: long body_size = getBodySize();
-				// TODO: long pos_before_serve = this.inputStream.totalRead()
 				// (requires implementation for totalRead())
 				r = serve(this);
-				// TODO: this.inputStream.skip(body_size -
-				// (this.inputStream.totalRead() - pos_before_serve))
 
 				if (r == null) {
 					throw new ResponseException(Response.Status.INTERNAL_ERROR,
@@ -1325,7 +1320,6 @@ public abstract class NanoHTTPD {
 			try {
 				return valueOf(method);
 			} catch (IllegalArgumentException e) {
-				// TODO: Log it?
 				return null;
 			}
 		}
@@ -1626,7 +1620,6 @@ public abstract class NanoHTTPD {
 			}
 		}
 
-		@SuppressWarnings("static-method")
 		protected void printHeader(PrintWriter pw, String key, String value) {
 			pw.append(key).append(": ").append(value).append("\r\n");
 		}
@@ -2142,7 +2135,6 @@ public abstract class NanoHTTPD {
 	 *         it. Default this option is on for text content and off for
 	 *         everything. Override this for custom semantics.
 	 */
-	@SuppressWarnings("static-method")
 	protected boolean useGzipWhenAccepted(Response r) {
 		return r.getMimeType() != null
 				&& (r.getMimeType().toLowerCase().contains("text/") || r.getMimeType().toLowerCase().contains("/json"));

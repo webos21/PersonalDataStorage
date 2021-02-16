@@ -4,6 +4,13 @@ import { HashRouter, Route, Switch, Redirect } from 'react-router-dom';
 // import { renderRoutes } from 'react-router-config';
 import './App.scss';
 
+// Containers
+const PdsLayout = React.lazy(() => import('./containers/PdsLayout'));
+
+// Pages
+const Page500 = React.lazy(() => import('./service/Page500/Page500'));
+const Login = React.lazy(() => import('./service/Login'));
+
 const isAuthenticated = () => {
   let cookies = new Cookies();
   let data = cookies.get('X-PDS-AUTH');
@@ -29,13 +36,6 @@ const AuthenticatedRoute = ({ component: Component, ...rest }) => (
 
 const loading = () => <div className="animated fadeIn pt-3 text-center">Loading...</div>;
 
-// Containers
-const PbLayout = React.lazy(() => import('./containers/PbLayout'));
-
-// Pages
-const Page500 = React.lazy(() => import('./views/Pages/Page500'));
-const PbLogin = React.lazy(() => import('./views/Pages/PbLogin'));
-
 class App extends Component {
 
   render() {
@@ -43,8 +43,8 @@ class App extends Component {
       <HashRouter>
         <React.Suspense fallback={loading()}>
           <Switch>
-            <UnauthenticatedRoute exact path="/login" name="Login Page" component={PbLogin} />
-            <AuthenticatedRoute path="/" name="Home" component={PbLayout} />} />
+            <UnauthenticatedRoute exact path="/login" name="Login Page" component={Login} />
+            <AuthenticatedRoute path="/" name="Home" component={PdsLayout} />} />
               <Route exact path="/500" name="Page 500" component={Page500} />
           </Switch>
         </React.Suspense>

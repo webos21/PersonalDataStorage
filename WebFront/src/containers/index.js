@@ -1,6 +1,3 @@
-// import DefaultLayout from './DefaultLayout';
-// export { DefaultLayout };
+import PdsLayout from './PdsLayout/PdsLayout';
 
-import PbLayout from './PbLayout';
-
-export { PbLayout };
+export { PdsLayout };

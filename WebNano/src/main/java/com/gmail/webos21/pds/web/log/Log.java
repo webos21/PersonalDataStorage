@@ -252,7 +252,6 @@ public final class Log {
 	}
 
 	/** @hide */
-	@SuppressWarnings("unused")
 	public static int println(int bufID, int priority, String tag, String msg) {
 		StringBuilder sb = new StringBuilder();
 		sb.append(PRIORITYS[priority]).append('|').append(tag).append('|').append(msg);

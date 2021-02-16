@@ -203,7 +203,7 @@ public final class ContentValues implements Serializable {
 	/**
 	 * Indicates whether this collection is empty.
 	 *
-	 * @return true iff size == 0 {@hide} TODO: consider exposing this new method
+	 * @return true iff size == 0 {@hide}
 	 *         publicly
 	 */
 	public boolean isEmpty() {

@@ -1,7 +1,7 @@
 {
-  "name": "@webos21/PasswordBook",
+  "name": "@webos21/PersonalDataStorage",
   "version": "2.6.0",
-  "description": "PasswordBook Web",
+  "description": "Personal Data Service Web",
   "author": "Cheolmin Jo",
   "homepage": "/",
   "copyright": "Copyright 2020 NeoFoundtion Cheolmin Jo",
@@ -9,7 +9,7 @@
   "private": true,
   "repository": {
     "type": "git",
-    "url": "git@github.com:webos21/PasswordBook.git"
+    "url": "git@github.com:webos21/PersonalDataStorage.git"
   },
   "dependencies": {
     "@coreui/coreui": "^2.1.16",
