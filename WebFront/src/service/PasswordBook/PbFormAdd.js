@@ -28,7 +28,6 @@ const PbFormAdd = props => {
                 'X-PDS-AUTH': cookies.get("X-PDS-AUTH"),
                 'Authorization': 'Basic ' + btoa('username:password'),
             }),
-            credentials: "include",
             body: formData
         }).then(function (res) {
             if (!res.ok) {

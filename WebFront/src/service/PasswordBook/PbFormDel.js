@@ -44,7 +44,6 @@ const PbFormDel = props => {
                 'X-PDS-AUTH': cookies.get("X-PDS-AUTH"),
                 'Authorization': 'Basic ' + btoa('username:password'),
             }),
-            credentials: "include"
         }).then(function (res) {
             if (!res.ok) {
                 throw Error("서버응답 : " + res.statusText + "(" + res.status + ")");
