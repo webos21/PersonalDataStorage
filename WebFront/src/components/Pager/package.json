@@ -1,6 +1,6 @@
 {
-  "name": "pager",
+  "name": "Pager",
   "version": "0.0.0",
   "private": true,
-  "main": "./pager.js"
+  "main": "./Pager.js"
 }

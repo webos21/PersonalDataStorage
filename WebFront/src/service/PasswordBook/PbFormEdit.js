@@ -62,6 +62,9 @@ const PbFormEdit = props => {
         }).then(function (resJson) {
             console.log("PbFormEdit::fetch => " + resJson.result);
             if (resJson.result === "OK") {
+                parent.initValues.id = parent.siteId;
+                initValues.siteUrl = siteUrl;
+                initValues.memo = memo;
                 toggleOpen();
                 props.callbackFromParent(resJson.data[0]);
             }

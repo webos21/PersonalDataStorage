@@ -3,7 +3,7 @@ import {
   Button, Card, CardBody, CardHeader, Col, Row, Table,
   Form, Input, InputGroup, InputGroupAddon, InputGroupText,
 } from 'reactstrap';
-import Pager from '../../components/Pager/pager.js';
+import Pager from '../../components/Pager';
 import PbFormAdd from './PbFormAdd.js';
 import PbFormEdit from './PbFormEdit.js';
 import PbFormDel from './PbFormDel.js';
@@ -49,15 +49,16 @@ class PasswordBook extends Component {
   dataChangedCallback(modifiedData) {
     console.log("PasswordBook::dataChangedCallback");
     if (modifiedData !== undefined && modifiedData !== null) {
+      console.log("\n\nbefore = " + JSON.stringify(this.state.dataSet));
       for (var i = 0; i < this.state.dataSet.length; i++) {
         if (this.state.dataSet[i].id === modifiedData.id) {
-          console.log("\n\nbefore = " + JSON.stringify(this.state.dataSet[i]));
-          var newDataSet = update(this.state.dataSet, { [i]: { $set: modifiedData } });
-          console.log("\n\nafter = " + JSON.stringify(newDataSet[i]));
-          this.setState({ dataSet: newDataSet });
+          var newDataSet = update(this.state.dataSet, { $splice: [[i, 1, modifiedData ]] });
+          var renderTimes = this.state.tableRerender + 1;
+          this.setState({ tableRerender: renderTimes, dataSet: newDataSet });
           break;
         }
       }
+      console.log("\n\nafter = " + JSON.stringify(this.state.dataSet));
     } else {
       this.requestFetch(this.state.keyword);
     }
@@ -89,6 +90,7 @@ class PasswordBook extends Component {
 
       parentState.setState({
         dataSet: resJson.data,
+        currentPage: 0,
         totalPage: calcPages,
         keywordError: '',
       });

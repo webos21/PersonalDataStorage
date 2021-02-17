@@ -14,7 +14,7 @@ const Login = React.lazy(() => import('./service/Login'));
 const isAuthenticated = () => {
   let cookies = new Cookies();
   let data = cookies.get('X-PDS-AUTH');
-  console.log(data);
+  // console.log(data);
   return (data !== undefined && data !== null);
 }
 

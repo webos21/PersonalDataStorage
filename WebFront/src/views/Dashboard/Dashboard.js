@@ -198,6 +198,7 @@ const cardChartData4 = {
     {
       label: 'My First dataset',
       backgroundColor: 'rgba(255,255,255,.3)',
+      barPercentage: 0.6,
       borderColor: 'transparent',
       data: [78, 81, 80, 45, 34, 12, 40, 75, 34, 89, 32, 68, 54, 72, 18, 98],
     },
@@ -217,7 +218,6 @@ const cardChartOpts4 = {
     xAxes: [
       {
         display: false,
-        barPercentage: 0.6,
       }],
     yAxes: [
       {
