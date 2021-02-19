@@ -2,6 +2,8 @@ package com.gmail.webos21.pds.db.domain;
 
 import java.util.Date;
 
+import com.gmail.webos21.pds.db.JsonHelper;
+
 public class Diary {
 
     private Long id;
@@ -74,7 +76,7 @@ public class Diary {
         sb.append("  \"wdate\": ").append(wdate.getTime()).append(",\n");
         sb.append("  \"weather\": ").append(weather).append(",\n");
         sb.append("  \"title\": \"").append(title).append("\",\n");
-        sb.append("  \"content\": \"").append(content).append("\"\n");
+        sb.append("  \"content\": \"").append(JsonHelper.escape(content)).append("\"\n");
         sb.append('}').append('\n');
 
         return sb.toString();

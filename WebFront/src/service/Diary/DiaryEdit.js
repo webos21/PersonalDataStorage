@@ -3,27 +3,41 @@ import { Modal, ModalHeader, ModalBody, ModalFooter, Button, Col, Form, FormGrou
 import { useForm, Controller } from "react-hook-form";
 import Cookies from 'universal-cookie';
 
-const PbFormAdd = props => {
+const DiaryEdit = props => {
 
-    const REQ_URI = (process.env.NODE_ENV !== 'production') ? 'http://' + window.location.hostname + ':28080/pds/v1/pwbook' : '/pds/v1/pwbook';
+    const REQ_URI = (process.env.NODE_ENV !== 'production') ? 'http://' + window.location.hostname + ':28080/pds/v1/diary' : '/pds/v1/diary';
+
+    const cookies = new Cookies();
+
+    const dateFormat = (dateObj) => {
+        var year = dateObj.getFullYear();
+        var month = dateObj.getMonth() + 1;
+        if (month < 10) {
+            month = '0' + month;
+        }
+        var date = dateObj.getDate();
+        if (date < 10) {
+            date = '0' + date;
+        }
+        return year + "-" + month + "-" + date
+    }
 
     const { handleSubmit, errors, setError, control } = useForm({
         submitFocusError: true,
         nativeValidation: false,
     });
 
-    const [modalShow, setModalShow] = useState(false);
+    const [modalShowEdit, setModalShow] = useState(false);
 
     const toggleOpen = () => {
-        setModalShow(!modalShow);
+        setModalShow(!modalShowEdit);
     }
 
     const onSubmit = (data, e) => {
         const formData = new FormData(e.target);
-        const cookies = new Cookies();
 
         fetch(REQ_URI, {
-            method: 'POST',
+            method: 'PUT',
             headers: new Headers({
                 'X-PDS-AUTH': cookies.get("X-PDS-AUTH"),
                 'Authorization': 'Basic ' + btoa('username:password'),
@@ -38,26 +52,25 @@ const PbFormAdd = props => {
             }
             return res.json();
         }).then(function (resJson) {
-            console.log("PbFormAdd::fetch => " + resJson.result);
+            console.log("DiaryEdit::fetch => " + resJson.result);
             if (resJson.result === "OK") {
                 toggleOpen();
-                props.callbackFromParent();
+                props.callbackFromParent(resJson.data[0]);
             }
         }).catch(function (error) {
-            console.log("PbFormAdd::fetch => " + error);
+            console.log("DiaryEdit::fetch => " + error);
             setError("siteUrl", "serverResponse", error.message);
-            //e.target.reset();
         });
     };
 
     return (
-        <div className="pull-right">
-            <Button color="success" className="btn-sm pull-right" onClick={toggleOpen}>
-                <i className="fa fa-plus"></i>&nbsp;추가</Button>
-            <Modal isOpen={modalShow} toggle={toggleOpen}
-                className={'modal-success ' + props.className}>
+        <span>
+            <Button color="warning" className="btn-sm" onClick={toggleOpen}>
+                <i className="fa fa-edit"></i>&nbsp;수정</Button>
+            <Modal isOpen={modalShowEdit} toggle={toggleOpen}
+                className={'modal-warning ' + props.className}>
                 <Form onSubmit={handleSubmit(onSubmit)}>
-                    <ModalHeader toggle={toggleOpen}>비밀번호 추가</ModalHeader>
+                    <ModalHeader toggle={toggleOpen}>비밀번호 수정</ModalHeader>
                     <ModalBody>
                         <FormGroup row>
                             <Col md="3">
@@ -66,8 +79,16 @@ const PbFormAdd = props => {
                             <Col xs="12" md="9">
                                 <Controller
                                     as={<Input />}
+                                    type="hidden"
+                                    control={control}
+                                    defaultValue={props.dataFromParent.id}
+                                    name="siteId"
+                                    rules={{ required: true }} />
+                                <Controller
+                                    as={<Input />}
                                     type="url"
                                     control={control}
+                                    defaultValue={props.dataFromParent.siteUrl}
                                     name="siteUrl" id="siteUrl" placeholder="항목 URL을 입력해 주세요."
                                     className={"form-control" + (errors.siteUrl ? " is-invalid" : " is-valid")}
                                     rules={{
@@ -97,6 +118,7 @@ const PbFormAdd = props => {
                                     as={<Input />}
                                     type="text"
                                     control={control}
+                                    defaultValue={props.dataFromParent.siteName}
                                     name="siteName" id="siteName" placeholder="항목 이름을 입력해 주세요."
                                     className={"form-control" + (errors.siteName ? " is-invalid" : " is-valid")}
                                     rules={{
@@ -126,6 +148,7 @@ const PbFormAdd = props => {
                                     as={<Input />}
                                     type="text"
                                     control={control}
+                                    defaultValue={props.dataFromParent.siteType}
                                     name="siteType" id="siteType" placeholder="항목 유형을 입력해 주세요."
                                     className={"form-control" + (errors.siteType ? " is-invalid" : " is-valid")}
                                     rules={{
@@ -155,6 +178,7 @@ const PbFormAdd = props => {
                                     as={<Input />}
                                     type="text"
                                     control={control}
+                                    defaultValue={props.dataFromParent.myId}
                                     name="myId" id="myId" placeholder="아이디를 입력해 주세요."
                                     className={"form-control" + (errors.myId ? " is-invalid" : " is-valid")}
                                     rules={{
@@ -184,6 +208,7 @@ const PbFormAdd = props => {
                                     as={<Input />}
                                     type="text"
                                     control={control}
+                                    defaultValue={props.dataFromParent.myPw}
                                     name="myPw" id="myPw" placeholder="비밀번호를 입력해 주세요."
                                     className={"form-control" + (errors.myPw ? " is-invalid" : " is-valid")}
                                     rules={{
@@ -213,6 +238,7 @@ const PbFormAdd = props => {
                                     as={<Input />}
                                     type="date"
                                     control={control}
+                                    defaultValue={dateFormat(new Date(props.dataFromParent.regDate))}
                                     name="regDate" id="regDate" placeholder="가입일자를 선택해 주세요."
                                     className={"form-control" + (errors.regDate ? " is-invalid" : " is-valid")}
                                     rules={{
@@ -232,7 +258,9 @@ const PbFormAdd = props => {
                             <Col xs="12" md="9">
                                 <Controller
                                     as={<textarea />}
+                                    type="text"
                                     control={control}
+                                    defaultValue={props.dataFromParent.memo}
                                     name="memo" id="memo" placeholder="메모를 입력해 주세요."
                                     className={"form-control" + (errors.memo ? " is-invalid" : " is-valid")}
                                 />
@@ -242,13 +270,13 @@ const PbFormAdd = props => {
 
                     </ModalBody>
                     <ModalFooter>
-                        <Button type="submit" color="success">추가</Button>{' '}
+                        <Button type="submit" color="warning">수정</Button>{' '}
                         <Button color="secondary" onClick={toggleOpen}>취소</Button>
                     </ModalFooter>
                 </Form>
             </Modal>
-        </div>
+        </span>
     );
 };
 
-export default PbFormAdd;
+export default DiaryEdit;

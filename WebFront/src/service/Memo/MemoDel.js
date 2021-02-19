@@ -3,9 +3,9 @@ import { Modal, ModalHeader, ModalBody, ModalFooter, Button, Form, FormGroup, Fo
 import { useForm } from "react-hook-form";
 import Cookies from 'universal-cookie';
 
-const PbFormDel = props => {
+const MemoDel = props => {
 
-    const REQ_URI = (process.env.NODE_ENV !== 'production') ? 'http://localhost:28080/pds/v1/pwbook' : '/pds/v1/pwbook';
+    const REQ_URI = (process.env.NODE_ENV !== 'production') ? 'http://localhost:28080/pds/v1/memo' : '/pds/v1/memo';
 
     const initValues = props.dataFromParent;
     const cookies = new Cookies();
@@ -96,4 +96,4 @@ const PbFormDel = props => {
     );
 };
 
-export default PbFormDel;
+export default MemoDel;

@@ -2,6 +2,8 @@ package com.gmail.webos21.pds.db.domain;
 
 import java.util.Date;
 
+import com.gmail.webos21.pds.db.JsonHelper;
+
 public class PasswordBook {
     private Long id;
     private String siteUrl;
@@ -123,7 +125,7 @@ public class PasswordBook {
     	sb.append("  \"myPw\": \"").append(myPw).append("\",\n");
     	sb.append("  \"regDate\": ").append(regDate.getTime()).append(",\n");
     	sb.append("  \"fixDate\": ").append(fixDate.getTime()).append(",\n");
-    	sb.append("  \"memo\": \"").append(memo).append("\"\n");
+    	sb.append("  \"memo\": \"").append(JsonHelper.escape(memo)).append("\"\n");
     	sb.append('}').append('\n');
 
     	return sb.toString();

@@ -12,7 +12,9 @@ import com.gmail.webos21.nano.NanoHTTPD;
 import com.gmail.webos21.nano.RouteResult;
 import com.gmail.webos21.nano.StaticRouter;
 import com.gmail.webos21.pds.web.handler.AuthHandler;
+import com.gmail.webos21.pds.web.handler.DiaryHandler;
 import com.gmail.webos21.pds.web.handler.FsHandler;
+import com.gmail.webos21.pds.web.handler.MemoHandler;
 import com.gmail.webos21.pds.web.handler.PasswordBookHandler;
 import com.gmail.webos21.pds.web.handler.WebHelper;
 import com.gmail.webos21.pds.web.log.UiLog;
@@ -44,6 +46,8 @@ public class PdsWebServer extends NanoHTTPD {
 		dynamicRouter.addDynamicPage("/pds/v1/auth", AuthHandler.class, accessCode);
 		dynamicRouter.addDynamicPage("/pds/v1/fs", FsHandler.class, "/pds/v1/fs", fsroot);
 		dynamicRouter.addDynamicPage("/pds/v1/pwbook", PasswordBookHandler.class);
+		dynamicRouter.addDynamicPage("/pds/v1/diary", DiaryHandler.class);
+		dynamicRouter.addDynamicPage("/pds/v1/memo", MemoHandler.class);
 
 		mimeTypes().put("xhtml", "application/xhtml+xml");
 		mimeTypes().put("opf", "application/oebps-package+xml");

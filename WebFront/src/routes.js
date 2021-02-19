@@ -37,6 +37,8 @@ const Users = React.lazy(() => import('./views/Users/Users'));
 const User = React.lazy(() => import('./views/Users/User'));
 
 const PasswordBook = React.lazy(() => import('./service/PasswordBook'));
+const Diary = React.lazy(() => import('./service/Diary'));
+const Memo = React.lazy(() => import('./service/Memo'));
 const Logout = React.lazy(() => import('./service/Logout'));
 
 // https://github.com/ReactTraining/react-router/tree/master/packages/react-router-config
@@ -83,6 +85,8 @@ const routes = [
   { path: '/users', exact: true,  name: 'Users', component: Users },
   { path: '/users/:id', exact: true, name: 'User Details', component: User },
   { path: '/passwordbook', exact: true,  name: 'PasswordBook', component: PasswordBook },
+  { path: '/diary', exact: true,  name: 'Diary', component: Diary },
+  { path: '/memo', exact: true,  name: 'Memo', component: Memo },
   { path: '/logout', exact: true,  name: 'Logout', component: Logout },
 ];
 

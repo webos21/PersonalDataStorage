@@ -3,9 +3,9 @@ import { Modal, ModalHeader, ModalBody, ModalFooter, Button, Col, Form, FormGrou
 import { useForm, Controller } from "react-hook-form";
 import Cookies from 'universal-cookie';
 
-const PbFormAdd = props => {
+const DiaryAdd = props => {
 
-    const REQ_URI = (process.env.NODE_ENV !== 'production') ? 'http://' + window.location.hostname + ':28080/pds/v1/pwbook' : '/pds/v1/pwbook';
+    const REQ_URI = (process.env.NODE_ENV !== 'production') ? 'http://' + window.location.hostname + ':28080/pds/v1/diary' : '/pds/v1/diary';
 
     const { handleSubmit, errors, setError, control } = useForm({
         submitFocusError: true,
@@ -251,4 +251,4 @@ const PbFormAdd = props => {
     );
 };
 
-export default PbFormAdd;
+export default DiaryAdd;

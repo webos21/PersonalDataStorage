@@ -7,7 +7,7 @@ import Cookies from 'universal-cookie';
 const PbLoginForm = props => {
     const crypto = require('crypto');
 
-    const REQ_URI = (process.env.NODE_ENV !== 'production') ? 'http://localhost:28080/pds/v1/auth' : '/pds/v1/auth';
+    const REQ_URI = (process.env.NODE_ENV !== 'production') ? 'http://' + window.location.hostname + ':28080/pds/v1/auth' : '/pds/v1/auth';
 
     const { register, handleSubmit, errors, setError } = useForm({
         submitFocusError: true,
@@ -67,7 +67,7 @@ const PbLoginForm = props => {
                     </InputGroupAddon>
                     <input
                         type="password"
-                        className={"form-control" + (errors.pbpwd ? " is-invalid" : " is-valid") }
+                        className={"form-control" + (errors.pbpwd ? " is-invalid" : " is-valid")}
                         name="pbpwd"
                         placeholder="Password"
                         tabIndex="0"

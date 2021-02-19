@@ -11,6 +11,16 @@ export default {
       icon: 'icon-key',
     },
     {
+      name: 'Diary',
+      url: '/diary',
+      icon: 'icon-notebook',
+    },
+    {
+      name: 'Memo',
+      url: '/memo',
+      icon: 'icon-note',
+    },
+    {
       name: 'Download App',
       url: 'https://webos21.github.io/PersonalDataStorage/',
       icon: 'icon-cloud-download',

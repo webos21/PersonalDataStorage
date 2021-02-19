@@ -23,7 +23,6 @@ import Charts from './Charts';
 import Dashboard from './Dashboard';
 import { CoreUIIcons, Flags, FontAwesome, SimpleLineIcons } from './Icons';
 import { Alerts, Badges, Modals } from './Notifications';
-import { Login, Logout, Page404, Page500, Register, PbLogin } from './Pages';
 import { Colors, Typography } from './Theme';
 import Widgets from './Widgets';
 
@@ -32,11 +31,6 @@ export {
   Typography,
   Colors,
   CoreUIIcons,
-  Page404,
-  Page500,
-  Register,
-  Login,
-  Logout,
   Modals,
   Alerts,
   Flags,
@@ -66,5 +60,4 @@ export {
   Cards,
   Breadcrumbs,
   Paginations,
-  PasswordBook,
 };

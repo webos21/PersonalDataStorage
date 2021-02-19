@@ -1,15 +1,59 @@
 package com.gmail.webos21.pds.db;
 
-import com.gmail.webos21.pds.db.h2.H2Database;
-import com.gmail.webos21.pds.db.h2.H2OpenHelper;
-import com.gmail.webos21.pds.db.repo.PasswordBookRepo;
-import com.gmail.webos21.pds.db.repo.PasswordBookRepoImpl;
-import com.gmail.webos21.pds.web.log.Log;
-
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.util.HashMap;
 import java.util.Map;
+
+import com.gmail.webos21.pds.db.h2.H2Database;
+import com.gmail.webos21.pds.db.h2.H2OpenHelper;
+import com.gmail.webos21.pds.db.repo.AccountClassRepo;
+import com.gmail.webos21.pds.db.repo.AccountClassRepoImpl;
+import com.gmail.webos21.pds.db.repo.AccountCodeRepo;
+import com.gmail.webos21.pds.db.repo.AccountCodeRepoImpl;
+import com.gmail.webos21.pds.db.repo.AddressBookRepo;
+import com.gmail.webos21.pds.db.repo.AddressBookRepoImpl;
+import com.gmail.webos21.pds.db.repo.AnniversaryRepo;
+import com.gmail.webos21.pds.db.repo.AnniversaryRepoImpl;
+import com.gmail.webos21.pds.db.repo.BankRecordRepo;
+import com.gmail.webos21.pds.db.repo.BankRecordRepoImpl;
+import com.gmail.webos21.pds.db.repo.BankRepo;
+import com.gmail.webos21.pds.db.repo.BankRepoImpl;
+import com.gmail.webos21.pds.db.repo.BudgetRepo;
+import com.gmail.webos21.pds.db.repo.BudgetRepoImpl;
+import com.gmail.webos21.pds.db.repo.CardRecordRepo;
+import com.gmail.webos21.pds.db.repo.CardRecordRepoImpl;
+import com.gmail.webos21.pds.db.repo.CardRepo;
+import com.gmail.webos21.pds.db.repo.CardRepoImpl;
+import com.gmail.webos21.pds.db.repo.DiaryRepo;
+import com.gmail.webos21.pds.db.repo.DiaryRepoImpl;
+import com.gmail.webos21.pds.db.repo.InsuranceRecordRepo;
+import com.gmail.webos21.pds.db.repo.InsuranceRecordRepoImpl;
+import com.gmail.webos21.pds.db.repo.InsuranceRepo;
+import com.gmail.webos21.pds.db.repo.InsuranceRepoImpl;
+import com.gmail.webos21.pds.db.repo.MemoRepo;
+import com.gmail.webos21.pds.db.repo.MemoRepoImpl;
+import com.gmail.webos21.pds.db.repo.PasswordBookRepo;
+import com.gmail.webos21.pds.db.repo.PasswordBookRepoImpl;
+import com.gmail.webos21.pds.db.repo.RealEstateRecordRepo;
+import com.gmail.webos21.pds.db.repo.RealEstateRecordRepoImpl;
+import com.gmail.webos21.pds.db.repo.RealEstateRepo;
+import com.gmail.webos21.pds.db.repo.RealEstateRepoImpl;
+import com.gmail.webos21.pds.db.repo.RecordRepo;
+import com.gmail.webos21.pds.db.repo.RecordRepoImpl;
+import com.gmail.webos21.pds.db.repo.RegularPayRepo;
+import com.gmail.webos21.pds.db.repo.RegularPayRepoImpl;
+import com.gmail.webos21.pds.db.repo.RegularRecordRepo;
+import com.gmail.webos21.pds.db.repo.RegularRecordRepoImpl;
+import com.gmail.webos21.pds.db.repo.ScheduleRepo;
+import com.gmail.webos21.pds.db.repo.ScheduleRepoImpl;
+import com.gmail.webos21.pds.db.repo.StockRecordRepo;
+import com.gmail.webos21.pds.db.repo.StockRecordRepoImpl;
+import com.gmail.webos21.pds.db.repo.StockRepo;
+import com.gmail.webos21.pds.db.repo.StockRepoImpl;
+import com.gmail.webos21.pds.db.repo.TitlesRepo;
+import com.gmail.webos21.pds.db.repo.TitlesRepoImpl;
+import com.gmail.webos21.pds.web.log.Log;
 
 public class PdsDbHelper extends H2OpenHelper {
 
@@ -24,7 +68,29 @@ public class PdsDbHelper extends H2OpenHelper {
 	}
 
 	private void initRepository() {
+		domainRepo.put(AccountClassRepo.class, new AccountClassRepoImpl(this));
+		domainRepo.put(AccountCodeRepo.class, new AccountCodeRepoImpl(this));
+		domainRepo.put(AddressBookRepo.class, new AddressBookRepoImpl(this));
+		domainRepo.put(AnniversaryRepo.class, new AnniversaryRepoImpl(this));
+		domainRepo.put(BankRecordRepo.class, new BankRecordRepoImpl(this));
+		domainRepo.put(BankRepo.class, new BankRepoImpl(this));
+		domainRepo.put(BudgetRepo.class, new BudgetRepoImpl(this));
+		domainRepo.put(CardRecordRepo.class, new CardRecordRepoImpl(this));
+		domainRepo.put(CardRepo.class, new CardRepoImpl(this));
+		domainRepo.put(DiaryRepo.class, new DiaryRepoImpl(this));
+		domainRepo.put(InsuranceRecordRepo.class, new InsuranceRecordRepoImpl(this));
+		domainRepo.put(InsuranceRepo.class, new InsuranceRepoImpl(this));
+		domainRepo.put(MemoRepo.class, new MemoRepoImpl(this));
 		domainRepo.put(PasswordBookRepo.class, new PasswordBookRepoImpl(this));
+		domainRepo.put(RealEstateRecordRepo.class, new RealEstateRecordRepoImpl(this));
+		domainRepo.put(RealEstateRepo.class, new RealEstateRepoImpl(this));
+		domainRepo.put(RecordRepo.class, new RecordRepoImpl(this));
+		domainRepo.put(RegularPayRepo.class, new RegularPayRepoImpl(this));
+		domainRepo.put(RegularRecordRepo.class, new RegularRecordRepoImpl(this));
+		domainRepo.put(ScheduleRepo.class, new ScheduleRepoImpl(this));
+		domainRepo.put(StockRecordRepo.class, new StockRecordRepoImpl(this));
+		domainRepo.put(StockRepo.class, new StockRepoImpl(this));
+		domainRepo.put(TitlesRepo.class, new TitlesRepoImpl(this));
 	}
 
 	@Override

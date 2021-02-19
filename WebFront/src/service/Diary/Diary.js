@@ -4,13 +4,13 @@ import {
   Form, Input, InputGroup, InputGroupAddon, InputGroupText,
 } from 'reactstrap';
 import Pager from '../../components/Pager';
-import PbFormAdd from './PbFormAdd.js';
-import PbFormEdit from './PbFormEdit.js';
-import PbFormDel from './PbFormDel.js';
+import DiaryAdd from './DiaryAdd.js';
+import DiaryEdit from './DiaryEdit.js';
+import DiaryDel from './DiaryDel.js';
 import update from 'immutability-helper';
 import Cookies from 'universal-cookie';
 
-class PasswordBook extends Component {
+class Diary extends Component {
   constructor(props) {
     super(props);
 
@@ -47,7 +47,7 @@ class PasswordBook extends Component {
   }
 
   dataChangedCallback(modifiedData) {
-    console.log("PasswordBook::dataChangedCallback");
+    console.log("Diary::dataChangedCallback");
     if (modifiedData !== undefined && modifiedData !== null) {
       for (var i = 0; i < this.state.dataSet.length; i++) {
         if (this.state.dataSet[i].id === modifiedData.id) {
@@ -64,7 +64,7 @@ class PasswordBook extends Component {
 
   requestFetch(query) {
     const parentState = this;
-    const REQ_URI = (process.env.NODE_ENV !== 'production') ? 'http://' + window.location.hostname + ':28080/pds/v1/pwbook' : '/pds/v1/pwbook';
+    const REQ_URI = (process.env.NODE_ENV !== 'production') ? 'http://' + window.location.hostname + ':28080/pds/v1/diary' : '/pds/v1/diary';
 
     const reqUri = REQ_URI + ((query === null || query === undefined) ? '' : '?q=' + query);
     const cookies = new Cookies();
@@ -84,7 +84,7 @@ class PasswordBook extends Component {
       }
       return res.json();
     }).then(function (resJson) {
-      console.log("PasswordBook::fetch => " + resJson.result);
+      console.log("Diary::fetch => " + resJson.result);
 
       var dataLen = resJson.data.length;
       var calcPages = Math.ceil(dataLen / parentState.state.itemsPerPage);
@@ -96,7 +96,7 @@ class PasswordBook extends Component {
         keywordError: '',
       });
     }).catch(function (error) {
-      console.log("PasswordBook::fetch => " + error);
+      console.log("Diary::fetch => " + error);
       parentState.setState({ keywordError: error.message })
     });
   }
@@ -135,15 +135,15 @@ class PasswordBook extends Component {
 
       return tableData.map((data, index) => {
         return (
-          <tr key={'pbdata-' + data.id}>
+          <tr key={'memo-' + data.id}>
             <td>{data.siteName}</td>
             <td>{data.siteType}</td>
             <td><a href={data.siteUrl} target="_blank" rel="noopener noreferrer">{data.siteUrl}</a></td>
             <td>{data.myId}</td>
             <td>
-              <PbFormEdit dataFromParent={data} callbackFromParent={this.dataChangedCallback} />
+              <DiaryEdit dataFromParent={data} callbackFromParent={this.dataChangedCallback} />
               &nbsp;
-              <PbFormDel dataFromParent={data} callbackFromParent={this.dataChangedCallback} />
+              <DiaryDel dataFromParent={data} callbackFromParent={this.dataChangedCallback} />
             </td>
           </tr>
         )
@@ -159,7 +159,7 @@ class PasswordBook extends Component {
             <Card>
               <CardHeader>
                 <strong>Search</strong>
-                <small> PasswordBook</small>
+                <small> Diary</small>
               </CardHeader>
               <CardBody>
                 <Row>
@@ -192,8 +192,8 @@ class PasswordBook extends Component {
           <Col>
             <Card>
               <CardHeader>
-                <i className="fa fa-align-justify"></i> Password List (Total : {this.state.dataSet.length})
-                <PbFormAdd callbackFromParent={this.dataChangedCallback} />
+                <i className="fa fa-align-justify"></i> Diary List (Total : {this.state.dataSet.length})
+                <DiaryAdd callbackFromParent={this.dataChangedCallback} />
               </CardHeader>
               <CardBody>
                 <Table hover bordered striped responsive size="sm">
@@ -227,4 +227,4 @@ class PasswordBook extends Component {
   }
 }
 
-export default PasswordBook;
+export default Diary;
