@@ -24,7 +24,7 @@ public class DiaryRepoImpl implements DiaryRepo {
 
         try {
             H2Database db = opener.getReadableDatabase();
-            ResultSet rset = db.rawQuery("SELECT * FROM " + DbConsts.TB_PASSWORD_BOOK, null);
+            ResultSet rset = db.rawQuery("SELECT * FROM " + DbConsts.TB_DIARY, null);
             if (rset == null || !rset.first()) {
                 return aList;
             }
@@ -48,7 +48,7 @@ public class DiaryRepoImpl implements DiaryRepo {
         }
 
         if (DbConsts.DB_DEBUG) {
-            opener.debugDump(DbConsts.TB_PASSWORD_BOOK);
+            opener.debugDump(DbConsts.TB_DIARY);
         }
 
         return aList;
@@ -62,7 +62,7 @@ public class DiaryRepoImpl implements DiaryRepo {
             H2Database db = opener.getReadableDatabase();
             ResultSet rset = db.rawQuery(
                     /* intent -------- */ "SELECT * " +
-                            /* intent -------- */ " FROM " + DbConsts.TB_PASSWORD_BOOK + " " +
+                            /* intent -------- */ " FROM " + DbConsts.TB_DIARY + " " +
                             /* intent -------- */ " WHERE (title LIKE ?) OR " +
                             /* intent -------- */ "        (content LIKE ?)",
                     new String[]{"%" + keyString + "%", "%" + keyString + "%"});
@@ -97,7 +97,7 @@ public class DiaryRepoImpl implements DiaryRepo {
 
         try {
             H2Database db = opener.getReadableDatabase();
-            ResultSet rset = db.rawQuery("SELECT * FROM " + DbConsts.TB_PASSWORD_BOOK + " WHERE id = " + id, null);
+            ResultSet rset = db.rawQuery("SELECT * FROM " + DbConsts.TB_DIARY + " WHERE id = " + id, null);
             if (rset == null || !rset.first()) {
                 return null;
             }
@@ -129,7 +129,7 @@ public class DiaryRepoImpl implements DiaryRepo {
             ResultSet rset = null;
 
             if (newRow.getId() != null) {
-                rset = db.rawQuery("SELECT * FROM " + DbConsts.TB_PASSWORD_BOOK + " WHERE id = " + newRow.getId(), null);
+                rset = db.rawQuery("SELECT * FROM " + DbConsts.TB_DIARY + " WHERE id = " + newRow.getId(), null);
                 if (rset != null && rset.first()) {
                     rset.close();
 
@@ -138,7 +138,7 @@ public class DiaryRepoImpl implements DiaryRepo {
                     cv.put("weather", newRow.getWeather());
                     cv.put("title", newRow.getTitle());
                     cv.put("content", newRow.getContent());
-                    db.update(DbConsts.TB_PASSWORD_BOOK, cv, " id = ? ", new String[]{Long.toString(newRow.getId())});
+                    db.update(DbConsts.TB_DIARY, cv, " id = ? ", new String[]{Long.toString(newRow.getId())});
                 } else {
                     ContentValues cv = new ContentValues();
                     // cv.put("id", newRow.getId());
@@ -146,7 +146,7 @@ public class DiaryRepoImpl implements DiaryRepo {
                     cv.put("weather", newRow.getWeather());
                     cv.put("title", newRow.getTitle());
                     cv.put("content", newRow.getContent());
-                    db.insert(DbConsts.TB_PASSWORD_BOOK, null, cv);
+                    db.insert(DbConsts.TB_DIARY, null, cv);
                 }
             } else {
                 ContentValues cv = new ContentValues();
@@ -154,7 +154,7 @@ public class DiaryRepoImpl implements DiaryRepo {
                 cv.put("weather", newRow.getWeather());
                 cv.put("title", newRow.getTitle());
                 cv.put("content", newRow.getContent());
-                db.insert(DbConsts.TB_PASSWORD_BOOK, null, cv);
+                db.insert(DbConsts.TB_DIARY, null, cv);
             }
 
             db.close();
@@ -168,7 +168,7 @@ public class DiaryRepoImpl implements DiaryRepo {
     @Override
     public int deleteRow(Long id) {
         H2Database db = opener.getWritableDatabase();
-        int result = db.delete(DbConsts.TB_PASSWORD_BOOK, "id = " + id, null);
+        int result = db.delete(DbConsts.TB_DIARY, "id = " + id, null);
         db.close();
 
         return result;

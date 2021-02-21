@@ -251,11 +251,10 @@ public class PasswordBookHandler implements UriHandler {
 
 		int i = 0;
 		for (PasswordBook r : rows) {
-			if (i == 0) {
-				sb.append(r.toJson()).append('\n');
-			} else {
-				sb.append(',').append(r.toJson()).append('\n');
+			if (i > 0) {
+				sb.append(',').append('\n');
 			}
+			sb.append(r.toJson());
 			i++;
 		}
 

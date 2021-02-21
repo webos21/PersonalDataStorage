@@ -243,11 +243,10 @@ public class DiaryHandler implements UriHandler {
 
 		int i = 0;
 		for (Diary r : rows) {
-			if (i == 0) {
-				sb.append(r.toJson()).append('\n');
-			} else {
-				sb.append(',').append(r.toJson()).append('\n');
+			if (i > 0) {
+				sb.append(',').append('\n');
 			}
+			sb.append(r.toJson());
 			i++;
 		}
 
