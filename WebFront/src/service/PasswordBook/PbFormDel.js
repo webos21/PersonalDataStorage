@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { Modal, ModalHeader, ModalBody, ModalFooter, Button, Form, FormGroup, FormFeedback } from 'reactstrap';
-import { useForm } from "react-hook-form";
+import { Modal, ModalHeader, ModalBody, ModalFooter, Button, Form, FormGroup, FormFeedback, Input } from 'reactstrap';
+import { useForm, Controller } from "react-hook-form";
 import Cookies from 'universal-cookie';
+import { dateFormat } from '../../components/Util/DateUtil'
 
 const PbFormDel = props => {
 
@@ -10,20 +11,7 @@ const PbFormDel = props => {
     const initValues = props.dataFromParent;
     const cookies = new Cookies();
 
-    const dateFormat = (dateObj) => {
-        var year = dateObj.getFullYear();
-        var month = dateObj.getMonth() + 1;
-        if (month < 10) {
-            month = '0' + month;
-        }
-        var date = dateObj.getDate();
-        if (date < 10) {
-            date = '0' + date;
-        }
-        return year + "-" + month + "-" + date
-    }
-
-    const { register, handleSubmit, errors, setError } = useForm({
+    const { handleSubmit, errors, setError, control } = useForm({
         submitFocusError: true,
         nativeValidation: false,
         defaultValues: {
@@ -75,14 +63,21 @@ const PbFormDel = props => {
                     <ModalBody>
                         <p>다음 항목을 삭제할까요?</p>
                         <ul>
-                            <li>항목 URL : {props.dataFromParent.siteUrl}</li>
-                            <li>항목 이름 : {props.dataFromParent.siteName}</li>
-                            <li>항목 유형 : {props.dataFromParent.siteType}</li>
-                            <li>항목 아이디 : {props.dataFromParent.myId}</li>
-                            <li>항목 등록일 : {dateFormat(new Date(props.dataFromParent.regDate))}</li>
+                            <li>일련번호 : {props.dataFromParent.id}</li>
+                            <li>U R L : {props.dataFromParent.siteUrl}</li>
+                            <li>사이트명 : {props.dataFromParent.siteName}</li>
+                            <li>유 형 : {props.dataFromParent.siteType}</li>
+                            <li>아 이 디 : {props.dataFromParent.myId}</li>
+                            <li>등 록 일 : {dateFormat(new Date(props.dataFromParent.regDate))}</li>
                         </ul>
                         <FormGroup>
-                            <input type="hidden" name="siteId" ref={register} />
+                            <Controller
+                                as={<Input />}
+                                type="hidden"
+                                control={control}
+                                defaultValue={props.dataFromParent.id}
+                                name="siteId"
+                                rules={{ required: true }} />
                             {errors.siteId && <FormFeedback>{errors.siteId.message}</FormFeedback>}
                         </FormGroup>
                     </ModalBody>

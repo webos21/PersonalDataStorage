@@ -3,7 +3,7 @@ package com.gmail.webos21.pds.db;
 import java.text.SimpleDateFormat;
 
 public class DbConsts {
-    public static final boolean DB_DEBUG = true;
+    public static final boolean DB_DEBUG = false;
 
     public static final String DB_PATH = "~/pds";
     public static final String DB_USER = "sa";
@@ -13,6 +13,8 @@ public class DbConsts {
     public static final int DB_VERSION = 1;
 
     public static final SimpleDateFormat SDF_DATE = new SimpleDateFormat("yyyy-MM-dd");
+
+    public static final SimpleDateFormat SDF2_DATE = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
     public static final String TB_ACCOUNT_CLASS = "tb_account_class";
     public static final String TB_ACCOUNT_CODE = "tb_account_code";

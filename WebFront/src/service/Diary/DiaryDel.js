@@ -1,34 +1,18 @@
 import React, { useState } from 'react';
-import { Modal, ModalHeader, ModalBody, ModalFooter, Button, Form, FormGroup, FormFeedback } from 'reactstrap';
-import { useForm } from "react-hook-form";
+import { Modal, ModalHeader, ModalBody, ModalFooter, Button, Form, FormGroup, FormFeedback, Input } from 'reactstrap';
+import { useForm, Controller } from "react-hook-form";
 import Cookies from 'universal-cookie';
+import { dateFormat } from '../../components/Util/DateUtil'
 
 const DiaryDel = props => {
 
     const REQ_URI = (process.env.NODE_ENV !== 'production') ? 'http://localhost:28080/pds/v1/diary' : '/pds/v1/diary';
 
-    const initValues = props.dataFromParent;
     const cookies = new Cookies();
 
-    const dateFormat = (dateObj) => {
-        var year = dateObj.getFullYear();
-        var month = dateObj.getMonth() + 1;
-        if (month < 10) {
-            month = '0' + month;
-        }
-        var date = dateObj.getDate();
-        if (date < 10) {
-            date = '0' + date;
-        }
-        return year + "-" + month + "-" + date
-    }
-
-    const { register, handleSubmit, errors, setError } = useForm({
+    const { handleSubmit, errors, setError, control } = useForm({
         submitFocusError: true,
         nativeValidation: false,
-        defaultValues: {
-            siteId: initValues.id,
-        }
     });
 
     const [modalShow, setModalShow] = useState(false);
@@ -75,19 +59,23 @@ const DiaryDel = props => {
                     <ModalBody>
                         <p>다음 항목을 삭제할까요?</p>
                         <ul>
-                            <li>항목 URL : {props.dataFromParent.siteUrl}</li>
-                            <li>항목 이름 : {props.dataFromParent.siteName}</li>
-                            <li>항목 유형 : {props.dataFromParent.siteType}</li>
-                            <li>항목 아이디 : {props.dataFromParent.myId}</li>
-                            <li>항목 등록일 : {dateFormat(new Date(props.dataFromParent.regDate))}</li>
+                            <li>일기 번호 : {props.dataFromParent.id}</li>
+                            <li>일기 날짜 : {dateFormat(new Date(props.dataFromParent.wdate))}</li>
+                            <li>일기 제목 : {props.dataFromParent.title}</li>
                         </ul>
                         <FormGroup>
-                            <input type="hidden" name="siteId" ref={register} />
-                            {errors.siteId && <FormFeedback>{errors.siteId.message}</FormFeedback>}
+                            <Controller
+                                as={<Input />}
+                                type="hidden"
+                                control={control}
+                                defaultValue={props.dataFromParent.id}
+                                name="diaryId"
+                                rules={{ required: true }} />
+                            {errors.siteId && <FormFeedback>{errors.diaryId.message}</FormFeedback>}
                         </FormGroup>
                     </ModalBody>
                     <ModalFooter>
-                        <Button type="submit" color="danger">삭제</Button>{' '}
+                        <Button type="submit" color="danger">삭제</Button>
                         <Button color="secondary" onClick={toggleOpen}>취소</Button>
                     </ModalFooter>
                 </Form>

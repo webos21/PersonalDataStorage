@@ -15,7 +15,7 @@ class PbFooter extends Component {
 
     return (
       <React.Fragment>
-        <span><a href="https://webos21.github.io/PersonalDataStorage/">PersonalDataService</a> &copy; 2020 NeoFoundation.</span>
+        <span><a href="https://webos21.github.io/PersonalDataStorage/">PersonalDataStorage</a> &copy; 2020 NeoFoundation.</span>
         <span className="ml-auto">Powered by <a href="https://coreui.io/react">CoreUI for React</a></span>
       </React.Fragment>
     );

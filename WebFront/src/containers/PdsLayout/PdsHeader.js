@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Link, NavLink } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 import { Nav, NavItem } from 'reactstrap';
 import PropTypes from 'prop-types';
 
@@ -31,9 +31,6 @@ class PbHeader extends Component {
         <Nav className="d-md-down-none" navbar>
           <NavItem className="px-3">
             <NavLink to="/dashboard" className="nav-link" >Dashboard</NavLink>
-          </NavItem>
-          <NavItem className="px-3">
-            <Link to="/passwordbook" className="nav-link">PasswordBook</Link>
           </NavItem>
         </Nav>
         <Nav className="ml-auto" navbar>

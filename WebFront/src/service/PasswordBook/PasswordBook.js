@@ -26,6 +26,7 @@ class PasswordBook extends Component {
 
     this.state = {
       dataSet: [],
+      totalCount: 0,
       itemsPerPage: 10,
       totalPage: 0,
       currentPage: 0,
@@ -62,11 +63,13 @@ class PasswordBook extends Component {
     }
   }
 
-  requestFetch(query) {
+  requestFetch(query, page) {
     const parentState = this;
     const REQ_URI = (process.env.NODE_ENV !== 'production') ? 'http://' + window.location.hostname + ':28080/pds/v1/pwbook' : '/pds/v1/pwbook';
 
-    const reqUri = REQ_URI + ((query === null || query === undefined) ? '' : '?q=' + query);
+    const reqUri = REQ_URI + '?perPage=' + this.state.itemsPerPage +
+      '&page=' + ((page === null || page === undefined) ? 1 : page) +
+      ((query === null || query === undefined) ? '' : '&q=' + query);
     const cookies = new Cookies();
 
     fetch(reqUri, {
@@ -86,12 +89,13 @@ class PasswordBook extends Component {
     }).then(function (resJson) {
       console.log("PasswordBook::fetch => " + resJson.result);
 
-      var dataLen = resJson.data.length;
+      var dataLen = resJson.pagination.totalCount;
       var calcPages = Math.ceil(dataLen / parentState.state.itemsPerPage);
 
       parentState.setState({
         dataSet: resJson.data,
-        currentPage: 0,
+        totalCount: dataLen,
+        currentPage: (resJson.pagination.currentPage - 1),
         totalPage: calcPages,
         keywordError: '',
       });
@@ -112,7 +116,7 @@ class PasswordBook extends Component {
   }
 
   handlePageChanged(newPage) {
-    this.setState({ currentPage: newPage });
+    this.requestFetch(this.state.keyword, newPage);
   }
 
   handleSearchGo(event) {
@@ -129,11 +133,7 @@ class PasswordBook extends Component {
         </tr>
       )
     } else {
-      var firstIdx = this.state.currentPage * this.state.itemsPerPage;
-      var lastIdx = this.state.currentPage * this.state.itemsPerPage + this.state.itemsPerPage;
-      var tableData = dataArray.slice(firstIdx, lastIdx);
-
-      return tableData.map((data, index) => {
+      return dataArray.map((data, index) => {
         return (
           <tr key={'pbdata-' + data.id}>
             <td>{data.siteName}</td>
@@ -192,7 +192,7 @@ class PasswordBook extends Component {
           <Col>
             <Card>
               <CardHeader>
-                <i className="fa fa-align-justify"></i> Password List (Total : {this.state.dataSet.length})
+                <i className="fa fa-align-justify"></i> Password List (Total : {this.state.totalCount})
                 <PbFormAdd callbackFromParent={this.dataChangedCallback} />
               </CardHeader>
               <CardBody>

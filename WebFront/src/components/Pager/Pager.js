@@ -162,7 +162,7 @@ class Pager extends React.Component {
 
 	handlePageChanged(num) {
 		const handler = this.props.onPageChanged;
-		if (handler) handler(num);
+		if (handler) handler(num + 1);
 	}
 
 

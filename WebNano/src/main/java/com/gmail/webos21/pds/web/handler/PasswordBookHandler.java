@@ -233,29 +233,55 @@ public class PasswordBookHandler implements UriHandler {
 			return WebHelper.processSimple(origin, Status.UNAUTHORIZED);
 		}
 
-		@SuppressWarnings("deprecation")
-		String keyword = session.getParms().get("q");
+		List<PasswordBook> rows = null;
+		if (session.getParameters().get("q") != null) {
+			String q = session.getParameters().get("q").get(0);
+			if (q != null && q.length() > 0) {
+				rows = pbRepo.findRows(session.getParameters().get("q").get(0));
+			}
+		}
+		if (rows == null) {
+			rows = pbRepo.findRows();
+		}
 
 		StringBuilder sb = new StringBuilder();
 
 		sb.append("{\n");
 		sb.append("  \"result\": \"OK\",\n");
-		sb.append("  \"data\": [\n");
+		if (session.getParameters().get("page") != null && session.getParameters().get("perPage") != null) {
+			int page = Integer.parseInt(session.getParameters().get("page").get(0));
+			int perPage = Integer.parseInt(session.getParameters().get("perPage").get(0));
+			int totalCount = rows.size();
+			int totalPages = (totalCount % perPage == 0) ? (totalCount / perPage) : ((totalCount / perPage) + 1);
 
-		List<PasswordBook> rows = null;
-		if (keyword != null && keyword.length() > 0) {
-			rows = pbRepo.findRows(keyword);
-		} else {
-			rows = pbRepo.findRows();
-		}
+			sb.append("  \"pagination\": {\n");
+			sb.append("    \"totalCount\": ").append(totalCount).append(",\n");
+			sb.append("    \"totalPages\": ").append(totalPages).append(",\n");
+			sb.append("    \"currentPage\": ").append(page).append("\n");
+			sb.append("  },\n");
 
-		int i = 0;
-		for (PasswordBook r : rows) {
-			if (i > 0) {
-				sb.append(',').append('\n');
+			sb.append("  \"data\": [\n");
+			int i = 0;
+			int offset = ((page - 1) * perPage);
+			for (i = offset; (i < totalCount) && (i < (offset + perPage)); i++) {
+				PasswordBook r = rows.get(i);
+
+				if (i > offset) {
+					sb.append(',').append('\n');
+				}
+
+				sb.append(r.toJson());
 			}
-			sb.append(r.toJson());
-			i++;
+		} else {
+			sb.append("  \"data\": [\n");
+			int i = 0;
+			for (PasswordBook r : rows) {
+				if (i > 0) {
+					sb.append(',').append('\n');
+				}
+				sb.append(r.toJson());
+				i++;
+			}
 		}
 
 		sb.append("  ]\n");

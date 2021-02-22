@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { Modal, ModalHeader, ModalBody, ModalFooter, Button, Form, FormGroup, FormFeedback } from 'reactstrap';
-import { useForm } from "react-hook-form";
+import { Modal, ModalHeader, ModalBody, ModalFooter, Button, Form, FormGroup, FormFeedback, Input } from 'reactstrap';
+import { useForm, Controller } from "react-hook-form";
 import Cookies from 'universal-cookie';
+import { dateFormat } from '../../components/Util/DateUtil'
 
 const MemoDel = props => {
 
@@ -10,20 +11,7 @@ const MemoDel = props => {
     const initValues = props.dataFromParent;
     const cookies = new Cookies();
 
-    const dateFormat = (dateObj) => {
-        var year = dateObj.getFullYear();
-        var month = dateObj.getMonth() + 1;
-        if (month < 10) {
-            month = '0' + month;
-        }
-        var date = dateObj.getDate();
-        if (date < 10) {
-            date = '0' + date;
-        }
-        return year + "-" + month + "-" + date
-    }
-
-    const { register, handleSubmit, errors, setError } = useForm({
+    const { handleSubmit, errors, setError, control } = useForm({
         submitFocusError: true,
         nativeValidation: false,
         defaultValues: {
@@ -75,15 +63,19 @@ const MemoDel = props => {
                     <ModalBody>
                         <p>다음 항목을 삭제할까요?</p>
                         <ul>
-                            <li>항목 URL : {props.dataFromParent.siteUrl}</li>
-                            <li>항목 이름 : {props.dataFromParent.siteName}</li>
-                            <li>항목 유형 : {props.dataFromParent.siteType}</li>
-                            <li>항목 아이디 : {props.dataFromParent.myId}</li>
-                            <li>항목 등록일 : {dateFormat(new Date(props.dataFromParent.regDate))}</li>
+                            <li>메모 번호 : {props.dataFromParent.id}</li>
+                            <li>메모 날짜 : {dateFormat(new Date(props.dataFromParent.wdate))}</li>
+                            <li>메모 제목 : {props.dataFromParent.title}</li>
                         </ul>
                         <FormGroup>
-                            <input type="hidden" name="siteId" ref={register} />
-                            {errors.siteId && <FormFeedback>{errors.siteId.message}</FormFeedback>}
+                            <Controller
+                                as={<Input />}
+                                type="hidden"
+                                control={control}
+                                defaultValue={props.dataFromParent.id}
+                                name="memoId"
+                                rules={{ required: true }} />
+                            {errors.memoId && <FormFeedback>{errors.memoId.message}</FormFeedback>}
                         </FormGroup>
                     </ModalBody>
                     <ModalFooter>

@@ -9,6 +9,7 @@ import DiaryEdit from './DiaryEdit.js';
 import DiaryDel from './DiaryDel.js';
 import update from 'immutability-helper';
 import Cookies from 'universal-cookie';
+import { dateFormat } from '../../components/Util/DateUtil'
 
 class Diary extends Component {
   constructor(props) {
@@ -26,6 +27,7 @@ class Diary extends Component {
 
     this.state = {
       dataSet: [],
+      totalCount: 0,
       itemsPerPage: 10,
       totalPage: 0,
       currentPage: 0,
@@ -62,11 +64,13 @@ class Diary extends Component {
     }
   }
 
-  requestFetch(query) {
+  requestFetch(query, page) {
     const parentState = this;
     const REQ_URI = (process.env.NODE_ENV !== 'production') ? 'http://' + window.location.hostname + ':28080/pds/v1/diary' : '/pds/v1/diary';
 
-    const reqUri = REQ_URI + ((query === null || query === undefined) ? '' : '?q=' + query);
+    const reqUri = REQ_URI + '?perPage=' + this.state.itemsPerPage +
+      '&page=' + ((page === null || page === undefined) ? 1 : page) +
+      ((query === null || query === undefined) ? '' : '&q=' + query);
     const cookies = new Cookies();
 
     fetch(reqUri, {
@@ -86,12 +90,13 @@ class Diary extends Component {
     }).then(function (resJson) {
       console.log("Diary::fetch => " + resJson.result);
 
-      var dataLen = resJson.data.length;
+      var dataLen = resJson.pagination.totalCount;
       var calcPages = Math.ceil(dataLen / parentState.state.itemsPerPage);
 
       parentState.setState({
         dataSet: resJson.data,
-        currentPage: 0,
+        totalCount: dataLen,
+        currentPage: (resJson.pagination.currentPage - 1),
         totalPage: calcPages,
         keywordError: '',
       });
@@ -112,7 +117,7 @@ class Diary extends Component {
   }
 
   handlePageChanged(newPage) {
-    this.setState({ currentPage: newPage });
+    this.requestFetch(this.state.keyword, newPage);
   }
 
   handleSearchGo(event) {
@@ -129,17 +134,12 @@ class Diary extends Component {
         </tr>
       )
     } else {
-      var firstIdx = this.state.currentPage * this.state.itemsPerPage;
-      var lastIdx = this.state.currentPage * this.state.itemsPerPage + this.state.itemsPerPage;
-      var tableData = dataArray.slice(firstIdx, lastIdx);
-
-      return tableData.map((data, index) => {
+      return dataArray.map((data, index) => {
         return (
-          <tr key={'memo-' + data.id}>
-            <td>{data.siteName}</td>
-            <td>{data.siteType}</td>
-            <td><a href={data.siteUrl} target="_blank" rel="noopener noreferrer">{data.siteUrl}</a></td>
-            <td>{data.myId}</td>
+          <tr key={'diary-' + data.id}>
+            <td>{data.id}</td>
+            <td>{dateFormat(new Date(data.wdate))}</td>
+            <td>{data.title}</td>
             <td>
               <DiaryEdit dataFromParent={data} callbackFromParent={this.dataChangedCallback} />
               &nbsp;
@@ -192,17 +192,16 @@ class Diary extends Component {
           <Col>
             <Card>
               <CardHeader>
-                <i className="fa fa-align-justify"></i> Diary List (Total : {this.state.dataSet.length})
+                <i className="fa fa-align-justify"></i> Diary List (Total : {this.state.totalCount})
                 <DiaryAdd callbackFromParent={this.dataChangedCallback} />
               </CardHeader>
               <CardBody>
                 <Table hover bordered striped responsive size="sm">
                   <thead>
                     <tr>
-                      <th>이름</th>
-                      <th>유형</th>
-                      <th>항목 URL</th>
-                      <th>ID</th>
+                      <th>번호</th>
+                      <th>작성일</th>
+                      <th>제목</th>
                       <th>Edit</th>
                     </tr>
                   </thead>
