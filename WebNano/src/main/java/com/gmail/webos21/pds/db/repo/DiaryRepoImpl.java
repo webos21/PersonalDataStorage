@@ -32,7 +32,7 @@ public class DiaryRepoImpl implements DiaryRepo {
 			do {
 				Diary aRow = new Diary( // indent
 						/* id ------------- */rset.getLong(1), // indent
-						/* wdate ---------- */DbConsts.SDF2_DATE.parse(rset.getString(2)), // indent
+						/* wdate ---------- */rset.getLong(2), // indent
 						/* weather -------- */rset.getInt(3), // indent
 						/* title ---------- */rset.getString(4), // indent
 						/* content -------- */rset.getString(5)); // indent
@@ -73,7 +73,7 @@ public class DiaryRepoImpl implements DiaryRepo {
 			do {
 				Diary aRow = new Diary( // indent
 						/* id ------------- */rset.getLong(1), // indent
-						/* wdate ---------- */DbConsts.SDF2_DATE.parse(rset.getString(2)), // indent
+						/* wdate ---------- */rset.getLong(2), // indent
 						/* weather -------- */rset.getInt(3), // indent
 						/* title ---------- */rset.getString(4), // indent
 						/* content -------- */rset.getString(5)); // indent
@@ -105,7 +105,7 @@ public class DiaryRepoImpl implements DiaryRepo {
 
 			aRow = new Diary( // indent
 					/* id ------------- */rset.getLong(1), // indent
-					/* wdate ---------- */DbConsts.SDF2_DATE.parse(rset.getString(2)), // indent
+					/* wdate ---------- */rset.getLong(2), // indent
 					/* weather -------- */rset.getInt(3), // indent
 					/* title ---------- */rset.getString(4), // indent
 					/* content -------- */rset.getString(5)); // indent

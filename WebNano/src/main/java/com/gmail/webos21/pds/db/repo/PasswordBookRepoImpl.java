@@ -107,7 +107,8 @@ public class PasswordBookRepoImpl implements PasswordBookRepo {
 
 		try {
 			H2Database db = opener.getReadableDatabase();
-			ResultSet rset = db.rawQuery("SELECT * FROM " + DbConsts.TB_PASSWORD_BOOK + " WHERE id = " + id, null);
+			ResultSet rset = db.rawQuery("SELECT id, surl, sname, stype, myid, mypw, reg_date, fix_date, memo FROM "
+					+ DbConsts.TB_PASSWORD_BOOK + " WHERE id = " + id, null);
 			if (rset == null || !rset.first()) {
 				return null;
 			}
@@ -143,8 +144,8 @@ public class PasswordBookRepoImpl implements PasswordBookRepo {
 			ResultSet rset = null;
 
 			if (newRow.getId() != null) {
-				rset = db.rawQuery("SELECT * FROM " + DbConsts.TB_PASSWORD_BOOK + " WHERE id = " + newRow.getId(),
-						null);
+				rset = db.rawQuery("SELECT id, surl, sname, stype, myid, mypw, reg_date, fix_date, memo FROM "
+						+ DbConsts.TB_PASSWORD_BOOK + " WHERE id = " + newRow.getId(), null);
 				if (rset != null && rset.first()) {
 					rset.close();
 

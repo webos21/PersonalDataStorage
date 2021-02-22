@@ -32,7 +32,7 @@ public class MemoRepoImpl implements MemoRepo {
 			do {
 				Memo aRow = new Memo( // indent
 						/* id ------------- */rset.getLong(1), // indent
-						/* wdate ---------- */DbConsts.SDF2_DATE.parse(rset.getString(2)), // indent
+						/* wdate ---------- */rset.getLong(2), // indent
 						/* title ---------- */rset.getString(3), // indent
 						/* content -------- */rset.getString(4)); // indent
 				aList.add(aRow);
@@ -72,7 +72,7 @@ public class MemoRepoImpl implements MemoRepo {
 			do {
 				Memo aRow = new Memo(// indent
 						/* id ------------- */rset.getLong(1), // indent
-						/* wdate ---------- */DbConsts.SDF2_DATE.parse(rset.getString(2)), // indent
+						/* wdate ---------- */rset.getLong(2), // indent
 						/* title ---------- */rset.getString(3), // indent
 						/* content -------- */rset.getString(4));// indent
 				aList.add(aRow);
@@ -95,7 +95,8 @@ public class MemoRepoImpl implements MemoRepo {
 
 		try {
 			H2Database db = opener.getReadableDatabase();
-			ResultSet rset = db.rawQuery("SELECT * FROM " + DbConsts.TB_MEMO + " WHERE id = " + id, null);
+			ResultSet rset = db
+					.rawQuery("SELECT id, wdate, title, content FROM " + DbConsts.TB_MEMO + " WHERE id = " + id, null);
 			if (rset == null || !rset.first()) {
 				return null;
 			}
@@ -126,7 +127,9 @@ public class MemoRepoImpl implements MemoRepo {
 			ResultSet rset = null;
 
 			if (newRow.getId() != null) {
-				rset = db.rawQuery("SELECT id, wdate, title, content FROM " + DbConsts.TB_MEMO + " WHERE id = " + newRow.getId(), null);
+				rset = db.rawQuery(
+						"SELECT id, wdate, title, content FROM " + DbConsts.TB_MEMO + " WHERE id = " + newRow.getId(),
+						null);
 				if (rset != null && rset.first()) {
 					rset.close();
 
