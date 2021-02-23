@@ -37,7 +37,8 @@ const Users = React.lazy(() => import('./views/Users/Users'));
 const User = React.lazy(() => import('./views/Users/User'));
 
 const PasswordBook = React.lazy(() => import('./service/PasswordBook'));
-const Diary = React.lazy(() => import('./service/Diary'));
+const DiaryBoard = React.lazy(() => import('./service/DiaryBoard'));
+const DiaryCalendar = React.lazy(() => import('./service/DiaryCalendar'));
 const Memo = React.lazy(() => import('./service/Memo'));
 const Logout = React.lazy(() => import('./service/Logout'));
 
@@ -85,7 +86,8 @@ const routes = [
   { path: '/users', exact: true,  name: 'Users', component: Users },
   { path: '/users/:id', exact: true, name: 'User Details', component: User },
   { path: '/passwordbook', exact: true,  name: 'PasswordBook', component: PasswordBook },
-  { path: '/diary', exact: true,  name: 'Diary', component: Diary },
+  { path: '/diary-board', exact: true,  name: 'DiaryBoard', component: DiaryBoard },
+  { path: '/diary-calendar', exact: true,  name: 'DiaryCalendar', component: DiaryCalendar },
   { path: '/memo', exact: true,  name: 'Memo', component: Memo },
   { path: '/logout', exact: true,  name: 'Logout', component: Logout },
 ];

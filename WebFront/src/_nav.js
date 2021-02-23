@@ -1,3 +1,4 @@
+/* eslint import/no-anonymous-default-export: [2, {"allowObject": true}] */
 export default {
   items: [
     {
@@ -11,8 +12,13 @@ export default {
       icon: 'icon-key',
     },
     {
-      name: 'Diary',
-      url: '/diary',
+      name: 'DiaryBoard',
+      url: '/diary-board',
+      icon: 'icon-notebook',
+    },
+    {
+      name: 'DiaryCalendar',
+      url: '/diary-calendar',
       icon: 'icon-notebook',
     },
     {
@@ -35,4 +41,5 @@ export default {
       variant: 'danger',
     },
   ],
+
 };

@@ -1,0 +1,6 @@
+{
+  "name": "DiaryBoard",
+  "version": "0.0.0",
+  "private": true,
+  "main": "./DiaryBoard.js"
+}

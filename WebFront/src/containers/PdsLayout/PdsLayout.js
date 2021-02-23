@@ -25,22 +25,26 @@ const PbHeader = React.lazy(() => import('./PdsHeader'));
 
 class PbLayout extends Component {
 
-  loading = () => <div className="animated fadeIn pt-1 text-center">Loading...</div>
+  loading() {
+    return (
+      <div className="animated fadeIn pt-1 text-center">Loading...</div>
+    )
+  }
 
   signOut(e) {
     e.preventDefault()
 
     let cookies = new Cookies();
-    cookies.remove('X-PB-AUTH');
-    this.props.history.push('/login');
+    cookies.remove('X-PDS-AUTH');
+    this.props.history.push('/');
   }
 
   render() {
     return (
       <div className="app">
         <AppHeader fixed>
-          <Suspense  fallback={this.loading()}>
-            <PbHeader onLogout={e=>this.signOut(e)}/>
+          <Suspense fallback={this.loading()}>
+            <PbHeader onLogout={e => this.signOut(e)} />
           </Suspense>
         </AppHeader>
         <div className="app-body">
@@ -48,13 +52,13 @@ class PbLayout extends Component {
             <AppSidebarHeader />
             <AppSidebarForm />
             <Suspense>
-            <AppSidebarNav navConfig={navigation} {...this.props} router={router}/>
+              <AppSidebarNav navConfig={navigation} {...this.props} router={router} />
             </Suspense>
             <AppSidebarFooter />
             <AppSidebarMinimizer />
           </AppSidebar>
           <main className="main">
-            <AppBreadcrumb appRoutes={routes} router={router}/>
+            <AppBreadcrumb appRoutes={routes} router={router} />
             <Container fluid>
               <Suspense fallback={this.loading()}>
                 <Switch>

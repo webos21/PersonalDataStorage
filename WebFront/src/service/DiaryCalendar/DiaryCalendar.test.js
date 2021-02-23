@@ -1,10 +1,10 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { MemoryRouter } from 'react-router-dom';
-import Diary from './Diary';
+import DiaryCalendar from './DiaryCalendar';
 
 it('renders without crashing', () => {
   const div = document.createElement('div');
-  ReactDOM.render(<MemoryRouter><Diary /></MemoryRouter>, div);
+  ReactDOM.render(<MemoryRouter><DiaryCalendar /></MemoryRouter>, div);
   ReactDOM.unmountComponentAtNode(div);
 });
