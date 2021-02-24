@@ -12,48 +12,32 @@ import FullCalendar, { formatDate } from '@fullcalendar/react'
 import dayGridPlugin from '@fullcalendar/daygrid'
 import interactionPlugin from '@fullcalendar/interaction'
 
+const DiaryDebugLog = (args) => { };
+// const DiaryDebugLog = console.log;
 
 class DiaryCalendar extends Component {
   constructor(props) {
     super(props);
 
     this.dataChangedCallback = this.dataChangedCallback.bind(this);
-    this.renderTableList = this.renderTableList.bind(this);
 
     this.handleDateSet = this.handleDateSet.bind(this);
     this.handleDateSelect = this.handleDateSelect.bind(this);
     this.renderEventContent = this.renderEventContent.bind(this);
     this.handleEventClick = this.handleEventClick.bind(this);
-    this.handleEventSet = this.handleEventSet.bind(this);
 
     this.state = {
       dataSet: [],
       weekendsVisible: true,
       currentEvents: [],
-      today: new Date(),
     };
 
-    this.todayStr = "2021-02-23";
+    this.todayStr = new Date().toISOString().replace(/T.*$/, '');
     this.eventGuid = 0;
-
-    this.INITIAL_EVENTS = [
-      {
-        id: this.createEventId(),
-        title: 'All-day event',
-        start: this.todayStr
-      },
-      {
-        id: this.createEventId(),
-        title: 'Timed event',
-        start: this.todayStr + 'T12:00:00'
-      }
-    ]
-
-    this.calendarRef = React.createRef()
   }
 
   dataChangedCallback(modifiedData) {
-    console.log("Diary::dataChangedCallback");
+    DiaryDebugLog("Diary::dataChangedCallback");
     if (modifiedData !== undefined && modifiedData !== null) {
       for (var i = 0; i < this.state.dataSet.length; i++) {
         if (this.state.dataSet[i].id === modifiedData.id) {
@@ -69,7 +53,7 @@ class DiaryCalendar extends Component {
   }
 
   requestFetch(year, month) {
-    console.log("this.todayStr = " + this.todayStr + " / year = " + year + " / month = " + month);
+    DiaryDebugLog("this.todayStr = " + this.todayStr + " / year = " + year + " / month = " + month);
 
     const parentState = this;
     const REQ_URI = (process.env.NODE_ENV !== 'production') ? 'http://' + window.location.hostname + ':28080/pds/v1/diary' : '/pds/v1/diary';
@@ -92,20 +76,26 @@ class DiaryCalendar extends Component {
       }
       return res.json();
     }).then(function (resJson) {
-      console.log("Diary::fetch => " + resJson.result);
+      DiaryDebugLog("Diary::fetch => " + resJson.result);
+
+      let diaryTexts = [];
+      resJson.data.map((data) => {
+        let aText = {
+          id: data.id,
+          title: data.title,
+          start: dateFormat(new Date(data.wdate))
+        };
+        diaryTexts[diaryTexts.length] = aText;
+      })
 
       parentState.setState({
         dataSet: resJson.data,
+        currentEvents: diaryTexts
       });
     }).catch(function (error) {
-      console.log("Diary::fetch => " + error);
+      DiaryDebugLog("Diary::fetch => " + error);
       parentState.setState({ keywordError: error.message })
     });
-  }
-
-  componentDidMount() {
-//    let thisMonth = new Date();
-//    this.requestFetch(thisMonth.getFullYear(), thisMonth.getMonth() + 1);
   }
 
   createEventId() {
@@ -113,7 +103,7 @@ class DiaryCalendar extends Component {
   }
 
   handleDateSet(dateInfo) {
-    console.log("handleDateSet!!!!!", dateInfo);
+    DiaryDebugLog("handleDateSet!!!!!", dateInfo);
 
     let monthStart = new Date(dateInfo.start.getFullYear(), dateInfo.start.getMonth(), dateInfo.start.getDate() + 8);
     let year = monthStart.getFullYear();
@@ -124,7 +114,7 @@ class DiaryCalendar extends Component {
 
   // When the date is clicked
   handleDateSelect(selectInfo) {
-    console.log("handleDateSelect!!!!!", selectInfo);
+    DiaryDebugLog("handleDateSelect!!!!!", selectInfo);
 
     let title = prompt('Please enter a new title for your event')
     let calendarApi = selectInfo.view.calendar
@@ -145,16 +135,11 @@ class DiaryCalendar extends Component {
 
   // When the event is clicked
   handleEventClick(clickInfo) {
-    console.log("handleEventClick!!!!!", clickInfo);
+    DiaryDebugLog("handleEventClick!!!!!", clickInfo);
 
     if (window.confirm(`Are you sure you want to delete the event '${clickInfo.event.title}'`)) {
       clickInfo.event.remove()
     }
-  }
-
-  // When the events data is changed
-  handleEventSet(e) {
-    console.log("[handleEventSet] events are set!!", e);
   }
 
   renderEventContent(eventInfo) {
@@ -164,31 +149,6 @@ class DiaryCalendar extends Component {
         <i>{eventInfo.event.title}</i>
       </>
     )
-  }
-
-  renderTableList(dataArray) {
-    if (dataArray.length === 0) {
-      return (
-        <tr key="row-nodata">
-          <td colSpan="5" className="text-center align-middle" height="200">No Data</td>
-        </tr>
-      )
-    } else {
-      return dataArray.map((data, index) => {
-        return (
-          <tr key={'diary-' + data.id}>
-            <td>{data.id}</td>
-            <td>{dateFormat(new Date(data.wdate))}</td>
-            <td>{data.title}</td>
-            <td>
-              <DiaryEdit dataFromParent={data} callbackFromParent={this.dataChangedCallback} />
-              &nbsp;
-              <DiaryDel dataFromParent={data} callbackFromParent={this.dataChangedCallback} />
-            </td>
-          </tr>
-        )
-      })
-    }
   }
 
   render() {
@@ -217,17 +177,11 @@ class DiaryCalendar extends Component {
               selectMirror={true}
               dayMaxEvents={true}
               weekends={this.state.weekendsVisible}
+              events={this.state.currentEvents}
               datesSet={this.handleDateSet}
               select={this.handleDateSelect}
               eventContent={this.renderEventContent} // custom render function
               eventClick={this.handleEventClick}
-              eventsSet={this.handleEventSet} // called after events are initialized/added/changed/removed
-              /* you can update a remote database when these fire:
-              eventAdd={function(){}}
-              eventChange={function(){}}
-              eventRemove={function(){}}
-              */
-              ref={this.calendarRef}
             />
 
           </Col>
