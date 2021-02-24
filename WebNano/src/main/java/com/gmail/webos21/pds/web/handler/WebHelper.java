@@ -1,5 +1,8 @@
 package com.gmail.webos21.pds.web.handler;
 
+import java.util.Map;
+
+import com.gmail.webos21.crypto.Base64;
 import com.gmail.webos21.nano.NanoHTTPD;
 import com.gmail.webos21.nano.NanoHTTPD.IHTTPSession;
 import com.gmail.webos21.nano.NanoHTTPD.Method;
@@ -32,6 +35,26 @@ public class WebHelper {
 			rr.addHeader("Set-Cookies", "X-PDS-AUTH=; SameSite=None; Secure");
 			addCorsHeader(session.getHeaders().get("origin"), rr);
 			return rr;
+		}
+
+		return null;
+	}
+
+	public static RouteResult checkBasicAuth(Map<String, String> headers) {
+		String origin = headers.get("origin");
+		String authVal = headers.get("authorization");
+		if (authVal == null) {
+			return WebHelper.processSimple(origin, Status.UNAUTHORIZED);
+		}
+		String[] authArr = authVal.split(" ");
+		if (authArr == null || authArr.length != 2) {
+			return WebHelper.processSimple(origin, Status.UNAUTHORIZED);
+		}
+
+		String auth = new String(Base64.decode(authArr[1], Base64.DEFAULT));
+		System.out.println("auth = " + auth);
+		if (!"username:password".equals(auth)) {
+			return WebHelper.processSimple(origin, Status.UNAUTHORIZED);
 		}
 
 		return null;

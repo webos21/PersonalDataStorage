@@ -1,5 +1,6 @@
 package com.gmail.webos21.pds.web.handler;
 
+import java.util.List;
 import java.util.Map;
 
 import com.gmail.webos21.nano.NanoHTTPD;
@@ -49,31 +50,38 @@ public class AuthHandler implements UriHandler {
 
 	private RouteResult processPost(Map<String, String> headers, NanoHTTPD.IHTTPSession session, String uri,
 			Map<String, String> files) {
+		RouteResult rr = null;
 
 		StringBuilder sb = new StringBuilder();
 
-		@SuppressWarnings("deprecation")
-		Map<String, String> parms = session.getParms();
-		String pbpwd = parms.get("pbpwd");
 		String origin = headers.get("origin");
 
-		RouteResult rr = null;
-		if (accessCode.equals(pbpwd)) {
-			sb.append("{\n");
-			sb.append("  \"result\": \"OK\",\n");
-			sb.append("  \"auth\": {\n");
-			sb.append("    \"ckey\": \"X-PDS-AUTH\",\n");
-			sb.append("    \"cval\": \"" + accessCode + "\"\n");
-			sb.append("  }\n");
-			sb.append("}\n");
+		List<String> pbpList = session.getParameters().get("pbpwd");
+		if (pbpList != null && pbpList.get(0) != null && pbpList.get(0).length() > 4) {
+			String pbpwd = pbpList.get(0);
+			if (accessCode.equals(pbpwd)) {
+				sb.append("{\n");
+				sb.append("  \"result\": \"OK\",\n");
+				sb.append("  \"auth\": {\n");
+				sb.append("    \"ckey\": \"X-PDS-AUTH\",\n");
+				sb.append("    \"cval\": \"" + accessCode + "\"\n");
+				sb.append("  }\n");
+				sb.append("}\n");
 
-			rr = RouteResult.newRouteResult(Status.OK, "application/json", sb.toString());
-			rr.addHeader("Set-Cookies", "X-PDS-AUTH=" + accessCode + "; SameSite=None; Secure");
+				rr = RouteResult.newRouteResult(Status.OK, "application/json", sb.toString());
+				rr.addHeader("Set-Cookies", "X-PDS-AUTH=" + accessCode + "; SameSite=None; Secure");
+			} else {
+				sb.append("{\n");
+				sb.append("  \"result\": \"FAIL\"\n");
+				sb.append("}\n");
+				rr = RouteResult.newRouteResult(Status.UNAUTHORIZED, "application/json", sb.toString());
+				rr.addHeader("Set-Cookies", "X-PDS-AUTH=; SameSite=None; Secure");
+			}
 		} else {
 			sb.append("{\n");
 			sb.append("  \"result\": \"FAIL\"\n");
 			sb.append("}\n");
-			rr = RouteResult.newRouteResult(Status.UNAUTHORIZED, "application/json", sb.toString());
+			rr = RouteResult.newRouteResult(Status.BAD_REQUEST, "application/json", sb.toString());
 			rr.addHeader("Set-Cookies", "X-PDS-AUTH=; SameSite=None; Secure");
 		}
 

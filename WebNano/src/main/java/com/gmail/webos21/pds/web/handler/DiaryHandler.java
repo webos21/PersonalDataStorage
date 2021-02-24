@@ -5,7 +5,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-import com.gmail.webos21.crypto.Base64;
 import com.gmail.webos21.nano.NanoHTTPD;
 import com.gmail.webos21.nano.NanoHTTPD.IHTTPSession;
 import com.gmail.webos21.nano.NanoHTTPD.Response.Status;
@@ -31,9 +30,12 @@ public class DiaryHandler implements UriHandler {
 		System.out.println("\n=========================================\n");
 		System.out.println("Response) " + session.getMethod() + " " + uri);
 
+		RouteResult ba = WebHelper.checkBasicAuth(headers);
+		if (ba != null) {
+			return ba;
+		}
+
 		switch (session.getMethod()) {
-		case OPTIONS:
-			return WebHelper.processSimple(headers.get("origin"), Status.OK);
 		case POST:
 			return processPost(headers, session, uri, files);
 		case GET:
@@ -42,6 +44,7 @@ public class DiaryHandler implements UriHandler {
 			return processPut(headers, session, uri, files);
 		case DELETE:
 			return processDelete(headers, session, uri);
+		case OPTIONS: // WebHelper.chkAuth is handling!!
 		default:
 			return WebHelper.processSimple(headers.get("origin"), Status.METHOD_NOT_ALLOWED);
 		}
@@ -49,20 +52,6 @@ public class DiaryHandler implements UriHandler {
 
 	private RouteResult processDelete(Map<String, String> headers, IHTTPSession session, String uri) {
 		String origin = headers.get("origin");
-		String authVal = headers.get("authorization");
-		if (authVal == null) {
-			return WebHelper.processSimple(origin, Status.UNAUTHORIZED);
-		}
-		String[] authArr = authVal.split(" ");
-		if (authArr == null || authArr.length != 2) {
-			return WebHelper.processSimple(origin, Status.UNAUTHORIZED);
-		}
-
-		String auth = new String(Base64.decode(authArr[1], Base64.DEFAULT));
-		System.out.println("auth = " + auth);
-		if (!"username:password".equals(auth)) {
-			return WebHelper.processSimple(origin, Status.UNAUTHORIZED);
-		}
 
 		@SuppressWarnings("deprecation")
 		Map<String, String> params = session.getParms();
@@ -93,20 +82,6 @@ public class DiaryHandler implements UriHandler {
 	private RouteResult processPut(Map<String, String> headers, NanoHTTPD.IHTTPSession session, String uri,
 			Map<String, String> files) {
 		String origin = headers.get("origin");
-		String authVal = headers.get("authorization");
-		if (authVal == null) {
-			return WebHelper.processSimple(origin, Status.UNAUTHORIZED);
-		}
-		String[] authArr = authVal.split(" ");
-		if (authArr == null || authArr.length != 2) {
-			return WebHelper.processSimple(origin, Status.UNAUTHORIZED);
-		}
-
-		String auth = new String(Base64.decode(authArr[1], Base64.DEFAULT));
-		System.out.println("auth = " + auth);
-		if (!"username:password".equals(auth)) {
-			return WebHelper.processSimple(origin, Status.UNAUTHORIZED);
-		}
 
 		@SuppressWarnings("deprecation")
 		Map<String, String> params = session.getParms();
@@ -152,20 +127,6 @@ public class DiaryHandler implements UriHandler {
 	private RouteResult processPost(Map<String, String> headers, NanoHTTPD.IHTTPSession session, String uri,
 			Map<String, String> files) {
 		String origin = headers.get("origin");
-		String authVal = headers.get("authorization");
-		if (authVal == null) {
-			return WebHelper.processSimple(origin, Status.UNAUTHORIZED);
-		}
-		String[] authArr = authVal.split(" ");
-		if (authArr == null || authArr.length != 2) {
-			return WebHelper.processSimple(origin, Status.UNAUTHORIZED);
-		}
-
-		String auth = new String(Base64.decode(authArr[1], Base64.DEFAULT));
-		System.out.println("auth = " + auth);
-		if (!"username:password".equals(auth)) {
-			return WebHelper.processSimple(origin, Status.UNAUTHORIZED);
-		}
 
 		@SuppressWarnings("deprecation")
 		Map<String, String> params = session.getParms();
@@ -210,19 +171,10 @@ public class DiaryHandler implements UriHandler {
 	private RouteResult processGet(Map<String, String> headers, IHTTPSession session, String uri,
 			Map<String, String> files) {
 		String origin = headers.get("origin");
-		String authVal = headers.get("authorization");
-		if (authVal == null) {
-			return WebHelper.processSimple(origin, Status.UNAUTHORIZED);
-		}
-		String[] authArr = authVal.split(" ");
-		if (authArr == null || authArr.length != 2) {
-			return WebHelper.processSimple(origin, Status.UNAUTHORIZED);
-		}
 
-		String auth = new String(Base64.decode(authArr[1], Base64.DEFAULT));
-		System.out.println("auth = " + auth);
-		if (!"username:password".equals(auth)) {
-			return WebHelper.processSimple(origin, Status.UNAUTHORIZED);
+		if (session.getParameters().get("year") != null && session.getParameters().get("month") != null) {
+			return processGetCalendar(headers, session, session.getParameters().get("year").get(0),
+					session.getParameters().get("month").get(0));
 		}
 
 		List<Diary> rows = null;
@@ -274,6 +226,38 @@ public class DiaryHandler implements UriHandler {
 				sb.append(r.toJson());
 				i++;
 			}
+		}
+
+		sb.append("  ]\n");
+		sb.append("}\n");
+
+		RouteResult rr = RouteResult.newRouteResult(Status.OK, "application/json", sb.toString());
+		WebHelper.addCorsHeader(origin, rr);
+
+		RouteResult.print(rr);
+		System.out.println(sb.toString());
+
+		return rr;
+	}
+
+	private RouteResult processGetCalendar(Map<String, String> headers, IHTTPSession session, String year,
+			String month) {
+		String origin = headers.get("origin");
+
+		List<Diary> rows = diaryRepo.findRows(Integer.parseInt(year), Integer.parseInt(month));
+
+		StringBuilder sb = new StringBuilder();
+
+		sb.append("{\n");
+		sb.append("  \"result\": \"OK\",\n");
+		sb.append("  \"data\": [\n");
+		int i = 0;
+		for (Diary r : rows) {
+			if (i > 0) {
+				sb.append(',').append('\n');
+			}
+			sb.append(r.toJson());
+			i++;
 		}
 
 		sb.append("  ]\n");

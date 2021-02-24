@@ -20,6 +20,7 @@ class DiaryCalendar extends Component {
     this.dataChangedCallback = this.dataChangedCallback.bind(this);
     this.renderTableList = this.renderTableList.bind(this);
 
+    this.handleDateSet = this.handleDateSet.bind(this);
     this.handleDateSelect = this.handleDateSelect.bind(this);
     this.renderEventContent = this.renderEventContent.bind(this);
     this.handleEventClick = this.handleEventClick.bind(this);
@@ -48,6 +49,7 @@ class DiaryCalendar extends Component {
       }
     ]
 
+    this.calendarRef = React.createRef()
   }
 
   dataChangedCallback(modifiedData) {
@@ -66,13 +68,13 @@ class DiaryCalendar extends Component {
     }
   }
 
-  requestFetch(year, mon) {
-    console.log("this.todayStr = " + this.todayStr + " / year = " + year + " / month = " + mon);
+  requestFetch(year, month) {
+    console.log("this.todayStr = " + this.todayStr + " / year = " + year + " / month = " + month);
 
     const parentState = this;
     const REQ_URI = (process.env.NODE_ENV !== 'production') ? 'http://' + window.location.hostname + ':28080/pds/v1/diary' : '/pds/v1/diary';
 
-    const reqUri = REQ_URI + '?year=' + year + '&mon=' + mon;
+    const reqUri = REQ_URI + '?year=' + year + '&month=' + month;
     const cookies = new Cookies();
 
     fetch(reqUri, {
@@ -92,15 +94,8 @@ class DiaryCalendar extends Component {
     }).then(function (resJson) {
       console.log("Diary::fetch => " + resJson.result);
 
-      var dataLen = resJson.pagination.totalCount;
-      var calcPages = Math.ceil(dataLen / parentState.state.itemsPerPage);
-
       parentState.setState({
         dataSet: resJson.data,
-        totalCount: dataLen,
-        currentPage: (resJson.pagination.currentPage - 1),
-        totalPage: calcPages,
-        keywordError: '',
       });
     }).catch(function (error) {
       console.log("Diary::fetch => " + error);
@@ -109,12 +104,22 @@ class DiaryCalendar extends Component {
   }
 
   componentDidMount() {
-    let thisMonth = new Date();
-    this.requestFetch(thisMonth.getFullYear(), thisMonth.getMonth() + 1);
+//    let thisMonth = new Date();
+//    this.requestFetch(thisMonth.getFullYear(), thisMonth.getMonth() + 1);
   }
 
   createEventId() {
     return String(this.eventGuid++);
+  }
+
+  handleDateSet(dateInfo) {
+    console.log("handleDateSet!!!!!", dateInfo);
+
+    let monthStart = new Date(dateInfo.start.getFullYear(), dateInfo.start.getMonth(), dateInfo.start.getDate() + 8);
+    let year = monthStart.getFullYear();
+    let month = monthStart.getMonth() + 1;
+
+    this.requestFetch(year, month);
   }
 
   // When the date is clicked
@@ -150,11 +155,6 @@ class DiaryCalendar extends Component {
   // When the events data is changed
   handleEventSet(e) {
     console.log("[handleEventSet] events are set!!", e);
-
-    this.setState({
-      currentEvents: e
-    })
-
   }
 
   renderEventContent(eventInfo) {
@@ -209,7 +209,7 @@ class DiaryCalendar extends Component {
               headerToolbar={{
                 left: 'myCustomButton',
                 center: 'title',
-                right: 'today prev,next'
+                right: 'prevYear,prev,today,next,nextYear'
               }}
               initialView='dayGridMonth'
               editable={true}
@@ -217,15 +217,17 @@ class DiaryCalendar extends Component {
               selectMirror={true}
               dayMaxEvents={true}
               weekends={this.state.weekendsVisible}
+              datesSet={this.handleDateSet}
               select={this.handleDateSelect}
               eventContent={this.renderEventContent} // custom render function
               eventClick={this.handleEventClick}
               eventsSet={this.handleEventSet} // called after events are initialized/added/changed/removed
-            /* you can update a remote database when these fire:
-            eventAdd={function(){}}
-            eventChange={function(){}}
-            eventRemove={function(){}}
-            */
+              /* you can update a remote database when these fire:
+              eventAdd={function(){}}
+              eventChange={function(){}}
+              eventRemove={function(){}}
+              */
+              ref={this.calendarRef}
             />
 
           </Col>

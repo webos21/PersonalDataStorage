@@ -10,6 +10,8 @@ public interface DiaryRepo {
 
     List<Diary> findRows(String keyString);
 
+    List<Diary> findRows(int year, int month);
+
     Diary getRow(Long id);
 
     Diary getRow(Diary aRow);
