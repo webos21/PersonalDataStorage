@@ -22,7 +22,7 @@ const DiaryDel = props => {
     }
 
     const onSubmit = (data, e) => {
-        fetch(REQ_URI + '?siteId=' + data.siteId, {
+        fetch(REQ_URI + '?diaryId=' + data.diaryId, {
             method: 'DELETE',
             headers: new Headers({
                 'X-PDS-AUTH': cookies.get("X-PDS-AUTH"),
@@ -55,7 +55,7 @@ const DiaryDel = props => {
             <Modal isOpen={modalShow} toggle={toggleOpen}
                 className={'modal-danger ' + props.className}>
                 <Form onSubmit={handleSubmit(onSubmit)}>
-                    <ModalHeader toggle={toggleOpen}>비밀번호 삭제</ModalHeader>
+                    <ModalHeader toggle={toggleOpen}>일기 삭제</ModalHeader>
                     <ModalBody>
                         <p>다음 항목을 삭제할까요?</p>
                         <ul>
@@ -71,7 +71,7 @@ const DiaryDel = props => {
                                 defaultValue={props.dataFromParent.id}
                                 name="diaryId"
                                 rules={{ required: true }} />
-                            {errors.siteId && <FormFeedback>{errors.diaryId.message}</FormFeedback>}
+                            {errors.diaryId && <FormFeedback>{errors.diaryId.message}</FormFeedback>}
                         </FormGroup>
                     </ModalBody>
                     <ModalFooter>

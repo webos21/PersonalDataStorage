@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Modal, ModalHeader, ModalBody, ModalFooter, Button, Col, Form, FormGroup, FormFeedback, InputGroup, InputGroupAddon, InputGroupText, Input } from 'reactstrap';
 import { useForm, Controller } from "react-hook-form";
 import Cookies from 'universal-cookie';
@@ -15,10 +15,31 @@ const DiaryEdit = props => {
         nativeValidation: false,
     });
 
-    const [modalShowEdit, setModalShow] = useState(false);
-
-    const toggleOpen = () => {
-        setModalShow(!modalShowEdit);
+    const onDelete = () => {
+        fetch(REQ_URI + '?diaryId=' + props.dataFromParent.id, {
+            method: 'DELETE',
+            headers: new Headers({
+                'X-PDS-AUTH': cookies.get("X-PDS-AUTH"),
+                'Authorization': 'Basic ' + btoa('username:password'),
+            }),
+        }).then(function (res) {
+            if (!res.ok) {
+                if (res.status === 401) {
+                    window.location = "/#/logout";
+                }
+                throw Error("서버응답 : " + res.statusText + "(" + res.status + ")");
+            }
+            return res.json();
+        }).then(function (resJson) {
+            console.log("DiaryDel::fetch => " + resJson.result);
+            if (resJson.result === "OK") {
+                props.modalToggle();
+                props.callbackFromParent();
+            }
+        }).catch(function (error) {
+            console.log("DiaryDel::fetch => " + error);
+            setError("siteId", "serverResponse", error.message);
+        });
     }
 
     const onSubmit = (data, e) => {
@@ -42,7 +63,7 @@ const DiaryEdit = props => {
         }).then(function (resJson) {
             console.log("DiaryEdit::fetch => " + resJson.result);
             if (resJson.result === "OK") {
-                toggleOpen();
+                props.modalToggle();
                 props.callbackFromParent(resJson.data[0]);
             }
         }).catch(function (error) {
@@ -52,142 +73,139 @@ const DiaryEdit = props => {
     };
 
     return (
-        <span>
-            <Button color="warning" className="btn-sm" onClick={toggleOpen}>
-                <i className="fa fa-edit"></i>&nbsp;수정</Button>
-            <Modal isOpen={modalShowEdit} toggle={toggleOpen}
-                className={'modal-warning ' + props.className}>
-                <Form onSubmit={handleSubmit(onSubmit)}>
-                    <ModalHeader toggle={toggleOpen}>비밀번호 수정</ModalHeader>
-                    <ModalBody>
-                        <FormGroup row>
-                            <Col xs="12" md="12">
+        <Modal isOpen={props.modalFlag} toggle={props.modalToggle}
+            className={'modal-warning ' + props.className}>
+            <Form onSubmit={handleSubmit(onSubmit)}>
+                <ModalHeader toggle={props.modalToggle}>일기 수정</ModalHeader>
+                <ModalBody>
+                    <FormGroup row>
+                        <Col xs="12" md="12">
+                            <Controller
+                                as={<Input />}
+                                type="hidden"
+                                control={control}
+                                defaultValue={props.dataFromParent.id}
+                                name="diaryId"
+                                rules={{ required: true }} />
+                            <InputGroup>
+                                <InputGroupAddon addonType="prepend">
+                                    <InputGroupText style={{ minWidth: 70 }}>제목</InputGroupText>
+                                </InputGroupAddon>
                                 <Controller
                                     as={<Input />}
-                                    type="hidden"
+                                    type="text"
                                     control={control}
-                                    defaultValue={props.dataFromParent.id}
-                                    name="diaryId"
-                                    rules={{ required: true }} />
-                                <InputGroup>
-                                    <InputGroupAddon addonType="prepend">
-                                        <InputGroupText style={{ minWidth: 70 }}>제목</InputGroupText>
-                                    </InputGroupAddon>
-                                    <Controller
-                                        as={<Input />}
-                                        type="text"
-                                        control={control}
-                                        defaultValue={props.dataFromParent.title}
-                                        name="title" id="title" placeholder="제목을 입력해 주세요."
-                                        className={"form-control" + (errors.title ? " is-invalid" : " is-valid")}
-                                        rules={{
-                                            required: {
-                                                value: true,
-                                                message: "제목을 입력해 주세요."
-                                            },
-                                            minLength: {
-                                                value: 1,
-                                                message: "제목은 1자 이상 입니다."
-                                            },
-                                            maxLength: {
-                                                value: 100,
-                                                message: "제목은 100자 이내 입니다."
-                                            }
-                                        }}
-                                    />
-                                    {errors.title && <FormFeedback>{errors.title.message}</FormFeedback>}
-                                </InputGroup>
-                            </Col>
-                        </FormGroup>
-                        <FormGroup row>
-                            <Col xs="12" md="12">
-                                <InputGroup>
-                                    <InputGroupAddon addonType="prepend">
-                                        <InputGroupText style={{ minWidth: 70 }}>작성일</InputGroupText>
-                                    </InputGroupAddon>
+                                    defaultValue={props.dataFromParent.title}
+                                    name="title" id="title" placeholder="제목을 입력해 주세요."
+                                    className={"form-control" + (errors.title ? " is-invalid" : " is-valid")}
+                                    rules={{
+                                        required: {
+                                            value: true,
+                                            message: "제목을 입력해 주세요."
+                                        },
+                                        minLength: {
+                                            value: 1,
+                                            message: "제목은 1자 이상 입니다."
+                                        },
+                                        maxLength: {
+                                            value: 100,
+                                            message: "제목은 100자 이내 입니다."
+                                        }
+                                    }}
+                                />
+                                {errors.title && <FormFeedback>{errors.title.message}</FormFeedback>}
+                            </InputGroup>
+                        </Col>
+                    </FormGroup>
+                    <FormGroup row>
+                        <Col xs="12" md="12">
+                            <InputGroup>
+                                <InputGroupAddon addonType="prepend">
+                                    <InputGroupText style={{ minWidth: 70 }}>작성일</InputGroupText>
+                                </InputGroupAddon>
 
-                                    <Controller
-                                        as={<Input />}
-                                        type="date"
-                                        control={control}
-                                        defaultValue={dateFormat(new Date(props.dataFromParent.wdate))}
-                                        name="wdate" id="wdate" placeholder="작성일을 선택해 주세요."
-                                        className={"form-control" + (errors.wdate ? " is-invalid" : " is-valid")}
-                                        rules={{
-                                            required: {
-                                                value: true,
-                                                message: "작성일을 선택해 주세요."
-                                            }
-                                        }}
-                                    />
-                                    {errors.wdate && <FormFeedback>{errors.wdate.message}</FormFeedback>}
-                                </InputGroup>
-                            </Col>
-                        </FormGroup>
-                        <FormGroup row>
-                            <Col xs="12" md="12">
-                                <InputGroup>
-                                    <InputGroupAddon addonType="prepend">
-                                        <InputGroupText style={{ minWidth: 70 }}>날씨</InputGroupText>
-                                    </InputGroupAddon>
-                                    <Controller
-                                        as={<Input>
-                                            <option value={0}>눈</option>
-                                            <option value={1}>맑음</option>
-                                            <option value={2}>구름조금</option>
-                                            <option value={3}>흐림</option>
-                                            <option value={4}>비온뒤갬</option>
-                                            <option value={5}>비</option>
-                                        </Input>}
-                                        type="select"
-                                        control={control}
-                                        defaultValue={props.dataFromParent.weather}
-                                        name="weather" id="weather" placeholder="날씨를 선택해 주세요."
-                                        className={"form-control" + (errors.weather ? " is-invalid" : " is-valid")}
-                                        rules={{
-                                            required: {
-                                                value: true,
-                                                message: "날씨를 선택해 주세요."
-                                            }
-                                        }}
-                                    />
-                                    {errors.weather && <FormFeedback>{errors.weather.message}</FormFeedback>}
-                                </InputGroup>
-                            </Col>
-                        </FormGroup>
-                        <FormGroup row>
-                            <Col xs="12" md="12">
-                                <InputGroup>
-                                    <InputGroupAddon addonType="prepend">
-                                        <InputGroupText style={{ minWidth: 70 }}>내용</InputGroupText>
-                                    </InputGroupAddon>
-                                    <Controller
-                                        as={<textarea />}
-                                        control={control}
-                                        defaultValue={props.dataFromParent.content}
-                                        name="content" id="content" placeholder="내용을 입력해 주세요."
-                                        className={"form-control" + (errors.memo ? " is-invalid" : " is-valid")}
-                                        rules={{
-                                            required: {
-                                                value: true,
-                                                message: "내용을 입력해 주세요."
-                                            }
-                                        }}
-                                        style={{ minHeight: 120 }}
-                                    />
-                                    {errors.content && <FormFeedback>{errors.content.message}</FormFeedback>}
-                                </InputGroup>
-                            </Col>
-                        </FormGroup>
+                                <Controller
+                                    as={<Input />}
+                                    type="date"
+                                    control={control}
+                                    defaultValue={dateFormat(new Date(props.dataFromParent.wdate))}
+                                    name="wdate" id="wdate" placeholder="작성일을 선택해 주세요."
+                                    className={"form-control" + (errors.wdate ? " is-invalid" : " is-valid")}
+                                    rules={{
+                                        required: {
+                                            value: true,
+                                            message: "작성일을 선택해 주세요."
+                                        }
+                                    }}
+                                />
+                                {errors.wdate && <FormFeedback>{errors.wdate.message}</FormFeedback>}
+                            </InputGroup>
+                        </Col>
+                    </FormGroup>
+                    <FormGroup row>
+                        <Col xs="12" md="12">
+                            <InputGroup>
+                                <InputGroupAddon addonType="prepend">
+                                    <InputGroupText style={{ minWidth: 70 }}>날씨</InputGroupText>
+                                </InputGroupAddon>
+                                <Controller
+                                    as={<Input>
+                                        <option value={0}>눈</option>
+                                        <option value={1}>맑음</option>
+                                        <option value={2}>구름조금</option>
+                                        <option value={3}>흐림</option>
+                                        <option value={4}>비온뒤갬</option>
+                                        <option value={5}>비</option>
+                                    </Input>}
+                                    type="select"
+                                    control={control}
+                                    defaultValue={props.dataFromParent.weather}
+                                    name="weather" id="weather" placeholder="날씨를 선택해 주세요."
+                                    className={"form-control" + (errors.weather ? " is-invalid" : " is-valid")}
+                                    rules={{
+                                        required: {
+                                            value: true,
+                                            message: "날씨를 선택해 주세요."
+                                        }
+                                    }}
+                                />
+                                {errors.weather && <FormFeedback>{errors.weather.message}</FormFeedback>}
+                            </InputGroup>
+                        </Col>
+                    </FormGroup>
+                    <FormGroup row>
+                        <Col xs="12" md="12">
+                            <InputGroup>
+                                <InputGroupAddon addonType="prepend">
+                                    <InputGroupText style={{ minWidth: 70 }}>내용</InputGroupText>
+                                </InputGroupAddon>
+                                <Controller
+                                    as={<textarea />}
+                                    control={control}
+                                    defaultValue={props.dataFromParent.content}
+                                    name="content" id="content" placeholder="내용을 입력해 주세요."
+                                    className={"form-control" + (errors.memo ? " is-invalid" : " is-valid")}
+                                    rules={{
+                                        required: {
+                                            value: true,
+                                            message: "내용을 입력해 주세요."
+                                        }
+                                    }}
+                                    style={{ minHeight: 120 }}
+                                />
+                                {errors.content && <FormFeedback>{errors.content.message}</FormFeedback>}
+                            </InputGroup>
+                        </Col>
+                    </FormGroup>
 
-                    </ModalBody>
-                    <ModalFooter>
-                        <Button type="submit" color="warning">수정</Button>{' '}
-                        <Button color="secondary" onClick={toggleOpen}>취소</Button>
-                    </ModalFooter>
-                </Form>
-            </Modal>
-        </span>
+                </ModalBody>
+                <ModalFooter>
+                    <Button color="danger" className="mr-auto" onClick={onDelete}>삭제</Button>
+                    <Button type="submit" color="warning">수정</Button>{' '}
+                    <Button color="secondary" onClick={props.modalToggle}>취소</Button>
+                </ModalFooter>
+            </Form>
+        </Modal>
     );
 };
 

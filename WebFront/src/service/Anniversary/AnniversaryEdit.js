@@ -2,28 +2,30 @@ import React, { useState } from 'react';
 import { Modal, ModalHeader, ModalBody, ModalFooter, Button, Col, Form, FormGroup, FormFeedback, InputGroup, InputGroupAddon, InputGroupText, Input } from 'reactstrap';
 import { useForm, Controller } from "react-hook-form";
 import Cookies from 'universal-cookie';
+import { dateFormat } from '../../components/Util/DateUtil'
 
-const MemoAdd = props => {
+const AnniversaryEdit = props => {
 
-    const REQ_URI = (process.env.NODE_ENV !== 'production') ? 'http://' + window.location.hostname + ':28080/pds/v1/memo' : '/pds/v1/memo';
+    const REQ_URI = (process.env.NODE_ENV !== 'production') ? 'http://' + window.location.hostname + ':28080/pds/v1/anniversary' : '/pds/v1/anniversary';
+
+    const cookies = new Cookies();
 
     const { handleSubmit, errors, setError, control } = useForm({
         submitFocusError: true,
         nativeValidation: false,
     });
 
-    const [modalShow, setModalShow] = useState(false);
+    const [modalShowEdit, setModalShow] = useState(false);
 
     const toggleOpen = () => {
-        setModalShow(!modalShow);
+        setModalShow(!modalShowEdit);
     }
 
     const onSubmit = (data, e) => {
         const formData = new FormData(e.target);
-        const cookies = new Cookies();
 
         fetch(REQ_URI, {
-            method: 'POST',
+            method: 'PUT',
             headers: new Headers({
                 'X-PDS-AUTH': cookies.get("X-PDS-AUTH"),
                 'Authorization': 'Basic ' + btoa('username:password'),
@@ -38,29 +40,36 @@ const MemoAdd = props => {
             }
             return res.json();
         }).then(function (resJson) {
-            console.log("PbFormAdd::fetch => " + resJson.result);
+            console.log("MemoEdit::fetch => " + resJson.result);
             if (resJson.result === "OK") {
                 toggleOpen();
-                props.callbackFromParent();
+                props.callbackFromParent(resJson.data[0]);
             }
         }).catch(function (error) {
-            console.log("PbFormAdd::fetch => " + error);
+            console.log("MemoEdit::fetch => " + error);
             setError("siteUrl", "serverResponse", error.message);
-            //e.target.reset();
         });
     };
 
     return (
-        <div className="pull-right">
-            <Button color="success" className="btn-sm pull-right" onClick={toggleOpen}>
-                <i className="fa fa-plus"></i>&nbsp;추가</Button>
-            <Modal isOpen={modalShow} toggle={toggleOpen}
-                className={'modal-success ' + props.className}>
+        <span>
+            <Button color="warning" className="btn-sm" onClick={toggleOpen}>
+                <i className="fa fa-edit"></i>&nbsp;수정</Button>
+            <Modal isOpen={modalShowEdit} toggle={toggleOpen}
+                className={'modal-warning ' + props.className}>
                 <Form onSubmit={handleSubmit(onSubmit)}>
-                    <ModalHeader toggle={toggleOpen}>메모 추가</ModalHeader>
+
+                    <ModalHeader toggle={toggleOpen}>기념일 수정</ModalHeader>
                     <ModalBody>
                         <FormGroup row>
                             <Col xs="12" md="12">
+                                <Controller
+                                    as={<Input />}
+                                    type="hidden"
+                                    control={control}
+                                    defaultValue={props.dataFromParent.id}
+                                    name="anniId"
+                                    rules={{ required: true }} />
                                 <InputGroup>
                                     <InputGroupAddon addonType="prepend">
                                         <InputGroupText style={{ minWidth: 70 }}>제목</InputGroupText>
@@ -69,7 +78,7 @@ const MemoAdd = props => {
                                         as={<Input />}
                                         type="text"
                                         control={control}
-                                        defaultValue={''}
+                                        defaultValue={props.dataFromParent.title}
                                         name="title" id="title" placeholder="제목을 입력해 주세요."
                                         className={"form-control" + (errors.title ? " is-invalid" : " is-valid")}
                                         rules={{
@@ -101,7 +110,7 @@ const MemoAdd = props => {
                                         as={<Input />}
                                         type="date"
                                         control={control}
-                                        defaultValue={''}
+                                        defaultValue={dateFormat(new Date(props.dataFromParent.wdate))}
                                         name="wdate" id="wdate" placeholder="작성일를 선택해 주세요."
                                         className={"form-control" + (errors.wdate ? " is-invalid" : " is-valid")}
                                         rules={{
@@ -124,7 +133,7 @@ const MemoAdd = props => {
                                     <Controller
                                         as={<textarea />}
                                         control={control}
-                                        defaultValue={''}
+                                        defaultValue={props.dataFromParent.content}
                                         name="content" id="content" placeholder="내용을 입력해 주세요."
                                         className={"form-control" + (errors.memo ? " is-invalid" : " is-valid")}
                                         rules={{
@@ -142,13 +151,13 @@ const MemoAdd = props => {
 
                     </ModalBody>
                     <ModalFooter>
-                        <Button type="submit" color="success">추가</Button>{' '}
+                        <Button type="submit" color="warning">수정</Button>{' '}
                         <Button color="secondary" onClick={toggleOpen}>취소</Button>
                     </ModalFooter>
                 </Form>
             </Modal>
-        </div>
+        </span>
     );
 };
 
-export default MemoAdd;
+export default AnniversaryEdit;

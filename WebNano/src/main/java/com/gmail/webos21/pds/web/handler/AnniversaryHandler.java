@@ -1,27 +1,26 @@
 package com.gmail.webos21.pds.web.handler;
 
-import java.text.ParseException;
-import java.util.Date;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
 
+import com.gmail.webos21.calendar.KoreanLunarCalendar;
 import com.gmail.webos21.nano.NanoHTTPD;
 import com.gmail.webos21.nano.NanoHTTPD.IHTTPSession;
 import com.gmail.webos21.nano.NanoHTTPD.Response.Status;
 import com.gmail.webos21.nano.RouteResult;
 import com.gmail.webos21.nano.UriHandler;
-import com.gmail.webos21.pds.db.DbConsts;
 import com.gmail.webos21.pds.db.PdsDbManager;
-import com.gmail.webos21.pds.db.domain.Memo;
-import com.gmail.webos21.pds.db.repo.MemoRepo;
+import com.gmail.webos21.pds.db.domain.Anniversary;
+import com.gmail.webos21.pds.db.repo.AnniversaryRepo;
 
-public class MemoHandler implements UriHandler {
+public class AnniversaryHandler implements UriHandler {
 
-	private MemoRepo memoRepo;
+	private AnniversaryRepo anniRepo;
 
-	public MemoHandler() {
+	public AnniversaryHandler() {
 		PdsDbManager pdb = PdsDbManager.getInstance();
-		memoRepo = pdb.getRepository(MemoRepo.class);
+		anniRepo = pdb.getRepository(AnniversaryRepo.class);
 	}
 
 	@Override
@@ -60,8 +59,8 @@ public class MemoHandler implements UriHandler {
 			System.out.println(key + " = " + params.get(key));
 		}
 
-		String memoId = params.get("memoId");
-		int deletedRows = memoRepo.deleteRow(Long.parseLong(memoId));
+		String anniId = params.get("anniId");
+		int deletedRows = anniRepo.deleteRow(Long.parseLong(anniId));
 
 		StringBuilder sb = new StringBuilder();
 
@@ -90,20 +89,15 @@ public class MemoHandler implements UriHandler {
 			System.out.println(key + " = " + params.get(key));
 		}
 
-		String memoId = params.get("memoId");
-		String wdate = params.get("wdate");
+		String anniId = params.get("anniId");
 		String title = params.get("title");
-		String content = params.get("content");
+		String adate = params.get("adate");
+		String lunar = params.get("lunar");
+		String holiday = params.get("holiday");
 
-		Date wd = null;
-		try {
-			wd = DbConsts.SDF_DATE.parse(wdate);
-		} catch (ParseException e) {
-			e.printStackTrace();
-		}
-
-		Memo aRow = new Memo(Long.parseLong(memoId), wd.getTime(), title, content);
-		memoRepo.updateRow(aRow);
+		Anniversary aRow = new Anniversary(Long.parseLong(anniId), title, adate, Integer.parseInt(lunar),
+				Integer.parseInt(holiday));
+		anniRepo.updateRow(aRow);
 
 		StringBuilder sb = new StringBuilder();
 
@@ -134,19 +128,13 @@ public class MemoHandler implements UriHandler {
 			System.out.println(key + " = " + params.get(key));
 		}
 
-		String wdate = params.get("wdate");
 		String title = params.get("title");
-		String content = params.get("content");
+		String adate = params.get("adate");
+		String lunar = params.get("lunar");
+		String holiday = params.get("holiday");
 
-		Date wd = null;
-		try {
-			wd = DbConsts.SDF_DATE.parse(wdate);
-		} catch (ParseException e) {
-			e.printStackTrace();
-		}
-
-		Memo aRow = new Memo(null, wd.getTime(), title, content);
-		memoRepo.updateRow(aRow);
+		Anniversary aRow = new Anniversary(null, title, adate, Integer.parseInt(lunar), Integer.parseInt(holiday));
+		anniRepo.updateRow(aRow);
 
 		StringBuilder sb = new StringBuilder();
 
@@ -170,18 +158,27 @@ public class MemoHandler implements UriHandler {
 			Map<String, String> files) {
 		String origin = headers.get("origin");
 
-		List<Memo> rows = null;
+		List<Anniversary> rows = null;
 		if (session.getParameters().get("q") != null) {
 			String q = session.getParameters().get("q").get(0);
 			if (q != null && q.length() > 0) {
-				rows = memoRepo.findRows(session.getParameters().get("q").get(0));
+				rows = anniRepo.findRows(session.getParameters().get("q").get(0));
 			}
 		}
 		if (rows == null) {
-			rows = memoRepo.findRows();
+			rows = anniRepo.findRows();
+		}
+
+		int year = -1;
+		if (session.getParameters().get("year") != null) {
+			year = Integer.parseInt(session.getParameters().get("year").get(0));
+		}
+		if (year < 1391) {
+			year = Calendar.getInstance().get(Calendar.YEAR);
 		}
 
 		StringBuilder sb = new StringBuilder();
+		KoreanLunarCalendar klc = KoreanLunarCalendar.getInstance();
 
 		sb.append("{\n");
 		sb.append("  \"result\": \"OK\",\n");
@@ -201,22 +198,65 @@ public class MemoHandler implements UriHandler {
 			int i = 0;
 			int offset = ((page - 1) * perPage);
 			for (i = offset; (i < totalCount) && (i < (offset + perPage)); i++) {
-				Memo r = rows.get(i);
+				Anniversary r = rows.get(i);
 
 				if (i > offset) {
 					sb.append(',').append('\n');
 				}
 
-				sb.append(r.toJson());
+				String thisYear = null;
+				int month = Integer.parseInt(r.getApplyDate().substring(0, 2));
+				int day = Integer.parseInt(r.getApplyDate().substring(2, 4));
+				if (r.getLunar() == 1) {
+					klc.setLunarDate(year, month, day, false);
+					thisYear = klc.getSolarIsoFormat();
+				} else {
+					thisYear = String.format("%04d-%02d-%02d", year, month, day);
+				}
+
+				sb.append('{').append('\n');
+				sb.append("  \"id\": ").append(r.getId()).append(",\n");
+				sb.append("  \"title\": \"").append(r.getTitle()).append("\",\n");
+				sb.append("  \"applyDate\": \"").append(r.getApplyDate()).append("\",\n");
+				sb.append("  \"lunar\": ").append(r.getLunar()).append(",\n");
+				sb.append("  \"holiday\": ").append(r.getHoliday()).append(",\n");
+				sb.append("  \"thisYear\": \"").append(thisYear).append("\"\n");
+				sb.append('}').append('\n');
+
 			}
 		} else {
 			sb.append("  \"data\": [\n");
 			int i = 0;
-			for (Memo r : rows) {
+			for (Anniversary r : rows) {
 				if (i > 0) {
 					sb.append(',').append('\n');
 				}
-				sb.append(r.toJson());
+
+				String thisYear = null;
+				int month = Integer.parseInt(r.getApplyDate().substring(0, 2));
+				int day = Integer.parseInt(r.getApplyDate().substring(2, 4));
+				if (r.getLunar() == 1) {
+					if (month == 12 && day == 31) {
+						if (!klc.setLunarDate(year - 1, 12, 30, false)) {
+							klc.setLunarDate(year - 1, 12, 29, false);
+						}
+					} else {
+						klc.setLunarDate(year, month, day, false);
+					}
+					thisYear = klc.getSolarIsoFormat();
+				} else {
+					thisYear = String.format("%04d-%02d-%02d", year, month, day);
+				}
+
+				sb.append('{').append('\n');
+				sb.append("  \"id\": ").append(r.getId()).append(",\n");
+				sb.append("  \"title\": \"").append(r.getTitle()).append("\",\n");
+				sb.append("  \"applyDate\": \"").append(r.getApplyDate()).append("\",\n");
+				sb.append("  \"lunar\": ").append(r.getLunar()).append(",\n");
+				sb.append("  \"holiday\": ").append(r.getHoliday()).append(",\n");
+				sb.append("  \"thisYear\": \"").append(thisYear).append("\"\n");
+				sb.append('}').append('\n');
+
 				i++;
 			}
 		}

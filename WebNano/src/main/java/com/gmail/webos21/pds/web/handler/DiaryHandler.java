@@ -60,8 +60,8 @@ public class DiaryHandler implements UriHandler {
 			System.out.println(key + " = " + params.get(key));
 		}
 
-		String siteId = params.get("siteId");
-		int deletedRows = diaryRepo.deleteRow(Long.parseLong(siteId));
+		String diaryId = params.get("diaryId");
+		int deletedRows = diaryRepo.deleteRow(Long.parseLong(diaryId));
 
 		StringBuilder sb = new StringBuilder();
 

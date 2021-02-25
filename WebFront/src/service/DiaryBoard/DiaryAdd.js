@@ -69,6 +69,7 @@ const DiaryAdd = props => {
                                         as={<Input />}
                                         type="text"
                                         control={control}
+                                        defaultValue={''}
                                         name="title" id="title" placeholder="제목을 입력해 주세요."
                                         className={"form-control" + (errors.title ? " is-invalid" : " is-valid")}
                                         rules={{
@@ -100,6 +101,7 @@ const DiaryAdd = props => {
                                         as={<Input />}
                                         type="date"
                                         control={control}
+                                        defaultValue={''}
                                         name="wdate" id="wdate" placeholder="작성일을 선택해 주세요."
                                         className={"form-control" + (errors.wdate ? " is-invalid" : " is-valid")}
                                         rules={{
@@ -130,6 +132,7 @@ const DiaryAdd = props => {
                                         </Input>}
                                         type="select"
                                         control={control}
+                                        defaultValue={1}
                                         name="weather" id="weather" placeholder="날씨를 선택해 주세요."
                                         className={"form-control" + (errors.weather ? " is-invalid" : " is-valid")}
                                         rules={{
@@ -152,6 +155,7 @@ const DiaryAdd = props => {
                                     <Controller
                                         as={<textarea />}
                                         control={control}
+                                        defaultValue={''}
                                         name="content" id="content" placeholder="내용을 입력해 주세요."
                                         className={"form-control" + (errors.memo ? " is-invalid" : " is-valid")}
                                         rules={{

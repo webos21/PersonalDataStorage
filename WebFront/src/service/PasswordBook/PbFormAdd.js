@@ -69,6 +69,7 @@ const PbFormAdd = props => {
                                         as={<Input />}
                                         type="url"
                                         control={control}
+                                        defaultValue={''}
                                         name="siteUrl" id="siteUrl" placeholder="URL을 입력해 주세요."
                                         className={"form-control" + (errors.siteUrl ? " is-invalid" : " is-valid")}
                                         rules={{
@@ -100,6 +101,7 @@ const PbFormAdd = props => {
                                         as={<Input />}
                                         type="text"
                                         control={control}
+                                        defaultValue={''}
                                         name="siteName" id="siteName" placeholder="사이트명을 입력해 주세요."
                                         className={"form-control" + (errors.siteName ? " is-invalid" : " is-valid")}
                                         rules={{
@@ -131,6 +133,7 @@ const PbFormAdd = props => {
                                         as={<Input />}
                                         type="text"
                                         control={control}
+                                        defaultValue={''}
                                         name="siteType" id="siteType" placeholder="유형을 입력해 주세요."
                                         className={"form-control" + (errors.siteType ? " is-invalid" : " is-valid")}
                                         rules={{
@@ -162,6 +165,7 @@ const PbFormAdd = props => {
                                         as={<Input />}
                                         type="text"
                                         control={control}
+                                        defaultValue={''}
                                         name="myId" id="myId" placeholder="아이디를 입력해 주세요."
                                         className={"form-control" + (errors.myId ? " is-invalid" : " is-valid")}
                                         rules={{
@@ -193,6 +197,7 @@ const PbFormAdd = props => {
                                         as={<Input />}
                                         type="text"
                                         control={control}
+                                        defaultValue={''}
                                         name="myPw" id="myPw" placeholder="비밀번호를 입력해 주세요."
                                         className={"form-control" + (errors.myPw ? " is-invalid" : " is-valid")}
                                         rules={{
@@ -224,6 +229,7 @@ const PbFormAdd = props => {
                                         as={<Input />}
                                         type="date"
                                         control={control}
+                                        defaultValue={''}
                                         name="regDate" id="regDate" placeholder="가입일자를 선택해 주세요."
                                         className={"form-control" + (errors.regDate ? " is-invalid" : " is-valid")}
                                         rules={{
@@ -246,6 +252,7 @@ const PbFormAdd = props => {
                                     <Controller
                                         as={<textarea />}
                                         control={control}
+                                        defaultValue={''}
                                         name="memo" id="memo" placeholder="메모를 입력해 주세요."
                                         className={"form-control" + (errors.memo ? " is-invalid" : " is-valid")}
                                     />

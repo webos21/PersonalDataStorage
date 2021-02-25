@@ -7,6 +7,11 @@ export default {
       icon: 'icon-speedometer'
     },
     {
+      name: 'Anniversary',
+      url: '/anniversary',
+      icon: 'icon-calendar'
+    },
+    {
       name: 'PasswordBook',
       url: '/passwordbook',
       icon: 'icon-key',

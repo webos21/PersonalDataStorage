@@ -3,9 +3,9 @@ import { Modal, ModalHeader, ModalBody, ModalFooter, Button, Col, Form, FormGrou
 import { useForm, Controller } from "react-hook-form";
 import Cookies from 'universal-cookie';
 
-const MemoAdd = props => {
+const AnniversaryAdd = props => {
 
-    const REQ_URI = (process.env.NODE_ENV !== 'production') ? 'http://' + window.location.hostname + ':28080/pds/v1/memo' : '/pds/v1/memo';
+    const REQ_URI = (process.env.NODE_ENV !== 'production') ? 'http://' + window.location.hostname + ':28080/pds/v1/anniversary' : '/pds/v1/anniversary';
 
     const { handleSubmit, errors, setError, control } = useForm({
         submitFocusError: true,
@@ -57,7 +57,7 @@ const MemoAdd = props => {
             <Modal isOpen={modalShow} toggle={toggleOpen}
                 className={'modal-success ' + props.className}>
                 <Form onSubmit={handleSubmit(onSubmit)}>
-                    <ModalHeader toggle={toggleOpen}>메모 추가</ModalHeader>
+                    <ModalHeader toggle={toggleOpen}>기념일 추가</ModalHeader>
                     <ModalBody>
                         <FormGroup row>
                             <Col xs="12" md="12">
@@ -151,4 +151,4 @@ const MemoAdd = props => {
     );
 };
 
-export default MemoAdd;
+export default AnniversaryAdd;

@@ -4,9 +4,9 @@ import { useForm, Controller } from "react-hook-form";
 import Cookies from 'universal-cookie';
 import { dateFormat } from '../../components/Util/DateUtil'
 
-const MemoDel = props => {
+const AnniversaryDel = props => {
 
-    const REQ_URI = (process.env.NODE_ENV !== 'production') ? 'http://localhost:28080/pds/v1/memo' : '/pds/v1/memo';
+    const REQ_URI = (process.env.NODE_ENV !== 'production') ? 'http://localhost:28080/pds/v1/anniversary' : '/pds/v1/anniversary';
 
     const initValues = props.dataFromParent;
     const cookies = new Cookies();
@@ -26,7 +26,7 @@ const MemoDel = props => {
     }
 
     const onSubmit = (data, e) => {
-        fetch(REQ_URI + '?memoId=' + data.memoId, {
+        fetch(REQ_URI + '?anniId=' + data.anniId, {
             method: 'DELETE',
             headers: new Headers({
                 'X-PDS-AUTH': cookies.get("X-PDS-AUTH"),
@@ -59,13 +59,13 @@ const MemoDel = props => {
             <Modal isOpen={modalShow} toggle={toggleOpen}
                 className={'modal-danger ' + props.className}>
                 <Form onSubmit={handleSubmit(onSubmit)}>
-                    <ModalHeader toggle={toggleOpen}>메모 삭제</ModalHeader>
+                    <ModalHeader toggle={toggleOpen}>기념일 삭제</ModalHeader>
                     <ModalBody>
                         <p>다음 항목을 삭제할까요?</p>
                         <ul>
-                            <li>메모 번호 : {props.dataFromParent.id}</li>
-                            <li>메모 날짜 : {dateFormat(new Date(props.dataFromParent.wdate))}</li>
-                            <li>메모 제목 : {props.dataFromParent.title}</li>
+                            <li>기념일 번호 : {props.dataFromParent.id}</li>
+                            <li>기념일 날짜 : {props.dataFromParent.applyDate.substring(0, 2) + '월 ' + props.dataFromParent.applyDate.substring(2, 4) + '일' + ((props.dataFromParent.lunar === 1) ? '(음력)' : '')}</li>
+                            <li>기념일 제목 : {props.dataFromParent.title}</li>
                         </ul>
                         <FormGroup>
                             <Controller
@@ -73,9 +73,9 @@ const MemoDel = props => {
                                 type="hidden"
                                 control={control}
                                 defaultValue={props.dataFromParent.id}
-                                name="memoId"
+                                name="anniId"
                                 rules={{ required: true }} />
-                            {errors.memoId && <FormFeedback>{errors.memoId.message}</FormFeedback>}
+                            {errors.anniId && <FormFeedback>{errors.anniId.message}</FormFeedback>}
                         </FormGroup>
                     </ModalBody>
                     <ModalFooter>
@@ -88,4 +88,4 @@ const MemoDel = props => {
     );
 };
 
-export default MemoDel;
+export default AnniversaryDel;

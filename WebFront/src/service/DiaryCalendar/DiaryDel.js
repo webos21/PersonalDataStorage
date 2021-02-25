@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Modal, ModalHeader, ModalBody, ModalFooter, Button, Form, FormGroup, FormFeedback, Input } from 'reactstrap';
 import { useForm, Controller } from "react-hook-form";
 import Cookies from 'universal-cookie';
@@ -15,14 +15,8 @@ const DiaryDel = props => {
         nativeValidation: false,
     });
 
-    const [modalShow, setModalShow] = useState(false);
-
-    const toggleOpen = () => {
-        setModalShow(!modalShow);
-    }
-
     const onSubmit = (data, e) => {
-        fetch(REQ_URI + '?siteId=' + data.siteId, {
+        fetch(REQ_URI + '?diaryId=' + data.diaryId, {
             method: 'DELETE',
             headers: new Headers({
                 'X-PDS-AUTH': cookies.get("X-PDS-AUTH"),
@@ -37,50 +31,46 @@ const DiaryDel = props => {
             }
             return res.json();
         }).then(function (resJson) {
-            console.log("PbFormDel::fetch => " + resJson.result);
+            console.log("DiaryDel::fetch => " + resJson.result);
             if (resJson.result === "OK") {
-                //toggleOpen();
+                props.modalToggle();
                 props.callbackFromParent();
             }
         }).catch(function (error) {
-            console.log("PbFormDel::fetch => " + error);
+            console.log("DiaryDel::fetch => " + error);
             setError("siteId", "serverResponse", error.message);
         });
     };
 
     return (
-        <span>
-            <Button color="danger" className="btn-sm" onClick={toggleOpen}>
-                <i className="fa fa-trash-o"></i>&nbsp;삭제</Button>
-            <Modal isOpen={modalShow} toggle={toggleOpen}
-                className={'modal-danger ' + props.className}>
-                <Form onSubmit={handleSubmit(onSubmit)}>
-                    <ModalHeader toggle={toggleOpen}>비밀번호 삭제</ModalHeader>
-                    <ModalBody>
-                        <p>다음 항목을 삭제할까요?</p>
-                        <ul>
-                            <li>일기 번호 : {props.dataFromParent.id}</li>
-                            <li>일기 날짜 : {dateFormat(new Date(props.dataFromParent.wdate))}</li>
-                            <li>일기 제목 : {props.dataFromParent.title}</li>
-                        </ul>
-                        <FormGroup>
-                            <Controller
-                                as={<Input />}
-                                type="hidden"
-                                control={control}
-                                defaultValue={props.dataFromParent.id}
-                                name="diaryId"
-                                rules={{ required: true }} />
-                            {errors.siteId && <FormFeedback>{errors.diaryId.message}</FormFeedback>}
-                        </FormGroup>
-                    </ModalBody>
-                    <ModalFooter>
-                        <Button type="submit" color="danger">삭제</Button>
-                        <Button color="secondary" onClick={toggleOpen}>취소</Button>
-                    </ModalFooter>
-                </Form>
-            </Modal>
-        </span>
+        <Modal isOpen={props.modalFlag} toggle={props.modalToggle}
+            className={'modal-danger ' + props.className}>
+            <Form onSubmit={handleSubmit(onSubmit)}>
+                <ModalHeader toggle={props.modalToggle}>비밀번호 삭제</ModalHeader>
+                <ModalBody>
+                    <p>다음 항목을 삭제할까요?</p>
+                    <ul>
+                        <li>일기 번호 : {props.dataFromParent.id}</li>
+                        <li>일기 날짜 : {dateFormat(new Date(props.dataFromParent.wdate))}</li>
+                        <li>일기 제목 : {props.dataFromParent.title}</li>
+                    </ul>
+                    <FormGroup>
+                        <Controller
+                            as={<Input />}
+                            type="hidden"
+                            control={control}
+                            defaultValue={props.dataFromParent.id}
+                            name="diaryId"
+                            rules={{ required: true }} />
+                        {errors.diaryId && <FormFeedback>{errors.diaryId.message}</FormFeedback>}
+                    </FormGroup>
+                </ModalBody>
+                <ModalFooter>
+                    <Button type="submit" color="danger">삭제</Button>
+                    <Button color="secondary" onClick={props.modalToggle}>취소</Button>
+                </ModalFooter>
+            </Form>
+        </Modal>
     );
 };
 

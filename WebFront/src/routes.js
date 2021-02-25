@@ -22,7 +22,6 @@ const ButtonDropdowns = React.lazy(() => import('./views/Buttons/ButtonDropdowns
 const ButtonGroups = React.lazy(() => import('./views/Buttons/ButtonGroups'));
 const Buttons = React.lazy(() => import('./views/Buttons/Buttons'));
 const Charts = React.lazy(() => import('./views/Charts'));
-const Dashboard = React.lazy(() => import('./views/Dashboard'));
 const CoreUIIcons = React.lazy(() => import('./views/Icons/CoreUIIcons'));
 const Flags = React.lazy(() => import('./views/Icons/Flags'));
 const FontAwesome = React.lazy(() => import('./views/Icons/FontAwesome'));
@@ -36,6 +35,8 @@ const Widgets = React.lazy(() => import('./views/Widgets/Widgets'));
 const Users = React.lazy(() => import('./views/Users/Users'));
 const User = React.lazy(() => import('./views/Users/User'));
 
+const Dashboard = React.lazy(() => import('./service/Dashboard'));
+const Anniversary = React.lazy(() => import('./service/Anniversary'));
 const PasswordBook = React.lazy(() => import('./service/PasswordBook'));
 const DiaryBoard = React.lazy(() => import('./service/DiaryBoard'));
 const DiaryCalendar = React.lazy(() => import('./service/DiaryCalendar'));
@@ -45,7 +46,6 @@ const Logout = React.lazy(() => import('./service/Logout'));
 // https://github.com/ReactTraining/react-router/tree/master/packages/react-router-config
 const routes = [
   { path: '/', exact: true, name: 'Home' },
-  { path: '/dashboard', name: 'Dashboard', component: Dashboard },
   { path: '/theme', exact: true, name: 'Theme', component: Colors },
   { path: '/theme/colors', name: 'Colors', component: Colors },
   { path: '/theme/typography', name: 'Typography', component: Typography },
@@ -85,6 +85,8 @@ const routes = [
   { path: '/charts', name: 'Charts', component: Charts },
   { path: '/users', exact: true,  name: 'Users', component: Users },
   { path: '/users/:id', exact: true, name: 'User Details', component: User },
+  { path: '/dashboard', name: 'Dashboard', component: Dashboard },
+  { path: '/anniversary', name: 'Anniversary', component: Anniversary },
   { path: '/passwordbook', exact: true,  name: 'PasswordBook', component: PasswordBook },
   { path: '/diary-board', exact: true,  name: 'DiaryBoard', component: DiaryBoard },
   { path: '/diary-calendar', exact: true,  name: 'DiaryCalendar', component: DiaryCalendar },

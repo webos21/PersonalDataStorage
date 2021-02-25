@@ -58,7 +58,7 @@ const DiaryEdit = props => {
             <Modal isOpen={modalShowEdit} toggle={toggleOpen}
                 className={'modal-warning ' + props.className}>
                 <Form onSubmit={handleSubmit(onSubmit)}>
-                    <ModalHeader toggle={toggleOpen}>비밀번호 수정</ModalHeader>
+                    <ModalHeader toggle={toggleOpen}>일기 수정</ModalHeader>
                     <ModalBody>
                         <FormGroup row>
                             <Col xs="12" md="12">
