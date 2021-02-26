@@ -1,5 +1,9 @@
 import React, { useState } from 'react';
-import { Modal, ModalHeader, ModalBody, ModalFooter, Button, Col, Form, FormGroup, FormFeedback, InputGroup, InputGroupAddon, InputGroupText, Input } from 'reactstrap';
+import {
+    Modal, ModalHeader, ModalBody, ModalFooter, Button, Col,
+    Form, FormGroup, FormFeedback,
+    InputGroup, InputGroupAddon, InputGroupText, Input, Label
+} from 'reactstrap';
 import { useForm, Controller } from "react-hook-form";
 import Cookies from 'universal-cookie';
 
@@ -95,23 +99,32 @@ const AnniversaryAdd = props => {
                             <Col xs="12" md="12">
                                 <InputGroup>
                                     <InputGroupAddon addonType="prepend">
-                                        <InputGroupText style={{ minWidth: 70 }}>작성일</InputGroupText>
+                                        <InputGroupText style={{ minWidth: 70 }}>적용일</InputGroupText>
                                     </InputGroupAddon>
                                     <Controller
                                         as={<Input />}
-                                        type="date"
+                                        type="text"
                                         control={control}
                                         defaultValue={''}
-                                        name="wdate" id="wdate" placeholder="작성일를 선택해 주세요."
-                                        className={"form-control" + (errors.wdate ? " is-invalid" : " is-valid")}
+                                        name="adate" id="adate" placeholder="적용일을 입력해 주세요. (월일 4자리)"
+                                        className={"form-control" + (errors.adate ? " is-invalid" : " is-valid")}
                                         rules={{
                                             required: {
                                                 value: true,
-                                                message: "작성일를 선택해 주세요."
+                                                message: "적용일을 입력해 주세요. (월일 4자리)."
+                                            },
+                                            minLength: {
+                                                value: 4,
+                                                message: "적용일을 입력해 주세요. (월일 4자리)"
+                                            },
+                                            maxLength: {
+                                                value: 4,
+                                                message: "적용일을 입력해 주세요. (월일 4자리)"
                                             }
+
                                         }}
                                     />
-                                    {errors.wdate && <FormFeedback>{errors.wdate.message}</FormFeedback>}
+                                    {errors.adate && <FormFeedback>{errors.adate.message}</FormFeedback>}
                                 </InputGroup>
                             </Col>
                         </FormGroup>
@@ -119,23 +132,39 @@ const AnniversaryAdd = props => {
                             <Col xs="12" md="12">
                                 <InputGroup>
                                     <InputGroupAddon addonType="prepend">
-                                        <InputGroupText style={{ minWidth: 70 }}>내용</InputGroupText>
+                                        <InputGroupText style={{ minWidth: 70 }}>양음력</InputGroupText>
                                     </InputGroupAddon>
                                     <Controller
-                                        as={<textarea />}
+                                        as={<Input />}
+                                        type="radio"
                                         control={control}
-                                        defaultValue={''}
-                                        name="content" id="content" placeholder="내용을 입력해 주세요."
-                                        className={"form-control" + (errors.memo ? " is-invalid" : " is-valid")}
+                                        value={0}
+                                        name="lunar" id="radio1"
+                                        className={"form-control form-check-radio" + (errors.lunar ? " is-invalid" : " is-valid")}
                                         rules={{
                                             required: {
                                                 value: true,
-                                                message: "내용을 입력해 주세요."
+                                                message: "양력 또는 음력을 선택해 주세요."
                                             }
                                         }}
-                                        style={{ minHeight: 120 }}
                                     />
-                                    {errors.content && <FormFeedback>{errors.content.message}</FormFeedback>}
+                                    <Label for="radio1">양력</Label>
+                                    <Controller
+                                        as={<Input />}
+                                        type="radio"
+                                        control={control}
+                                        value={1}
+                                        name="lunar" id="radio2"
+                                        className={"form-control form-check-radio" + (errors.lunar ? " is-invalid" : " is-valid")}
+                                        rules={{
+                                            required: {
+                                                value: true,
+                                                message: "양력 또는 음력을 선택해 주세요."
+                                            }
+                                        }}
+                                    />
+                                    <Label for="radio2">음력</Label>
+                                    {errors.lunar && <FormFeedback>{errors.lunar.message}</FormFeedback>}
                                 </InputGroup>
                             </Col>
                         </FormGroup>
