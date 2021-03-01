@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import {
     Modal, ModalHeader, ModalBody, ModalFooter, Button, Col,
     Form, FormGroup, FormFeedback,
-    InputGroup, InputGroupAddon, InputGroupText, Input, Label
+    InputGroup, InputGroupAddon, InputGroupText, Input, Label, ButtonGroup
 } from 'reactstrap';
 import { useForm, Controller } from "react-hook-form";
 import Cookies from 'universal-cookie';
@@ -135,12 +135,14 @@ const AnniversaryAdd = props => {
                                         <InputGroupText style={{ minWidth: 70 }}>양음력</InputGroupText>
                                     </InputGroupAddon>
                                     <Controller
-                                        as={<Input />}
-                                        type="radio"
+                                        as={
+                                            <Button />
+                                        }
+                                        type="button"
+                                        value="양력"
                                         control={control}
-                                        value={0}
-                                        name="lunar" id="radio1"
-                                        className={"form-control form-check-radio" + (errors.lunar ? " is-invalid" : " is-valid")}
+                                        name="lunar"
+                                        className="form-control"
                                         rules={{
                                             required: {
                                                 value: true,
@@ -148,14 +150,15 @@ const AnniversaryAdd = props => {
                                             }
                                         }}
                                     />
-                                    <Label for="radio1">양력</Label>
                                     <Controller
-                                        as={<Input />}
-                                        type="radio"
+                                        as={
+                                            <Button />
+                                        }
+                                        type="button"
                                         control={control}
-                                        value={1}
-                                        name="lunar" id="radio2"
-                                        className={"form-control form-check-radio" + (errors.lunar ? " is-invalid" : " is-valid")}
+                                        name="lunar"
+                                        value="음력"
+                                        className="form-control"
                                         rules={{
                                             required: {
                                                 value: true,
@@ -163,7 +166,6 @@ const AnniversaryAdd = props => {
                                             }
                                         }}
                                     />
-                                    <Label for="radio2">음력</Label>
                                     {errors.lunar && <FormFeedback>{errors.lunar.message}</FormFeedback>}
                                 </InputGroup>
                             </Col>

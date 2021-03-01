@@ -9,7 +9,6 @@ import AnniversaryEdit from './AnniversaryEdit.js';
 import AnniversaryDel from './AnniversaryDel.js';
 import update from 'immutability-helper';
 import Cookies from 'universal-cookie';
-import { dateFormat } from '../../components/Util/DateUtil'
 
 class Anniversary extends Component {
   constructor(props) {

@@ -5,15 +5,15 @@ import { Container } from 'reactstrap';
 import Cookies from 'universal-cookie';
 
 import {
-  AppFooter,
-  AppHeader,
-  AppSidebar,
-  AppSidebarFooter,
-  AppSidebarForm,
-  AppSidebarHeader,
-  AppSidebarMinimizer,
-  AppBreadcrumb2 as AppBreadcrumb,
-  AppSidebarNav2 as AppSidebarNav,
+  CFooter as AppFooter,
+  CHeader as AppHeader,
+  CSidebar as AppSidebar,
+  CSidebarFooter as AppSidebarFooter,
+  CSidebarForm as AppSidebarForm,
+  CSidebarHeader as AppSidebarHeader,
+  CSidebarMinimizer as AppSidebarMinimizer,
+  CBreadcrumb as AppBreadcrumb,
+  CSidebarNav as AppSidebarNav,
 } from '@coreui/react';
 // sidebar nav config
 import navigation from '../../_nav';
