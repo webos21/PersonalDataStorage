@@ -1,177 +1,93 @@
-import React, { Component } from 'react';
-import { Card, CardBody, CardHeader, Pagination, PaginationItem, PaginationLink } from 'reactstrap';
+import React, { useState } from 'react'
+import {
+  CCard,
+  CCardBody,
+  CCardHeader,
+  CPagination
+} from '@coreui/react'
+import { DocsLink } from 'src/reusable'
 
-class Paginations extends Component {
 
-  render() {
-    return (
-      <div className="animated fadeIn">
-        <Card>
-          <CardHeader>
-            <i className="fa fa-align-justify"></i><strong>Pagination</strong>
-            <div className="card-header-actions">
-              <a href="https://reactstrap.github.io/components/pagination/" rel="noreferrer noopener" target="_blank" className="card-header-action">
-                <small className="text-muted">docs</small>
-              </a>
-            </div>
-          </CardHeader>
-          <CardBody>
-            <Pagination>
-              <PaginationItem>
-                <PaginationLink previous tag="button" />
-              </PaginationItem>
-              <PaginationItem>
-                <PaginationLink tag="button">
-                  1
-                </PaginationLink>
-              </PaginationItem>
-              <PaginationItem>
-                <PaginationLink tag="button">
-                  2
-                </PaginationLink>
-              </PaginationItem>
-              <PaginationItem>
-                <PaginationLink tag="button">
-                  3
-                </PaginationLink>
-              </PaginationItem>
-              <PaginationItem>
-                <PaginationLink tag="button">
-                  4
-                </PaginationLink>
-              </PaginationItem>
-              <PaginationItem>
-                <PaginationLink tag="button">
-                  5
-                </PaginationLink>
-              </PaginationItem>
-              <PaginationItem>
-                <PaginationLink next tag="button" />
-              </PaginationItem>
-            </Pagination>
-          </CardBody>
-        </Card>
-        <Card>
-          <CardHeader>
-            <i className="fa fa-align-justify"></i><strong>Pagination</strong>
-            <small> disabled and active states</small>
-          </CardHeader>
-          <CardBody>
-            <Pagination>
-              <PaginationItem disabled>
-                <PaginationLink previous tag="button" />
-              </PaginationItem>
-              <PaginationItem active>
-                <PaginationLink tag="button">
-                  1
-                </PaginationLink>
-              </PaginationItem>
-              <PaginationItem>
-                <PaginationLink tag="button">
-                  2
-                </PaginationLink>
-              </PaginationItem>
-              <PaginationItem>
-                <PaginationLink tag="button">
-                  3
-                </PaginationLink>
-              </PaginationItem>
-              <PaginationItem>
-                <PaginationLink tag="button">
-                  4
-                </PaginationLink>
-              </PaginationItem>
-              <PaginationItem>
-                <PaginationLink tag="button">
-                  5
-                </PaginationLink>
-              </PaginationItem>
-              <PaginationItem>
-                <PaginationLink next tag="button" />
-              </PaginationItem>
-            </Pagination>
-          </CardBody>
-        </Card>
-        <Card>
-          <CardHeader>
-            <i className="fa fa-align-justify"></i><strong>Pagination</strong>
-            <small> sizing</small>
-          </CardHeader>
-          <CardBody>
-            <Pagination size="lg">
-              <PaginationItem>
-                <PaginationLink previous tag="button" />
-              </PaginationItem>
-              <PaginationItem>
-                <PaginationLink tag="button">
-                  1
-                </PaginationLink>
-              </PaginationItem>
-              <PaginationItem>
-                <PaginationLink tag="button">
-                  2
-                </PaginationLink>
-              </PaginationItem>
-              <PaginationItem>
-                <PaginationLink tag="button">
-                  3
-                </PaginationLink>
-              </PaginationItem>
-              <PaginationItem className="d-none d-sm-block">
-                <PaginationLink next tag="button" />
-              </PaginationItem>
-            </Pagination>
-            <Pagination>
-              <PaginationItem>
-                <PaginationLink previous tag="button" />
-              </PaginationItem>
-              <PaginationItem>
-                <PaginationLink tag="button">
-                  1
-                </PaginationLink>
-              </PaginationItem>
-              <PaginationItem>
-                <PaginationLink tag="button">
-                  2
-                </PaginationLink>
-              </PaginationItem>
-              <PaginationItem>
-                <PaginationLink tag="button">
-                  3
-                </PaginationLink>
-              </PaginationItem>
-              <PaginationItem>
-                <PaginationLink next tag="button" />
-              </PaginationItem>
-            </Pagination>
-            <Pagination size="sm">
-              <PaginationItem>
-                <PaginationLink previous tag="button" />
-              </PaginationItem>
-              <PaginationItem>
-                <PaginationLink tag="button">
-                  1
-                </PaginationLink>
-              </PaginationItem>
-              <PaginationItem>
-                <PaginationLink tag="button">
-                  2
-                </PaginationLink>
-              </PaginationItem>
-              <PaginationItem>
-                <PaginationLink tag="button">
-                  3
-                </PaginationLink>
-              </PaginationItem>
-              <PaginationItem>
-                <PaginationLink next tag="button" />
-              </PaginationItem>
-            </Pagination>
-          </CardBody>
-        </Card>
-      </div>
-    );
-  }
+const Paginations = () => {
+  const [currentPage, setCurrentPage] = useState(2)
+
+  return (
+    <>
+      <CCard>
+        <CCardHeader>
+          Pagination
+          <DocsLink name="CPagination"/>
+        </CCardHeader>
+        <CCardBody>
+          <h6>Default</h6>
+          <CPagination
+            activePage={currentPage}
+            pages={10}
+            onActivePageChange={setCurrentPage}
+          />
+          <br></br>
+
+          <h6>Small</h6>
+          <CPagination
+            size="sm"
+            activePage={currentPage}
+            pages={10}
+            onActivePageChange={setCurrentPage}
+          />
+          <br></br>
+
+          <div className="d-md-down-none">
+            <h6>Large</h6>
+            <CPagination
+              size="lg"
+              activePage={currentPage}
+              pages={10}
+              onActivePageChange={setCurrentPage}
+            />
+            <br></br>
+          </div>
+
+          <div>currentPage: {currentPage}</div>
+        </CCardBody>
+      </CCard>
+      <CCard>
+        <CCardHeader>
+          <strong> Pagination </strong>
+          <small>alignment</small>
+        </CCardHeader>
+        <CCardBody>
+          <h6>Left alignment (default)</h6>
+          <CPagination
+            activePage={currentPage}
+            pages={10}
+            onActivePageChange={setCurrentPage}
+          />
+          <br></br>
+
+          <h6>Center alignment</h6>
+          <CPagination
+            align="center"
+            addListClass="some-class"
+            activePage={currentPage}
+            pages={10}
+            onActivePageChange={setCurrentPage}
+          />
+          <br></br>
+
+          <h6>Right (end) alignment</h6>
+          <CPagination
+            align="end"
+            activePage={currentPage}
+            pages={10}
+            onActivePageChange={setCurrentPage}
+          />
+          <br></br>
+
+          <div>currentPage: {currentPage}</div>
+        </CCardBody>
+      </CCard>
+    </>
+  )
 }
 
-export default Paginations;
+export default Paginations

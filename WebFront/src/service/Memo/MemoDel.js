@@ -1,5 +1,8 @@
 import React, { useState } from 'react';
-import { Modal, ModalHeader, ModalBody, ModalFooter, Button, Form, FormGroup, FormFeedback, Input } from 'reactstrap';
+import {
+    CModal, CModalHeader, CModalBody, CModalFooter,
+    CButton, CForm, CFormGroup, CInvalidFeedback, CInput
+} from '@coreui/react';
 import { useForm, Controller } from "react-hook-form";
 import Cookies from 'universal-cookie';
 import { dateFormat } from '../../components/Util/DateUtil'
@@ -54,36 +57,35 @@ const MemoDel = props => {
 
     return (
         <span>
-            <Button color="danger" className="btn-sm" onClick={toggleOpen}>
-                <i className="fa fa-trash-o"></i>&nbsp;삭제</Button>
-            <Modal isOpen={modalShow} toggle={toggleOpen}
+            <CButton color="danger" className="btn-sm" onClick={toggleOpen}>
+                <i className="fa fa-trash-o"></i>&nbsp;삭제</CButton>
+            <CModal show={modalShow} onClose={toggleOpen}
                 className={'modal-danger ' + props.className}>
-                <Form onSubmit={handleSubmit(onSubmit)}>
-                    <ModalHeader toggle={toggleOpen}>메모 삭제</ModalHeader>
-                    <ModalBody>
+                <CForm onSubmit={handleSubmit(onSubmit)}>
+                    <CModalHeader closeButton>메모 삭제</CModalHeader>
+                    <CModalBody>
                         <p>다음 항목을 삭제할까요?</p>
                         <ul>
                             <li>메모 번호 : {props.dataFromParent.id}</li>
                             <li>메모 날짜 : {dateFormat(new Date(props.dataFromParent.wdate))}</li>
                             <li>메모 제목 : {props.dataFromParent.title}</li>
                         </ul>
-                        <FormGroup>
-                            <Controller
-                                as={<Input />}
+                        <CFormGroup>
+                            <CInput
                                 type="hidden"
                                 control={control}
                                 defaultValue={props.dataFromParent.id}
                                 name="memoId"
                                 rules={{ required: true }} />
-                            {errors.memoId && <FormFeedback>{errors.memoId.message}</FormFeedback>}
-                        </FormGroup>
-                    </ModalBody>
-                    <ModalFooter>
-                        <Button type="submit" color="danger">삭제</Button>{' '}
-                        <Button color="secondary" onClick={toggleOpen}>취소</Button>
-                    </ModalFooter>
-                </Form>
-            </Modal>
+                            {errors.memoId && <CInvalidFeedback>{errors.memoId.message}</CInvalidFeedback>}
+                        </CFormGroup>
+                    </CModalBody>
+                    <CModalFooter>
+                        <CButton type="submit" color="danger">삭제</CButton>{' '}
+                        <CButton color="secondary" onClick={toggleOpen}>취소</CButton>
+                    </CModalFooter>
+                </CForm>
+            </CModal>
         </span>
     );
 };

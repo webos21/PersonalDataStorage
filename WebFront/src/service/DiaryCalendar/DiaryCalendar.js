@@ -1,9 +1,8 @@
 import React, { Component } from 'react';
 
-import { Col, Row } from 'reactstrap';
+import { CCol, CRow } from '@coreui/react';
 import DiaryAdd from './DiaryAdd.js';
 import DiaryEdit from './DiaryEdit.js';
-import DiaryDel from './DiaryDel.js';
 import update from 'immutability-helper';
 import Cookies from 'universal-cookie';
 import { dateFormat } from '../../components/Util/DateUtil'
@@ -258,8 +257,8 @@ class DiaryCalendar extends Component {
   render() {
     return (
       <div className="animated fadeIn">
-        <Row>
-          <Col>
+        <CRow>
+          <CCol>
             <FullCalendar
               plugins={[dayGridPlugin, interactionPlugin]}
               customButtons={{
@@ -288,11 +287,10 @@ class DiaryCalendar extends Component {
             //              eventContent={this.renderEventContent} // custom render function
             />
 
-          </Col>
-        </Row>
+          </CCol>
+        </CRow>
         <DiaryAdd modalFlag={this.state.modalFlagAdd} modalToggle={this.modalToggleAdd} dataFromParent={this.state.selectedDate} callbackFromParent={this.dataChangedCallback} />
         <DiaryEdit modalFlag={this.state.modalFlagEdit} modalToggle={this.modalToggleEdit} dataFromParent={this.state.currentData} callbackFromParent={this.dataChangedCallback} />
-        <DiaryDel modalFlag={this.state.modalFlagDel} modalToggle={this.modalToggleDel} dataFromParent={this.state.currentData} callbackFromParent={this.dataChangedCallback} />
       </div>
 
     );

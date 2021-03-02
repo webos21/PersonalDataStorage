@@ -1,5 +1,8 @@
 import React, { useState } from 'react';
-import { Modal, ModalHeader, ModalBody, ModalFooter, Button, Form, FormGroup, FormFeedback, Input } from 'reactstrap';
+import {
+    CModal, CModalHeader, CModalBody, CModalFooter,
+    CButton, CForm, CFormGroup, CInvalidFeedback, CInput
+} from '@coreui/react';
 import { useForm, Controller } from "react-hook-form";
 import Cookies from 'universal-cookie';
 import { dateFormat } from '../../components/Util/DateUtil'
@@ -54,13 +57,13 @@ const PbFormDel = props => {
 
     return (
         <span>
-            <Button color="danger" className="btn-sm" onClick={toggleOpen}>
-                <i className="fa fa-trash-o"></i>&nbsp;삭제</Button>
-            <Modal isOpen={modalShow} toggle={toggleOpen}
+            <CButton color="danger" className="btn-sm" onClick={toggleOpen}>
+                <i className="fa fa-trash-o"></i>&nbsp;삭제</CButton>
+            <CModal isOpen={modalShow} toggle={toggleOpen}
                 className={'modal-danger ' + props.className}>
-                <Form onSubmit={handleSubmit(onSubmit)}>
-                    <ModalHeader toggle={toggleOpen}>비밀번호 삭제</ModalHeader>
-                    <ModalBody>
+                <CForm onSubmit={handleSubmit(onSubmit)}>
+                    <CModalHeader closeButton>비밀번호 삭제</CModalHeader>
+                    <CModalBody>
                         <p>다음 항목을 삭제할까요?</p>
                         <ul>
                             <li>일련번호 : {props.dataFromParent.id}</li>
@@ -70,23 +73,23 @@ const PbFormDel = props => {
                             <li>아 이 디 : {props.dataFromParent.myId}</li>
                             <li>등 록 일 : {dateFormat(new Date(props.dataFromParent.regDate))}</li>
                         </ul>
-                        <FormGroup>
+                        <CFormGroup>
                             <Controller
-                                as={<Input />}
+                                as={<CInput />}
                                 type="hidden"
                                 control={control}
                                 defaultValue={props.dataFromParent.id}
                                 name="siteId"
                                 rules={{ required: true }} />
-                            {errors.siteId && <FormFeedback>{errors.siteId.message}</FormFeedback>}
-                        </FormGroup>
-                    </ModalBody>
-                    <ModalFooter>
-                        <Button type="submit" color="danger">삭제</Button>{' '}
-                        <Button color="secondary" onClick={toggleOpen}>취소</Button>
-                    </ModalFooter>
-                </Form>
-            </Modal>
+                            {errors.siteId && <CInvalidFeedback>{errors.siteId.message}</CInvalidFeedback>}
+                        </CFormGroup>
+                    </CModalBody>
+                    <CModalFooter>
+                        <CButton type="submit" color="danger">삭제</CButton>{' '}
+                        <CButton color="secondary" onClick={toggleOpen}>취소</CButton>
+                    </CModalFooter>
+                </CForm>
+            </CModal>
         </span>
     );
 };

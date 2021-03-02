@@ -1,5 +1,9 @@
 import React from 'react';
-import { Modal, ModalHeader, ModalBody, ModalFooter, Button, Col, Form, FormGroup, FormFeedback, InputGroup, InputGroupAddon, InputGroupText, Input } from 'reactstrap';
+import {
+    CModal, CModalHeader, CModalBody, CModalFooter, CButton, CCol,
+    CForm, CFormGroup, CInvalidFeedback,
+    CInputGroup, CInputGroupPrepend, CInputGroupText, CInput,
+} from '@coreui/react';
 import { useForm, Controller } from "react-hook-form";
 import Cookies from 'universal-cookie';
 import { dateFormat } from '../../components/Util/DateUtil'
@@ -46,19 +50,19 @@ const DiaryAdd = props => {
     };
 
     return (
-        <Modal isOpen={props.modalFlag} toggle={props.modalToggle}
+        <CModal isOpen={props.modalFlag} toggle={props.modalToggle}
             className={'modal-success ' + props.className}>
-            <Form onSubmit={handleSubmit(onSubmit)}>
-                <ModalHeader toggle={props.modalToggle}>일기 추가</ModalHeader>
-                <ModalBody>
-                    <FormGroup row>
-                        <Col xs="12" md="12">
-                            <InputGroup>
-                                <InputGroupAddon addonType="prepend">
-                                    <InputGroupText style={{ minWidth: 70 }}>제목</InputGroupText>
-                                </InputGroupAddon>
+            <CForm onSubmit={handleSubmit(onSubmit)}>
+                <CModalHeader closeButton>일기 추가</CModalHeader>
+                <CModalBody>
+                    <CFormGroup row>
+                        <CCol xs="12" md="12">
+                            <CInputGroup>
+                                <CInputGroupPrepend>
+                                    <CInputGroupText style={{ minWidth: 70 }}>제목</CInputGroupText>
+                                </CInputGroupPrepend>
                                 <Controller
-                                    as={<Input />}
+                                    as={<CInput />}
                                     type="text"
                                     control={control}
                                     defaultValue={''}
@@ -79,18 +83,18 @@ const DiaryAdd = props => {
                                         }
                                     }}
                                 />
-                                {errors.title && <FormFeedback>{errors.title.message}</FormFeedback>}
-                            </InputGroup>
-                        </Col>
-                    </FormGroup>
-                    <FormGroup row>
-                        <Col xs="12" md="12">
-                            <InputGroup>
-                                <InputGroupAddon addonType="prepend">
-                                    <InputGroupText style={{ minWidth: 70 }}>작성일</InputGroupText>
-                                </InputGroupAddon>
+                                {errors.title && <CInvalidFeedback>{errors.title.message}</CInvalidFeedback>}
+                            </CInputGroup>
+                        </CCol>
+                    </CFormGroup>
+                    <CFormGroup row>
+                        <CCol xs="12" md="12">
+                            <CInputGroup>
+                                <CInputGroupPrepend>
+                                    <CInputGroupText style={{ minWidth: 70 }}>작성일</CInputGroupText>
+                                </CInputGroupPrepend>
                                 <Controller
-                                    as={<Input />}
+                                    as={<CInput />}
                                     type="date"
                                     control={control}
                                     defaultValue={dateFormat(new Date(props.dataFromParent))}
@@ -103,25 +107,25 @@ const DiaryAdd = props => {
                                         }
                                     }}
                                 />
-                                {errors.wdate && <FormFeedback>{errors.wdate.message}</FormFeedback>}
-                            </InputGroup>
-                        </Col>
-                    </FormGroup>
-                    <FormGroup row>
-                        <Col xs="12" md="12">
-                            <InputGroup>
-                                <InputGroupAddon addonType="prepend">
-                                    <InputGroupText style={{ minWidth: 70 }}>날씨</InputGroupText>
-                                </InputGroupAddon>
+                                {errors.wdate && <CInvalidFeedback>{errors.wdate.message}</CInvalidFeedback>}
+                            </CInputGroup>
+                        </CCol>
+                    </CFormGroup>
+                    <CFormGroup row>
+                        <CCol xs="12" md="12">
+                            <CInputGroup>
+                                <CInputGroupPrepend>
+                                    <CInputGroupText style={{ minWidth: 70 }}>날씨</CInputGroupText>
+                                </CInputGroupPrepend>
                                 <Controller
-                                    as={<Input>
+                                    as={<CInput>
                                         <option value={0}>눈</option>
                                         <option value={1}>맑음</option>
                                         <option value={2}>구름조금</option>
                                         <option value={3}>흐림</option>
                                         <option value={4}>비온뒤갬</option>
                                         <option value={5}>비</option>
-                                    </Input>}
+                                    </CInput>}
                                     type="select"
                                     control={control}
                                     defaultValue={1}
@@ -134,16 +138,16 @@ const DiaryAdd = props => {
                                         }
                                     }}
                                 />
-                                {errors.weather && <FormFeedback>{errors.weather.message}</FormFeedback>}
-                            </InputGroup>
-                        </Col>
-                    </FormGroup>
-                    <FormGroup row>
-                        <Col xs="12" md="12">
-                            <InputGroup>
-                                <InputGroupAddon addonType="prepend">
-                                    <InputGroupText style={{ minWidth: 70 }}>내용</InputGroupText>
-                                </InputGroupAddon>
+                                {errors.weather && <CInvalidFeedback>{errors.weather.message}</CInvalidFeedback>}
+                            </CInputGroup>
+                        </CCol>
+                    </CFormGroup>
+                    <CFormGroup row>
+                        <CCol xs="12" md="12">
+                            <CInputGroup>
+                                <CInputGroupPrepend>
+                                    <CInputGroupText style={{ minWidth: 70 }}>내용</CInputGroupText>
+                                </CInputGroupPrepend>
                                 <Controller
                                     as={<textarea />}
                                     control={control}
@@ -158,18 +162,18 @@ const DiaryAdd = props => {
                                     }}
                                     style={{ minHeight: 120 }}
                                 />
-                                {errors.content && <FormFeedback>{errors.content.message}</FormFeedback>}
-                            </InputGroup>
-                        </Col>
-                    </FormGroup>
+                                {errors.content && <CInvalidFeedback>{errors.content.message}</CInvalidFeedback>}
+                            </CInputGroup>
+                        </CCol>
+                    </CFormGroup>
 
-                </ModalBody>
-                <ModalFooter>
-                    <Button type="submit" color="success">추가</Button>{' '}
-                    <Button color="secondary" onClick={props.modalToggle}>취소</Button>
-                </ModalFooter>
-            </Form>
-        </Modal>
+                </CModalBody>
+                <CModalFooter>
+                    <CButton type="submit" color="success">추가</CButton>{' '}
+                    <CButton color="secondary" onClick={props.modalToggle}>취소</CButton>
+                </CModalFooter>
+            </CForm>
+        </CModal>
     );
 };
 

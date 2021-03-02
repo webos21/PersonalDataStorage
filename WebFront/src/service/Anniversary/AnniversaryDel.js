@@ -1,5 +1,8 @@
 import React, { useState } from 'react';
-import { Modal, ModalHeader, ModalBody, ModalFooter, Button, Form, FormGroup, FormFeedback, Input } from 'reactstrap';
+import {
+    CModal, CModalHeader, CModalBody, CModalFooter,
+    CButton, CForm, CFormGroup, CInvalidFeedback, CInput
+} from '@coreui/react';
 import { useForm, Controller } from "react-hook-form";
 import Cookies from 'universal-cookie';
 
@@ -53,36 +56,36 @@ const AnniversaryDel = props => {
 
     return (
         <span>
-            <Button color="danger" className="btn-sm" onClick={toggleOpen}>
-                <i className="fa fa-trash-o"></i>&nbsp;삭제</Button>
-            <Modal isOpen={modalShow} toggle={toggleOpen}
+            <CButton color="danger" className="btn-sm" onClick={toggleOpen}>
+                <i className="fa fa-trash-o"></i>&nbsp;삭제</CButton>
+            <CModal isOpen={modalShow} toggle={toggleOpen}
                 className={'modal-danger ' + props.className}>
-                <Form onSubmit={handleSubmit(onSubmit)}>
-                    <ModalHeader toggle={toggleOpen}>기념일 삭제</ModalHeader>
-                    <ModalBody>
+                <CForm onSubmit={handleSubmit(onSubmit)}>
+                    <CModalHeader closeButton>기념일 삭제</CModalHeader>
+                    <CModalBody>
                         <p>다음 항목을 삭제할까요?</p>
                         <ul>
                             <li>기념일 번호 : {props.dataFromParent.id}</li>
                             <li>기념일 날짜 : {props.dataFromParent.applyDate.substring(0, 2) + '월 ' + props.dataFromParent.applyDate.substring(2, 4) + '일' + ((props.dataFromParent.lunar === 1) ? '(음력)' : '')}</li>
                             <li>기념일 제목 : {props.dataFromParent.title}</li>
                         </ul>
-                        <FormGroup>
+                        <CFormGroup>
                             <Controller
-                                as={<Input />}
+                                as={<CInput />}
                                 type="hidden"
                                 control={control}
                                 defaultValue={props.dataFromParent.id}
                                 name="anniId"
                                 rules={{ required: true }} />
-                            {errors.anniId && <FormFeedback>{errors.anniId.message}</FormFeedback>}
-                        </FormGroup>
-                    </ModalBody>
-                    <ModalFooter>
-                        <Button type="submit" color="danger">삭제</Button>{' '}
-                        <Button color="secondary" onClick={toggleOpen}>취소</Button>
-                    </ModalFooter>
-                </Form>
-            </Modal>
+                            {errors.anniId && <CInvalidFeedback>{errors.anniId.message}</CInvalidFeedback>}
+                        </CFormGroup>
+                    </CModalBody>
+                    <CModalFooter>
+                        <CButton type="submit" color="danger">삭제</CButton>{' '}
+                        <CButton color="secondary" onClick={toggleOpen}>취소</CButton>
+                    </CModalFooter>
+                </CForm>
+            </CModal>
         </span>
     );
 };

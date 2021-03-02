@@ -1,5 +1,9 @@
 import React, { useState } from 'react';
-import { Modal, ModalHeader, ModalBody, ModalFooter, Button, Col, Form, FormGroup, FormFeedback, InputGroup, InputGroupAddon, InputGroupText, Input } from 'reactstrap';
+import {
+    CModal, CModalHeader, CModalBody, CModalFooter, CButton, CCol,
+    CForm, CFormGroup, CInvalidFeedback,
+    CInputGroup, CInputGroupPrepend, CInputGroupText, CInput,
+} from '@coreui/react';
 import { useForm, Controller } from "react-hook-form";
 import Cookies from 'universal-cookie';
 import { dateFormat } from '../../components/Util/DateUtil'
@@ -53,28 +57,28 @@ const PbFormEdit = props => {
 
     return (
         <span>
-            <Button color="warning" className="btn-sm" onClick={toggleOpen}>
-                <i className="fa fa-edit"></i>&nbsp;수정</Button>
-            <Modal isOpen={modalShowEdit} toggle={toggleOpen}
+            <CButton color="warning" className="btn-sm" onClick={toggleOpen}>
+                <i className="fa fa-edit"></i>&nbsp;수정</CButton>
+            <CModal isOpen={modalShowEdit} toggle={toggleOpen}
                 className={'modal-warning ' + props.className}>
-                <Form onSubmit={handleSubmit(onSubmit)}>
-                    <ModalHeader toggle={toggleOpen}>비밀번호 수정</ModalHeader>
-                    <ModalBody>
-                        <FormGroup row>
-                            <Col xs="12" md="12">
+                <CForm onSubmit={handleSubmit(onSubmit)}>
+                    <CModalHeader closeButton>비밀번호 수정</CModalHeader>
+                    <CModalBody>
+                        <CFormGroup row>
+                            <CCol xs="12" md="12">
                                 <Controller
-                                    as={<Input />}
+                                    as={<CInput />}
                                     type="hidden"
                                     control={control}
                                     defaultValue={props.dataFromParent.id}
                                     name="siteId"
                                     rules={{ required: true }} />
-                                <InputGroup>
-                                    <InputGroupAddon addonType="prepend">
-                                        <InputGroupText style={{ minWidth: 80 }}>URL</InputGroupText>
-                                    </InputGroupAddon>
+                                <CInputGroup>
+                                    <CInputGroupPrepend>
+                                        <CInputGroupText style={{ minWidth: 80 }}>URL</CInputGroupText>
+                                    </CInputGroupPrepend>
                                     <Controller
-                                        as={<Input />}
+                                        as={<CInput />}
                                         type="url"
                                         control={control}
                                         defaultValue={props.dataFromParent.siteUrl}
@@ -95,18 +99,18 @@ const PbFormEdit = props => {
                                             }
                                         }}
                                     />
-                                    {errors.siteUrl && <FormFeedback>{errors.siteUrl.message}</FormFeedback>}
-                                </InputGroup>
-                            </Col>
-                        </FormGroup>
-                        <FormGroup row>
-                            <Col xs="12" md="12">
-                                <InputGroup>
-                                    <InputGroupAddon addonType="prepend">
-                                        <InputGroupText style={{ minWidth: 80 }}>사이트명</InputGroupText>
-                                    </InputGroupAddon>
+                                    {errors.siteUrl && <CInvalidFeedback>{errors.siteUrl.message}</CInvalidFeedback>}
+                                </CInputGroup>
+                            </CCol>
+                        </CFormGroup>
+                        <CFormGroup row>
+                            <CCol xs="12" md="12">
+                                <CInputGroup>
+                                    <CInputGroupPrepend>
+                                        <CInputGroupText style={{ minWidth: 80 }}>사이트명</CInputGroupText>
+                                    </CInputGroupPrepend>
                                     <Controller
-                                        as={<Input />}
+                                        as={<CInput />}
                                         type="text"
                                         control={control}
                                         defaultValue={props.dataFromParent.siteName}
@@ -127,18 +131,18 @@ const PbFormEdit = props => {
                                             }
                                         }}
                                     />
-                                    {errors.siteName && <FormFeedback>{errors.siteName.message}</FormFeedback>}
-                                </InputGroup>
-                            </Col>
-                        </FormGroup>
-                        <FormGroup row>
-                            <Col xs="12" md="12">
-                                <InputGroup>
-                                    <InputGroupAddon addonType="prepend">
-                                        <InputGroupText style={{ minWidth: 80 }}>유형</InputGroupText>
-                                    </InputGroupAddon>
+                                    {errors.siteName && <CInvalidFeedback>{errors.siteName.message}</CInvalidFeedback>}
+                                </CInputGroup>
+                            </CCol>
+                        </CFormGroup>
+                        <CFormGroup row>
+                            <CCol xs="12" md="12">
+                                <CInputGroup>
+                                    <CInputGroupPrepend>
+                                        <CInputGroupText style={{ minWidth: 80 }}>유형</CInputGroupText>
+                                    </CInputGroupPrepend>
                                     <Controller
-                                        as={<Input />}
+                                        as={<CInput />}
                                         type="text"
                                         control={control}
                                         defaultValue={props.dataFromParent.siteType}
@@ -159,18 +163,18 @@ const PbFormEdit = props => {
                                             }
                                         }}
                                     />
-                                    {errors.siteType && <FormFeedback>{errors.siteType.message}</FormFeedback>}
-                                </InputGroup>
-                            </Col>
-                        </FormGroup>
-                        <FormGroup row>
-                            <Col xs="12" md="12">
-                                <InputGroup>
-                                    <InputGroupAddon addonType="prepend">
-                                        <InputGroupText style={{ minWidth: 80 }}>아 이 디</InputGroupText>
-                                    </InputGroupAddon>
+                                    {errors.siteType && <CInvalidFeedback>{errors.siteType.message}</CInvalidFeedback>}
+                                </CInputGroup>
+                            </CCol>
+                        </CFormGroup>
+                        <CFormGroup row>
+                            <CCol xs="12" md="12">
+                                <CInputGroup>
+                                    <CInputGroupPrepend>
+                                        <CInputGroupText style={{ minWidth: 80 }}>아 이 디</CInputGroupText>
+                                    </CInputGroupPrepend>
                                     <Controller
-                                        as={<Input />}
+                                        as={<CInput />}
                                         type="text"
                                         control={control}
                                         defaultValue={props.dataFromParent.myId}
@@ -191,18 +195,18 @@ const PbFormEdit = props => {
                                             }
                                         }}
                                     />
-                                    {errors.myId && <FormFeedback>{errors.myId.message}</FormFeedback>}
-                                </InputGroup>
-                            </Col>
-                        </FormGroup>
-                        <FormGroup row>
-                            <Col xs="12" md="12">
-                                <InputGroup>
-                                    <InputGroupAddon addonType="prepend">
-                                        <InputGroupText style={{ minWidth: 80 }}>비밀번호</InputGroupText>
-                                    </InputGroupAddon>
+                                    {errors.myId && <CInvalidFeedback>{errors.myId.message}</CInvalidFeedback>}
+                                </CInputGroup>
+                            </CCol>
+                        </CFormGroup>
+                        <CFormGroup row>
+                            <CCol xs="12" md="12">
+                                <CInputGroup>
+                                    <CInputGroupPrepend>
+                                        <CInputGroupText style={{ minWidth: 80 }}>비밀번호</CInputGroupText>
+                                    </CInputGroupPrepend>
                                     <Controller
-                                        as={<Input />}
+                                        as={<CInput />}
                                         type="text"
                                         control={control}
                                         defaultValue={props.dataFromParent.myPw}
@@ -223,18 +227,18 @@ const PbFormEdit = props => {
                                             }
                                         }}
                                     />
-                                    {errors.myPw && <FormFeedback>{errors.myPw.message}</FormFeedback>}
-                                </InputGroup>
-                            </Col>
-                        </FormGroup>
-                        <FormGroup row>
-                            <Col xs="12" md="12">
-                                <InputGroup>
-                                    <InputGroupAddon addonType="prepend">
-                                        <InputGroupText style={{ minWidth: 80 }}>가입일자</InputGroupText>
-                                    </InputGroupAddon>
+                                    {errors.myPw && <CInvalidFeedback>{errors.myPw.message}</CInvalidFeedback>}
+                                </CInputGroup>
+                            </CCol>
+                        </CFormGroup>
+                        <CFormGroup row>
+                            <CCol xs="12" md="12">
+                                <CInputGroup>
+                                    <CInputGroupPrepend>
+                                        <CInputGroupText style={{ minWidth: 80 }}>가입일자</CInputGroupText>
+                                    </CInputGroupPrepend>
                                     <Controller
-                                        as={<Input />}
+                                        as={<CInput />}
                                         type="date"
                                         control={control}
                                         defaultValue={dateFormat(new Date(props.dataFromParent.regDate))}
@@ -247,16 +251,16 @@ const PbFormEdit = props => {
                                             }
                                         }}
                                     />
-                                    {errors.regDate && <FormFeedback>{errors.regDate.message}</FormFeedback>}
-                                </InputGroup>
-                            </Col>
-                        </FormGroup>
-                        <FormGroup row>
-                            <Col xs="12" md="12">
-                                <InputGroup>
-                                    <InputGroupAddon addonType="prepend">
-                                        <InputGroupText style={{ minWidth: 80 }}>메모</InputGroupText>
-                                    </InputGroupAddon>
+                                    {errors.regDate && <CInvalidFeedback>{errors.regDate.message}</CInvalidFeedback>}
+                                </CInputGroup>
+                            </CCol>
+                        </CFormGroup>
+                        <CFormGroup row>
+                            <CCol xs="12" md="12">
+                                <CInputGroup>
+                                    <CInputGroupPrepend>
+                                        <CInputGroupText style={{ minWidth: 80 }}>메모</CInputGroupText>
+                                    </CInputGroupPrepend>
                                     <Controller
                                         as={<textarea />}
                                         type="text"
@@ -265,18 +269,18 @@ const PbFormEdit = props => {
                                         name="memo" id="memo" placeholder="메모를 입력해 주세요."
                                         className={"form-control" + (errors.memo ? " is-invalid" : " is-valid")}
                                     />
-                                    {errors.memo && <FormFeedback>{errors.memo.message}</FormFeedback>}
-                                </InputGroup>
-                            </Col>
-                        </FormGroup>
+                                    {errors.memo && <CInvalidFeedback>{errors.memo.message}</CInvalidFeedback>}
+                                </CInputGroup>
+                            </CCol>
+                        </CFormGroup>
 
-                    </ModalBody>
-                    <ModalFooter>
-                        <Button type="submit" color="warning">수정</Button>{' '}
-                        <Button color="secondary" onClick={toggleOpen}>취소</Button>
-                    </ModalFooter>
-                </Form>
-            </Modal>
+                    </CModalBody>
+                    <CModalFooter>
+                        <CButton type="submit" color="warning">수정</CButton>{' '}
+                        <CButton color="secondary" onClick={toggleOpen}>취소</CButton>
+                    </CModalFooter>
+                </CForm>
+            </CModal>
         </span>
     );
 };

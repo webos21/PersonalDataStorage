@@ -1,5 +1,9 @@
 import React, { useState } from 'react';
-import { Modal, ModalHeader, ModalBody, ModalFooter, Button, Col, Form, FormGroup, FormFeedback, InputGroup, InputGroupAddon, InputGroupText, Input } from 'reactstrap';
+import {
+    CModal, CModalHeader, CModalBody, CModalFooter, CButton, CCol,
+    CForm, CFormGroup, CInvalidFeedback,
+    CInputGroup, CInputGroupPrepend, CInputGroupText, CInput, CTextarea,
+} from '@coreui/react';
 import { useForm, Controller } from "react-hook-form";
 import Cookies from 'universal-cookie';
 import { dateFormat } from '../../components/Util/DateUtil'
@@ -53,29 +57,27 @@ const MemoEdit = props => {
 
     return (
         <span>
-            <Button color="warning" className="btn-sm" onClick={toggleOpen}>
-                <i className="fa fa-edit"></i>&nbsp;수정</Button>
-            <Modal isOpen={modalShowEdit} toggle={toggleOpen}
+            <CButton color="warning" className="btn-sm" onClick={toggleOpen}>
+                <i className="fa fa-edit"></i>&nbsp;수정</CButton>
+            <CModal show={modalShowEdit} onClose={toggleOpen}
                 className={'modal-warning ' + props.className}>
-                <Form onSubmit={handleSubmit(onSubmit)}>
+                <CForm onSubmit={handleSubmit(onSubmit)}>
 
-                    <ModalHeader toggle={toggleOpen}>메모 수정</ModalHeader>
-                    <ModalBody>
-                        <FormGroup row>
-                            <Col xs="12" md="12">
-                                <Controller
-                                    as={<Input />}
+                    <CModalHeader closeButton>메모 수정</CModalHeader>
+                    <CModalBody>
+                        <CFormGroup row>
+                            <CCol xs="12" md="12">
+                                <CInput
                                     type="hidden"
                                     control={control}
                                     defaultValue={props.dataFromParent.id}
                                     name="memoId"
                                     rules={{ required: true }} />
-                                <InputGroup>
-                                    <InputGroupAddon addonType="prepend">
-                                        <InputGroupText style={{ minWidth: 70 }}>제목</InputGroupText>
-                                    </InputGroupAddon>
-                                    <Controller
-                                        as={<Input />}
+                                <CInputGroup>
+                                    <CInputGroupPrepend>
+                                        <CInputGroupText style={{ minWidth: 70 }}>제목</CInputGroupText>
+                                    </CInputGroupPrepend>
+                                    <CInput
                                         type="text"
                                         control={control}
                                         defaultValue={props.dataFromParent.title}
@@ -96,18 +98,17 @@ const MemoEdit = props => {
                                             }
                                         }}
                                     />
-                                    {errors.title && <FormFeedback>{errors.title.message}</FormFeedback>}
-                                </InputGroup>
-                            </Col>
-                        </FormGroup>
-                        <FormGroup row>
-                            <Col xs="12" md="12">
-                                <InputGroup>
-                                    <InputGroupAddon addonType="prepend">
-                                        <InputGroupText style={{ minWidth: 70 }}>작성일</InputGroupText>
-                                    </InputGroupAddon>
-                                    <Controller
-                                        as={<Input />}
+                                    {errors.title && <CInvalidFeedback>{errors.title.message}</CInvalidFeedback>}
+                                </CInputGroup>
+                            </CCol>
+                        </CFormGroup>
+                        <CFormGroup row>
+                            <CCol xs="12" md="12">
+                                <CInputGroup>
+                                    <CInputGroupPrepend>
+                                        <CInputGroupText style={{ minWidth: 70 }}>작성일</CInputGroupText>
+                                    </CInputGroupPrepend>
+                                    <CInput
                                         type="date"
                                         control={control}
                                         defaultValue={dateFormat(new Date(props.dataFromParent.wdate))}
@@ -120,18 +121,17 @@ const MemoEdit = props => {
                                             }
                                         }}
                                     />
-                                    {errors.wdate && <FormFeedback>{errors.wdate.message}</FormFeedback>}
-                                </InputGroup>
-                            </Col>
-                        </FormGroup>
-                        <FormGroup row>
-                            <Col xs="12" md="12">
-                                <InputGroup>
-                                    <InputGroupAddon addonType="prepend">
-                                        <InputGroupText style={{ minWidth: 70 }}>내용</InputGroupText>
-                                    </InputGroupAddon>
-                                    <Controller
-                                        as={<textarea />}
+                                    {errors.wdate && <CInvalidFeedback>{errors.wdate.message}</CInvalidFeedback>}
+                                </CInputGroup>
+                            </CCol>
+                        </CFormGroup>
+                        <CFormGroup row>
+                            <CCol xs="12" md="12">
+                                <CInputGroup>
+                                    <CInputGroupPrepend>
+                                        <CInputGroupText style={{ minWidth: 70 }}>내용</CInputGroupText>
+                                    </CInputGroupPrepend>
+                                    <CTextarea
                                         control={control}
                                         defaultValue={props.dataFromParent.content}
                                         name="content" id="content" placeholder="내용을 입력해 주세요."
@@ -144,18 +144,18 @@ const MemoEdit = props => {
                                         }}
                                         style={{ minHeight: 120 }}
                                     />
-                                    {errors.content && <FormFeedback>{errors.content.message}</FormFeedback>}
-                                </InputGroup>
-                            </Col>
-                        </FormGroup>
+                                    {errors.content && <CInvalidFeedback>{errors.content.message}</CInvalidFeedback>}
+                                </CInputGroup>
+                            </CCol>
+                        </CFormGroup>
 
-                    </ModalBody>
-                    <ModalFooter>
-                        <Button type="submit" color="warning">수정</Button>{' '}
-                        <Button color="secondary" onClick={toggleOpen}>취소</Button>
-                    </ModalFooter>
-                </Form>
-            </Modal>
+                    </CModalBody>
+                    <CModalFooter>
+                        <CButton type="submit" color="warning">수정</CButton>{' '}
+                        <CButton color="secondary" onClick={toggleOpen}>취소</CButton>
+                    </CModalFooter>
+                </CForm>
+            </CModal>
         </span>
     );
 };

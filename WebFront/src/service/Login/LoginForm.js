@@ -1,10 +1,14 @@
 import React from 'react';
 import { withRouter } from "react-router-dom";
-import { Button, Col, Row, Form, InputGroup, InputGroupAddon, InputGroupText } from 'reactstrap';
+import {
+    CButton, CCol, CRow,
+    CForm, CInputGroup, CInputGroupPrepend, CInputGroupText
+} from '@coreui/react';
+import CIcon from '@coreui/icons-react'
 import { useForm } from "react-hook-form";
 import Cookies from 'universal-cookie';
 
-const PbLoginForm = props => {
+const LoginForm = props => {
     const crypto = require('crypto');
 
     const REQ_URI = (process.env.NODE_ENV !== 'production') ? 'http://' + window.location.hostname + ':28080/pds/v1/auth' : '/pds/v1/auth';
@@ -55,16 +59,16 @@ const PbLoginForm = props => {
     };
 
     return (
-        <Form onSubmit={handleSubmit(onSubmit)}>
+        <CForm onSubmit={handleSubmit(onSubmit)}>
             <h1>Login</h1>
             <p className="text-muted">Sign In to your PasswordBook</p>
-            <Row className="form-group">
-                <InputGroup>
-                    <InputGroupAddon addonType="prepend">
-                        <InputGroupText>
-                            <i className="icon-lock"></i>
-                        </InputGroupText>
-                    </InputGroupAddon>
+            <CRow className="form-group">
+                <CInputGroup>
+                    <CInputGroupPrepend>
+                        <CInputGroupText>
+                        <CIcon name="cil-lock-locked" />
+                        </CInputGroupText>
+                    </CInputGroupPrepend>
                     <input
                         type="password"
                         className={"form-control" + (errors.pbpwd ? " is-invalid" : " is-valid")}
@@ -77,19 +81,19 @@ const PbLoginForm = props => {
                             maxLength: 16,
                         })}
                     />
-                </InputGroup>
+                </CInputGroup>
 
                 {errors.pbpwd && errors.pbpwd.type === "required" && <small id="pbpwdError" className="text-danger">비밀번호를 입력해 주세요.</small>}
                 {errors.pbpwd && errors.pbpwd.type === "minLength" && <small id="pbpwdError" className="text-danger">비밀번호는 4자 이상입니다.</small>}
                 {errors.pbpwd && errors.pbpwd.type === "serverResponse" && <small id="pbpwdError" className="text-danger">{errors.pbpwd.message}</small>}
-            </Row>
-            <Row className="mt-2">
-                <Col xs="6">
-                    <Button type="submit" color="primary" className="px-4">Login</Button>
-                </Col>
-            </Row>
-        </Form>
+            </CRow>
+            <CRow className="mt-2">
+                <CCol xs="6">
+                    <CButton type="submit" color="primary" className="px-4">Login</CButton>
+                </CCol>
+            </CRow>
+        </CForm>
     );
 };
 
-export default withRouter(PbLoginForm);
+export default withRouter(LoginForm);

@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import {
-  Button, Card, CardBody, CardHeader, Col, Row, Table,
-  Form, Input, InputGroup, InputGroupAddon, InputGroupText,
-} from 'reactstrap';
+  CButton, CCard, CCardBody, CCardHeader, CCol, CRow, CDataTable,
+  CForm, CInput, CInputGroup, CInputGroupPrepend, CInputGroupAppend, CInputGroupText,
+} from '@coreui/react';
 import Pager from '../../components/Pager';
 import DiaryAdd from './DiaryAdd.js';
 import DiaryEdit from './DiaryEdit.js';
@@ -140,49 +140,49 @@ class DiaryBoard extends Component {
   render() {
     return (
       <div className="animated fadeIn">
-        <Row>
-          <Col>
-            <Card>
-              <CardHeader>
+        <CRow>
+          <CCol>
+            <CCard>
+              <CCardHeader>
                 <strong>Search</strong>
                 <small> Diary</small>
-              </CardHeader>
-              <CardBody>
-                <Row>
-                  <Col>
-                    <Form onSubmit={this.handleSearchGo} id="frmRefSearch">
-                      <InputGroup>
-                        <InputGroupAddon addonType="prepend">
-                          <InputGroupText>Keyword</InputGroupText>
-                        </InputGroupAddon>
-                        <Input type="text" name="keyword" placeholder="Enter the search keyword" />
-                        <InputGroupAddon addonType="append">
-                          <Button type="submit" color="primary">Search</Button>
-                        </InputGroupAddon>
+              </CCardHeader>
+              <CCardBody>
+                <CRow>
+                  <CCol>
+                    <CForm onSubmit={this.handleSearchGo} id="frmRefSearch">
+                      <CInputGroup>
+                        <CInputGroupPrepend>
+                          <CInputGroupText>Keyword</CInputGroupText>
+                        </CInputGroupPrepend>
+                        <CInput type="text" name="keyword" placeholder="Enter the search keyword" />
+                        <CInputGroupAppend>
+                          <CButton type="submit" color="primary">Search</CButton>
+                        </CInputGroupAppend>
                         {this.state.keyword !== "" &&
-                          <InputGroupAddon addonType="append">
-                            <Button type="reset" color="success" onClick={this.handleViewAll}>전체보기</Button>
-                          </InputGroupAddon>
+                          <CInputGroupAppend>
+                            <CButton type="reset" color="success" onClick={this.handleViewAll}>전체보기</CButton>
+                          </CInputGroupAppend>
                         }
-                      </InputGroup>
+                      </CInputGroup>
                       <small id="keywordError" className="text-danger">{this.state.keywordError}</small>
-                    </Form>
-                  </Col>
-                </Row>
-              </CardBody>
-            </Card>
-          </Col>
-        </Row>
+                    </CForm>
+                  </CCol>
+                </CRow>
+              </CCardBody>
+            </CCard>
+          </CCol>
+        </CRow>
 
-        <Row>
-          <Col>
-            <Card>
-              <CardHeader>
+        <CRow>
+          <CCol>
+            <CCard>
+              <CCardHeader>
                 <i className="fa fa-align-justify"></i> Diary List (Total : {this.state.totalCount})
                 <DiaryAdd callbackFromParent={this.dataChangedCallback} />
-              </CardHeader>
-              <CardBody>
-                <Table hover bordered striped responsive size="sm">
+              </CCardHeader>
+              <CCardBody>
+                <CDataTable hover bordered striped responsive size="sm">
                   <thead>
                     <tr>
                       <th>번호</th>
@@ -194,7 +194,7 @@ class DiaryBoard extends Component {
                   <tbody>
                     {this.renderTableList(this.state.dataSet)}
                   </tbody>
-                </Table>
+                </CDataTable>
                 <Pager
                   total={this.state.totalPage}
                   current={this.state.currentPage}
@@ -202,10 +202,10 @@ class DiaryBoard extends Component {
                   titles={{ first: 'First', last: 'Last' }}
                   onPageChanged={this.handlePageChanged}
                 />
-              </CardBody>
-            </Card>
-          </Col>
-        </Row>
+              </CCardBody>
+            </CCard>
+          </CCol>
+        </CRow>
       </div>
 
     );

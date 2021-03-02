@@ -1,5 +1,9 @@
 import React, { useState } from 'react';
-import { Modal, ModalHeader, ModalBody, ModalFooter, Button, Col, Form, FormGroup, FormFeedback, InputGroup, InputGroupAddon, InputGroupText, Input } from 'reactstrap';
+import {
+    CModal, CModalHeader, CModalBody, CModalFooter, CButton, CCol,
+    CForm, CFormGroup, CInvalidFeedback,
+    CInputGroup, CInputGroupPrepend, CInputGroupText, CInput,
+} from '@coreui/react';
 import { useForm, Controller } from "react-hook-form";
 import Cookies from 'universal-cookie';
 import { dateFormat } from '../../components/Util/DateUtil'
@@ -53,29 +57,29 @@ const AnniversaryEdit = props => {
 
     return (
         <span>
-            <Button color="warning" className="btn-sm" onClick={toggleOpen}>
-                <i className="fa fa-edit"></i>&nbsp;수정</Button>
-            <Modal isOpen={modalShowEdit} toggle={toggleOpen}
+            <CButton color="warning" className="btn-sm" onClick={toggleOpen}>
+                <i className="fa fa-edit"></i>&nbsp;수정</CButton>
+            <CModal isOpen={modalShowEdit} toggle={toggleOpen}
                 className={'modal-warning ' + props.className}>
-                <Form onSubmit={handleSubmit(onSubmit)}>
+                <CForm onSubmit={handleSubmit(onSubmit)}>
 
-                    <ModalHeader toggle={toggleOpen}>기념일 수정</ModalHeader>
-                    <ModalBody>
-                        <FormGroup row>
-                            <Col xs="12" md="12">
+                    <CModalHeader closeButton>기념일 수정</CModalHeader>
+                    <CModalBody>
+                        <CFormGroup row>
+                            <CCol xs="12" md="12">
                                 <Controller
-                                    as={<Input />}
+                                    as={<CInput />}
                                     type="hidden"
                                     control={control}
                                     defaultValue={props.dataFromParent.id}
                                     name="anniId"
                                     rules={{ required: true }} />
-                                <InputGroup>
-                                    <InputGroupAddon addonType="prepend">
-                                        <InputGroupText style={{ minWidth: 70 }}>제목</InputGroupText>
-                                    </InputGroupAddon>
+                                <CInputGroup>
+                                    <CInputGroupPrepend>
+                                        <CInputGroupText style={{ minWidth: 70 }}>제목</CInputGroupText>
+                                    </CInputGroupPrepend>
                                     <Controller
-                                        as={<Input />}
+                                        as={<CInput />}
                                         type="text"
                                         control={control}
                                         defaultValue={props.dataFromParent.title}
@@ -96,18 +100,18 @@ const AnniversaryEdit = props => {
                                             }
                                         }}
                                     />
-                                    {errors.title && <FormFeedback>{errors.title.message}</FormFeedback>}
-                                </InputGroup>
-                            </Col>
-                        </FormGroup>
-                        <FormGroup row>
-                            <Col xs="12" md="12">
-                                <InputGroup>
-                                    <InputGroupAddon addonType="prepend">
-                                        <InputGroupText style={{ minWidth: 70 }}>작성일</InputGroupText>
-                                    </InputGroupAddon>
+                                    {errors.title && <CInvalidFeedback>{errors.title.message}</CInvalidFeedback>}
+                                </CInputGroup>
+                            </CCol>
+                        </CFormGroup>
+                        <CFormGroup row>
+                            <CCol xs="12" md="12">
+                                <CInputGroup>
+                                    <CInputGroupPrepend>
+                                        <CInputGroupText style={{ minWidth: 70 }}>작성일</CInputGroupText>
+                                    </CInputGroupPrepend>
                                     <Controller
-                                        as={<Input />}
+                                        as={<CInput />}
                                         type="date"
                                         control={control}
                                         defaultValue={dateFormat(new Date(props.dataFromParent.wdate))}
@@ -120,16 +124,16 @@ const AnniversaryEdit = props => {
                                             }
                                         }}
                                     />
-                                    {errors.wdate && <FormFeedback>{errors.wdate.message}</FormFeedback>}
-                                </InputGroup>
-                            </Col>
-                        </FormGroup>
-                        <FormGroup row>
-                            <Col xs="12" md="12">
-                                <InputGroup>
-                                    <InputGroupAddon addonType="prepend">
-                                        <InputGroupText style={{ minWidth: 70 }}>내용</InputGroupText>
-                                    </InputGroupAddon>
+                                    {errors.wdate && <CInvalidFeedback>{errors.wdate.message}</CInvalidFeedback>}
+                                </CInputGroup>
+                            </CCol>
+                        </CFormGroup>
+                        <CFormGroup row>
+                            <CCol xs="12" md="12">
+                                <CInputGroup>
+                                    <CInputGroupPrepend>
+                                        <CInputGroupText style={{ minWidth: 70 }}>내용</CInputGroupText>
+                                    </CInputGroupPrepend>
                                     <Controller
                                         as={<textarea />}
                                         control={control}
@@ -144,18 +148,18 @@ const AnniversaryEdit = props => {
                                         }}
                                         style={{ minHeight: 120 }}
                                     />
-                                    {errors.content && <FormFeedback>{errors.content.message}</FormFeedback>}
-                                </InputGroup>
-                            </Col>
-                        </FormGroup>
+                                    {errors.content && <CInvalidFeedback>{errors.content.message}</CInvalidFeedback>}
+                                </CInputGroup>
+                            </CCol>
+                        </CFormGroup>
 
-                    </ModalBody>
-                    <ModalFooter>
-                        <Button type="submit" color="warning">수정</Button>{' '}
-                        <Button color="secondary" onClick={toggleOpen}>취소</Button>
-                    </ModalFooter>
-                </Form>
-            </Modal>
+                    </CModalBody>
+                    <CModalFooter>
+                        <CButton type="submit" color="warning">수정</CButton>{' '}
+                        <CButton color="secondary" onClick={toggleOpen}>취소</CButton>
+                    </CModalFooter>
+                </CForm>
+            </CModal>
         </span>
     );
 };

@@ -1,5 +1,8 @@
 import React, { useState } from 'react';
-import { Modal, ModalHeader, ModalBody, ModalFooter, Button, Form, FormGroup, FormFeedback, Input } from 'reactstrap';
+import {
+    CModal, CModalHeader, CModalBody, CModalFooter,
+    CButton, CForm, CFormGroup, CInvalidFeedback, CInput
+} from '@coreui/react';
 import { useForm, Controller } from "react-hook-form";
 import Cookies from 'universal-cookie';
 import { dateFormat } from '../../components/Util/DateUtil'
@@ -50,36 +53,36 @@ const DiaryDel = props => {
 
     return (
         <span>
-            <Button color="danger" className="btn-sm" onClick={toggleOpen}>
-                <i className="fa fa-trash-o"></i>&nbsp;삭제</Button>
-            <Modal isOpen={modalShow} toggle={toggleOpen}
+            <CButton color="danger" className="btn-sm" onClick={toggleOpen}>
+                <i className="fa fa-trash-o"></i>&nbsp;삭제</CButton>
+            <CModal isOpen={modalShow} toggle={toggleOpen}
                 className={'modal-danger ' + props.className}>
-                <Form onSubmit={handleSubmit(onSubmit)}>
-                    <ModalHeader toggle={toggleOpen}>일기 삭제</ModalHeader>
-                    <ModalBody>
+                <CForm onSubmit={handleSubmit(onSubmit)}>
+                    <CModalHeader closeButton={toggleOpen}>일기 삭제</CModalHeader>
+                    <CModalBody>
                         <p>다음 항목을 삭제할까요?</p>
                         <ul>
                             <li>일기 번호 : {props.dataFromParent.id}</li>
                             <li>일기 날짜 : {dateFormat(new Date(props.dataFromParent.wdate))}</li>
                             <li>일기 제목 : {props.dataFromParent.title}</li>
                         </ul>
-                        <FormGroup>
+                        <CFormGroup>
                             <Controller
-                                as={<Input />}
+                                as={<CInput />}
                                 type="hidden"
                                 control={control}
                                 defaultValue={props.dataFromParent.id}
                                 name="diaryId"
                                 rules={{ required: true }} />
-                            {errors.diaryId && <FormFeedback>{errors.diaryId.message}</FormFeedback>}
-                        </FormGroup>
-                    </ModalBody>
-                    <ModalFooter>
-                        <Button type="submit" color="danger">삭제</Button>
-                        <Button color="secondary" onClick={toggleOpen}>취소</Button>
-                    </ModalFooter>
-                </Form>
-            </Modal>
+                            {errors.diaryId && <CInvalidFeedback>{errors.diaryId.message}</CInvalidFeedback>}
+                        </CFormGroup>
+                    </CModalBody>
+                    <CModalFooter>
+                        <CButton type="submit" color="danger">삭제</CButton>
+                        <CButton color="secondary" onClick={toggleOpen}>취소</CButton>
+                    </CModalFooter>
+                </CForm>
+            </CModal>
         </span>
     );
 };

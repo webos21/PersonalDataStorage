@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
 import Cookies from 'universal-cookie';
 import { HashRouter, Route, Switch, Redirect } from 'react-router-dom';
-// import { renderRoutes } from 'react-router-config';
-import './App.scss';
+import './scss/style.scss';
 
 // Containers
 const PdsLayout = React.lazy(() => import('./containers/PdsLayout'));
@@ -44,8 +43,8 @@ class App extends Component {
         <React.Suspense fallback={loading()}>
           <Switch>
             <UnauthenticatedRoute exact path="/login" name="Login Page" component={Login} />
-            <AuthenticatedRoute path="/" name="Home" component={PdsLayout} />} />
-              <Route exact path="/500" name="Page 500" component={Page500} />
+            <AuthenticatedRoute path="/" name="Home" component={PdsLayout} />
+            <Route exact path="/500" name="Page 500" component={Page500} />
           </Switch>
         </React.Suspense>
       </HashRouter>

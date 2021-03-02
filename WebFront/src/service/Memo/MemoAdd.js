@@ -1,6 +1,14 @@
 import React, { useState } from 'react';
-import { Modal, ModalHeader, ModalBody, ModalFooter, Button, Col, Form, FormGroup, FormFeedback, InputGroup, InputGroupAddon, InputGroupText, Input } from 'reactstrap';
-import { useForm, Controller } from "react-hook-form";
+
+import {
+    CModal, CModalHeader, CModalBody, CModalFooter, CButton, CCol,
+    CForm, CFormGroup, CInvalidFeedback,
+    CInputGroup, CInputGroupPrepend, CInputGroupText, CInput, CTextarea,
+} from '@coreui/react';
+import CIcon from '@coreui/icons-react'
+import { freeSet } from '@coreui/icons'
+
+import { useForm } from "react-hook-form";
 import Cookies from 'universal-cookie';
 
 const MemoAdd = props => {
@@ -51,23 +59,21 @@ const MemoAdd = props => {
     };
 
     return (
-        <div className="pull-right">
-            <Button color="success" className="btn-sm pull-right" onClick={toggleOpen}>
-                <i className="fa fa-plus"></i>&nbsp;추가</Button>
-            <Modal isOpen={modalShow} toggle={toggleOpen}
+        <div className="float-right">
+            <CButton color="success" className="btn-sm float-right" onClick={toggleOpen}>
+                <CIcon content={freeSet.cilPlus} />&nbsp;추가</CButton>
+            <CModal show={modalShow} onClose={toggleOpen}
                 className={'modal-success ' + props.className}>
-                <Form onSubmit={handleSubmit(onSubmit)}>
-                    <ModalHeader toggle={toggleOpen}>메모 추가</ModalHeader>
-                    <ModalBody>
-                        <FormGroup row>
-                            <Col xs="12" md="12">
-                                <InputGroup>
-                                    <InputGroupAddon addonType="prepend">
-                                        <InputGroupText style={{ minWidth: 70 }}>제목</InputGroupText>
-                                    </InputGroupAddon>
-                                    <Controller
-                                        as={<Input />}
-                                        type="text"
+                <CForm onSubmit={handleSubmit(onSubmit)}>
+                    <CModalHeader closeButton>메모 추가</CModalHeader>
+                    <CModalBody>
+                        <CFormGroup row>
+                            <CCol xs="12" md="12">
+                                <CInputGroup>
+                                    <CInputGroupPrepend>
+                                        <CInputGroupText style={{ minWidth: 70 }}>제목</CInputGroupText>
+                                    </CInputGroupPrepend>
+                                    <CInput
                                         control={control}
                                         defaultValue={''}
                                         name="title" id="title" placeholder="제목을 입력해 주세요."
@@ -87,18 +93,17 @@ const MemoAdd = props => {
                                             }
                                         }}
                                     />
-                                    {errors.title && <FormFeedback>{errors.title.message}</FormFeedback>}
-                                </InputGroup>
-                            </Col>
-                        </FormGroup>
-                        <FormGroup row>
-                            <Col xs="12" md="12">
-                                <InputGroup>
-                                    <InputGroupAddon addonType="prepend">
-                                        <InputGroupText style={{ minWidth: 70 }}>작성일</InputGroupText>
-                                    </InputGroupAddon>
-                                    <Controller
-                                        as={<Input />}
+                                    {errors.title && <CInvalidFeedback>{errors.title.message}</CInvalidFeedback>}
+                                </CInputGroup>
+                            </CCol>
+                        </CFormGroup>
+                        <CFormGroup row>
+                            <CCol xs="12" md="12">
+                                <CInputGroup>
+                                    <CInputGroupPrepend>
+                                        <CInputGroupText style={{ minWidth: 70 }}>작성일</CInputGroupText>
+                                    </CInputGroupPrepend>
+                                    <CInput
                                         type="date"
                                         control={control}
                                         defaultValue={''}
@@ -111,18 +116,17 @@ const MemoAdd = props => {
                                             }
                                         }}
                                     />
-                                    {errors.wdate && <FormFeedback>{errors.wdate.message}</FormFeedback>}
-                                </InputGroup>
-                            </Col>
-                        </FormGroup>
-                        <FormGroup row>
-                            <Col xs="12" md="12">
-                                <InputGroup>
-                                    <InputGroupAddon addonType="prepend">
-                                        <InputGroupText style={{ minWidth: 70 }}>내용</InputGroupText>
-                                    </InputGroupAddon>
-                                    <Controller
-                                        as={<textarea />}
+                                    {errors.wdate && <CInvalidFeedback>{errors.wdate.message}</CInvalidFeedback>}
+                                </CInputGroup>
+                            </CCol>
+                        </CFormGroup>
+                        <CFormGroup row>
+                            <CCol xs="12" md="12">
+                                <CInputGroup>
+                                    <CInputGroupPrepend>
+                                        <CInputGroupText style={{ minWidth: 70 }}>내용</CInputGroupText>
+                                    </CInputGroupPrepend>
+                                    <CTextarea
                                         control={control}
                                         defaultValue={''}
                                         name="content" id="content" placeholder="내용을 입력해 주세요."
@@ -135,18 +139,18 @@ const MemoAdd = props => {
                                         }}
                                         style={{ minHeight: 120 }}
                                     />
-                                    {errors.content && <FormFeedback>{errors.content.message}</FormFeedback>}
-                                </InputGroup>
-                            </Col>
-                        </FormGroup>
+                                    {errors.content && <CInvalidFeedback>{errors.content.message}</CInvalidFeedback>}
+                                </CInputGroup>
+                            </CCol>
+                        </CFormGroup>
 
-                    </ModalBody>
-                    <ModalFooter>
-                        <Button type="submit" color="success">추가</Button>{' '}
-                        <Button color="secondary" onClick={toggleOpen}>취소</Button>
-                    </ModalFooter>
-                </Form>
-            </Modal>
+                    </CModalBody>
+                    <CModalFooter>
+                        <CButton type="submit" color="success">추가</CButton>{' '}
+                        <CButton color="secondary" onClick={toggleOpen}>취소</CButton>
+                    </CModalFooter>
+                </CForm>
+            </CModal>
         </div>
     );
 };
