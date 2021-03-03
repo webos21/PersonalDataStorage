@@ -1,9 +1,13 @@
 import React, { useState } from 'react';
+
 import {
     CModal, CModalHeader, CModalBody, CModalFooter, CButton, CCol,
     CForm, CFormGroup, CInvalidFeedback,
-    CInputGroup, CInputGroupPrepend, CInputGroupText, CInput,
+    CInputGroup, CInputGroupPrepend, CInputGroupText, CInput, CInputRadio, CLabel
 } from '@coreui/react';
+import CIcon from '@coreui/icons-react'
+import { freeSet } from '@coreui/icons'
+
 import { useForm, Controller } from "react-hook-form";
 import Cookies from 'universal-cookie';
 
@@ -42,26 +46,26 @@ const AnniversaryAdd = props => {
             }
             return res.json();
         }).then(function (resJson) {
-            console.log("PbFormAdd::fetch => " + resJson.result);
+            console.log("AnniversaryAdd::fetch => " + resJson.result);
             if (resJson.result === "OK") {
                 toggleOpen();
                 props.callbackFromParent();
             }
         }).catch(function (error) {
-            console.log("PbFormAdd::fetch => " + error);
+            console.log("AnniversaryAdd::fetch => " + error);
             setError("siteUrl", "serverResponse", error.message);
             //e.target.reset();
         });
     };
 
     return (
-        <div className="pull-right">
-            <CButton color="success" className="btn-sm pull-right" onClick={toggleOpen}>
-                <i className="fa fa-plus"></i>&nbsp;추가</CButton>
-            <CModal isOpen={modalShow} toggle={toggleOpen}
+        <div className="float-right">
+            <CButton color="success" size="sm" onClick={toggleOpen}>
+                <CIcon content={freeSet.cilPlus} size="sm" />&nbsp;추가</CButton>
+            <CModal show={modalShow} onClose={toggleOpen}
                 className={'modal-success ' + props.className}>
+                <CModalHeader closeButton>기념일 추가</CModalHeader>
                 <CForm onSubmit={handleSubmit(onSubmit)}>
-                    <CModalHeader closeButton>기념일 추가</CModalHeader>
                     <CModalBody>
                         <CFormGroup row>
                             <CCol xs="12" md="12">
@@ -70,12 +74,19 @@ const AnniversaryAdd = props => {
                                         <CInputGroupText style={{ minWidth: 70 }}>제목</CInputGroupText>
                                     </CInputGroupPrepend>
                                     <Controller
-                                        as={<CInput />}
-                                        type="text"
+                                        name="title"
                                         control={control}
                                         defaultValue={''}
-                                        name="title" id="title" placeholder="제목을 입력해 주세요."
-                                        className={"form-control" + (errors.title ? " is-invalid" : " is-valid")}
+                                        render={(ctrlProps) => (
+                                            <CInput
+                                                type="text"
+                                                name="title"
+                                                placeholder="제목을 입력해 주세요."
+                                                className={"form-control" + (errors.title ? " is-invalid" : " is-valid")}
+                                                value={ctrlProps.value}
+                                                onChange={ctrlProps.onChange}
+                                            />
+                                        )}
                                         rules={{
                                             required: {
                                                 value: true,
@@ -102,26 +113,32 @@ const AnniversaryAdd = props => {
                                         <CInputGroupText style={{ minWidth: 70 }}>적용일</CInputGroupText>
                                     </CInputGroupPrepend>
                                     <Controller
-                                        as={<CInput />}
-                                        type="text"
+                                        name="adate"
                                         control={control}
                                         defaultValue={''}
-                                        name="adate" id="adate" placeholder="적용일을 입력해 주세요. (월일 4자리)"
-                                        className={"form-control" + (errors.adate ? " is-invalid" : " is-valid")}
+                                        render={(ctrlProps) => (
+                                            <CInput
+                                                type="text"
+                                                name="adate"
+                                                placeholder="적용일을 입력해 주세요. (월일 4자리)"
+                                                className={"form-control" + (errors.adate ? " is-invalid" : " is-valid")}
+                                                value={ctrlProps.value}
+                                                onChange={ctrlProps.onChange}
+                                            />
+                                        )}
                                         rules={{
                                             required: {
                                                 value: true,
-                                                message: "적용일을 입력해 주세요. (월일 4자리)."
+                                                message: "Required!! 적용일을 입력해 주세요. (월일 4자리)."
                                             },
                                             minLength: {
                                                 value: 4,
-                                                message: "적용일을 입력해 주세요. (월일 4자리)"
+                                                message: "MinLength!! 적용일을 입력해 주세요. (월일 4자리)"
                                             },
                                             maxLength: {
                                                 value: 4,
-                                                message: "적용일을 입력해 주세요. (월일 4자리)"
+                                                message: "MaxLength!! 적용일을 입력해 주세요. (월일 4자리)"
                                             }
-
                                         }}
                                     />
                                     {errors.adate && <CInvalidFeedback>{errors.adate.message}</CInvalidFeedback>}
@@ -135,38 +152,88 @@ const AnniversaryAdd = props => {
                                         <CInputGroupText style={{ minWidth: 70 }}>양음력</CInputGroupText>
                                     </CInputGroupPrepend>
                                     <Controller
-                                        as={
-                                            <CButton />
-                                        }
-                                        type="button"
-                                        value="양력"
-                                        control={control}
                                         name="lunar"
-                                        className="form-control"
+                                        control={control}
+                                        defaultValue={'0'}
+                                        render={(ctrlProps) => (
+                                            <CFormGroup className={"form-control" + (errors.lunar ? " is-invalid" : " is-valid")}>
+                                                <CFormGroup variant="custom-radio" inline>
+                                                    <CInputRadio
+                                                        custom
+                                                        name="lunar"
+                                                        value="0"
+                                                        id="lunar-radio1"
+                                                        checked={ctrlProps.value === '0'}
+                                                        onChange={ctrlProps.onChange}
+                                                    /><CLabel variant="custom-checkbox" htmlFor="lunar-radio1">양력</CLabel>
+                                                </CFormGroup>
+                                                <CFormGroup variant="custom-radio" inline>
+                                                    <CInputRadio
+                                                        custom
+                                                        name="lunar"
+                                                        value="1"
+                                                        id="lunar-radio2"
+                                                        checked={ctrlProps.value === '1'}
+                                                        onChange={ctrlProps.onChange}
+                                                    /><CLabel variant="custom-checkbox" htmlFor="lunar-radio2">음력</CLabel>
+                                                </CFormGroup>
+                                                <div>{ctrlProps.value}</div>
+                                            </CFormGroup>
+                                        )}
                                         rules={{
                                             required: {
                                                 value: true,
-                                                message: "양력 또는 음력을 선택해 주세요."
-                                            }
-                                        }}
-                                    />
-                                    <Controller
-                                        as={
-                                            <CButton />
-                                        }
-                                        type="button"
-                                        control={control}
-                                        name="lunar"
-                                        value="음력"
-                                        className="form-control"
-                                        rules={{
-                                            required: {
-                                                value: true,
-                                                message: "양력 또는 음력을 선택해 주세요."
+                                                message: "양력/음력을 선택해 주세요."
                                             }
                                         }}
                                     />
                                     {errors.lunar && <CInvalidFeedback>{errors.lunar.message}</CInvalidFeedback>}
+                                </CInputGroup>
+                            </CCol>
+                        </CFormGroup>
+                        <CFormGroup row>
+                            <CCol xs="12" md="12">
+                                <CInputGroup>
+                                    <CInputGroupPrepend>
+                                        <CInputGroupText style={{ minWidth: 70 }}>휴무일</CInputGroupText>
+                                    </CInputGroupPrepend>
+                                    <Controller
+                                        name="holiday"
+                                        control={control}
+                                        defaultValue={'0'}
+                                        render={(ctrlProps) => (
+                                            <CFormGroup className={"form-control" + (errors.holiday ? " is-invalid" : " is-valid")}>
+                                                <CFormGroup variant="custom-radio" inline>
+                                                    <CInputRadio
+                                                        custom
+                                                        name="holiday"
+                                                        value="0"
+                                                        id="holiday-radio1"
+                                                        checked={ctrlProps.value === '0'}
+                                                        onChange={ctrlProps.onChange}
+                                                    /><CLabel variant="custom-checkbox" htmlFor="holiday-radio1">평일</CLabel>
+                                                </CFormGroup>
+                                                <CFormGroup variant="custom-radio" inline>
+                                                    <CInputRadio
+                                                        custom
+                                                        name="holiday"
+                                                        value="1"
+                                                        id="holiday-radio2"
+                                                        checked={ctrlProps.value === '1'}
+                                                        onChange={ctrlProps.onChange}
+                                                    /><CLabel variant="custom-checkbox" htmlFor="holiday-radio2">휴일</CLabel>
+                                                </CFormGroup>
+                                                <div>{ctrlProps.value}</div>
+                                            </CFormGroup>
+                                        )}
+                                        rules={{
+                                            required: {
+                                                value: true,
+                                                message: "휴일여부를 선택해 주세요."
+                                            }
+                                        }}
+                                    />
+                                    {errors.holiday && <CInvalidFeedback>{errors.holiday.message}</CInvalidFeedback>}
                                 </CInputGroup>
                             </CCol>
                         </CFormGroup>

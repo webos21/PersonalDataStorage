@@ -8,7 +8,7 @@ import {
 import CIcon from '@coreui/icons-react'
 import { freeSet } from '@coreui/icons'
 
-import { useForm } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form";
 import Cookies from 'universal-cookie';
 
 const MemoAdd = props => {
@@ -46,13 +46,13 @@ const MemoAdd = props => {
             }
             return res.json();
         }).then(function (resJson) {
-            console.log("PbFormAdd::fetch => " + resJson.result);
+            console.log("MemoAdd::fetch => " + resJson.result);
             if (resJson.result === "OK") {
                 toggleOpen();
                 props.callbackFromParent();
             }
         }).catch(function (error) {
-            console.log("PbFormAdd::fetch => " + error);
+            console.log("MemoAdd::fetch => " + error);
             setError("siteUrl", "serverResponse", error.message);
             //e.target.reset();
         });
@@ -60,12 +60,12 @@ const MemoAdd = props => {
 
     return (
         <div className="float-right">
-            <CButton color="success" className="btn-sm float-right" onClick={toggleOpen}>
+            <CButton color="success" size="sm" onClick={toggleOpen}>
                 <CIcon content={freeSet.cilPlus} />&nbsp;추가</CButton>
             <CModal show={modalShow} onClose={toggleOpen}
                 className={'modal-success ' + props.className}>
+                <CModalHeader closeButton>메모 추가</CModalHeader>
                 <CForm onSubmit={handleSubmit(onSubmit)}>
-                    <CModalHeader closeButton>메모 추가</CModalHeader>
                     <CModalBody>
                         <CFormGroup row>
                             <CCol xs="12" md="12">
@@ -73,11 +73,20 @@ const MemoAdd = props => {
                                     <CInputGroupPrepend>
                                         <CInputGroupText style={{ minWidth: 70 }}>제목</CInputGroupText>
                                     </CInputGroupPrepend>
-                                    <CInput
+                                    <Controller
+                                        name="title"
                                         control={control}
                                         defaultValue={''}
-                                        name="title" id="title" placeholder="제목을 입력해 주세요."
-                                        className={"form-control" + (errors.title ? " is-invalid" : " is-valid")}
+                                        render={(ctrlProps) => (
+                                            <CInput
+                                                type="text"
+                                                name="title"
+                                                placeholder="제목을 입력해 주세요."
+                                                className={"form-control" + (errors.title ? " is-invalid" : " is-valid")}
+                                                value={ctrlProps.value}
+                                                onChange={ctrlProps.onChange}
+                                            />
+                                        )}
                                         rules={{
                                             required: {
                                                 value: true,
@@ -103,12 +112,20 @@ const MemoAdd = props => {
                                     <CInputGroupPrepend>
                                         <CInputGroupText style={{ minWidth: 70 }}>작성일</CInputGroupText>
                                     </CInputGroupPrepend>
-                                    <CInput
-                                        type="date"
+                                    <Controller
+                                        name="wdate"
                                         control={control}
                                         defaultValue={''}
-                                        name="wdate" id="wdate" placeholder="작성일를 선택해 주세요."
-                                        className={"form-control" + (errors.wdate ? " is-invalid" : " is-valid")}
+                                        render={(ctrlProps) => (
+                                            <CInput
+                                                type="date"
+                                                name="wdate"
+                                                placeholder="작성일를 선택해 주세요."
+                                                className={"form-control" + (errors.wdate ? " is-invalid" : " is-valid")}
+                                                value={ctrlProps.value}
+                                                onChange={ctrlProps.onChange}
+                                            />
+                                        )}
                                         rules={{
                                             required: {
                                                 value: true,
@@ -126,18 +143,26 @@ const MemoAdd = props => {
                                     <CInputGroupPrepend>
                                         <CInputGroupText style={{ minWidth: 70 }}>내용</CInputGroupText>
                                     </CInputGroupPrepend>
-                                    <CTextarea
+                                    <Controller
+                                        name="content"
                                         control={control}
                                         defaultValue={''}
-                                        name="content" id="content" placeholder="내용을 입력해 주세요."
-                                        className={"form-control" + (errors.memo ? " is-invalid" : " is-valid")}
+                                        render={(ctrlProps) => (
+                                            <CTextarea
+                                                name="content"
+                                                placeholder="내용을 입력해 주세요."
+                                                className={"form-control" + (errors.content ? " is-invalid" : " is-valid")}
+                                                value={ctrlProps.value}
+                                                onChange={ctrlProps.onChange}
+                                                style={{ minHeight: 120 }}
+                                            />
+                                        )}
                                         rules={{
                                             required: {
                                                 value: true,
                                                 message: "내용을 입력해 주세요."
                                             }
                                         }}
-                                        style={{ minHeight: 120 }}
                                     />
                                     {errors.content && <CInvalidFeedback>{errors.content.message}</CInvalidFeedback>}
                                 </CInputGroup>

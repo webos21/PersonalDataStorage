@@ -1,8 +1,12 @@
 import React, { Component } from 'react';
+
 import {
-  CButton, CCard, CCardBody, CCardHeader, CCol, CRow, CDataTable,
+  CButton, CCard, CCardBody, CCardHeader, CCol, CRow,
   CForm, CInput, CInputGroup, CInputGroupPrepend, CInputGroupAppend, CInputGroupText,
 } from '@coreui/react';
+import CIcon from '@coreui/icons-react'
+import { freeSet } from '@coreui/icons'
+
 import Pager from '../../components/Pager';
 import AnniversaryAdd from './AnniversaryAdd.js';
 import AnniversaryEdit from './AnniversaryEdit.js';
@@ -138,7 +142,7 @@ class Anniversary extends Component {
 
   render() {
     return (
-      <div className="animated fadeIn">
+      <>
         <CRow>
           <CCol>
             <CCard>
@@ -177,11 +181,11 @@ class Anniversary extends Component {
           <CCol>
             <CCard>
               <CCardHeader>
-                <i className="fa fa-align-justify"></i> Anniversary List (Total : {this.state.totalCount})
+                <CIcon content={freeSet.cilHamburgerMenu} /> Anniversary List (Total : {this.state.totalCount})
                 <AnniversaryAdd callbackFromParent={this.dataChangedCallback} />
               </CCardHeader>
               <CCardBody>
-                <CDataTable hover bordered striped responsive size="sm">
+                <table className="table table-sm table-striped table-hover">
                   <thead>
                     <tr>
                       <th>번호</th>
@@ -193,7 +197,7 @@ class Anniversary extends Component {
                   <tbody>
                     {this.renderTableList(this.state.dataSet)}
                   </tbody>
-                </CDataTable>
+                </table>
                 <Pager
                   total={this.state.totalPage}
                   current={this.state.currentPage}
@@ -205,7 +209,7 @@ class Anniversary extends Component {
             </CCard>
           </CCol>
         </CRow>
-      </div>
+      </>
 
     );
   }

@@ -1,12 +1,11 @@
 import React, { Component } from 'react';
 
 import {
-  CButton, CCard, CCardBody, CCardHeader, CCol, CRow, CDataTable,
+  CButton, CCard, CCardBody, CCardHeader, CCol, CRow,
   CForm, CInput, CInputGroup, CInputGroupPrepend, CInputGroupAppend, CInputGroupText,
 } from '@coreui/react';
 import CIcon from '@coreui/icons-react'
 import { freeSet } from '@coreui/icons'
-
 
 import Pager from '../../components/Pager';
 import MemoAdd from './MemoAdd.js';
@@ -133,7 +132,6 @@ class Memo extends Component {
             <td>{dateFormat(new Date(data.wdate))}</td>
             <td>
               <MemoEdit dataFromParent={data} callbackFromParent={this.dataChangedCallback} />
-              &nbsp;
               <MemoDel dataFromParent={data} callbackFromParent={this.dataChangedCallback} />
             </td>
           </tr>
@@ -144,7 +142,7 @@ class Memo extends Component {
 
   render() {
     return (
-      <div className="animated fadeIn">
+      <>
         <CRow>
           <CCol>
             <CCard>
@@ -183,7 +181,7 @@ class Memo extends Component {
           <CCol>
             <CCard>
               <CCardHeader>
-                <CIcon content={freeSet.cilHamburgerMenu}  /> Memo List (Total : {this.state.totalCount})
+                <CIcon content={freeSet.cilHamburgerMenu} /> Memo List (Total : {this.state.totalCount})
                 <MemoAdd callbackFromParent={this.dataChangedCallback} />
               </CCardHeader>
               <CCardBody>
@@ -211,7 +209,7 @@ class Memo extends Component {
             </CCard>
           </CCol>
         </CRow>
-      </div>
+      </>
 
     );
   }

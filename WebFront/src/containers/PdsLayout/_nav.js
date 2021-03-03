@@ -13,31 +13,31 @@ const navItems = [
     _tag: 'CSidebarNavItem',
     name: 'Anniversary',
     to: '/anniversary',
-    icon: 'cil-calendar'
+    icon: 'cil-calendar',
   },
   {
     _tag: 'CSidebarNavItem',
     name: 'PasswordBook',
     to: '/passwordbook',
-    icon: 'cil-puzzle'
+    icon: 'cil-puzzle',
   },
   {
     _tag: 'CSidebarNavItem',
     name: 'DiaryBoard',
     to: '/diary-board',
-    icon: 'cil-pencil'
+    icon: 'cil-pencil',
   },
   {
     _tag: 'CSidebarNavItem',
     name: 'DiaryCalendar',
     to: '/diary-calendar',
-    icon: 'cil-pencil'
+    icon: 'cil-pencil',
   },
   {
     _tag: 'CSidebarNavItem',
     name: 'Memo',
     to: '/memo',
-    icon: 'cil-notes'
+    icon: 'cil-notes',
   },
   {
     _tag: 'CSidebarNavItem',
