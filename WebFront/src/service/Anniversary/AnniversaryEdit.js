@@ -27,8 +27,6 @@ const AnniversaryEdit = props => {
     }
 
     const onSubmit = (data, e) => {
-        e.preventDefault();
-
         const formData = new FormData(e.target);
         const cookies = new Cookies();
 
@@ -94,7 +92,8 @@ const AnniversaryEdit = props => {
                                         render={(ctrlProps) => (
                                             <CInput
                                                 type="text"
-                                                name="title" placeholder="제목을 입력해 주세요."
+                                                name="title"
+                                                placeholder="제목을 입력해 주세요."
                                                 className={"form-control" + (errors.title ? " is-invalid" : " is-valid")}
                                                 value={ctrlProps.value}
                                                 onChange={ctrlProps.onChange}
@@ -163,7 +162,7 @@ const AnniversaryEdit = props => {
                             <CCol xs="12" md="12">
                                 <CInputGroup>
                                     <CInputGroupPrepend>
-                                        <CInputGroupText style={{ minWidth: 70 }}>내용</CInputGroupText>
+                                        <CInputGroupText style={{ minWidth: 70 }}>양음력</CInputGroupText>
                                     </CInputGroupPrepend>
                                     <Controller
                                         name="lunar"
@@ -191,6 +190,7 @@ const AnniversaryEdit = props => {
                                                         onChange={ctrlProps.onChange}
                                                     /><CLabel variant="custom-checkbox" htmlFor="lunar-radio2">음력</CLabel>
                                                 </CFormGroup>
+                                                <div>{ctrlProps.value}</div>
                                             </CFormGroup>
                                         )}
                                         rules={{
@@ -221,24 +221,22 @@ const AnniversaryEdit = props => {
                                                         custom
                                                         name="holiday"
                                                         value="0"
-                                                        id="holiday-radio1"
+                                                        id="edit-holiday-radio1"
                                                         checked={ctrlProps.value === '0'}
                                                         onChange={ctrlProps.onChange}
-                                                        onClick={(e) => { e.target.checked = true }}
-                                                    /><CLabel variant="custom-checkbox" htmlFor="holiday-radio1">평일</CLabel>
+                                                    /><CLabel variant="custom-checkbox" htmlFor="edit-holiday-radio1">평일</CLabel>
                                                 </CFormGroup>
                                                 <CFormGroup variant="custom-radio" inline>
                                                     <CInputRadio
                                                         custom
                                                         name="holiday"
                                                         value="1"
-                                                        id="holiday-radio2"
+                                                        id="edit-holiday-radio2"
                                                         checked={ctrlProps.value === '1'}
                                                         onChange={ctrlProps.onChange}
-                                                        onClick={(e) => { e.target.checked = true }}
-                                                    /><CLabel variant="custom-checkbox" htmlFor="holiday-radio2">휴일</CLabel>
-                                                    <div>{ctrlProps.value}</div>
+                                                    /><CLabel variant="custom-checkbox" htmlFor="edit-holiday-radio2">휴일</CLabel>
                                                 </CFormGroup>
+                                                <div>{ctrlProps.value}</div>
                                             </CFormGroup>
                                         )}
                                         rules={{

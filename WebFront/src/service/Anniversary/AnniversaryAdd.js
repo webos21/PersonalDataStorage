@@ -154,7 +154,7 @@ const AnniversaryAdd = props => {
                                     <Controller
                                         name="lunar"
                                         control={control}
-                                        defaultValue={'0'}
+                                        defaultValue={null}
                                         render={(ctrlProps) => (
                                             <CFormGroup className={"form-control" + (errors.lunar ? " is-invalid" : " is-valid")}>
                                                 <CFormGroup variant="custom-radio" inline>
@@ -200,7 +200,7 @@ const AnniversaryAdd = props => {
                                     <Controller
                                         name="holiday"
                                         control={control}
-                                        defaultValue={'0'}
+                                        defaultValue={null}
                                         render={(ctrlProps) => (
                                             <CFormGroup className={"form-control" + (errors.holiday ? " is-invalid" : " is-valid")}>
                                                 <CFormGroup variant="custom-radio" inline>
