@@ -24,7 +24,6 @@ class DiaryCalendar extends Component {
 
     this.modalToggleAdd = this.modalToggleAdd.bind(this);
     this.modalToggleEdit = this.modalToggleEdit.bind(this);
-    this.modalToggleDel = this.modalToggleDel.bind(this);
 
     this.handleDateSet = this.handleDateSet.bind(this);
     this.handleDateSelect = this.handleDateSelect.bind(this);
@@ -41,7 +40,6 @@ class DiaryCalendar extends Component {
       selectedDate: new Date(),
       modalFlagAdd: false,
       modalFlagEdit: false,
-      modalFlagDel: false,
     };
   }
 
@@ -193,12 +191,6 @@ class DiaryCalendar extends Component {
     });
   }
 
-  modalToggleDel() {
-    this.setState({
-      modalFlagDel: !this.state.modalFlagDel,
-    });
-  }
-
   handleDateSet(dateInfo) {
     DiaryDebugLog("handleDateSet!!!!!", dateInfo);
 
@@ -256,43 +248,40 @@ class DiaryCalendar extends Component {
 
   render() {
     return (
-      <div className="animated fadeIn">
-        <CRow>
-          <CCol>
-            <FullCalendar
-              plugins={[dayGridPlugin, interactionPlugin]}
-              customButtons={{
-                myCustomButton: {
-                  text: 'To Board',
-                  click: function () {
-                    window.location.href = '/#/diary-board';
-                  }
+      <CRow>
+        <CCol>
+          <FullCalendar
+            plugins={[dayGridPlugin, interactionPlugin]}
+            customButtons={{
+              myCustomButton: {
+                text: 'To Board',
+                click: function () {
+                  window.location.href = '/#/diary-board';
                 }
-              }}
-              headerToolbar={{
-                left: 'myCustomButton',
-                center: 'title',
-                right: 'prevYear,prev,today,next,nextYear'
-              }}
-              initialView='dayGridMonth'
-              editable={true}
-              selectable={true}
-              selectMirror={true}
-              dayMaxEvents={true}
-              weekends={true}
-              events={this.state.currentEvents}
-              datesSet={this.handleDateSet}
-              select={this.handleDateSelect}
-              eventClick={this.handleEventClick}
-            //              eventContent={this.renderEventContent} // custom render function
-            />
+              }
+            }}
+            headerToolbar={{
+              left: 'myCustomButton',
+              center: 'title',
+              right: 'prevYear,prev,today,next,nextYear'
+            }}
+            initialView='dayGridMonth'
+            editable={true}
+            selectable={true}
+            selectMirror={true}
+            dayMaxEvents={true}
+            weekends={true}
+            events={this.state.currentEvents}
+            datesSet={this.handleDateSet}
+            select={this.handleDateSelect}
+            eventClick={this.handleEventClick}
+          //              eventContent={this.renderEventContent} // custom render function
+          />
 
-          </CCol>
-        </CRow>
+        </CCol>
         <DiaryAdd modalFlag={this.state.modalFlagAdd} modalToggle={this.modalToggleAdd} dataFromParent={this.state.selectedDate} callbackFromParent={this.dataChangedCallback} />
         <DiaryEdit modalFlag={this.state.modalFlagEdit} modalToggle={this.modalToggleEdit} dataFromParent={this.state.currentData} callbackFromParent={this.dataChangedCallback} />
-      </div>
-
+      </CRow>
     );
   }
 }

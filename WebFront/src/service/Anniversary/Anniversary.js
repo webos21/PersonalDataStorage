@@ -10,7 +10,6 @@ import { freeSet } from '@coreui/icons'
 import Pager from '../../components/Pager';
 import AnniversaryAdd from './AnniversaryAdd.js';
 import AnniversaryEdit from './AnniversaryEdit.js';
-import AnniversaryDel from './AnniversaryDel.js';
 import update from 'immutability-helper';
 import Cookies from 'universal-cookie';
 
@@ -21,12 +20,27 @@ class Anniversary extends Component {
     this.dataChangedCallback = this.dataChangedCallback.bind(this);
     this.renderTableList = this.renderTableList.bind(this);
 
+    this.modalToggleAdd = this.modalToggleAdd.bind(this);
+    this.modalToggleEdit = this.modalToggleEdit.bind(this);
+
     this.handleViewAll = this.handleViewAll.bind(this);
     this.handleSearchGo = this.handleSearchGo.bind(this);
     this.handlePageChanged = this.handlePageChanged.bind(this);
 
+    this.handleAdd = this.handleAdd.bind(this);
+    this.handleEdit = this.handleEdit.bind(this);
+
+    this.defObj = {
+      id: -1,
+      title: '',
+      applyDate: '',
+      lunar: '',
+      holiday: '',
+    }
+
     this.state = {
       dataSet: [],
+      currentData: this.defObj,
       totalCount: 0,
       itemsPerPage: 10,
       totalPage: 0,
@@ -34,6 +48,8 @@ class Anniversary extends Component {
       visiblePages: 10,
       keyword: "",
       keywordError: "",
+      modalFlagAdd: false,
+      modalFlagEdit: false,
     };
   }
 
@@ -84,6 +100,7 @@ class Anniversary extends Component {
 
       parentState.setState({
         dataSet: resJson.data,
+        currentData: parentState.defObj,
         totalCount: dataLen,
         currentPage: (resJson.pagination.currentPage - 1),
         totalPage: calcPages,
@@ -97,6 +114,18 @@ class Anniversary extends Component {
 
   componentDidMount() {
     this.requestFetch();
+  }
+
+  modalToggleAdd() {
+    this.setState({
+      modalFlagAdd: !this.state.modalFlagAdd,
+    });
+  }
+
+  modalToggleEdit() {
+    this.setState({
+      modalFlagEdit: !this.state.modalFlagEdit,
+    });
   }
 
   handleViewAll() {
@@ -115,6 +144,19 @@ class Anniversary extends Component {
     this.requestFetch(event.target.keyword.value);
   }
 
+  handleAdd(e) {
+    e.preventDefault();
+    this.setState({ currentData: this.defObj });
+    this.modalToggleAdd();
+  }
+
+  handleEdit(data, e) {
+    e.preventDefault();
+    console.log("handleEdit", e, data);
+    this.setState({ currentData: data });
+    this.modalToggleEdit();
+  }
+
   renderTableList(dataArray) {
     if (dataArray.length === 0) {
       return (
@@ -125,15 +167,10 @@ class Anniversary extends Component {
     } else {
       return dataArray.map((data, index) => {
         return (
-          <tr key={'memo-' + data.id}>
+          <tr key={'memo-' + data.id} onClick={this.handleEdit.bind(this, data)}>
             <td>{data.id}</td>
             <td>{data.title}</td>
             <td>{data.applyDate.substring(0, 2) + '월 ' + data.applyDate.substring(2, 4) + '일' + ((data.lunar === 1) ? '(음력)' : '')}</td>
-            <td>
-              <AnniversaryEdit dataFromParent={data} callbackFromParent={this.dataChangedCallback} />
-              &nbsp;
-              <AnniversaryDel dataFromParent={data} callbackFromParent={this.dataChangedCallback} />
-            </td>
           </tr>
         )
       })
@@ -182,7 +219,8 @@ class Anniversary extends Component {
             <CCard>
               <CCardHeader>
                 <CIcon content={freeSet.cilHamburgerMenu} /> Anniversary List (Total : {this.state.totalCount})
-                <AnniversaryAdd callbackFromParent={this.dataChangedCallback} />
+                <CButton color="success" size="sm" className="float-right" onClick={this.handleAdd}>
+                  <CIcon content={freeSet.cilPlus} size="sm" />&nbsp;추가</CButton>
               </CCardHeader>
               <CCardBody>
                 <table className="table table-sm table-striped table-hover">
@@ -191,7 +229,6 @@ class Anniversary extends Component {
                       <th>번호</th>
                       <th>제목</th>
                       <th>적용일</th>
-                      <th>Edit</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -209,6 +246,8 @@ class Anniversary extends Component {
             </CCard>
           </CCol>
         </CRow>
+        <AnniversaryAdd modalFlag={this.state.modalFlagAdd} modalToggle={this.modalToggleAdd} dataFromParent={this.state.currentData} callbackFromParent={this.dataChangedCallback} />
+        <AnniversaryEdit modalFlag={this.state.modalFlagEdit} modalToggle={this.modalToggleEdit} dataFromParent={this.state.currentData} callbackFromParent={this.dataChangedCallback} />
       </>
 
     );

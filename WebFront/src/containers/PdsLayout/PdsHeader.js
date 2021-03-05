@@ -43,11 +43,13 @@ const PdsHeader = () => {
         inHeader
         className="ml-md-3 d-lg-none"
         onClick={toggleSidebarMobile}
+        aria-label="Menu Toggler"
       />
       <CToggler
         inHeader
         className="ml-3 d-md-down-none"
         onClick={toggleSidebar}
+        aria-label="Menu Toggler"
       />
       <CHeaderBrand className="mx-auto d-lg-none" to="/">
         <CIcon name="logo" height="48" alt="Logo" />

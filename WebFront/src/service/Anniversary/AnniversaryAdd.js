@@ -1,12 +1,10 @@
-import React, { useState } from 'react';
+import React from 'react';
 
 import {
     CModal, CModalHeader, CModalBody, CModalFooter, CButton, CCol,
     CForm, CFormGroup, CInvalidFeedback,
     CInputGroup, CInputGroupPrepend, CInputGroupText, CInput, CInputRadio, CLabel
 } from '@coreui/react';
-import CIcon from '@coreui/icons-react'
-import { freeSet } from '@coreui/icons'
 
 import { useForm, Controller } from "react-hook-form";
 import Cookies from 'universal-cookie';
@@ -19,12 +17,6 @@ const AnniversaryAdd = props => {
         submitFocusError: true,
         nativeValidation: false,
     });
-
-    const [modalShow, setModalShow] = useState(false);
-
-    const toggleOpen = () => {
-        setModalShow(!modalShow);
-    }
 
     const onSubmit = (data, e) => {
         const formData = new FormData(e.target);
@@ -48,7 +40,7 @@ const AnniversaryAdd = props => {
         }).then(function (resJson) {
             console.log("AnniversaryAdd::fetch => " + resJson.result);
             if (resJson.result === "OK") {
-                toggleOpen();
+                props.modalToggle();
                 props.callbackFromParent();
             }
         }).catch(function (error) {
@@ -60,9 +52,7 @@ const AnniversaryAdd = props => {
 
     return (
         <div className="float-right">
-            <CButton color="success" size="sm" onClick={toggleOpen}>
-                <CIcon content={freeSet.cilPlus} size="sm" />&nbsp;추가</CButton>
-            <CModal show={modalShow} onClose={toggleOpen}
+            <CModal show={props.modalFlag} onClose={props.modalToggle}
                 className={'modal-success ' + props.className}>
                 <CModalHeader closeButton>기념일 추가</CModalHeader>
                 <CForm onSubmit={handleSubmit(onSubmit)}>
@@ -162,22 +152,21 @@ const AnniversaryAdd = props => {
                                                         custom
                                                         name="lunar"
                                                         value="0"
-                                                        id="lunar-radio1"
+                                                        id="lunar-add-radio1"
                                                         checked={ctrlProps.value === '0'}
                                                         onChange={ctrlProps.onChange}
-                                                    /><CLabel variant="custom-checkbox" htmlFor="lunar-radio1">양력</CLabel>
+                                                    /><CLabel variant="custom-checkbox" htmlFor="lunar-add-radio1">양력</CLabel>
                                                 </CFormGroup>
                                                 <CFormGroup variant="custom-radio" inline>
                                                     <CInputRadio
                                                         custom
                                                         name="lunar"
                                                         value="1"
-                                                        id="lunar-radio2"
+                                                        id="lunar-add-radio2"
                                                         checked={ctrlProps.value === '1'}
                                                         onChange={ctrlProps.onChange}
-                                                    /><CLabel variant="custom-checkbox" htmlFor="lunar-radio2">음력</CLabel>
+                                                    /><CLabel variant="custom-checkbox" htmlFor="lunar-add-radio2">음력</CLabel>
                                                 </CFormGroup>
-                                                <div>{ctrlProps.value}</div>
                                             </CFormGroup>
                                         )}
                                         rules={{
@@ -208,22 +197,21 @@ const AnniversaryAdd = props => {
                                                         custom
                                                         name="holiday"
                                                         value="0"
-                                                        id="holiday-radio1"
+                                                        id="holiday-add-radio1"
                                                         checked={ctrlProps.value === '0'}
                                                         onChange={ctrlProps.onChange}
-                                                    /><CLabel variant="custom-checkbox" htmlFor="holiday-radio1">평일</CLabel>
+                                                    /><CLabel variant="custom-checkbox" htmlFor="holiday-add-radio1">평일</CLabel>
                                                 </CFormGroup>
                                                 <CFormGroup variant="custom-radio" inline>
                                                     <CInputRadio
                                                         custom
                                                         name="holiday"
                                                         value="1"
-                                                        id="holiday-radio2"
+                                                        id="holiday-add-radio2"
                                                         checked={ctrlProps.value === '1'}
                                                         onChange={ctrlProps.onChange}
-                                                    /><CLabel variant="custom-checkbox" htmlFor="holiday-radio2">휴일</CLabel>
+                                                    /><CLabel variant="custom-checkbox" htmlFor="holiday-add-radio2">휴일</CLabel>
                                                 </CFormGroup>
-                                                <div>{ctrlProps.value}</div>
                                             </CFormGroup>
                                         )}
                                         rules={{
@@ -241,7 +229,7 @@ const AnniversaryAdd = props => {
                     </CModalBody>
                     <CModalFooter>
                         <CButton type="submit" color="success">추가</CButton>{' '}
-                        <CButton color="secondary" onClick={toggleOpen}>취소</CButton>
+                        <CButton color="secondary" onClick={props.modalToggle}>취소</CButton>
                     </CModalFooter>
                 </CForm>
             </CModal>
