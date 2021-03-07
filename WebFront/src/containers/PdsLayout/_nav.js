@@ -11,6 +11,18 @@ const navItems = [
   },
   {
     _tag: 'CSidebarNavItem',
+    name: 'AccountClass',
+    to: '/accountClass',
+    icon: 'cil-calendar',
+  },
+  {
+    _tag: 'CSidebarNavItem',
+    name: 'AccountCode',
+    to: '/accountCode',
+    icon: 'cil-calendar',
+  },
+  {
+    _tag: 'CSidebarNavItem',
     name: 'Anniversary',
     to: '/anniversary',
     icon: 'cil-calendar',

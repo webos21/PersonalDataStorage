@@ -8,52 +8,22 @@ import {
 
 import { useForm, Controller } from "react-hook-form";
 import Cookies from 'universal-cookie';
-import { dateFormat } from '../../components/Util/DateUtil'
 
-const MemoEdit = props => {
+const AccountCodeAdd = props => {
 
-    const REQ_URI = (process.env.NODE_ENV !== 'production') ? 'http://' + window.location.hostname + ':28080/pds/v1/memo' : '/pds/v1/memo';
+    const REQ_URI = (process.env.NODE_ENV !== 'production') ? 'http://' + window.location.hostname + ':28080/pds/v1/accountCode' : '/pds/v1/accountCode';
 
     const { handleSubmit, errors, setError, control } = useForm({
         submitFocusError: true,
         nativeValidation: false,
     });
 
-    const onDelete = () => {
-        const cookies = new Cookies();
-
-        fetch(REQ_URI + '?memoId=' + props.dataFromParent.id, {
-            method: 'DELETE',
-            headers: new Headers({
-                'X-PDS-AUTH': cookies.get("X-PDS-AUTH"),
-                'Authorization': 'Basic ' + btoa('username:password'),
-            }),
-        }).then(function (res) {
-            if (!res.ok) {
-                if (res.status === 401) {
-                    window.location = "/#/logout";
-                }
-                throw Error("서버응답 : " + res.statusText + "(" + res.status + ")");
-            }
-            return res.json();
-        }).then(function (resJson) {
-            console.log("MemoDel::fetch => " + resJson.result);
-            if (resJson.result === "OK") {
-                props.modalToggle();
-                props.callbackFromParent();
-            }
-        }).catch(function (error) {
-            console.log("MemoDel::fetch => " + error);
-            setError("siteId", "serverResponse", error.message);
-        });
-    };
-
     const onSubmit = (data, e) => {
         const formData = new FormData(e.target);
         const cookies = new Cookies();
 
         fetch(REQ_URI, {
-            method: 'PUT',
+            method: 'POST',
             headers: new Headers({
                 'X-PDS-AUTH': cookies.get("X-PDS-AUTH"),
                 'Authorization': 'Basic ' + btoa('username:password'),
@@ -68,39 +38,26 @@ const MemoEdit = props => {
             }
             return res.json();
         }).then(function (resJson) {
-            console.log("MemoEdit::fetch => " + resJson.result);
+            console.log("MemoAdd::fetch => " + resJson.result);
             if (resJson.result === "OK") {
                 props.modalToggle();
-                props.callbackFromParent(resJson.data[0]);
+                props.callbackFromParent();
             }
         }).catch(function (error) {
-            console.log("MemoEdit::fetch => " + error);
+            console.log("MemoAdd::fetch => " + error);
             setError("siteUrl", "serverResponse", error.message);
+            //e.target.reset();
         });
     };
 
     return (
         <CModal show={props.modalFlag} onClose={props.modalToggle}
-            className={'modal-warning ' + props.className}>
-            <CModalHeader closeButton>메모 수정</CModalHeader>
+            className={'modal-success ' + props.className}>
+            <CModalHeader closeButton>메모 추가</CModalHeader>
             <CForm onSubmit={handleSubmit(onSubmit)}>
                 <CModalBody>
                     <CFormGroup row>
                         <CCol xs="12" md="12">
-                            <Controller
-                                name="memoId"
-                                key={"memoId" + props.dataFromParent.id}
-                                control={control}
-                                defaultValue={props.dataFromParent.id}
-                                render={(ctrlProps) => (
-                                    <CInput
-                                        type="hidden"
-                                        name="memoId"
-                                        value={ctrlProps.value}
-                                        onChange={ctrlProps.onChange}
-                                    />
-                                )}
-                                rules={{ required: true }} />
                             <CInputGroup>
                                 <CInputGroupPrepend>
                                     <CInputGroupText style={{ minWidth: 70 }}>제목</CInputGroupText>
@@ -109,7 +66,7 @@ const MemoEdit = props => {
                                     name="title"
                                     key={"title" + props.dataFromParent.id}
                                     control={control}
-                                    defaultValue={props.dataFromParent.title}
+                                    defaultValue={''}
                                     render={(ctrlProps) => (
                                         <CInput
                                             type="text"
@@ -135,7 +92,6 @@ const MemoEdit = props => {
                                         }
                                     }}
                                 />
-                                {errors.memoId && <CInvalidFeedback>{errors.memoId.message}</CInvalidFeedback>}
                                 {errors.title && <CInvalidFeedback>{errors.title.message}</CInvalidFeedback>}
                             </CInputGroup>
                         </CCol>
@@ -150,7 +106,7 @@ const MemoEdit = props => {
                                     name="wdate"
                                     key={"wdate" + props.dataFromParent.id}
                                     control={control}
-                                    defaultValue={dateFormat(new Date(props.dataFromParent.wdate))}
+                                    defaultValue={''}
                                     render={(ctrlProps) => (
                                         <CInput
                                             type="date"
@@ -182,7 +138,7 @@ const MemoEdit = props => {
                                     name="content"
                                     key={"content" + props.dataFromParent.id}
                                     control={control}
-                                    defaultValue={props.dataFromParent.content}
+                                    defaultValue={''}
                                     render={(ctrlProps) => (
                                         <CTextarea
                                             name="content"
@@ -207,8 +163,7 @@ const MemoEdit = props => {
 
                 </CModalBody>
                 <CModalFooter>
-                    <CButton color="danger" className="mr-auto" onClick={onDelete}>삭제</CButton>
-                    <CButton type="submit" color="warning">수정</CButton>{' '}
+                    <CButton type="submit" color="success">추가</CButton>{' '}
                     <CButton color="secondary" onClick={props.modalToggle}>취소</CButton>
                 </CModalFooter>
             </CForm>
@@ -216,4 +171,4 @@ const MemoEdit = props => {
     );
 };
 
-export default MemoEdit;
+export default AccountCodeAdd;

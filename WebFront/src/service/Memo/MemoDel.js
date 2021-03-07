@@ -44,13 +44,13 @@ const MemoDel = props => {
             }
             return res.json();
         }).then(function (resJson) {
-            console.log("PbFormDel::fetch => " + resJson.result);
+            console.log("MemoDel::fetch => " + resJson.result);
             if (resJson.result === "OK") {
                 //toggleOpen();
                 props.callbackFromParent();
             }
         }).catch(function (error) {
-            console.log("PbFormDel::fetch => " + error);
+            console.log("MemoDel::fetch => " + error);
             setError("siteId", "serverResponse", error.message);
         });
     };

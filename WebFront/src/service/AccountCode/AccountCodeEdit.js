@@ -10,9 +10,9 @@ import { useForm, Controller } from "react-hook-form";
 import Cookies from 'universal-cookie';
 import { dateFormat } from '../../components/Util/DateUtil'
 
-const MemoEdit = props => {
+const AccountCodeEdit = props => {
 
-    const REQ_URI = (process.env.NODE_ENV !== 'production') ? 'http://' + window.location.hostname + ':28080/pds/v1/memo' : '/pds/v1/memo';
+    const REQ_URI = (process.env.NODE_ENV !== 'production') ? 'http://' + window.location.hostname + ':28080/pds/v1/accountCode' : '/pds/v1/accountCode';
 
     const { handleSubmit, errors, setError, control } = useForm({
         submitFocusError: true,
@@ -37,13 +37,13 @@ const MemoEdit = props => {
             }
             return res.json();
         }).then(function (resJson) {
-            console.log("MemoDel::fetch => " + resJson.result);
+            console.log("PbFormDel::fetch => " + resJson.result);
             if (resJson.result === "OK") {
                 props.modalToggle();
                 props.callbackFromParent();
             }
         }).catch(function (error) {
-            console.log("MemoDel::fetch => " + error);
+            console.log("PbFormDel::fetch => " + error);
             setError("siteId", "serverResponse", error.message);
         });
     };
@@ -216,4 +216,4 @@ const MemoEdit = props => {
     );
 };
 
-export default MemoEdit;
+export default AccountCodeEdit;
