@@ -32,7 +32,13 @@ class DiaryCalendar extends Component {
 
     this.state = {
       dataSet: [],
-      currentData: {},
+      currentData: {
+        id: -1,
+        title: '',
+        wdate: '',
+        weather: '',
+        content: '',
+      },
       anniversaryEvents: [],
       currentEvents: [],
       viewYear: 2020,
@@ -206,12 +212,10 @@ class DiaryCalendar extends Component {
     })
 
     this.requestFetch(year, month);
+    
     if (yearChanged || this.state.anniversaryEvents.length === 0) {
-      setTimeout(function () {
-        this.requestAnniversary(year);
-      }.bind(this), 1500);
+      this.requestAnniversary(year);
     }
-
   }
 
   // When the date is clicked

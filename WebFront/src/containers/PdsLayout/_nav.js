@@ -17,12 +17,6 @@ const navItems = [
   },
   {
     _tag: 'CSidebarNavItem',
-    name: 'PasswordBook',
-    to: '/passwordbook',
-    icon: 'cil-puzzle',
-  },
-  {
-    _tag: 'CSidebarNavItem',
     name: 'DiaryBoard',
     to: '/diary-board',
     icon: 'cil-pencil',
@@ -38,6 +32,12 @@ const navItems = [
     name: 'Memo',
     to: '/memo',
     icon: 'cil-notes',
+  },
+  {
+    _tag: 'CSidebarNavItem',
+    name: 'PasswordBook',
+    to: '/passwordbook',
+    icon: 'cil-puzzle',
   },
   {
     _tag: 'CSidebarNavItem',

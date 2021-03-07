@@ -10,7 +10,6 @@ import { freeSet } from '@coreui/icons'
 import Pager from '../../components/Pager';
 import MemoAdd from './MemoAdd.js';
 import MemoEdit from './MemoEdit.js';
-import MemoDel from './MemoDel.js';
 import update from 'immutability-helper';
 import Cookies from 'universal-cookie';
 import { dateFormat } from '../../components/Util/DateUtil'
@@ -21,20 +20,36 @@ class Memo extends Component {
 
     this.dataChangedCallback = this.dataChangedCallback.bind(this);
     this.renderTableList = this.renderTableList.bind(this);
+    this.genEmptyObj = this.genEmptyObj.bind(this);
+
+    this.modalToggleAdd = this.modalToggleAdd.bind(this);
+    this.modalToggleEdit = this.modalToggleEdit.bind(this);
 
     this.handleViewAll = this.handleViewAll.bind(this);
     this.handleSearchGo = this.handleSearchGo.bind(this);
     this.handlePageChanged = this.handlePageChanged.bind(this);
 
+    this.handleAdd = this.handleAdd.bind(this);
+    this.handleEdit = this.handleEdit.bind(this);
+
     this.state = {
+      emptyId: -1,
       dataSet: [],
+      currentData: {
+        id: -1,
+        title: '',
+        wdate: '',
+        content: '',
+      },
       totalCount: 0,
       itemsPerPage: 10,
       totalPage: 0,
       currentPage: 0,
-      visiblePages: 10,
+      visiblePages: 5,
       keyword: "",
       keywordError: "",
+      modalFlagAdd: false,
+      modalFlagEdit: false,
     };
   }
 
@@ -100,6 +115,31 @@ class Memo extends Component {
     this.requestFetch();
   }
 
+  genEmptyObj() {
+    let newEmptyId = (this.state.emptyId ? (this.state.emptyId - 1) : -1);
+    let emptyObj = {
+      id: newEmptyId,
+      title: '',
+      wdate: '',
+      content: '',
+  }
+    this.setState({ emptyId: newEmptyId });
+    return emptyObj;
+  }
+
+  modalToggleAdd() {
+    this.setState({
+      currentData: this.genEmptyObj(),
+      modalFlagAdd: !this.state.modalFlagAdd,
+    });
+  }
+
+  modalToggleEdit() {
+    this.setState({
+      modalFlagEdit: !this.state.modalFlagEdit,
+    });
+  }
+
   handleViewAll() {
     this.setState({ keyword: "" });
     this.requestFetch("");
@@ -116,6 +156,20 @@ class Memo extends Component {
     this.requestFetch(event.target.keyword.value);
   }
 
+  handleAdd(e) {
+    e.preventDefault();
+    let newObj = this.genEmptyObj();
+    this.setState({ currentData: newObj });
+    this.modalToggleAdd();
+  }
+
+  handleEdit(data, e) {
+    e.preventDefault();
+    console.log("handleEdit", e, data);
+    this.setState({ currentData: data });
+    this.modalToggleEdit();
+  }
+
   renderTableList(dataArray) {
     if (dataArray.length === 0) {
       return (
@@ -126,14 +180,10 @@ class Memo extends Component {
     } else {
       return dataArray.map((data, index) => {
         return (
-          <tr key={'memo-' + data.id}>
+          <tr key={'memo-' + data.id} onClick={this.handleEdit.bind(this, data)}>
             <td>{data.id}</td>
             <td>{data.title}</td>
             <td>{dateFormat(new Date(data.wdate))}</td>
-            <td>
-              <MemoEdit dataFromParent={data} callbackFromParent={this.dataChangedCallback} />
-              <MemoDel dataFromParent={data} callbackFromParent={this.dataChangedCallback} />
-            </td>
           </tr>
         )
       })
@@ -181,8 +231,15 @@ class Memo extends Component {
           <CCol>
             <CCard>
               <CCardHeader>
-                <CIcon content={freeSet.cilHamburgerMenu} /> Memo List (Total : {this.state.totalCount})
-                <MemoAdd callbackFromParent={this.dataChangedCallback} />
+                <strong>Memo List</strong>
+                <small>  (Total : {this.state.totalCount})</small>
+                <span className="float-right">
+                  <CButton color="danger" size="sm" variant="ghost">
+                    <CIcon content={freeSet.cilTrash} size="sm" />&nbsp;삭제</CButton>
+                    &nbsp;
+                  <CButton color="success" size="sm" variant="ghost" onClick={this.handleAdd}>
+                    <CIcon content={freeSet.cilPlus} size="sm" />&nbsp;추가</CButton>
+                </span>
               </CCardHeader>
               <CCardBody>
                 <table className="table table-sm table-striped table-hover">
@@ -191,7 +248,6 @@ class Memo extends Component {
                       <th>번호</th>
                       <th>제목</th>
                       <th>작성일</th>
-                      <th>Edit</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -209,6 +265,9 @@ class Memo extends Component {
             </CCard>
           </CCol>
         </CRow>
+        <MemoAdd modalFlag={this.state.modalFlagAdd} modalToggle={this.modalToggleAdd} dataFromParent={this.state.currentData} callbackFromParent={this.dataChangedCallback} />
+        <MemoEdit modalFlag={this.state.modalFlagEdit} modalToggle={this.modalToggleEdit} dataFromParent={this.state.currentData} callbackFromParent={this.dataChangedCallback} />
+
       </>
 
     );

@@ -15,8 +15,6 @@ const MemoDel = props => {
 
     const REQ_URI = (process.env.NODE_ENV !== 'production') ? 'http://localhost:28080/pds/v1/memo' : '/pds/v1/memo';
 
-    const cookies = new Cookies();
-
     const { handleSubmit, errors, setError, control } = useForm({
         submitFocusError: true,
         nativeValidation: false,
@@ -29,6 +27,8 @@ const MemoDel = props => {
     }
 
     const onSubmit = (data, e) => {
+        const cookies = new Cookies();
+    
         fetch(REQ_URI + '?memoId=' + data.memoId, {
             method: 'DELETE',
             headers: new Headers({

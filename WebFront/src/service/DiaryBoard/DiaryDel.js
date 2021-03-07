@@ -11,8 +11,6 @@ const DiaryDel = props => {
 
     const REQ_URI = (process.env.NODE_ENV !== 'production') ? 'http://localhost:28080/pds/v1/diary' : '/pds/v1/diary';
 
-    const cookies = new Cookies();
-
     const { handleSubmit, errors, setError, control } = useForm({
         submitFocusError: true,
         nativeValidation: false,
@@ -25,6 +23,8 @@ const DiaryDel = props => {
     }
 
     const onSubmit = (data, e) => {
+        const cookies = new Cookies();
+
         fetch(REQ_URI + '?diaryId=' + data.diaryId, {
             method: 'DELETE',
             headers: new Headers({
@@ -40,13 +40,13 @@ const DiaryDel = props => {
             }
             return res.json();
         }).then(function (resJson) {
-            console.log("PbFormDel::fetch => " + resJson.result);
+            console.log("DiaryDel::fetch => " + resJson.result);
             if (resJson.result === "OK") {
                 //toggleOpen();
                 props.callbackFromParent();
             }
         }).catch(function (error) {
-            console.log("PbFormDel::fetch => " + error);
+            console.log("DiaryDel::fetch => " + error);
             setError("siteId", "serverResponse", error.message);
         });
     };

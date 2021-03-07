@@ -19,6 +19,7 @@ class Anniversary extends Component {
 
     this.dataChangedCallback = this.dataChangedCallback.bind(this);
     this.renderTableList = this.renderTableList.bind(this);
+    this.genEmptyObj = this.genEmptyObj.bind(this);
 
     this.modalToggleAdd = this.modalToggleAdd.bind(this);
     this.modalToggleEdit = this.modalToggleEdit.bind(this);
@@ -30,22 +31,21 @@ class Anniversary extends Component {
     this.handleAdd = this.handleAdd.bind(this);
     this.handleEdit = this.handleEdit.bind(this);
 
-    this.defObj = {
-      id: -1,
-      title: '',
-      applyDate: '',
-      lunar: '',
-      holiday: '',
-    }
-
     this.state = {
+      emptyId: -1,
       dataSet: [],
-      currentData: this.defObj,
+      currentData: {
+        id: -1,
+        title: '',
+        applyDate: '',
+        lunar: '',
+        holiday: '',
+      },
       totalCount: 0,
       itemsPerPage: 10,
       totalPage: 0,
       currentPage: 0,
-      visiblePages: 10,
+      visiblePages: 5,
       keyword: "",
       keywordError: "",
       modalFlagAdd: false,
@@ -100,7 +100,7 @@ class Anniversary extends Component {
 
       parentState.setState({
         dataSet: resJson.data,
-        currentData: parentState.defObj,
+        currentData: parentState.genEmptyObj(),
         totalCount: dataLen,
         currentPage: (resJson.pagination.currentPage - 1),
         totalPage: calcPages,
@@ -116,8 +116,22 @@ class Anniversary extends Component {
     this.requestFetch();
   }
 
+  genEmptyObj() {
+    let newEmptyId = (this.state.emptyId ? (this.state.emptyId - 1) : -1);
+    let emptyObj = {
+      id: newEmptyId,
+      title: '',
+      applyDate: '',
+      lunar: '',
+      holiday: '',
+    }
+    this.setState({ emptyId: newEmptyId });
+    return emptyObj;
+  }
+
   modalToggleAdd() {
     this.setState({
+      currentData: this.genEmptyObj(),
       modalFlagAdd: !this.state.modalFlagAdd,
     });
   }
@@ -146,7 +160,8 @@ class Anniversary extends Component {
 
   handleAdd(e) {
     e.preventDefault();
-    this.setState({ currentData: this.defObj });
+    let newObj = this.genEmptyObj();
+    this.setState({ currentData: newObj });
     this.modalToggleAdd();
   }
 
@@ -169,8 +184,8 @@ class Anniversary extends Component {
         return (
           <tr key={'memo-' + data.id} onClick={this.handleEdit.bind(this, data)}>
             <td>{data.id}</td>
-            <td>{data.title}</td>
-            <td>{data.applyDate.substring(0, 2) + '월 ' + data.applyDate.substring(2, 4) + '일' + ((data.lunar === 1) ? '(음력)' : '')}</td>
+            <td><span className={((data.holiday === 1) ? 'text-danger' : '')}>{data.title}</span></td>
+            <td>{data.applyDate.substring(0, 2) + '월 ' + data.applyDate.substring(2, 4) + '일' + ((data.lunar === 1) ? '(-)' : '')}</td>
           </tr>
         )
       })
@@ -185,7 +200,7 @@ class Anniversary extends Component {
             <CCard>
               <CCardHeader>
                 <strong>Search</strong>
-                <small> Memo</small>
+                <small> Anniversary</small>
               </CCardHeader>
               <CCardBody>
                 <CRow>
@@ -218,9 +233,15 @@ class Anniversary extends Component {
           <CCol>
             <CCard>
               <CCardHeader>
-                <CIcon content={freeSet.cilHamburgerMenu} /> Anniversary List (Total : {this.state.totalCount})
-                <CButton color="success" size="sm" className="float-right" onClick={this.handleAdd}>
-                  <CIcon content={freeSet.cilPlus} size="sm" />&nbsp;추가</CButton>
+                <strong>Anniversary List</strong>
+                <small>  (Total : {this.state.totalCount})</small>
+                <span className="float-right">
+                  <CButton color="danger" size="sm" variant="ghost">
+                    <CIcon content={freeSet.cilTrash} size="sm" />&nbsp;삭제</CButton>
+                    &nbsp;
+                  <CButton color="success" size="sm" variant="ghost" onClick={this.handleAdd}>
+                    <CIcon content={freeSet.cilPlus} size="sm" />&nbsp;추가</CButton>
+                </span>
               </CCardHeader>
               <CCardBody>
                 <table className="table table-sm table-striped table-hover">

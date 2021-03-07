@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
+
 import {
     CModal, CModalHeader, CModalBody, CModalFooter,
     CButton, CForm, CFormGroup, CInvalidFeedback, CInput
 } from '@coreui/react';
+
 import { useForm, Controller } from "react-hook-form";
 import Cookies from 'universal-cookie';
 import { dateFormat } from '../../components/Util/DateUtil'
@@ -11,15 +13,9 @@ const PbFormDel = props => {
 
     const REQ_URI = (process.env.NODE_ENV !== 'production') ? 'http://localhost:28080/pds/v1/pwbook' : '/pds/v1/pwbook';
 
-    const initValues = props.dataFromParent;
-    const cookies = new Cookies();
-
     const { handleSubmit, errors, setError, control } = useForm({
         submitFocusError: true,
         nativeValidation: false,
-        defaultValues: {
-            siteId: initValues.id,
-        }
     });
 
     const [modalShow, setModalShow] = useState(false);
@@ -29,6 +25,8 @@ const PbFormDel = props => {
     }
 
     const onSubmit = (data, e) => {
+        const cookies = new Cookies();
+
         fetch(REQ_URI + '?siteId=' + data.siteId, {
             method: 'DELETE',
             headers: new Headers({

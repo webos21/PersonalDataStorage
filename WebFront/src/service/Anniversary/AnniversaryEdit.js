@@ -18,10 +18,6 @@ const AnniversaryEdit = props => {
         nativeValidation: false,
     });
 
-    const onTest = () => {
-        console.log(props.dataFromParent);
-    }
-
     const onDelete = () => {
         const cookies = new Cookies();
 
@@ -278,7 +274,7 @@ const AnniversaryEdit = props => {
 
                 </CModalBody>
                 <CModalFooter>
-                    <CButton color="danger" className="mr-auto" onClick={onTest}>삭제</CButton>
+                    <CButton color="danger" className="mr-auto" onClick={onDelete}>삭제</CButton>
                     <CButton type="submit" color="warning">수정</CButton>{' '}
                     <CButton color="secondary" onClick={props.modalToggle}>취소</CButton>
                 </CModalFooter>
