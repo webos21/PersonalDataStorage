@@ -61,7 +61,7 @@ class AddressBook extends Component {
   }
 
   dataChangedCallback(modifiedData) {
-    console.log("PasswordBook::dataChangedCallback");
+    console.log("AddressBook::dataChangedCallback");
     if (modifiedData !== undefined && modifiedData !== null) {
       for (var i = 0; i < this.state.dataSet.length; i++) {
         if (this.state.dataSet[i].id === modifiedData.id) {
@@ -100,7 +100,7 @@ class AddressBook extends Component {
       }
       return res.json();
     }).then(function (resJson) {
-      console.log("PasswordBook::fetch => " + resJson.result);
+      console.log("AddressBook::fetch => " + resJson.result);
 
       var dataLen = resJson.pagination.totalCount;
       var calcPages = Math.ceil(dataLen / parentState.state.itemsPerPage);
@@ -113,7 +113,7 @@ class AddressBook extends Component {
         keywordError: '',
       });
     }).catch(function (error) {
-      console.log("PasswordBook::fetch => " + error);
+      console.log("AddressBook::fetch => " + error);
       parentState.setState({ keywordError: error.message })
     });
   }

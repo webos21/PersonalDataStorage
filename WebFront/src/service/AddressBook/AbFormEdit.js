@@ -8,7 +8,6 @@ import {
 
 import { useForm, Controller } from "react-hook-form";
 import Cookies from 'universal-cookie';
-import { dateFormat } from '../../components/Util/DateUtil'
 
 const AbFormEdit = props => {
 
@@ -22,7 +21,7 @@ const AbFormEdit = props => {
     const onDelete = () => {
         const cookies = new Cookies();
 
-        fetch(REQ_URI + '?siteId=' + props.dataFromParent.id, {
+        fetch(REQ_URI + '?abId=' + props.dataFromParent.id, {
             method: 'DELETE',
             headers: new Headers({
                 'X-PDS-AUTH': cookies.get("X-PDS-AUTH"),
@@ -37,13 +36,13 @@ const AbFormEdit = props => {
             }
             return res.json();
         }).then(function (resJson) {
-            console.log("PbFormDel::fetch => " + resJson.result);
+            console.log("AbFormDel::fetch => " + resJson.result);
             if (resJson.result === "OK") {
                 props.modalToggle();
                 props.callbackFromParent();
             }
         }).catch(function (error) {
-            console.log("PbFormDel::fetch => " + error);
+            console.log("AbFormDel::fetch => " + error);
             setError("siteId", "serverResponse", error.message);
         });
     };
@@ -68,13 +67,13 @@ const AbFormEdit = props => {
             }
             return res.json();
         }).then(function (resJson) {
-            console.log("PbFormEdit::fetch => " + resJson.result);
+            console.log("AbFormEdit::fetch => " + resJson.result);
             if (resJson.result === "OK") {
                 props.modalToggle();
                 props.callbackFromParent(resJson.data[0]);
             }
         }).catch(function (error) {
-            console.log("PbFormEdit::fetch => " + error);
+            console.log("AbFormEdit::fetch => " + error);
             setError("siteUrl", "serverResponse", error.message);
         });
     };
@@ -89,14 +88,14 @@ const AbFormEdit = props => {
                     <CFormGroup row>
                         <CCol xs="12" md="12">
                             <Controller
-                                name="siteId"
-                                key={"siteId" + props.dataFromParent.id}
+                                name="abId"
+                                key={"abId" + props.dataFromParent.id}
                                 control={control}
                                 defaultValue={props.dataFromParent.id}
                                 render={(ctrlProps) => (
                                     <CInput
                                         type="hidden"
-                                        name="siteId"
+                                        name="abId"
                                         value={ctrlProps.value}
                                         onChange={ctrlProps.onChange}
                                     />
@@ -104,59 +103,19 @@ const AbFormEdit = props => {
                                 rules={{ required: true }} />
                             <CInputGroup>
                                 <CInputGroupPrepend>
-                                    <CInputGroupText style={{ minWidth: 80 }}>URL</CInputGroupText>
+                                    <CInputGroupText style={{ minWidth: 80 }}>이름</CInputGroupText>
                                 </CInputGroupPrepend>
                                 <Controller
-                                    name="siteUrl"
-                                    key={"siteUrl" + props.dataFromParent.id}
+                                    name="fullName"
+                                    key={"fullName" + props.dataFromParent.id}
                                     control={control}
-                                    defaultValue={props.dataFromParent.siteUrl}
-                                    render={(ctrlProps) => (
-                                        <CInput
-                                            type="url"
-                                            name="siteUrl"
-                                            placeholder="URL을 입력해 주세요."
-                                            className={"form-control" + (errors.siteUrl ? " is-invalid" : " is-valid")}
-                                            value={ctrlProps.value}
-                                            onChange={ctrlProps.onChange}
-                                        />
-                                    )}
-                                    rules={{
-                                        required: {
-                                            value: true,
-                                            message: "URL을 입력해 주세요."
-                                        },
-                                        minLength: {
-                                            value: 10,
-                                            message: "URL은 10자 이상 입니다."
-                                        },
-                                        maxLength: {
-                                            value: 100,
-                                            message: "URL은 100자 이내 입니다."
-                                        }
-                                    }}
-                                />
-                                {errors.siteUrl && <CInvalidFeedback>{errors.siteUrl.message}</CInvalidFeedback>}
-                            </CInputGroup>
-                        </CCol>
-                    </CFormGroup>
-                    <CFormGroup row>
-                        <CCol xs="12" md="12">
-                            <CInputGroup>
-                                <CInputGroupPrepend>
-                                    <CInputGroupText style={{ minWidth: 80 }}>사이트명</CInputGroupText>
-                                </CInputGroupPrepend>
-                                <Controller
-                                    name="siteName"
-                                    key={"siteName" + props.dataFromParent.id}
-                                    control={control}
-                                    defaultValue={props.dataFromParent.siteName}
+                                    defaultValue={props.dataFromParent.fullName}
                                     render={(ctrlProps) => (
                                         <CInput
                                             type="text"
-                                            name="siteName"
-                                            placeholder="사이트명을 입력해 주세요."
-                                            className={"form-control" + (errors.siteName ? " is-invalid" : " is-valid")}
+                                            name="fullName"
+                                            placeholder="이름을 입력해 주세요."
+                                            className={"form-control" + (errors.fullName ? " is-invalid" : " is-valid")}
                                             value={ctrlProps.value}
                                             onChange={ctrlProps.onChange}
                                         />
@@ -164,19 +123,20 @@ const AbFormEdit = props => {
                                     rules={{
                                         required: {
                                             value: true,
-                                            message: "사이트명을 입력해 주세요."
+                                            message: "(Req) 이름을 입력해 주세요."
                                         },
                                         minLength: {
                                             value: 1,
-                                            message: "사이트명은 1자 이상 입니다."
+                                            message: "(Min) 이름은 1자 이상 입니다."
                                         },
                                         maxLength: {
-                                            value: 100,
-                                            message: "사이트명은 100자 이내 입니다."
+                                            value: 60,
+                                            message: "(Max) 이름은 60자 이내 입니다."
                                         }
                                     }}
                                 />
-                                {errors.siteName && <CInvalidFeedback>{errors.siteName.message}</CInvalidFeedback>}
+                                {errors.abId && <CInvalidFeedback>{errors.abId.message}</CInvalidFeedback>}
+                                {errors.fullName && <CInvalidFeedback>{errors.fullName.message}</CInvalidFeedback>}
                             </CInputGroup>
                         </CCol>
                     </CFormGroup>
@@ -184,19 +144,59 @@ const AbFormEdit = props => {
                         <CCol xs="12" md="12">
                             <CInputGroup>
                                 <CInputGroupPrepend>
-                                    <CInputGroupText style={{ minWidth: 80 }}>유형</CInputGroupText>
+                                    <CInputGroupText style={{ minWidth: 80 }}>핸드폰</CInputGroupText>
                                 </CInputGroupPrepend>
                                 <Controller
-                                    name="siteType"
-                                    key={"siteType" + props.dataFromParent.id}
+                                    name="mobile"
+                                    key={"mobile" + props.dataFromParent.id}
                                     control={control}
-                                    defaultValue={props.dataFromParent.siteType}
+                                    defaultValue={props.dataFromParent.mobile}
+                                    render={(ctrlProps) => (
+                                        <CInput
+                                            type="tel"
+                                            name="mobile"
+                                            placeholder="핸드폰을 입력해 주세요."
+                                            className={"form-control" + (errors.mobile ? " is-invalid" : " is-valid")}
+                                            value={ctrlProps.value}
+                                            onChange={ctrlProps.onChange}
+                                        />
+                                    )}
+                                    rules={{
+                                        required: {
+                                            value: true,
+                                            message: "(Req) 핸드폰을 입력해 주세요."
+                                        },
+                                        minLength: {
+                                            value: 12,
+                                            message: "(Min) 핸드폰은 12자 이상 입니다."
+                                        },
+                                        maxLength: {
+                                            value: 30,
+                                            message: "(Max) 핸드폰은 30자 이내 입니다."
+                                        }
+                                    }}
+                                />
+                                {errors.mobile && <CInvalidFeedback>{errors.mobile.message}</CInvalidFeedback>}
+                            </CInputGroup>
+                        </CCol>
+                    </CFormGroup>
+                    <CFormGroup row>
+                        <CCol xs="12" md="12">
+                            <CInputGroup>
+                                <CInputGroupPrepend>
+                                    <CInputGroupText style={{ minWidth: 80 }}>분류</CInputGroupText>
+                                </CInputGroupPrepend>
+                                <Controller
+                                    name="category"
+                                    key={"category" + props.dataFromParent.id}
+                                    control={control}
+                                    defaultValue={props.dataFromParent.category}
                                     render={(ctrlProps) => (
                                         <CInput
                                             type="text"
-                                            name="siteType"
-                                            placeholder="유형을 입력해 주세요."
-                                            className={"form-control" + (errors.siteType ? " is-invalid" : " is-valid")}
+                                            name="category"
+                                            placeholder="분류를 입력해 주세요."
+                                            className={"form-control" + (errors.category ? " is-invalid" : " is-valid")}
                                             value={ctrlProps.value}
                                             onChange={ctrlProps.onChange}
 
@@ -205,19 +205,19 @@ const AbFormEdit = props => {
                                     rules={{
                                         required: {
                                             value: true,
-                                            message: "유형을 입력해 주세요."
+                                            message: "(Req) 분류를 입력해 주세요."
                                         },
                                         minLength: {
                                             value: 1,
-                                            message: "유형은 1자 이상 입니다."
+                                            message: "(Min) 분류는 1자 이상 입니다."
                                         },
                                         maxLength: {
-                                            value: 100,
-                                            message: "유형은 100자 이내 입니다."
+                                            value: 60,
+                                            message: "(Max) 분류는 60자 이내 입니다."
                                         }
                                     }}
                                 />
-                                {errors.siteType && <CInvalidFeedback>{errors.siteType.message}</CInvalidFeedback>}
+                                {errors.category && <CInvalidFeedback>{errors.category.message}</CInvalidFeedback>}
                             </CInputGroup>
                         </CCol>
                     </CFormGroup>
@@ -225,109 +225,184 @@ const AbFormEdit = props => {
                         <CCol xs="12" md="12">
                             <CInputGroup>
                                 <CInputGroupPrepend>
-                                    <CInputGroupText style={{ minWidth: 80 }}>아 이 디</CInputGroupText>
+                                    <CInputGroupText style={{ minWidth: 80 }}>전화번호</CInputGroupText>
                                 </CInputGroupPrepend>
                                 <Controller
-                                    name="myId"
-                                    key={"myId" + props.dataFromParent.id}
+                                    name="telephone"
+                                    key={"telephone" + props.dataFromParent.id}
                                     control={control}
-                                    defaultValue={props.dataFromParent.myId}
+                                    defaultValue={props.dataFromParent.telephone}
+                                    render={(ctrlProps) => (
+                                        <CInput
+                                            type="tel"
+                                            name="telephone" placeholder="전화번호를 입력해 주세요."
+                                            className={"form-control" + (errors.telephone ? " is-invalid" : " is-valid")}
+                                            value={ctrlProps.value}
+                                            onChange={ctrlProps.onChange}
+                                        />
+                                    )}
+                                    rules={{
+                                        required: {
+                                            value: false,
+                                        }
+                                    }}
+                                />
+                                {errors.telephone && <CInvalidFeedback>{errors.telephone.message}</CInvalidFeedback>}
+                            </CInputGroup>
+                        </CCol>
+                    </CFormGroup>
+                    <CFormGroup row>
+                        <CCol xs="12" md="12">
+                            <CInputGroup>
+                                <CInputGroupPrepend>
+                                    <CInputGroupText style={{ minWidth: 80 }}>FAX번호</CInputGroupText>
+                                </CInputGroupPrepend>
+                                <Controller
+                                    name="fax"
+                                    key={"fax" + props.dataFromParent.id}
+                                    control={control}
+                                    defaultValue={props.dataFromParent.fax}
+                                    render={(ctrlProps) => (
+                                        <CInput
+                                            type="tel"
+                                            name="fax"
+                                            placeholder="FAX번호를 입력해 주세요."
+                                            className={"form-control" + (errors.fax ? " is-invalid" : " is-valid")}
+                                            value={ctrlProps.value}
+                                            onChange={ctrlProps.onChange}
+                                        />
+                                    )}
+                                    rules={{
+                                        required: {
+                                            value: false,
+                                        },
+                                    }}
+                                />
+                                {errors.fax && <CInvalidFeedback>{errors.fax.message}</CInvalidFeedback>}
+                            </CInputGroup>
+                        </CCol>
+                    </CFormGroup>
+                    <CFormGroup row>
+                        <CCol xs="12" md="12">
+                            <CInputGroup>
+                                <CInputGroupPrepend>
+                                    <CInputGroupText style={{ minWidth: 80 }}>전자우편</CInputGroupText>
+                                </CInputGroupPrepend>
+                                <Controller
+                                    name="email"
+                                    key={"email" + props.dataFromParent.id}
+                                    control={control}
+                                    defaultValue={props.dataFromParent.email}
+                                    render={(ctrlProps) => (
+                                        <CInput
+                                            type="email"
+                                            name="email"
+                                            placeholder="전자우편을 입력해 주세요."
+                                            className={"form-control" + (errors.email ? " is-invalid" : " is-valid")}
+                                            value={ctrlProps.value}
+                                            onChange={ctrlProps.onChange}
+                                        />
+                                    )}
+                                    rules={{
+                                        required: {
+                                            value: false,
+                                        }
+                                    }}
+                                />
+                                {errors.email && <CInvalidFeedback>{errors.email.message}</CInvalidFeedback>}
+                            </CInputGroup>
+                        </CCol>
+                    </CFormGroup>
+                    <CFormGroup row>
+                        <CCol xs="12" md="12">
+                            <CInputGroup>
+                                <CInputGroupPrepend>
+                                    <CInputGroupText style={{ minWidth: 80 }}>홈페이지</CInputGroupText>
+                                </CInputGroupPrepend>
+                                <Controller
+                                    name="homepage"
+                                    key={"homepage" + props.dataFromParent.id}
+                                    control={control}
+                                    defaultValue={props.dataFromParent.homepage}
+                                    render={(ctrlProps) => (
+                                        <CInput
+                                            type="url"
+                                            name="homepage"
+                                            placeholder="홈페이지 주소를 입력해 주세요."
+                                            className={"form-control" + (errors.homepage ? " is-invalid" : " is-valid")}
+                                            value={ctrlProps.value}
+                                            onChange={ctrlProps.onChange}
+                                        />
+                                    )}
+                                    rules={{
+                                        required: {
+                                            value: false,
+                                        }
+                                    }}
+                                />
+                                {errors.homepage && <CInvalidFeedback>{errors.homepage.message}</CInvalidFeedback>}
+                            </CInputGroup>
+                        </CCol>
+                    </CFormGroup>
+                    <CFormGroup row>
+                        <CCol xs="12" md="12">
+                            <CInputGroup>
+                                <CInputGroupPrepend>
+                                    <CInputGroupText style={{ minWidth: 80 }}>우편번호</CInputGroupText>
+                                </CInputGroupPrepend>
+                                <Controller
+                                    name="postcode"
+                                    key={"postcode" + props.dataFromParent.id}
+                                    control={control}
+                                    defaultValue={props.dataFromParent.postcode}
+                                    render={(ctrlProps) => (
+                                        <CInput
+                                            type="postcode"
+                                            name="postcode"
+                                            placeholder="우편번호를 입력해 주세요."
+                                            className={"form-control" + (errors.postcode ? " is-invalid" : " is-valid")}
+                                            value={ctrlProps.value}
+                                            onChange={ctrlProps.onChange}
+                                        />
+                                    )}
+                                    rules={{
+                                        required: {
+                                            value: false,
+                                        }
+                                    }}
+                                />
+                                {errors.postcode && <CInvalidFeedback>{errors.postcode.message}</CInvalidFeedback>}
+                            </CInputGroup>
+                        </CCol>
+                    </CFormGroup>
+                    <CFormGroup row>
+                        <CCol xs="12" md="12">
+                            <CInputGroup>
+                                <CInputGroupPrepend>
+                                    <CInputGroupText style={{ minWidth: 80 }}>주소</CInputGroupText>
+                                </CInputGroupPrepend>
+                                <Controller
+                                    name="address"
+                                    key={"address" + props.dataFromParent.id}
+                                    control={control}
+                                    defaultValue={props.dataFromParent.address}
                                     render={(ctrlProps) => (
                                         <CInput
                                             type="text"
-                                            name="myId" placeholder="아이디를 입력해 주세요."
-                                            className={"form-control" + (errors.myId ? " is-invalid" : " is-valid")}
+                                            name="address"
+                                            placeholder="주소를 입력해 주세요."
+                                            className={"form-control" + (errors.address ? " is-invalid" : " is-valid")}
                                             value={ctrlProps.value}
                                             onChange={ctrlProps.onChange}
                                         />
                                     )}
                                     rules={{
                                         required: {
-                                            value: true,
-                                            message: "아이디를 입력해 주세요."
-                                        },
-                                        minLength: {
-                                            value: 4,
-                                            message: "아이디는 4자 이상 입니다."
-                                        },
-                                        maxLength: {
-                                            value: 50,
-                                            message: "아이디는 50자 이내 입니다."
+                                            value: false,
                                         }
                                     }}
                                 />
-                                {errors.myId && <CInvalidFeedback>{errors.myId.message}</CInvalidFeedback>}
-                            </CInputGroup>
-                        </CCol>
-                    </CFormGroup>
-                    <CFormGroup row>
-                        <CCol xs="12" md="12">
-                            <CInputGroup>
-                                <CInputGroupPrepend>
-                                    <CInputGroupText style={{ minWidth: 80 }}>비밀번호</CInputGroupText>
-                                </CInputGroupPrepend>
-                                <Controller
-                                    name="myPw"
-                                    key={"myPw" + props.dataFromParent.id}
-                                    control={control}
-                                    defaultValue={props.dataFromParent.myPw}
-                                    render={(ctrlProps) => (
-                                        <CInput
-                                            type="text"
-                                            name="myPw"
-                                            placeholder="비밀번호를 입력해 주세요."
-                                            className={"form-control" + (errors.myPw ? " is-invalid" : " is-valid")}
-                                            value={ctrlProps.value}
-                                            onChange={ctrlProps.onChange}
-                                        />
-                                    )}
-                                    rules={{
-                                        required: {
-                                            value: true,
-                                            message: "비밀번호를 입력해 주세요."
-                                        },
-                                        minLength: {
-                                            value: 4,
-                                            message: "비밀번호는 4자 이상 입니다."
-                                        },
-                                        maxLength: {
-                                            value: 50,
-                                            message: "비밀번호는 50자 이내 입니다."
-                                        }
-                                    }}
-                                />
-                                {errors.myPw && <CInvalidFeedback>{errors.myPw.message}</CInvalidFeedback>}
-                            </CInputGroup>
-                        </CCol>
-                    </CFormGroup>
-                    <CFormGroup row>
-                        <CCol xs="12" md="12">
-                            <CInputGroup>
-                                <CInputGroupPrepend>
-                                    <CInputGroupText style={{ minWidth: 80 }}>가입일자</CInputGroupText>
-                                </CInputGroupPrepend>
-                                <Controller
-                                    name="regDate"
-                                    key={"regDate" + props.dataFromParent.id}
-                                    control={control}
-                                    defaultValue={dateFormat(new Date(props.dataFromParent.regDate))}
-                                    render={(ctrlProps) => (
-                                        <CInput
-                                            type="date"
-                                            name="regDate" id="regDate" placeholder="가입일자를 선택해 주세요."
-                                            className={"form-control" + (errors.regDate ? " is-invalid" : " is-valid")}
-                                            value={ctrlProps.value}
-                                            onChange={ctrlProps.onChange}
-                                        />
-                                    )}
-                                    rules={{
-                                        required: {
-                                            value: true,
-                                            message: "가입일자를 선택해 주세요."
-                                        }
-                                    }}
-                                />
-                                {errors.regDate && <CInvalidFeedback>{errors.regDate.message}</CInvalidFeedback>}
+                                {errors.address && <CInvalidFeedback>{errors.address.message}</CInvalidFeedback>}
                             </CInputGroup>
                         </CCol>
                     </CFormGroup>
@@ -355,8 +430,7 @@ const AbFormEdit = props => {
                                     )}
                                     rules={{
                                         required: {
-                                            value: true,
-                                            message: "메모를 입력해 주세요."
+                                            value: false,
                                         }
                                     }}
                                 />
