@@ -12,158 +12,170 @@ import java.util.List;
 
 public class AccountCodeRepoImpl implements AccountCodeRepo {
 
-    private PdsDbHelper opener;
+	private PdsDbHelper opener;
 
-    public AccountCodeRepoImpl(PdsDbHelper opener) {
-        this.opener = opener;
-    }
+	public AccountCodeRepoImpl(PdsDbHelper opener) {
+		this.opener = opener;
+	}
 
-    @Override
-    public List<AccountCode> findRows() {
-        List<AccountCode> aList = new ArrayList<AccountCode>();
+	@Override
+	public List<AccountCode> findRows() {
+		List<AccountCode> aList = new ArrayList<AccountCode>();
 
-        try {
-            H2Database db = opener.getReadableDatabase();
-            ResultSet rset = db.rawQuery("SELECT * FROM " + DbConsts.TB_ACCOUNT_CODE, null);
-            if (rset == null || !rset.first()) {
-                return aList;
-            }
+		try {
+			H2Database db = opener.getReadableDatabase();
+			ResultSet rset = db.rawQuery( // indent
+					/* intent -------- */ "SELECT id, account_code, title FROM " + // indent
+					/* intent -------- */ DbConsts.TB_ACCOUNT_CODE + // indent
+					/* intent -------- */ " ORDER BY account_code", null); // indent
+			if (rset == null || !rset.first()) {
+				return aList;
+			}
 
-            do {
-                AccountCode aRow = new AccountCode(
-                        /* id ------------- */rset.getLong(1),
-                        /* account_code --- */rset.getString(2),
-                        /* title ---------- */rset.getString(3));
-                aList.add(aRow);
-            } while (rset.next());
+			do {
+				AccountCode aRow = new AccountCode( // indent
+						/* id ------------- */rset.getLong(1), // indent
+						/* account_code --- */rset.getString(2), // indent
+						/* title ---------- */rset.getString(3)); // indent
+				aList.add(aRow);
+			} while (rset.next());
 
-            if (rset != null) {
-                rset.close();
-            }
-            db.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+			if (rset != null) {
+				rset.close();
+			}
+			db.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 
-        if (DbConsts.DB_DEBUG) {
-            opener.debugDump(DbConsts.TB_ACCOUNT_CODE);
-        }
+		if (DbConsts.DB_DEBUG) {
+			opener.debugDump(DbConsts.TB_ACCOUNT_CODE);
+		}
 
-        return aList;
-    }
+		return aList;
+	}
 
-    @Override
-    public List<AccountCode> findRows(String keyString) {
-        List<AccountCode> aList = new ArrayList<AccountCode>();
+	@Override
+	public List<AccountCode> findRows(String keyString) {
+		List<AccountCode> aList = new ArrayList<AccountCode>();
 
-        try {
-            H2Database db = opener.getReadableDatabase();
-            ResultSet rset = db.rawQuery(
-                    /* intent -------- */ "SELECT * " +
-                            /* intent -------- */ " FROM " + DbConsts.TB_ACCOUNT_CODE + " " +
-                            /* intent -------- */ " WHERE (title LIKE ?)",
-                    new String[]{"%" + keyString + "%"});
-            if (rset == null || !rset.first()) {
-                return aList;
-            }
+		try {
+			H2Database db = opener.getReadableDatabase();
+			ResultSet rset = db.rawQuery( // indent
+					/* intent -------- */ "SELECT id, account_code, title " + // indent
+					/* intent -------- */ " FROM " + DbConsts.TB_ACCOUNT_CODE + " " + // indent
+					/* intent -------- */ " WHERE (title LIKE ?)" + // indent
+					/* intent -------- */ " ORDER BY account_code", // indent
+					new String[] { "%" + keyString + "%" });
+			if (rset == null || !rset.first()) {
+				return aList;
+			}
 
-            do {
-                AccountCode aRow = new AccountCode(
-                        /* id ------------- */rset.getLong(1),
-                        /* account_code --- */rset.getString(2),
-                        /* title ---------- */rset.getString(3));
-                aList.add(aRow);
-            } while (rset.next());
+			do {
+				AccountCode aRow = new AccountCode( // indent
+						/* id ------------- */rset.getLong(1), // indent
+						/* account_code --- */rset.getString(2), // indent
+						/* title ---------- */rset.getString(3)); // indent
+				aList.add(aRow);
+			} while (rset.next());
 
-            if (rset != null) {
-                rset.close();
-            }
-            db.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+			if (rset != null) {
+				rset.close();
+			}
+			db.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 
-        return aList;
-    }
+		return aList;
+	}
 
-    @Override
-    public AccountCode getRow(Long id) {
-        AccountCode aRow = null;
+	@Override
+	public AccountCode getRow(Long id) {
+		AccountCode aRow = null;
 
-        try {
-            H2Database db = opener.getReadableDatabase();
-            ResultSet rset = db.rawQuery("SELECT * FROM " + DbConsts.TB_ACCOUNT_CODE + " WHERE id = " + id, null);
-            if (rset == null || !rset.first()) {
-                return null;
-            }
+		try {
+			H2Database db = opener.getReadableDatabase();
+			ResultSet rset = db.rawQuery( // indent
+					/* intent -------- */ "SELECT id, account_code, title FROM " + // indent
+					/* intent -------- */ DbConsts.TB_ACCOUNT_CODE + // indent
+					/* intent -------- */ " WHERE id = " + id, // indent
+					null);
+			if (rset == null || !rset.first()) {
+				return null;
+			}
 
-            aRow = new AccountCode(
-                    /* id ------------- */rset.getLong(1),
-                    /* account_code --- */rset.getString(2),
-                    /* title ---------- */rset.getString(3));
-            rset.close();
-            db.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+			aRow = new AccountCode( // indent
+					/* id ------------- */rset.getLong(1), // indent
+					/* account_code --- */rset.getString(2), // indent
+					/* title ---------- */rset.getString(3)); // indent
+			rset.close();
+			db.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 
-        return aRow;
-    }
+		return aRow;
+	}
 
-    @Override
-    public AccountCode getRow(AccountCode aRow) {
-        return getRow(aRow.getId());
-    }
+	@Override
+	public AccountCode getRow(AccountCode aRow) {
+		return getRow(aRow.getId());
+	}
 
-    @Override
-    public boolean updateRow(AccountCode newRow) {
-        try {
-            H2Database db = opener.getWritableDatabase();
-            ResultSet rset = null;
+	@Override
+	public boolean updateRow(AccountCode newRow) {
+		try {
+			H2Database db = opener.getWritableDatabase();
+			ResultSet rset = null;
 
-            if (newRow.getId() != null) {
-                rset = db.rawQuery("SELECT * FROM " + DbConsts.TB_ACCOUNT_CODE + " WHERE id = " + newRow.getId(), null);
-                if (rset != null && rset.first()) {
-                    rset.close();
+			if (newRow.getId() != null) {
+				rset = db.rawQuery( // indent
+						/* intent -------- */ "SELECT id, account_code, title FROM " + // indent
+						/* intent -------- */ DbConsts.TB_ACCOUNT_CODE + // indent
+						/* intent -------- */ " WHERE id = " + newRow.getId(), // indent
+						null);
+				if (rset != null && rset.first()) {
+					rset.close();
 
-                    ContentValues cv = new ContentValues();
-                    cv.put("account_code", newRow.getAccountCode());
-                    cv.put("title", newRow.getTitle());
-                    db.update(DbConsts.TB_ACCOUNT_CODE, cv, " id = ? ", new String[]{Long.toString(newRow.getId())});
-                } else {
-                    ContentValues cv = new ContentValues();
-                    // cv.put("id", newRow.getId());
-                    cv.put("account_code", newRow.getAccountCode());
-                    cv.put("title", newRow.getTitle());
-                    db.insert(DbConsts.TB_ACCOUNT_CODE, null, cv);
-                }
-            } else {
-                ContentValues cv = new ContentValues();
-                cv.put("account_code", newRow.getAccountCode());
-                cv.put("title", newRow.getTitle());
-                db.insert(DbConsts.TB_ACCOUNT_CODE, null, cv);
-            }
+					ContentValues cv = new ContentValues();
+					cv.put("account_code", newRow.getAccountCode());
+					cv.put("title", newRow.getTitle());
+					db.update(DbConsts.TB_ACCOUNT_CODE, cv, " id = ? ", new String[] { Long.toString(newRow.getId()) });
+				} else {
+					ContentValues cv = new ContentValues();
+					cv.put("id", newRow.getId());
+					cv.put("account_code", newRow.getAccountCode());
+					cv.put("title", newRow.getTitle());
+					db.insert(DbConsts.TB_ACCOUNT_CODE, null, cv);
+				}
+			} else {
+				ContentValues cv = new ContentValues();
+				cv.put("account_code", newRow.getAccountCode());
+				cv.put("title", newRow.getTitle());
+				db.insert(DbConsts.TB_ACCOUNT_CODE, null, cv);
+			}
 
-            db.close();
-        } catch (Exception e) {
+			db.close();
+		} catch (Exception e) {
 
-        }
+		}
 
-        return true;
-    }
+		return true;
+	}
 
-    @Override
-    public int deleteRow(Long id) {
-        H2Database db = opener.getWritableDatabase();
-        int result = db.delete(DbConsts.TB_ACCOUNT_CODE, "id = " + id, null);
-        db.close();
+	@Override
+	public int deleteRow(Long id) {
+		H2Database db = opener.getWritableDatabase();
+		int result = db.delete(DbConsts.TB_ACCOUNT_CODE, "id = " + id, null);
+		db.close();
 
-        return result;
-    }
+		return result;
+	}
 
-    @Override
-    public int deleteRow(AccountCode aRow) {
-        return deleteRow(aRow.getId());
-    }
+	@Override
+	public int deleteRow(AccountCode aRow) {
+		return deleteRow(aRow.getId());
+	}
 
 }

@@ -90,7 +90,7 @@ class AccountClass extends Component {
       }
       return res.json();
     }).then(function (resJson) {
-      console.log("Memo::fetch => " + resJson.result);
+      console.log("AccountClass::fetch => " + resJson.result);
 
       var dataLen = resJson.pagination.totalCount;
       var calcPages = Math.ceil(dataLen / parentState.state.itemsPerPage);
@@ -103,7 +103,7 @@ class AccountClass extends Component {
         keywordError: '',
       });
     }).catch(function (error) {
-      console.log("Memo::fetch => " + error);
+      console.log("AccountClass::fetch => " + error);
       parentState.setState({ keywordError: error.message })
     });
   }

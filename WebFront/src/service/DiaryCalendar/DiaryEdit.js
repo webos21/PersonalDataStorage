@@ -150,7 +150,7 @@ const DiaryEdit = props => {
                                     name="wdate"
                                     key={"wdate" + props.dataFromParent.id}
                                     control={control}
-                                    defaultValue={dateFormat(new Date(props.dataFromParent.wdate))}
+                                    defaultValue={props.dataFromParent.wdate !== '' ? dateFormat(new Date(props.dataFromParent.wdate)) : ''}
                                     render={(ctrlProps) => (
                                         <CInput
                                             type="date"

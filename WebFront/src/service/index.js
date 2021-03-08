@@ -1,5 +1,6 @@
 import AccountClass from './AccountClass';
 import AccountCode from './AccountCode';
+import AddressBook from './AddressBook';
 import Anniversary from './Anniversary';
 import DashBoard from './DashBoard';
 import DiaryBoard from './DiaryBoard';
@@ -16,6 +17,7 @@ import Register from './Register';
 export {
     AccountClass,
     AccountCode,
+    AddressBook,
     Anniversary,
     DashBoard,
     DiaryBoard,

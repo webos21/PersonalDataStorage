@@ -3,12 +3,11 @@ import React from 'react';
 import {
     CModal, CModalHeader, CModalBody, CModalFooter, CButton, CCol,
     CForm, CFormGroup, CInvalidFeedback,
-    CInputGroup, CInputGroupPrepend, CInputGroupText, CInput, CTextarea,
+    CInputGroup, CInputGroupPrepend, CInputGroupText, CInput,
 } from '@coreui/react';
 
 import { useForm, Controller } from "react-hook-form";
 import Cookies from 'universal-cookie';
-import { dateFormat } from '../../components/Util/DateUtil'
 
 const AccountCodeEdit = props => {
 
@@ -22,7 +21,7 @@ const AccountCodeEdit = props => {
     const onDelete = () => {
         const cookies = new Cookies();
 
-        fetch(REQ_URI + '?memoId=' + props.dataFromParent.id, {
+        fetch(REQ_URI + '?accId=' + props.dataFromParent.id, {
             method: 'DELETE',
             headers: new Headers({
                 'X-PDS-AUTH': cookies.get("X-PDS-AUTH"),
@@ -37,13 +36,13 @@ const AccountCodeEdit = props => {
             }
             return res.json();
         }).then(function (resJson) {
-            console.log("PbFormDel::fetch => " + resJson.result);
+            console.log("AccountCodeDel::fetch => " + resJson.result);
             if (resJson.result === "OK") {
                 props.modalToggle();
                 props.callbackFromParent();
             }
         }).catch(function (error) {
-            console.log("PbFormDel::fetch => " + error);
+            console.log("AccountCodeDel::fetch => " + error);
             setError("siteId", "serverResponse", error.message);
         });
     };
@@ -68,13 +67,13 @@ const AccountCodeEdit = props => {
             }
             return res.json();
         }).then(function (resJson) {
-            console.log("MemoEdit::fetch => " + resJson.result);
+            console.log("AccountCodeEdit::fetch => " + resJson.result);
             if (resJson.result === "OK") {
                 props.modalToggle();
                 props.callbackFromParent(resJson.data[0]);
             }
         }).catch(function (error) {
-            console.log("MemoEdit::fetch => " + error);
+            console.log("AccountCodeEdit::fetch => " + error);
             setError("siteUrl", "serverResponse", error.message);
         });
     };
@@ -82,28 +81,70 @@ const AccountCodeEdit = props => {
     return (
         <CModal show={props.modalFlag} onClose={props.modalToggle}
             className={'modal-warning ' + props.className}>
-            <CModalHeader closeButton>메모 수정</CModalHeader>
+            <CModalHeader closeButton>계정코드 수정</CModalHeader>
             <CForm onSubmit={handleSubmit(onSubmit)}>
                 <CModalBody>
-                    <CFormGroup row>
+                <CFormGroup row>
                         <CCol xs="12" md="12">
-                            <Controller
-                                name="memoId"
-                                key={"memoId" + props.dataFromParent.id}
+                        <Controller
+                                name="accId"
+                                key={"accId" + props.dataFromParent.id}
                                 control={control}
                                 defaultValue={props.dataFromParent.id}
                                 render={(ctrlProps) => (
                                     <CInput
                                         type="hidden"
-                                        name="memoId"
+                                        name="accId"
                                         value={ctrlProps.value}
                                         onChange={ctrlProps.onChange}
                                     />
                                 )}
                                 rules={{ required: true }} />
+
                             <CInputGroup>
                                 <CInputGroupPrepend>
-                                    <CInputGroupText style={{ minWidth: 70 }}>제목</CInputGroupText>
+                                    <CInputGroupText style={{ minWidth: 70 }}>코드</CInputGroupText>
+                                </CInputGroupPrepend>
+                                <Controller
+                                    name="acodeId"
+                                    key={"acodeId" + props.dataFromParent.id}
+                                    control={control}
+                                    defaultValue={props.dataFromParent.accountCode}
+                                    render={(ctrlProps) => (
+                                        <CInput
+                                            type="text"
+                                            name="acodeId"
+                                            placeholder="코드를 입력해 주세요."
+                                            className={"form-control" + (errors.acodeId ? " is-invalid" : " is-valid")}
+                                            value={ctrlProps.value}
+                                            onChange={ctrlProps.onChange}
+                                        />
+                                    )}
+                                    rules={{
+                                        required: {
+                                            value: true,
+                                            message: "(Required) 코드를 입력해 주세요."
+                                        },
+                                        minLength: {
+                                            value: 2,
+                                            message: "(MinLength) 코드는 2자 입니다."
+                                        },
+                                        maxLength: {
+                                            value: 2,
+                                            message: "(MaxLength) 코드는 2자 입니다."
+                                        }
+                                    }}
+                                />
+                                {errors.accId && <CInvalidFeedback>{errors.accId.message}</CInvalidFeedback>}
+                                {errors.acodeId && <CInvalidFeedback>{errors.acodeId.message}</CInvalidFeedback>}
+                            </CInputGroup>
+                        </CCol>
+                    </CFormGroup>
+                    <CFormGroup row>
+                        <CCol xs="12" md="12">
+                            <CInputGroup>
+                                <CInputGroupPrepend>
+                                    <CInputGroupText style={{ minWidth: 70 }}>코드명</CInputGroupText>
                                 </CInputGroupPrepend>
                                 <Controller
                                     name="title"
@@ -114,7 +155,7 @@ const AccountCodeEdit = props => {
                                         <CInput
                                             type="text"
                                             name="title"
-                                            placeholder="제목을 입력해 주세요."
+                                            placeholder="코드명을 입력해 주세요."
                                             className={"form-control" + (errors.title ? " is-invalid" : " is-valid")}
                                             value={ctrlProps.value}
                                             onChange={ctrlProps.onChange}
@@ -123,84 +164,20 @@ const AccountCodeEdit = props => {
                                     rules={{
                                         required: {
                                             value: true,
-                                            message: "제목을 입력해 주세요."
+                                            message: "코드명을 입력해 주세요."
                                         },
                                         minLength: {
                                             value: 1,
-                                            message: "제목은 1자 이상 입니다."
+                                            message: "코드명은 1자 이상 입니다."
                                         },
                                         maxLength: {
                                             value: 100,
-                                            message: "제목은 100자 이내 입니다."
+                                            message: "코드명은 100자 이내 입니다."
                                         }
                                     }}
                                 />
                                 {errors.memoId && <CInvalidFeedback>{errors.memoId.message}</CInvalidFeedback>}
                                 {errors.title && <CInvalidFeedback>{errors.title.message}</CInvalidFeedback>}
-                            </CInputGroup>
-                        </CCol>
-                    </CFormGroup>
-                    <CFormGroup row>
-                        <CCol xs="12" md="12">
-                            <CInputGroup>
-                                <CInputGroupPrepend>
-                                    <CInputGroupText style={{ minWidth: 70 }}>작성일</CInputGroupText>
-                                </CInputGroupPrepend>
-                                <Controller
-                                    name="wdate"
-                                    key={"wdate" + props.dataFromParent.id}
-                                    control={control}
-                                    defaultValue={dateFormat(new Date(props.dataFromParent.wdate))}
-                                    render={(ctrlProps) => (
-                                        <CInput
-                                            type="date"
-                                            name="wdate"
-                                            placeholder="작성일를 선택해 주세요."
-                                            className={"form-control" + (errors.wdate ? " is-invalid" : " is-valid")}
-                                            value={ctrlProps.value}
-                                            onChange={ctrlProps.onChange}
-                                        />
-                                    )}
-                                    rules={{
-                                        required: {
-                                            value: true,
-                                            message: "작성일를 선택해 주세요."
-                                        }
-                                    }}
-                                />
-                                {errors.wdate && <CInvalidFeedback>{errors.wdate.message}</CInvalidFeedback>}
-                            </CInputGroup>
-                        </CCol>
-                    </CFormGroup>
-                    <CFormGroup row>
-                        <CCol xs="12" md="12">
-                            <CInputGroup>
-                                <CInputGroupPrepend>
-                                    <CInputGroupText style={{ minWidth: 70 }}>내용</CInputGroupText>
-                                </CInputGroupPrepend>
-                                <Controller
-                                    name="content"
-                                    key={"content" + props.dataFromParent.id}
-                                    control={control}
-                                    defaultValue={props.dataFromParent.content}
-                                    render={(ctrlProps) => (
-                                        <CTextarea
-                                            name="content"
-                                            placeholder="내용을 입력해 주세요."
-                                            className={"form-control" + (errors.content ? " is-invalid" : " is-valid")}
-                                            style={{ minHeight: 120 }}
-                                            value={ctrlProps.value}
-                                            onChange={ctrlProps.onChange}
-                                        />
-                                    )}
-                                    rules={{
-                                        required: {
-                                            value: true,
-                                            message: "내용을 입력해 주세요."
-                                        }
-                                    }}
-                                />
-                                {errors.content && <CInvalidFeedback>{errors.content.message}</CInvalidFeedback>}
                             </CInputGroup>
                         </CCol>
                     </CFormGroup>

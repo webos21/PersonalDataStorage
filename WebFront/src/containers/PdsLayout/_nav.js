@@ -10,34 +10,50 @@ const navItems = [
     icon: <CIcon name="cil-speedometer" customClasses="c-sidebar-nav-icon" />,
   },
   {
-    _tag: 'CSidebarNavItem',
-    name: 'AccountClass',
-    to: '/accountClass',
-    icon: 'cil-calendar',
+    _tag: 'CSidebarNavDropdown',
+    name: 'Account Settings',
+    route: '/accountClass',
+    icon: <CIcon content={freeSet.cilAppsSettings} customClasses="c-sidebar-nav-icon" />,
+    _children: [
+      {
+        _tag: 'CSidebarNavItem',
+        name: 'AccountClass',
+        to: '/accountClass',
+      },
+      {
+        _tag: 'CSidebarNavItem',
+        name: 'AccountCode',
+        to: '/accountCode',
+      },
+      {
+        _tag: 'CSidebarNavItem',
+        name: 'Anniversary',
+        to: '/anniversary',
+      },
+    ]
   },
   {
     _tag: 'CSidebarNavItem',
-    name: 'AccountCode',
-    to: '/accountCode',
-    icon: 'cil-calendar',
+    name: 'AddressBook',
+    to: '/addressbook',
+    icon: <CIcon content={freeSet.cilAddressBook} customClasses="c-sidebar-nav-icon" />,
   },
   {
-    _tag: 'CSidebarNavItem',
-    name: 'Anniversary',
-    to: '/anniversary',
-    icon: 'cil-calendar',
-  },
-  {
-    _tag: 'CSidebarNavItem',
-    name: 'DiaryBoard',
-    to: '/diary-board',
+    _tag: 'CSidebarNavDropdown',
+    name: 'Diary',
     icon: 'cil-pencil',
-  },
-  {
-    _tag: 'CSidebarNavItem',
-    name: 'DiaryCalendar',
-    to: '/diary-calendar',
-    icon: 'cil-pencil',
+    _children: [
+      {
+        _tag: 'CSidebarNavItem',
+        name: 'DiaryCalendar',
+        to: '/diary-calendar',
+      },
+      {
+        _tag: 'CSidebarNavItem',
+        name: 'DiaryBoard',
+        to: '/diary-board',
+      },
+    ]
   },
   {
     _tag: 'CSidebarNavItem',

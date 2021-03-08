@@ -1,5 +1,7 @@
 package com.gmail.webos21.pds.db.domain;
 
+import com.gmail.webos21.pds.db.JsonHelper;
+
 public class AddressBook {
 
     private Long id;
@@ -130,8 +132,8 @@ public class AddressBook {
         sb.append("  \"email\": \"").append(email).append("\",\n");
         sb.append("  \"homepage\": \"").append(homepage).append("\",\n");
         sb.append("  \"postcode\": \"").append(postcode).append("\",\n");
-        sb.append("  \"address\": \"").append(address).append("\",\n");
-        sb.append("  \"memo\": \"").append(memo).append("\"\n");
+        sb.append("  \"address\": \"").append(JsonHelper.escape(address)).append("\",\n");
+        sb.append("  \"memo\": \"").append(JsonHelper.escape(memo)).append("\"\n");
         sb.append('}').append('\n');
 
         return sb.toString();

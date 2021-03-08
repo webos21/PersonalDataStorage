@@ -3,7 +3,7 @@ import React from 'react';
 import {
     CModal, CModalHeader, CModalBody, CModalFooter, CButton, CCol,
     CForm, CFormGroup, CInvalidFeedback,
-    CInputGroup, CInputGroupPrepend, CInputGroupText, CInput, CTextarea,
+    CInputGroup, CInputGroupPrepend, CInputGroupText, CInput,
 } from '@coreui/react';
 
 import { useForm, Controller } from "react-hook-form";
@@ -53,14 +53,54 @@ const AccountCodeAdd = props => {
     return (
         <CModal show={props.modalFlag} onClose={props.modalToggle}
             className={'modal-success ' + props.className}>
-            <CModalHeader closeButton>메모 추가</CModalHeader>
+            <CModalHeader closeButton>계정코드 추가</CModalHeader>
             <CForm onSubmit={handleSubmit(onSubmit)}>
                 <CModalBody>
+                <CFormGroup row>
+                        <CCol xs="12" md="12">
+                            <CInputGroup>
+                                <CInputGroupPrepend>
+                                    <CInputGroupText style={{ minWidth: 70 }}>코드</CInputGroupText>
+                                </CInputGroupPrepend>
+                                <Controller
+                                    name="acodeId"
+                                    key={"acodeId" + props.dataFromParent.id}
+                                    control={control}
+                                    defaultValue={''}
+                                    render={(ctrlProps) => (
+                                        <CInput
+                                            type="text"
+                                            name="acodeId"
+                                            placeholder="코드를 입력해 주세요."
+                                            className={"form-control" + (errors.acodeId ? " is-invalid" : " is-valid")}
+                                            value={ctrlProps.value}
+                                            onChange={ctrlProps.onChange}
+                                        />
+                                    )}
+                                    rules={{
+                                        required: {
+                                            value: true,
+                                            message: "(Required) 코드를 입력해 주세요."
+                                        },
+                                        minLength: {
+                                            value: 2,
+                                            message: "(MinLength) 코드는 2자 입니다."
+                                        },
+                                        maxLength: {
+                                            value: 2,
+                                            message: "(MaxLength) 코드는 2자 입니다."
+                                        }
+                                    }}
+                                />
+                                {errors.acodeId && <CInvalidFeedback>{errors.acodeId.message}</CInvalidFeedback>}
+                            </CInputGroup>
+                        </CCol>
+                    </CFormGroup>
                     <CFormGroup row>
                         <CCol xs="12" md="12">
                             <CInputGroup>
                                 <CInputGroupPrepend>
-                                    <CInputGroupText style={{ minWidth: 70 }}>제목</CInputGroupText>
+                                    <CInputGroupText style={{ minWidth: 70 }}>코드명</CInputGroupText>
                                 </CInputGroupPrepend>
                                 <Controller
                                     name="title"
@@ -71,7 +111,7 @@ const AccountCodeAdd = props => {
                                         <CInput
                                             type="text"
                                             name="title"
-                                            placeholder="제목을 입력해 주세요."
+                                            placeholder="코드명을 입력해 주세요."
                                             className={"form-control" + (errors.title ? " is-invalid" : " is-valid")}
                                             value={ctrlProps.value}
                                             onChange={ctrlProps.onChange}
@@ -80,83 +120,19 @@ const AccountCodeAdd = props => {
                                     rules={{
                                         required: {
                                             value: true,
-                                            message: "제목을 입력해 주세요."
+                                            message: "코드명을 입력해 주세요."
                                         },
                                         minLength: {
                                             value: 1,
-                                            message: "제목은 1자 이상 입니다."
+                                            message: "코드명은 1자 이상 입니다."
                                         },
                                         maxLength: {
                                             value: 100,
-                                            message: "제목은 100자 이내 입니다."
+                                            message: "코드명은 100자 이내 입니다."
                                         }
                                     }}
                                 />
                                 {errors.title && <CInvalidFeedback>{errors.title.message}</CInvalidFeedback>}
-                            </CInputGroup>
-                        </CCol>
-                    </CFormGroup>
-                    <CFormGroup row>
-                        <CCol xs="12" md="12">
-                            <CInputGroup>
-                                <CInputGroupPrepend>
-                                    <CInputGroupText style={{ minWidth: 70 }}>작성일</CInputGroupText>
-                                </CInputGroupPrepend>
-                                <Controller
-                                    name="wdate"
-                                    key={"wdate" + props.dataFromParent.id}
-                                    control={control}
-                                    defaultValue={''}
-                                    render={(ctrlProps) => (
-                                        <CInput
-                                            type="date"
-                                            name="wdate"
-                                            placeholder="작성일를 선택해 주세요."
-                                            className={"form-control" + (errors.wdate ? " is-invalid" : " is-valid")}
-                                            value={ctrlProps.value}
-                                            onChange={ctrlProps.onChange}
-                                        />
-                                    )}
-                                    rules={{
-                                        required: {
-                                            value: true,
-                                            message: "작성일를 선택해 주세요."
-                                        }
-                                    }}
-                                />
-                                {errors.wdate && <CInvalidFeedback>{errors.wdate.message}</CInvalidFeedback>}
-                            </CInputGroup>
-                        </CCol>
-                    </CFormGroup>
-                    <CFormGroup row>
-                        <CCol xs="12" md="12">
-                            <CInputGroup>
-                                <CInputGroupPrepend>
-                                    <CInputGroupText style={{ minWidth: 70 }}>내용</CInputGroupText>
-                                </CInputGroupPrepend>
-                                <Controller
-                                    name="content"
-                                    key={"content" + props.dataFromParent.id}
-                                    control={control}
-                                    defaultValue={''}
-                                    render={(ctrlProps) => (
-                                        <CTextarea
-                                            name="content"
-                                            placeholder="내용을 입력해 주세요."
-                                            className={"form-control" + (errors.content ? " is-invalid" : " is-valid")}
-                                            style={{ minHeight: 120 }}
-                                            value={ctrlProps.value}
-                                            onChange={ctrlProps.onChange}
-                                        />
-                                    )}
-                                    rules={{
-                                        required: {
-                                            value: true,
-                                            message: "내용을 입력해 주세요."
-                                        }
-                                    }}
-                                />
-                                {errors.content && <CInvalidFeedback>{errors.content.message}</CInvalidFeedback>}
                             </CInputGroup>
                         </CCol>
                     </CFormGroup>

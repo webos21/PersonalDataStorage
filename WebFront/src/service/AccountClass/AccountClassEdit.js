@@ -67,13 +67,13 @@ const AccountClassEdit = props => {
             }
             return res.json();
         }).then(function (resJson) {
-            console.log("MemoEdit::fetch => " + resJson.result);
+            console.log("AccountClassEdit::fetch => " + resJson.result);
             if (resJson.result === "OK") {
                 props.modalToggle();
                 props.callbackFromParent(resJson.data[0]);
             }
         }).catch(function (error) {
-            console.log("MemoEdit::fetch => " + error);
+            console.log("AccountClassEdit::fetch => " + error);
             setError("siteUrl", "serverResponse", error.message);
         });
     };
@@ -81,7 +81,7 @@ const AccountClassEdit = props => {
     return (
         <CModal show={props.modalFlag} onClose={props.modalToggle}
             className={'modal-warning ' + props.className}>
-            <CModalHeader closeButton>메모 수정</CModalHeader>
+            <CModalHeader closeButton>계정분류 수정</CModalHeader>
             <CForm onSubmit={handleSubmit(onSubmit)}>
                 <CModalBody>
                     <CFormGroup row>

@@ -131,7 +131,7 @@ public class AccountClassRepoImpl implements AccountClassRepo {
 							new String[] { Long.toString(newRow.getId()) });
 				} else {
 					ContentValues cv = new ContentValues();
-					// cv.put("id", newRow.getId());
+					cv.put("id", newRow.getId());
 					cv.put("title", newRow.getTitle());
 					db.insert(DbConsts.TB_ACCOUNT_CLASS, null, cv);
 				}

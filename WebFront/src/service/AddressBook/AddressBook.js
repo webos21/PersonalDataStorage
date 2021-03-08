@@ -8,12 +8,12 @@ import CIcon from '@coreui/icons-react'
 import { freeSet } from '@coreui/icons'
 
 import Pager from '../../components/Pager/Pager';
-import AccountCodeAdd from './AccountCodeAdd.js';
-import AccountCodeEdit from './AccountCodeEdit.js';
+import AbFormAdd from './AbFormAdd.js';
+import AbFormEdit from './AbFormEdit.js';
 import update from 'immutability-helper';
 import Cookies from 'universal-cookie';
 
-class AccountCode extends Component {
+class AddressBook extends Component {
   constructor(props) {
     super(props);
 
@@ -36,8 +36,16 @@ class AccountCode extends Component {
       dataSet: [],
       currentData: {
         id: -1,
-        accountCode: '',
-        title: '',
+        fullName: '',
+        mobile: '',
+        category: '',
+        telephone: '',
+        fax: '',
+        email: '',
+        homepage: '',
+        postcode: '',
+        address: '',
+        memo: '',
       },
       totalCount: 0,
       itemsPerPage: 10,
@@ -48,11 +56,12 @@ class AccountCode extends Component {
       keywordError: "",
       modalFlagAdd: false,
       modalFlagEdit: false,
+
     };
   }
 
   dataChangedCallback(modifiedData) {
-    console.log("AccountClass::dataChangedCallback");
+    console.log("PasswordBook::dataChangedCallback");
     if (modifiedData !== undefined && modifiedData !== null) {
       for (var i = 0; i < this.state.dataSet.length; i++) {
         if (this.state.dataSet[i].id === modifiedData.id) {
@@ -69,7 +78,7 @@ class AccountCode extends Component {
 
   requestFetch(query, page) {
     const parentState = this;
-    const REQ_URI = (process.env.NODE_ENV !== 'production') ? 'http://' + window.location.hostname + ':28080/pds/v1/accountCode' : '/pds/v1/accountCode';
+    const REQ_URI = (process.env.NODE_ENV !== 'production') ? 'http://' + window.location.hostname + ':28080/pds/v1/address' : '/pds/v1/address';
 
     const reqUri = REQ_URI + '?perPage=' + this.state.itemsPerPage +
       '&page=' + ((page === null || page === undefined) ? 1 : page) +
@@ -91,7 +100,7 @@ class AccountCode extends Component {
       }
       return res.json();
     }).then(function (resJson) {
-      console.log("AccountCode::fetch => " + resJson.result);
+      console.log("PasswordBook::fetch => " + resJson.result);
 
       var dataLen = resJson.pagination.totalCount;
       var calcPages = Math.ceil(dataLen / parentState.state.itemsPerPage);
@@ -104,7 +113,7 @@ class AccountCode extends Component {
         keywordError: '',
       });
     }).catch(function (error) {
-      console.log("AccountCode::fetch => " + error);
+      console.log("PasswordBook::fetch => " + error);
       parentState.setState({ keywordError: error.message })
     });
   }
@@ -117,9 +126,17 @@ class AccountCode extends Component {
     let newEmptyId = (this.state.emptyId ? (this.state.emptyId - 1) : -1);
     let emptyObj = {
       id: newEmptyId,
-      accountCode: '',
-      title: '',
-  }
+      fullName: '',
+      mobile: '',
+      category: '',
+      telephone: '',
+      fax: '',
+      email: '',
+      homepage: '',
+      postcode: '',
+      address: '',
+      memo: '',
+    }
     this.setState({ emptyId: newEmptyId });
     return emptyObj;
   }
@@ -149,7 +166,7 @@ class AccountCode extends Component {
 
   handleSearchGo(event) {
     event.preventDefault();
-    this.setState({ currentPage: 1, keyword: event.target.keyword.value });
+    this.setState({ keyword: event.target.keyword.value });
     this.requestFetch(event.target.keyword.value);
   }
 
@@ -171,16 +188,17 @@ class AccountCode extends Component {
     if (dataArray.length === 0) {
       return (
         <tr key="row-nodata">
-          <td colSpan="4" className="text-center align-middle" height="200">No Data</td>
+          <td colSpan="5" className="text-center align-middle" height="200">No Data</td>
         </tr>
       )
     } else {
       return dataArray.map((data, index) => {
         return (
-          <tr key={'memo-' + data.id} onClick={this.handleEdit.bind(this, data)}>
+          <tr key={'abdata-' + data.id} onClick={this.handleEdit.bind(this, data)}>
             <td>{data.id}</td>
-            <td>{data.accountCode}</td>
-            <td>{data.title}</td>
+            <td>{data.fullName}</td>
+            <td>{data.category}</td>
+            <td>{data.mobile}</td>
           </tr>
         )
       })
@@ -195,7 +213,7 @@ class AccountCode extends Component {
             <CCard>
               <CCardHeader>
                 <strong>Search</strong>
-                <small> Memo</small>
+                <small> Address</small>
               </CCardHeader>
               <CCardBody>
                 <CRow>
@@ -228,7 +246,7 @@ class AccountCode extends Component {
           <CCol>
             <CCard>
               <CCardHeader>
-                <strong>Memo List</strong>
+                <strong>Address List</strong>
                 <small>  (Total : {this.state.totalCount})</small>
                 <span className="float-right">
                   <CButton color="danger" size="sm" variant="ghost">
@@ -243,8 +261,9 @@ class AccountCode extends Component {
                   <thead>
                     <tr>
                       <th>ID</th>
-                      <th>분류코드</th>
-                      <th>코드명</th>
+                      <th>이름</th>
+                      <th>분류</th>
+                      <th>핸드폰</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -262,8 +281,8 @@ class AccountCode extends Component {
             </CCard>
           </CCol>
         </CRow>
-        <AccountCodeAdd modalFlag={this.state.modalFlagAdd} modalToggle={this.modalToggleAdd} dataFromParent={this.state.currentData} callbackFromParent={this.dataChangedCallback} />
-        <AccountCodeEdit modalFlag={this.state.modalFlagEdit} modalToggle={this.modalToggleEdit} dataFromParent={this.state.currentData} callbackFromParent={this.dataChangedCallback} />
+        <AbFormAdd modalFlag={this.state.modalFlagAdd} modalToggle={this.modalToggleAdd} dataFromParent={this.state.currentData} callbackFromParent={this.dataChangedCallback} />
+        <AbFormEdit modalFlag={this.state.modalFlagEdit} modalToggle={this.modalToggleEdit} dataFromParent={this.state.currentData} callbackFromParent={this.dataChangedCallback} />
 
       </>
 
@@ -271,4 +290,4 @@ class AccountCode extends Component {
   }
 }
 
-export default AccountCode;
+export default AddressBook;

@@ -13,6 +13,7 @@ import com.gmail.webos21.nano.RouteResult;
 import com.gmail.webos21.nano.StaticRouter;
 import com.gmail.webos21.pds.web.handler.AccountClassHandler;
 import com.gmail.webos21.pds.web.handler.AccountCodeHandler;
+import com.gmail.webos21.pds.web.handler.AddressBookHandler;
 import com.gmail.webos21.pds.web.handler.AnniversaryHandler;
 import com.gmail.webos21.pds.web.handler.AuthHandler;
 import com.gmail.webos21.pds.web.handler.DiaryHandler;
@@ -50,6 +51,7 @@ public class PdsWebServer extends NanoHTTPD {
 		dynamicRouter.addDynamicPage("/pds/v1/fs", FsHandler.class, "/pds/v1/fs", fsroot);
 		dynamicRouter.addDynamicPage("/pds/v1/accountClass", AccountClassHandler.class);
 		dynamicRouter.addDynamicPage("/pds/v1/accountCode", AccountCodeHandler.class);
+		dynamicRouter.addDynamicPage("/pds/v1/address", AddressBookHandler.class);
 		dynamicRouter.addDynamicPage("/pds/v1/anniversary", AnniversaryHandler.class);
 		dynamicRouter.addDynamicPage("/pds/v1/pwbook", PasswordBookHandler.class);
 		dynamicRouter.addDynamicPage("/pds/v1/diary", DiaryHandler.class);
