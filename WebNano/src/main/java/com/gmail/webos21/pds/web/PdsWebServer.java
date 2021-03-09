@@ -16,6 +16,8 @@ import com.gmail.webos21.pds.web.handler.AccountCodeHandler;
 import com.gmail.webos21.pds.web.handler.AddressBookHandler;
 import com.gmail.webos21.pds.web.handler.AnniversaryHandler;
 import com.gmail.webos21.pds.web.handler.AuthHandler;
+import com.gmail.webos21.pds.web.handler.BankHandler;
+import com.gmail.webos21.pds.web.handler.BankRecordHandler;
 import com.gmail.webos21.pds.web.handler.DiaryHandler;
 import com.gmail.webos21.pds.web.handler.FsHandler;
 import com.gmail.webos21.pds.web.handler.MemoHandler;
@@ -53,6 +55,8 @@ public class PdsWebServer extends NanoHTTPD {
 		dynamicRouter.addDynamicPage("/pds/v1/accountCode", AccountCodeHandler.class);
 		dynamicRouter.addDynamicPage("/pds/v1/address", AddressBookHandler.class);
 		dynamicRouter.addDynamicPage("/pds/v1/anniversary", AnniversaryHandler.class);
+		dynamicRouter.addDynamicPage("/pds/v1/bank", BankHandler.class);
+		dynamicRouter.addDynamicPage("/pds/v1/bankRecord", BankRecordHandler.class);
 		dynamicRouter.addDynamicPage("/pds/v1/pwbook", PasswordBookHandler.class);
 		dynamicRouter.addDynamicPage("/pds/v1/diary", DiaryHandler.class);
 		dynamicRouter.addDynamicPage("/pds/v1/memo", MemoHandler.class);

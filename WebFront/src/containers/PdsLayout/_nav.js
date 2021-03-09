@@ -30,6 +30,16 @@ const navItems = [
         name: 'Anniversary',
         to: '/anniversary',
       },
+      {
+        _tag: 'CSidebarNavItem',
+        name: 'Bank',
+        to: '/bank',
+      },
+      {
+        _tag: 'CSidebarNavItem',
+        name: 'BankRecord',
+        to: '/bankRecord',
+      },
     ]
   },
   {

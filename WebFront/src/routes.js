@@ -42,6 +42,8 @@ const AccountClass = React.lazy(() => import('./service/AccountClass'));
 const AccountCode = React.lazy(() => import('./service/AccountCode'));
 const Anniversary = React.lazy(() => import('./service/Anniversary'));
 const AddressBook = React.lazy(() => import('./service/AddressBook'));
+const Bank = React.lazy(() => import('./service/Bank'));
+const BankRecord = React.lazy(() => import('./service/BankRecord'));
 const PasswordBook = React.lazy(() => import('./service/PasswordBook'));
 const DiaryBoard = React.lazy(() => import('./service/DiaryBoard'));
 const DiaryCalendar = React.lazy(() => import('./service/DiaryCalendar'));
@@ -95,6 +97,8 @@ const routes = [
   { path: '/accountCode', name: 'AccountCode', component: AccountCode },
   { path: '/anniversary', name: 'Anniversary', component: Anniversary },
   { path: '/addressbook', name: 'AddressBook', component: AddressBook },
+  { path: '/bank', name: 'Bank', component: Bank },
+  { path: '/bankRecord', name: 'BankRecord', component: BankRecord },
   { path: '/passwordbook', name: 'PasswordBook', component: PasswordBook },
   { path: '/diary-board', name: 'DiaryBoard', component: DiaryBoard },
   { path: '/diary-calendar', name: 'DiaryCalendar', component: DiaryCalendar },
