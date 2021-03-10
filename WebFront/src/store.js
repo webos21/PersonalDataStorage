@@ -1,19 +1,9 @@
-import { createStore } from 'redux'
+import { combineReducers, createStore } from 'redux'
+import * as reducers from './reducers';
 
-const initialState = {
-    sidebarShow: 'responsive'
-}
+const rootReducer = combineReducers(reducers);
 
-const changeState = (state = initialState, { type, ...rest }) => {
-    switch (type) {
-        case 'set':
-            return { ...state, ...rest }
-        default:
-            return state
-    }
-}
+// redux store
+const store = createStore(rootReducer, window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__());
 
-const store = createStore(changeState)
-
-export default store
-
+export default store;

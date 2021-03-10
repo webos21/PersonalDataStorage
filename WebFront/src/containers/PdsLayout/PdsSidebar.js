@@ -18,13 +18,13 @@ import CIcon from '@coreui/icons-react'
 import navigation from './_nav'
 
 const PdsSidebar = () => {
-  const dispatch = useDispatch()
-  const show = useSelector(state => state.sidebarShow)
+  const dispatch = useDispatch();
+  const show = useSelector(state => state.sidebar.sidebarShow);
 
   return (
     <CSidebar
       show={show}
-      onShowChange={(val) => dispatch({type: 'set', sidebarShow: val })}
+      onShowChange={(val) => dispatch({ type: 'SIDEBAR_SET', sidebarShow: val })}
     >
       <CSidebarBrand className="d-md-down-none" to="/">
         <CIcon
@@ -50,7 +50,7 @@ const PdsSidebar = () => {
           }}
         />
       </CSidebarNav>
-      <CSidebarMinimizer className="c-d-md-down-none"/>
+      <CSidebarMinimizer className="c-d-md-down-none" />
     </CSidebar>
   )
 }
