@@ -1,2 +1,2 @@
-export {default as bank} from "./Banks";
-export {default as sidebar} from "./SidebarControl";
+export {default as bank} from "./BankReducer";
+export {default as sidebar} from "./SidebarReducer";

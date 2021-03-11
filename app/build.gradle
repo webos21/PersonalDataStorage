@@ -35,12 +35,12 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation "androidx.appcompat:appcompat:1.2.0"                        // from com.android.support:appcompat-v7
     implementation "androidx.preference:preference:1.1.1"                      // from com.android.support:preference-v7
-    implementation 'com.google.android.material:material:1.3.0-beta01'         // from com.android.support:design
-    implementation 'androidx.biometric:biometric:1.0.1'
+    implementation 'com.google.android.material:material:1.4.0-alpha01'         // from com.android.support:design
+    implementation 'androidx.biometric:biometric:1.1.0'
     androidTestImplementation 'androidx.test:runner:1.3.0'                     // from androidx.test:runner
-    androidTestImplementation 'junit:junit:4.13'
-    androidTestUtil 'androidx.test:orchestrator:1.1.0'
-    testImplementation 'junit:junit:4.13'
+    androidTestImplementation 'junit:junit:4.13.2'
+    androidTestUtil 'androidx.test:orchestrator:1.3.0'
+    testImplementation 'junit:junit:4.13.2'
 }
 
 configurations.all {
