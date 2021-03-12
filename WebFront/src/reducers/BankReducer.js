@@ -1,17 +1,37 @@
+import AllActions from '../actions'
 
 const initialState = {
-    bankShow: 'false'
+    pending: false,
+    banks: [],
+    error: null
 }
 
-const changeBanks = (state = initialState, { type, ...rest }) => {
+const BankReducer = (state = initialState, { type, ...rest }) => {
     switch (type) {
-        case 'BANK_SET':
+        case AllActions.bank.FETCH_BANKS_PENDING:
             console.log("Banks", state, type);
-            return { ...state, ...rest }
+            return {
+                ...state,
+                pending: true
+            };
+        case AllActions.bank.FETCH_BANKS_SUCCESS:
+            console.log("Banks", state, type);
+            return {
+                ...state,
+                pending: false,
+                ...rest
+            };
+        case AllActions.bank.FETCH_BANKS_ERROR:
+            console.log("Banks", state, type);
+            return {
+                ...state,
+                pending: false,
+                ...rest
+            };
         default:
             // console.warn("Bank: unknown event", state, type);
-            return state
+            return state;
     }
 }
 
-export default changeBanks;
+export default BankReducer;
