@@ -11,7 +11,6 @@ import Pager from '../../components/Pager';
 import MemoAdd from './MemoAdd.js';
 import MemoEdit from './MemoEdit.js';
 import update from 'immutability-helper';
-import Cookies from 'universal-cookie';
 import { dateFormat } from '../../components/Util/DateUtil'
 
 class Memo extends Component {
@@ -76,12 +75,11 @@ class Memo extends Component {
     const reqUri = REQ_URI + '?perPage=' + this.state.itemsPerPage +
       '&page=' + ((page === null || page === undefined) ? 1 : page) +
       ((query === null || query === undefined) ? '' : '&q=' + query);
-    const cookies = new Cookies();
 
     fetch(reqUri, {
       method: 'GET',
       headers: new Headers({
-        'X-PDS-AUTH': cookies.get("X-PDS-AUTH"),
+        'X-PDS-AUTH': localStorage.getItem("X-PDS-AUTH"),
         'Authorization': 'Basic ' + btoa('username:password'),
       })
     }).then(function (res) {

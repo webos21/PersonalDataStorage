@@ -11,7 +11,6 @@ import Pager from '../../components/Pager';
 import DiaryAdd from './DiaryAdd.js';
 import DiaryEdit from './DiaryEdit.js';
 import update from 'immutability-helper';
-import Cookies from 'universal-cookie';
 import { dateFormat } from '../../components/Util/DateUtil'
 
 class DiaryBoard extends Component {
@@ -77,12 +76,11 @@ class DiaryBoard extends Component {
     const reqUri = REQ_URI + '?perPage=' + this.state.itemsPerPage +
       '&page=' + ((page === null || page === undefined) ? 1 : page) +
       ((query === null || query === undefined) ? '' : '&q=' + query);
-    const cookies = new Cookies();
 
     fetch(reqUri, {
       method: 'GET',
       headers: new Headers({
-        'X-PDS-AUTH': cookies.get("X-PDS-AUTH"),
+        'X-PDS-AUTH': localStorage.getItem("X-PDS-AUTH"),
         'Authorization': 'Basic ' + btoa('username:password'),
       })
     }).then(function (res) {

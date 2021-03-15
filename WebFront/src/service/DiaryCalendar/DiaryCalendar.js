@@ -4,7 +4,6 @@ import { CCol, CRow } from '@coreui/react';
 import DiaryAdd from './DiaryAdd.js';
 import DiaryEdit from './DiaryEdit.js';
 import update from 'immutability-helper';
-import Cookies from 'universal-cookie';
 import { dateFormat } from '../../components/Util/DateUtil'
 
 import FullCalendar from '@fullcalendar/react'
@@ -56,12 +55,11 @@ class DiaryCalendar extends Component {
     const REQ_URI = (process.env.NODE_ENV !== 'production') ? 'http://' + window.location.hostname + ':28080/pds/v1/anniversary' : '/pds/v1/anniversary';
 
     const reqUri = REQ_URI + ((year !== undefined && year !== null) ? '?year=' + year : '');
-    const cookies = new Cookies();
 
     fetch(reqUri, {
       method: 'GET',
       headers: new Headers({
-        'X-PDS-AUTH': cookies.get("X-PDS-AUTH"),
+        'X-PDS-AUTH': localStorage.getItem("X-PDS-AUTH"),
         'Authorization': 'Basic ' + btoa('username:password'),
       })
     }).then(function (res) {
@@ -115,12 +113,11 @@ class DiaryCalendar extends Component {
     const REQ_URI = (process.env.NODE_ENV !== 'production') ? 'http://' + window.location.hostname + ':28080/pds/v1/diary' : '/pds/v1/diary';
 
     const reqUri = REQ_URI + '?year=' + year + '&month=' + month;
-    const cookies = new Cookies();
 
     fetch(reqUri, {
       method: 'GET',
       headers: new Headers({
-        'X-PDS-AUTH': cookies.get("X-PDS-AUTH"),
+        'X-PDS-AUTH': localStorage.getItem("X-PDS-AUTH"),
         'Authorization': 'Basic ' + btoa('username:password'),
       })
     }).then(function (res) {

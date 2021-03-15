@@ -10,7 +10,6 @@ import { freeSet } from '@coreui/icons'
 import BankAdd from './BankAdd.js';
 import BankEdit from './BankEdit.js';
 import update from 'immutability-helper';
-import Cookies from 'universal-cookie';
 
 class Bank extends Component {
   constructor(props) {
@@ -77,12 +76,11 @@ class Bank extends Component {
     const REQ_URI = (process.env.NODE_ENV !== 'production') ? 'http://' + window.location.hostname + ':28080/pds/v1/bank' : '/pds/v1/bank';
 
     const reqUri = REQ_URI + ((query === null || query === undefined) ? '' : '?q=' + query);
-    const cookies = new Cookies();
 
     fetch(reqUri, {
       method: 'GET',
       headers: new Headers({
-        'X-PDS-AUTH': cookies.get("X-PDS-AUTH"),
+        'X-PDS-AUTH': localStorage.getItem("X-PDS-AUTH"),
         'Authorization': 'Basic ' + btoa('username:password'),
       })
     }).then(function (res) {

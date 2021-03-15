@@ -7,7 +7,6 @@ import {
 } from '@coreui/react';
 
 import { useForm, Controller } from "react-hook-form";
-import Cookies from 'universal-cookie';
 
 const AbFormEdit = props => {
 
@@ -19,12 +18,10 @@ const AbFormEdit = props => {
     });
 
     const onDelete = () => {
-        const cookies = new Cookies();
-
         fetch(REQ_URI + '?abId=' + props.dataFromParent.id, {
             method: 'DELETE',
             headers: new Headers({
-                'X-PDS-AUTH': cookies.get("X-PDS-AUTH"),
+                'X-PDS-AUTH': localStorage.getItem("X-PDS-AUTH"),
                 'Authorization': 'Basic ' + btoa('username:password'),
             }),
         }).then(function (res) {
@@ -49,12 +46,11 @@ const AbFormEdit = props => {
 
     const onSubmit = (data, e) => {
         const formData = new FormData(e.target);
-        const cookies = new Cookies();
 
         fetch(REQ_URI, {
             method: 'PUT',
             headers: new Headers({
-                'X-PDS-AUTH': cookies.get("X-PDS-AUTH"),
+                'X-PDS-AUTH': localStorage.getItem("X-PDS-AUTH"),
                 'Authorization': 'Basic ' + btoa('username:password'),
             }),
             body: formData

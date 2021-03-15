@@ -7,7 +7,6 @@ import {
 } from '@coreui/react';
 
 import { useForm, Controller } from "react-hook-form";
-import Cookies from 'universal-cookie';
 import { dateFormat } from '../../components/Util/DateUtil'
 
 const BankEdit = props => {
@@ -20,12 +19,10 @@ const BankEdit = props => {
     });
 
     const onDelete = () => {
-        const cookies = new Cookies();
-
         fetch(REQ_URI + '?bankId=' + props.dataFromParent.id, {
             method: 'DELETE',
             headers: new Headers({
-                'X-PDS-AUTH': cookies.get("X-PDS-AUTH"),
+                'X-PDS-AUTH': localStorage.getItem("X-PDS-AUTH"),
                 'Authorization': 'Basic ' + btoa('username:password'),
             }),
         }).then(function (res) {
@@ -50,12 +47,11 @@ const BankEdit = props => {
 
     const onSubmit = (data, e) => {
         const formData = new FormData(e.target);
-        const cookies = new Cookies();
 
         fetch(REQ_URI, {
             method: 'PUT',
             headers: new Headers({
-                'X-PDS-AUTH': cookies.get("X-PDS-AUTH"),
+                'X-PDS-AUTH': localStorage.getItem("X-PDS-AUTH"),
                 'Authorization': 'Basic ' + btoa('username:password'),
             }),
             body: formData

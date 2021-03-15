@@ -11,7 +11,6 @@ import Pager from '../../components/Pager/Pager';
 import AbFormAdd from './AbFormAdd.js';
 import AbFormEdit from './AbFormEdit.js';
 import update from 'immutability-helper';
-import Cookies from 'universal-cookie';
 
 class AddressBook extends Component {
   constructor(props) {
@@ -83,12 +82,11 @@ class AddressBook extends Component {
     const reqUri = REQ_URI + '?perPage=' + this.state.itemsPerPage +
       '&page=' + ((page === null || page === undefined) ? 1 : page) +
       ((query === null || query === undefined) ? '' : '&q=' + query);
-    const cookies = new Cookies();
 
     fetch(reqUri, {
       method: 'GET',
       headers: new Headers({
-        'X-PDS-AUTH': cookies.get("X-PDS-AUTH"),
+        'X-PDS-AUTH': localStorage.getItem("X-PDS-AUTH"),
         'Authorization': 'Basic ' + btoa('username:password'),
       })
     }).then(function (res) {

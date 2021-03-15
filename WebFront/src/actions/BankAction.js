@@ -1,5 +1,3 @@
-import Cookies from 'universal-cookie';
-
 const FETCH_BANKS_PENDING = 'FETCH_BANKS_PENDING';
 const FETCH_BANKS_SUCCESS = 'FETCH_BANKS_SUCCESS';
 const FETCH_BANKS_ERROR = 'FETCH_BANKS_ERROR';
@@ -26,13 +24,12 @@ const fetchBanksError = (error) => {
 
 const fetchBanks = (storeDispatch) => {
     const REQ_URI = (process.env.NODE_ENV !== 'production') ? 'http://' + window.location.hostname + ':28080/pds/v1/bank' : '/pds/v1/bank';
-    const cookies = new Cookies();
 
     storeDispatch(fetchBanksPending());
     fetch(REQ_URI, {
         method: 'GET',
         headers: new Headers({
-            'X-PDS-AUTH': cookies.get("X-PDS-AUTH"),
+            'X-PDS-AUTH': localStorage.getItem("X-PDS-AUTH"),
             'Authorization': 'Basic ' + btoa('username:password'),
         })
     }).then(res => res.json())

@@ -8,7 +8,6 @@ import CIcon from '@coreui/icons-react'
 import { freeSet } from '@coreui/icons'
 
 import { useForm,Controller } from "react-hook-form";
-import Cookies from 'universal-cookie';
 import { dateFormat } from '../../components/Util/DateUtil'
 
 const MemoDel = props => {
@@ -27,12 +26,10 @@ const MemoDel = props => {
     }
 
     const onSubmit = (data, e) => {
-        const cookies = new Cookies();
-    
         fetch(REQ_URI + '?memoId=' + data.memoId, {
             method: 'DELETE',
             headers: new Headers({
-                'X-PDS-AUTH': cookies.get("X-PDS-AUTH"),
+                'X-PDS-AUTH': localStorage.getItem("X-PDS-AUTH"),
                 'Authorization': 'Basic ' + btoa('username:password'),
             }),
         }).then(function (res) {

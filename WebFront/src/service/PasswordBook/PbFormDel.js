@@ -6,7 +6,6 @@ import {
 } from '@coreui/react';
 
 import { useForm, Controller } from "react-hook-form";
-import Cookies from 'universal-cookie';
 import { dateFormat } from '../../components/Util/DateUtil'
 
 const PbFormDel = props => {
@@ -25,12 +24,10 @@ const PbFormDel = props => {
     }
 
     const onSubmit = (data, e) => {
-        const cookies = new Cookies();
-
         fetch(REQ_URI + '?siteId=' + data.siteId, {
             method: 'DELETE',
             headers: new Headers({
-                'X-PDS-AUTH': cookies.get("X-PDS-AUTH"),
+                'X-PDS-AUTH': localStorage.getItem("X-PDS-AUTH"),
                 'Authorization': 'Basic ' + btoa('username:password'),
             }),
         }).then(function (res) {
