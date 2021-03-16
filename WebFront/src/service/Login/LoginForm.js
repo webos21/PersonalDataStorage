@@ -1,4 +1,5 @@
 import React from 'react';
+import { withRouter } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux'
 
 import {
@@ -13,9 +14,7 @@ import AllActions from 'src/actions';
 const LoginForm = props => {
     const dispatch = useDispatch()
 
-    const crypto = require('crypto');
-
-    const REQ_URI = (process.env.NODE_ENV !== 'production') ? 'http://' + window.location.hostname + ':28080/pds/v1/auth' : '/pds/v1/auth';
+    const authError = useSelector(state => AllActions.auth.getAuthError(state));
 
     const { handleSubmit, errors, setError, control } = useForm({
         submitFocusError: true,
@@ -23,23 +22,13 @@ const LoginForm = props => {
     });
 
     const onSubmit = (data, e) => {
-        var iv = Buffer.from("PasswordBook1234");
-        var sha256 = crypto.createHash('sha256');
-        sha256.update('PasswordBook');
-
-        var aesCipher = crypto.createCipheriv('aes-256-cbc', sha256.digest(), iv);
-        aesCipher.update(e.target.pbpwd.value);
-        var cryptBytes = aesCipher.final();
-        var base64Result = cryptBytes.toString('base64');
-
-        // console.log("base64Result = " + base64Result);
-
-        e.target.pbpwd.value = base64Result;
-
-        const formData = new FormData(e.target);
-
-        dispatch(AllActions.auth.authLogin(formData));
+        dispatch(AllActions.auth.authLogin(e.target.pbpwd.value));
     };
+
+    if (!errors.pbpwd && authError && authError.message) {
+        setError("pbpwd", { type: "ServerResponse", message: authError.message });
+        dispatch(AllActions.auth.authReset());
+    }
 
     return (
         <CForm onSubmit={handleSubmit(onSubmit)}>
@@ -92,4 +81,4 @@ const LoginForm = props => {
     );
 };
 
-export default LoginForm;
+export default withRouter(LoginForm);

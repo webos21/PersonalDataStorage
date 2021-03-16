@@ -10,8 +10,9 @@ const Page500 = React.lazy(() => import('./service/Page500/Page500'));
 const Login = React.lazy(() => import('./service/Login'));
 
 const isAuthenticated = () => {
-  let data = localStorage.getItem('X-PDS-AUTH');
-  return (data !== undefined && data !== null);
+  let akey = localStorage.getItem('authKey');
+  let aval = localStorage.getItem('authVal');
+  return (akey !== undefined && akey !== null && aval !== undefined && aval !== null);
 }
 
 const AuthenticatedRoute = ({ component: Component, ...rest }) => (
@@ -19,6 +20,14 @@ const AuthenticatedRoute = ({ component: Component, ...rest }) => (
     isAuthenticated()
       ? <Component {...props} />
       : <Redirect to={{ pathname: '/login', state: { from: props.location } }} />
+  )} />
+);
+
+const LoginRoute = ({ component: Component, ...rest }) => (
+  <Route {...rest} render={(props) => (
+    !isAuthenticated()
+      ? <Component {...props} />
+      : <Redirect to={{ pathname: '/', state: { from: props.location } }} />
   )} />
 );
 
@@ -31,8 +40,8 @@ class App extends Component {
       <HashRouter>
         <React.Suspense fallback={loading()}>
           <Switch>
-            <Route path="/login" component={Login} />
             <Route path="/500" component={Page500} />
+            <LoginRoute path="/login" component={Login} />
             <AuthenticatedRoute path="/" component={PdsLayout} />
           </Switch>
         </React.Suspense>

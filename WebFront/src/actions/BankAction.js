@@ -29,7 +29,7 @@ const fetchBanks = (storeDispatch) => {
     fetch(REQ_URI, {
         method: 'GET',
         headers: new Headers({
-            'X-PDS-AUTH': localStorage.getItem("X-PDS-AUTH"),
+            [localStorage.getItem("X-PDS-AUTH")]: localStorage.getItem("X-PDS-AUTH"),
             'Authorization': 'Basic ' + btoa('username:password'),
         })
     }).then(res => res.json())

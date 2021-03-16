@@ -5,7 +5,8 @@ import { CCol, CContainer, CRow } from '@coreui/react';
 class Logout extends Component {
 
   componentDidMount() {
-    localStorage.removeItem('X-PDS-AUTH');
+    localStorage.removeItem('authKey');
+    localStorage.removeItem('authVal');  
     this.props.history.push('/');
   }
 

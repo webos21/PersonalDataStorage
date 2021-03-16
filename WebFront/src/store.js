@@ -1,4 +1,4 @@
-import { combineReducers, createStore, applyMiddleware } from 'redux'
+import { combineReducers, createStore, applyMiddleware, compose } from 'redux'
 import mwThunk from 'redux-thunk';
 import { createLogger } from 'redux-logger';
 
@@ -11,10 +11,14 @@ const mwLogger = createLogger();
 // redux store
 const store = createStore(
     rootReducer,
-    applyMiddleware(
-        mwThunk,
-        mwLogger
-    ) && window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
+    {},
+    compose(
+        applyMiddleware(
+            mwThunk,
+            mwLogger
+        ),
+        window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
+    )
 );
 
 store.dispatch(AllActions.app.initApp({ initialized: true }));
