@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useForm,Controller } from "react-hook-form";
 
 import {
     CModal, CModalHeader, CModalBody, CModalFooter,
@@ -7,8 +8,7 @@ import {
 import CIcon from '@coreui/icons-react'
 import { freeSet } from '@coreui/icons'
 
-import { useForm,Controller } from "react-hook-form";
-import { dateFormat } from '../../components/Util/DateUtil'
+import Helper from '../../helpers'
 
 const MemoDel = props => {
 
@@ -28,10 +28,7 @@ const MemoDel = props => {
     const onSubmit = (data, e) => {
         fetch(REQ_URI + '?memoId=' + data.memoId, {
             method: 'DELETE',
-            headers: new Headers({
-                'X-PDS-AUTH': localStorage.getItem("X-PDS-AUTH"),
-                'Authorization': 'Basic ' + btoa('username:password'),
-            }),
+            headers: Helper.auth.makeAuthHeader(),
         }).then(function (res) {
             if (!res.ok) {
                 if (res.status === 401) {
@@ -64,7 +61,7 @@ const MemoDel = props => {
                         <p>다음 항목을 삭제할까요?</p>
                         <ul>
                             <li>메모 번호 : {props.dataFromParent.id}</li>
-                            <li>메모 날짜 : {dateFormat(new Date(props.dataFromParent.wdate))}</li>
+                            <li>메모 날짜 : {Helper.date.dateFormat(new Date(props.dataFromParent.wdate))}</li>
                             <li>메모 제목 : {props.dataFromParent.title}</li>
                         </ul>
                         <CFormGroup>

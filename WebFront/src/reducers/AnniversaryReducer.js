@@ -1,35 +1,35 @@
 import AllActions from '../actions'
 
 const initialState = {
-    dataSync: (localStorage.getItem('bankData') ? true : false),
+    dataSync: (localStorage.getItem('anniData') ? true : false),
     pending: false,
-    banks: JSON.parse(localStorage.getItem('bankData')),
+    annis: JSON.parse(localStorage.getItem('anniData')),
     error: null
 }
 
-const BankReducer = (state = initialState, { type, ...rest }) => {
+const AnniversaryReducer = (state = initialState, { type, ...rest }) => {
     switch (type) {
-        case AllActions.bank.BANK_CLEAR:
-            localStorage.removeItem('bankData')
+        case AllActions.anni.ANNI_CLEAR:
+            localStorage.removeItem('anniData')
             return {
                 dataSync: false,
                 pending: false,
-                banks: null,
+                aclasses: null,
                 error: null
             };
-        case AllActions.bank.BANK_FETCH_REQ:
+        case AllActions.anni.ANNI_FETCH_REQ:
             return {
                 ...state,
                 pending: true
             };
-        case AllActions.bank.BANK_FETCH_OK:
-            localStorage.setItem('bankData', JSON.stringify(rest.banks));
+        case AllActions.anni.ANNI_FETCH_OK:
+            localStorage.setItem('anniData', JSON.stringify(rest.annis));
             return {
                 ...state,
                 pending: false,
                 ...rest
             };
-        case AllActions.bank.BANK_FETCH_FAIL:
+        case AllActions.anni.ANNI_FETCH_FAIL:
             return {
                 ...state,
                 pending: false,
@@ -41,4 +41,4 @@ const BankReducer = (state = initialState, { type, ...rest }) => {
     }
 }
 
-export default BankReducer;
+export default AnniversaryReducer;

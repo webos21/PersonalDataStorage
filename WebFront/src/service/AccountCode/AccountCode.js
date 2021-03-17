@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import update from 'immutability-helper';
 
 import {
   CButton, CCard, CCardBody, CCardHeader, CCol, CRow,
@@ -10,7 +11,7 @@ import { freeSet } from '@coreui/icons'
 import Pager from '../../components/Pager/Pager';
 import AccountCodeAdd from './AccountCodeAdd.js';
 import AccountCodeEdit from './AccountCodeEdit.js';
-import update from 'immutability-helper';
+import Helper from '../../helpers'
 
 class AccountCode extends Component {
   constructor(props) {
@@ -76,10 +77,7 @@ class AccountCode extends Component {
 
     fetch(reqUri, {
       method: 'GET',
-      headers: new Headers({
-        'X-PDS-AUTH': localStorage.getItem("X-PDS-AUTH"),
-        'Authorization': 'Basic ' + btoa('username:password'),
-      })
+      headers: Helper.auth.makeAuthHeader(),
     }).then(function (res) {
       if (!res.ok) {
         if (res.status === 401) {

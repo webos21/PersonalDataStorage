@@ -1,4 +1,5 @@
 import React from 'react';
+import { useForm, Controller } from "react-hook-form";
 
 import {
     CModal, CModalHeader, CModalBody, CModalFooter, CButton, CCol,
@@ -6,8 +7,8 @@ import {
     CInputGroup, CInputGroupPrepend, CInputGroupText, CInput, CInputRadio, CLabel, CTextarea,
 } from '@coreui/react';
 
-import { useForm, Controller } from "react-hook-form";
-import { dateFormat } from '../../components/Util/DateUtil'
+import Helper from '../../helpers'
+
 
 const BankRecordEdit = props => {
 
@@ -21,10 +22,7 @@ const BankRecordEdit = props => {
     const onDelete = () => {
         fetch(REQ_URI + '?bankId=' + props.dataFromParent.id, {
             method: 'DELETE',
-            headers: new Headers({
-                'X-PDS-AUTH': localStorage.getItem("X-PDS-AUTH"),
-                'Authorization': 'Basic ' + btoa('username:password'),
-            }),
+            headers: Helper.auth.makeAuthHeader(),
         }).then(function (res) {
             if (!res.ok) {
                 if (res.status === 401) {
@@ -50,10 +48,7 @@ const BankRecordEdit = props => {
 
         fetch(REQ_URI, {
             method: 'PUT',
-            headers: new Headers({
-                'X-PDS-AUTH': localStorage.getItem("X-PDS-AUTH"),
-                'Authorization': 'Basic ' + btoa('username:password'),
-            }),
+            headers: Helper.auth.makeAuthHeader(),
             body: formData
         }).then(function (res) {
             if (!res.ok) {
@@ -344,7 +339,7 @@ const BankRecordEdit = props => {
                                     name="issueDate"
                                     key={"issueDate" + props.dataFromParent.id}
                                     control={control}
-                                    defaultValue={dateFormat(new Date(props.dataFromParent.issueDate))}
+                                    defaultValue={Helper.date.dateFormat(new Date(props.dataFromParent.issueDate))}
                                     render={(ctrlProps) => (
                                         <CInput
                                             type="date"
@@ -375,7 +370,7 @@ const BankRecordEdit = props => {
                                     name="expireDate"
                                     key={"expireDate" + props.dataFromParent.id}
                                     control={control}
-                                    defaultValue={dateFormat(new Date(props.dataFromParent.expireDate))}
+                                    defaultValue={Helper.date.dateFormat(new Date(props.dataFromParent.expireDate))}
                                     render={(ctrlProps) => (
                                         <CInput
                                             type="date"

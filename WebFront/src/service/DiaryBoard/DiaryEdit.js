@@ -1,4 +1,5 @@
 import React from 'react';
+import { useForm, Controller } from "react-hook-form";
 
 import {
     CModal, CModalHeader, CModalBody, CModalFooter, CButton, CCol,
@@ -6,8 +7,7 @@ import {
     CInputGroup, CInputGroupPrepend, CInputGroupText, CInput, CSelect, CTextarea
 } from '@coreui/react';
 
-import { useForm, Controller } from "react-hook-form";
-import { dateFormat } from '../../components/Util/DateUtil'
+import Helper from '../../helpers'
 
 const DiaryEdit = props => {
 
@@ -21,10 +21,7 @@ const DiaryEdit = props => {
     const onDelete = () => {
         fetch(REQ_URI + '?diaryId=' + props.dataFromParent.id, {
             method: 'DELETE',
-            headers: new Headers({
-                'X-PDS-AUTH': localStorage.getItem("X-PDS-AUTH"),
-                'Authorization': 'Basic ' + btoa('username:password'),
-            }),
+            headers: Helper.auth.makeAuthHeader(),
         }).then(function (res) {
             if (!res.ok) {
                 if (res.status === 401) {
@@ -50,10 +47,7 @@ const DiaryEdit = props => {
 
         fetch(REQ_URI, {
             method: 'PUT',
-            headers: new Headers({
-                'X-PDS-AUTH': localStorage.getItem("X-PDS-AUTH"),
-                'Authorization': 'Basic ' + btoa('username:password'),
-            }),
+            headers: Helper.auth.makeAuthHeader(),
             body: formData
         }).then(function (res) {
             if (!res.ok) {
@@ -146,7 +140,7 @@ const DiaryEdit = props => {
                                     name="wdate"
                                     key={"wdate" + props.dataFromParent.id}
                                     control={control}
-                                    defaultValue={props.dataFromParent.wdate !== '' ? dateFormat(new Date(props.dataFromParent.wdate)) : ''}
+                                    defaultValue={props.dataFromParent.wdate !== '' ? Helper.date.dateFormat(new Date(props.dataFromParent.wdate)) : ''}
                                     render={(ctrlProps) => (
                                         <CInput
                                             type="date"

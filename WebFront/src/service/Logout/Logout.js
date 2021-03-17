@@ -1,18 +1,20 @@
 import React, { Component } from 'react';
-import { withRouter } from "react-router-dom";
+import { connect } from 'react-redux'
+
 import { CCol, CContainer, CRow } from '@coreui/react';
+
+import AllActions from 'src/actions';
 
 class Logout extends Component {
 
   componentDidMount() {
-    localStorage.removeItem('authKey');
-    localStorage.removeItem('authVal');  
-    this.props.history.push('/');
+    this.props.logOut();
+    this.props.toHome();
   }
 
   render() {
     return (
-      <div className="app flex-row align-items-center">
+      <div className="c-app c-default-layout flex-row align-items-center">
         <CContainer>
           <CRow className="justify-content-center">
             <CCol md="6">
@@ -29,4 +31,13 @@ class Logout extends Component {
   }
 }
 
-export default withRouter(Logout);
+const mapStateToProps = (state, ownProps) => ({
+  storeLogOn: state.auth.logOn,
+});
+
+const mapDispatchToProps = (dispatch) => ({
+  logOut: () => dispatch(AllActions.auth.authLogout()),
+  toHome: () => dispatch(AllActions.auth.authHome()),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(Logout);

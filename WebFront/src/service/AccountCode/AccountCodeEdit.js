@@ -1,4 +1,5 @@
 import React from 'react';
+import { useForm, Controller } from "react-hook-form";
 
 import {
     CModal, CModalHeader, CModalBody, CModalFooter, CButton, CCol,
@@ -6,7 +7,8 @@ import {
     CInputGroup, CInputGroupPrepend, CInputGroupText, CInput,
 } from '@coreui/react';
 
-import { useForm, Controller } from "react-hook-form";
+import Helper from '../../helpers'
+
 
 const AccountCodeEdit = props => {
 
@@ -20,10 +22,7 @@ const AccountCodeEdit = props => {
     const onDelete = () => {
         fetch(REQ_URI + '?accId=' + props.dataFromParent.id, {
             method: 'DELETE',
-            headers: new Headers({
-                'X-PDS-AUTH': localStorage.getItem("X-PDS-AUTH"),
-                'Authorization': 'Basic ' + btoa('username:password'),
-            }),
+            headers: Helper.auth.makeAuthHeader(),
         }).then(function (res) {
             if (!res.ok) {
                 if (res.status === 401) {
@@ -49,10 +48,7 @@ const AccountCodeEdit = props => {
 
         fetch(REQ_URI, {
             method: 'PUT',
-            headers: new Headers({
-                'X-PDS-AUTH': localStorage.getItem("X-PDS-AUTH"),
-                'Authorization': 'Basic ' + btoa('username:password'),
-            }),
+            headers: Helper.auth.makeAuthHeader(),
             body: formData
         }).then(function (res) {
             if (!res.ok) {

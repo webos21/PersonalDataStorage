@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
+import { useForm, Controller } from "react-hook-form";
 
 import {
     CModal, CModalHeader, CModalBody, CModalFooter,
     CButton, CForm, CFormGroup, CInvalidFeedback, CInput
 } from '@coreui/react';
 
-import { useForm, Controller } from "react-hook-form";
+import Helper from '../../helpers'
+
 
 const AnniversaryDel = props => {
 
@@ -25,10 +27,7 @@ const AnniversaryDel = props => {
     const onSubmit = (data, e) => {
         fetch(REQ_URI + '?anniId=' + data.anniId, {
             method: 'DELETE',
-            headers: new Headers({
-                'X-PDS-AUTH': localStorage.getItem("X-PDS-AUTH"),
-                'Authorization': 'Basic ' + btoa('username:password'),
-            }),
+            headers: Helper.auth.makeAuthHeader(),
         }).then(function (res) {
             if (!res.ok) {
                 if (res.status === 401) {

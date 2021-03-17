@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
+import update from 'immutability-helper';
 
 import { CCol, CRow } from '@coreui/react';
 import DiaryAdd from './DiaryAdd.js';
 import DiaryEdit from './DiaryEdit.js';
-import update from 'immutability-helper';
-import { dateFormat } from '../../components/Util/DateUtil'
+import Helper from '../../helpers'
 
 import FullCalendar from '@fullcalendar/react'
 import dayGridPlugin from '@fullcalendar/daygrid'
@@ -58,10 +58,7 @@ class DiaryCalendar extends Component {
 
     fetch(reqUri, {
       method: 'GET',
-      headers: new Headers({
-        'X-PDS-AUTH': localStorage.getItem("X-PDS-AUTH"),
-        'Authorization': 'Basic ' + btoa('username:password'),
-      })
+      headers: Helper.auth.makeAuthHeader(),
     }).then(function (res) {
       if (!res.ok) {
         if (res.status === 401) {
@@ -116,10 +113,7 @@ class DiaryCalendar extends Component {
 
     fetch(reqUri, {
       method: 'GET',
-      headers: new Headers({
-        'X-PDS-AUTH': localStorage.getItem("X-PDS-AUTH"),
-        'Authorization': 'Basic ' + btoa('username:password'),
-      })
+      headers: Helper.auth.makeAuthHeader(),
     }).then(function (res) {
       if (!res.ok) {
         if (res.status === 401) {
@@ -138,7 +132,7 @@ class DiaryCalendar extends Component {
         let aText = {
           id: index,
           title: data.title,
-          start: dateFormat(new Date(data.wdate)),
+          start: Helper.date.dateFormat(new Date(data.wdate)),
           source: 'diary',
           extendedProps: {
             dataId: data.id
@@ -166,7 +160,7 @@ class DiaryCalendar extends Component {
           var aText = {
             id: i,
             title: modifiedData.title,
-            start: dateFormat(new Date(modifiedData.wdate)),
+            start: Helper.date.dateFormat(new Date(modifiedData.wdate)),
             extendedProps: {
               dataId: modifiedData.id
             }

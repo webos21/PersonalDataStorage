@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import update from 'immutability-helper';
 
 import {
   CButton, CCard, CCardBody, CCardHeader, CCol, CRow, 
@@ -10,7 +11,8 @@ import { freeSet } from '@coreui/icons'
 import Pager from '../../components/Pager';
 import PbFormAdd from './PbFormAdd.js';
 import PbFormEdit from './PbFormEdit.js';
-import update from 'immutability-helper';
+import Helper from '../../helpers'
+
 
 class PasswordBook extends Component {
   constructor(props) {
@@ -81,10 +83,7 @@ class PasswordBook extends Component {
 
     fetch(reqUri, {
       method: 'GET',
-      headers: new Headers({
-        'X-PDS-AUTH': localStorage.getItem("X-PDS-AUTH"),
-        'Authorization': 'Basic ' + btoa('username:password'),
-      })
+      headers: Helper.auth.makeAuthHeader(),
     }).then(function (res) {
       if (!res.ok) {
         if (res.status === 401) {

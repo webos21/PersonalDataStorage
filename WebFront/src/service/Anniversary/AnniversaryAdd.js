@@ -1,4 +1,5 @@
 import React from 'react';
+import { useForm, Controller } from "react-hook-form";
 
 import {
     CModal, CModalHeader, CModalBody, CModalFooter, CButton, CCol,
@@ -6,7 +7,8 @@ import {
     CInputGroup, CInputGroupPrepend, CInputGroupText, CInput, CInputRadio, CLabel
 } from '@coreui/react';
 
-import { useForm, Controller } from "react-hook-form";
+import Helper from '../../helpers'
+
 
 const AnniversaryAdd = props => {
 
@@ -22,10 +24,7 @@ const AnniversaryAdd = props => {
 
         fetch(REQ_URI, {
             method: 'POST',
-            headers: new Headers({
-                'X-PDS-AUTH': localStorage.getItem("X-PDS-AUTH"),
-                'Authorization': 'Basic ' + btoa('username:password'),
-            }),
+            headers: Helper.auth.makeAuthHeader(),
             body: formData
         }).then(function (res) {
             if (!res.ok) {

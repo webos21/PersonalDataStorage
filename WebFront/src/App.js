@@ -1,12 +1,15 @@
 import React, { Component } from 'react';
 import { HashRouter, Route, Switch, Redirect } from 'react-router-dom';
+
 import './scss/style.scss';
+
 
 // Containers
 const PdsLayout = React.lazy(() => import('./containers/PdsLayout'));
 
 // Pages
-const Page500 = React.lazy(() => import('./service/Page500/Page500'));
+const Page500 = React.lazy(() => import('./service/Page500'));
+const Logout = React.lazy(() => import('./service/Logout'));
 const Login = React.lazy(() => import('./service/Login'));
 
 const isAuthenticated = () => {
@@ -19,7 +22,7 @@ const AuthenticatedRoute = ({ component: Component, ...rest }) => (
   <Route {...rest} render={(props) => (
     isAuthenticated()
       ? <Component {...props} />
-      : <Redirect to={{ pathname: '/login', state: { from: props.location } }} />
+      : <Redirect to="/login" />
   )} />
 );
 
@@ -27,7 +30,7 @@ const LoginRoute = ({ component: Component, ...rest }) => (
   <Route {...rest} render={(props) => (
     !isAuthenticated()
       ? <Component {...props} />
-      : <Redirect to={{ pathname: '/', state: { from: props.location } }} />
+      : <Redirect to="/" />
   )} />
 );
 
@@ -41,6 +44,7 @@ class App extends Component {
         <React.Suspense fallback={loading()}>
           <Switch>
             <Route path="/500" component={Page500} />
+            <Route path="/logout" component={Logout} />
             <LoginRoute path="/login" component={Login} />
             <AuthenticatedRoute path="/" component={PdsLayout} />
           </Switch>

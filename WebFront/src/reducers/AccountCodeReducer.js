@@ -1,35 +1,35 @@
 import AllActions from '../actions'
 
 const initialState = {
-    dataSync: (localStorage.getItem('bankData') ? true : false),
+    dataSync: (localStorage.getItem('acodeData') ? true : false),
     pending: false,
-    banks: JSON.parse(localStorage.getItem('bankData')),
+    acodes: JSON.parse(localStorage.getItem('acodeData')),
     error: null
 }
 
-const BankReducer = (state = initialState, { type, ...rest }) => {
+const AccountCodeReducer = (state = initialState, { type, ...rest }) => {
     switch (type) {
-        case AllActions.bank.BANK_CLEAR:
-            localStorage.removeItem('bankData')
+        case AllActions.acode.ACODE_CLEAR:
+            localStorage.removeItem('acodeData')
             return {
                 dataSync: false,
                 pending: false,
-                banks: null,
+                aclasses: null,
                 error: null
             };
-        case AllActions.bank.BANK_FETCH_REQ:
+        case AllActions.acode.ACODE_FETCH_REQ:
             return {
                 ...state,
                 pending: true
             };
-        case AllActions.bank.BANK_FETCH_OK:
-            localStorage.setItem('bankData', JSON.stringify(rest.banks));
+        case AllActions.acode.ACODE_FETCH_OK:
+            localStorage.setItem('acodeData', JSON.stringify(rest.acodes));
             return {
                 ...state,
                 pending: false,
                 ...rest
             };
-        case AllActions.bank.BANK_FETCH_FAIL:
+        case AllActions.acode.ACODE_FETCH_FAIL:
             return {
                 ...state,
                 pending: false,
@@ -41,4 +41,4 @@ const BankReducer = (state = initialState, { type, ...rest }) => {
     }
 }
 
-export default BankReducer;
+export default AccountCodeReducer;

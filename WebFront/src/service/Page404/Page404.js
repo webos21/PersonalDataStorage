@@ -1,4 +1,5 @@
 import React from 'react'
+
 import {
   CButton,
   CCol,
@@ -11,6 +12,7 @@ import {
   CRow
 } from '@coreui/react'
 import CIcon from '@coreui/icons-react'
+
 
 const Page404 = () => {
   return (

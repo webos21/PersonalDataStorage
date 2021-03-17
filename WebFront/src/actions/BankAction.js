@@ -1,57 +1,82 @@
-const FETCH_BANKS_PENDING = 'FETCH_BANKS_PENDING';
-const FETCH_BANKS_SUCCESS = 'FETCH_BANKS_SUCCESS';
-const FETCH_BANKS_ERROR = 'FETCH_BANKS_ERROR';
+import Helper from '../helpers'
 
-const fetchBanksPending = () => {
+const BankDebugLog = (args) => { };
+// const BankDebugLog = console.log;
+
+const BANK_CLEAR = 'BANK_CLEAR';
+
+const BANK_FETCH_REQ = 'BANK_FETCH_REQ';
+const BANK_FETCH_OK = 'BANK_FETCH_OK';
+const BANK_FETCH_FAIL = 'BANK_FETCH_FAIL';
+
+const bankClear = () => {
     return {
-        type: FETCH_BANKS_PENDING,
+        type: BANK_CLEAR,
     }
 }
 
-const fetchBanksSuccess = (products) => {
+const bankFetchReq = () => {
     return {
-        type: FETCH_BANKS_SUCCESS,
-        products: products,
+        type: BANK_FETCH_REQ,
     }
 }
 
-const fetchBanksError = (error) => {
+const bankFetchOk = (data) => {
     return {
-        type: FETCH_BANKS_ERROR,
-        error: error,
+        type: BANK_FETCH_OK,
+        banks: data,
     }
 }
 
-const fetchBanks = (storeDispatch) => {
-    const REQ_URI = (process.env.NODE_ENV !== 'production') ? 'http://' + window.location.hostname + ':28080/pds/v1/bank' : '/pds/v1/bank';
+const bankFetchFail = (err) => {
+    return {
+        type: BANK_FETCH_FAIL,
+        error: err,
+    }
+}
 
-    storeDispatch(fetchBanksPending());
-    fetch(REQ_URI, {
-        method: 'GET',
-        headers: new Headers({
-            [localStorage.getItem("X-PDS-AUTH")]: localStorage.getItem("X-PDS-AUTH"),
-            'Authorization': 'Basic ' + btoa('username:password'),
+const bankFetch = () => {
+    return dispatch => {
+        const REQ_URI = (process.env.NODE_ENV !== 'production') ? 'http://' + window.location.hostname + ':28080/pds/v1/bank' : '/pds/v1/bank';
+
+        dispatch(bankFetchReq());
+        return fetch(REQ_URI, {
+            method: 'GET',
+            headers: Helper.auth.makeAuthHeader(),
         })
-    }).then(res => res.json())
-        .then(res => {
-            if (res.error) {
-                throw (res.error);
-            }
-            storeDispatch(fetchBanksSuccess(res.data));
-            console.log(res.data);
-            return res.data;
-        })
-        .catch(error => {
-            storeDispatch(fetchBanksError(error));
-        })
+            .then(res => {
+                BankDebugLog(res);
+                if (!res.ok) {
+                    let err = {
+                        type: "ServerResponse",
+                        message: "서버응답 : " + res.statusText + "(" + res.status + ")"
+                    }
+                    dispatch(bankFetchFail(err));
+                    return {};
+                }
+                return res.json();
+            })
+            .then(resJson => {
+                if (resJson && resJson.data) {
+                    BankDebugLog(resJson.data);
+                    dispatch(bankFetchOk(resJson.data));
+                }
+            })
+            .catch(error => {
+                console.warn(error);
+                dispatch(bankFetchFail(error));
+            })
+    }
 }
 
 export {
-    FETCH_BANKS_PENDING,
-    FETCH_BANKS_SUCCESS,
-    FETCH_BANKS_ERROR,
-    fetchBanksPending,
-    fetchBanksSuccess,
-    fetchBanksError,
-    fetchBanks
+    BANK_CLEAR,
+    BANK_FETCH_REQ,
+    BANK_FETCH_OK,
+    BANK_FETCH_FAIL,
+    bankClear,
+    bankFetchReq,
+    bankFetchOk,
+    bankFetchFail,
+    bankFetch,
 }

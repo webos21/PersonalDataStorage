@@ -1,4 +1,5 @@
 import React from 'react';
+import { useForm, Controller } from "react-hook-form";
 
 import {
     CModal, CModalHeader, CModalBody, CModalFooter, CButton, CCol,
@@ -6,8 +7,7 @@ import {
     CInputGroup, CInputGroupPrepend, CInputGroupText, CInput, CSelect, CTextarea
 } from '@coreui/react';
 
-import { useForm, Controller } from "react-hook-form";
-import { dateFormat } from '../../components/Util/DateUtil'
+import Helper from '../../helpers'
 
 const DiaryAdd = props => {
 
@@ -23,10 +23,7 @@ const DiaryAdd = props => {
 
         fetch(REQ_URI, {
             method: 'POST',
-            headers: new Headers({
-                'X-PDS-AUTH': localStorage.getItem("X-PDS-AUTH"),
-                'Authorization': 'Basic ' + btoa('username:password'),
-            }),
+            headers: Helper.auth.makeAuthHeader(),
             body: formData
         }).then(function (res) {
             if (!res.ok) {
@@ -105,7 +102,7 @@ const DiaryAdd = props => {
                                     name="wdate"
                                     key={"wdate" + props.dataFromParent.id}
                                     control={control}
-                                    defaultValue={dateFormat(new Date(props.dataFromParent))}
+                                    defaultValue={Helper.date.dateFormat(new Date(props.dataFromParent))}
                                     render={(ctrlProps) => (
                                         <CInput
                                             type="date"

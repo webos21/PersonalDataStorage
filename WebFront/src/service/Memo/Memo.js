@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import update from 'immutability-helper';
 
 import {
   CButton, CCard, CCardBody, CCardHeader, CCol, CRow,
@@ -10,8 +11,7 @@ import { freeSet } from '@coreui/icons'
 import Pager from '../../components/Pager';
 import MemoAdd from './MemoAdd.js';
 import MemoEdit from './MemoEdit.js';
-import update from 'immutability-helper';
-import { dateFormat } from '../../components/Util/DateUtil'
+import Helper from '../../helpers'
 
 class Memo extends Component {
   constructor(props) {
@@ -78,10 +78,7 @@ class Memo extends Component {
 
     fetch(reqUri, {
       method: 'GET',
-      headers: new Headers({
-        'X-PDS-AUTH': localStorage.getItem("X-PDS-AUTH"),
-        'Authorization': 'Basic ' + btoa('username:password'),
-      })
+      headers: Helper.auth.makeAuthHeader(),
     }).then(function (res) {
       if (!res.ok) {
         if (res.status === 401) {
@@ -181,7 +178,7 @@ class Memo extends Component {
           <tr key={'memo-' + data.id} onClick={this.handleEdit.bind(this, data)}>
             <td>{data.id}</td>
             <td>{data.title}</td>
-            <td>{dateFormat(new Date(data.wdate))}</td>
+            <td>{Helper.date.dateFormat(new Date(data.wdate))}</td>
           </tr>
         )
       })

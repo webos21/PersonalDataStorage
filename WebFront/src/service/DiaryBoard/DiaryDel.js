@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
+import { useForm, Controller } from "react-hook-form";
 
 import {
     CModal, CModalHeader, CModalBody, CModalFooter,
     CButton, CForm, CFormGroup, CInvalidFeedback, CInput
 } from '@coreui/react';
 
-import { useForm, Controller } from "react-hook-form";
-import { dateFormat } from '../../components/Util/DateUtil'
+import Helper from '../../helpers'
 
 const DiaryDel = props => {
 
@@ -26,10 +26,7 @@ const DiaryDel = props => {
     const onSubmit = (data, e) => {
         fetch(REQ_URI + '?diaryId=' + data.diaryId, {
             method: 'DELETE',
-            headers: new Headers({
-                'X-PDS-AUTH': localStorage.getItem("X-PDS-AUTH"),
-                'Authorization': 'Basic ' + btoa('username:password'),
-            }),
+            headers: Helper.auth.makeAuthHeader(),
         }).then(function (res) {
             if (!res.ok) {
                 if (res.status === 401) {
@@ -62,7 +59,7 @@ const DiaryDel = props => {
                         <p>다음 항목을 삭제할까요?</p>
                         <ul>
                             <li>일기 번호 : {props.dataFromParent.id}</li>
-                            <li>일기 날짜 : {dateFormat(new Date(props.dataFromParent.wdate))}</li>
+                            <li>일기 날짜 : {Helper.date.dateFormat(new Date(props.dataFromParent.wdate))}</li>
                             <li>일기 제목 : {props.dataFromParent.title}</li>
                         </ul>
                         <CFormGroup>

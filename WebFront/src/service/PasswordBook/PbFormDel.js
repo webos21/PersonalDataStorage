@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
+import { useForm, Controller } from "react-hook-form";
 
 import {
     CModal, CModalHeader, CModalBody, CModalFooter,
     CButton, CForm, CFormGroup, CInvalidFeedback, CInput
 } from '@coreui/react';
 
-import { useForm, Controller } from "react-hook-form";
-import { dateFormat } from '../../components/Util/DateUtil'
+import Helper from '../../helpers'
+
 
 const PbFormDel = props => {
 
@@ -26,10 +27,7 @@ const PbFormDel = props => {
     const onSubmit = (data, e) => {
         fetch(REQ_URI + '?siteId=' + data.siteId, {
             method: 'DELETE',
-            headers: new Headers({
-                'X-PDS-AUTH': localStorage.getItem("X-PDS-AUTH"),
-                'Authorization': 'Basic ' + btoa('username:password'),
-            }),
+            headers: Helper.auth.makeAuthHeader(),
         }).then(function (res) {
             if (!res.ok) {
                 if (res.status === 401) {
@@ -66,7 +64,7 @@ const PbFormDel = props => {
                             <li>사이트명 : {props.dataFromParent.siteName}</li>
                             <li>유 형 : {props.dataFromParent.siteType}</li>
                             <li>아 이 디 : {props.dataFromParent.myId}</li>
-                            <li>등 록 일 : {dateFormat(new Date(props.dataFromParent.regDate))}</li>
+                            <li>등 록 일 : {Helper.date.dateFormat(new Date(props.dataFromParent.regDate))}</li>
                         </ul>
                         <CFormGroup>
                             <Controller

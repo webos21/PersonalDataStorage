@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import update from 'immutability-helper';
 
 import {
   CButton, CCard, CCardBody, CCardHeader, CCol, CRow,
@@ -9,7 +10,7 @@ import { freeSet } from '@coreui/icons'
 
 import BankRecordAdd from './BankRecordAdd.js';
 import BankRecordEdit from './BankRecordEdit.js';
-import update from 'immutability-helper';
+import Helper from '../../helpers'
 
 class BankRecord extends Component {
   constructor(props) {
@@ -79,10 +80,7 @@ class BankRecord extends Component {
 
     fetch(reqUri, {
       method: 'GET',
-      headers: new Headers({
-        'X-PDS-AUTH': localStorage.getItem("X-PDS-AUTH"),
-        'Authorization': 'Basic ' + btoa('username:password'),
-      })
+      headers: Helper.auth.makeAuthHeader(),
     }).then(function (res) {
       if (!res.ok) {
         if (res.status === 401) {

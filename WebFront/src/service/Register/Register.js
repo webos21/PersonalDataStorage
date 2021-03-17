@@ -1,4 +1,5 @@
 import React from 'react'
+
 import {
   CButton,
   CCard,
@@ -14,6 +15,7 @@ import {
   CRow
 } from '@coreui/react'
 import CIcon from '@coreui/icons-react'
+
 
 const Register = () => {
   return (

@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import update from 'immutability-helper';
 
 import {
   CButton, CCard, CCardBody, CCardHeader, CCol, CRow,
@@ -10,8 +11,8 @@ import { freeSet } from '@coreui/icons'
 import Pager from '../../components/Pager';
 import DiaryAdd from './DiaryAdd.js';
 import DiaryEdit from './DiaryEdit.js';
-import update from 'immutability-helper';
-import { dateFormat } from '../../components/Util/DateUtil'
+import Helper from '../../helpers'
+
 
 class DiaryBoard extends Component {
   constructor(props) {
@@ -79,10 +80,7 @@ class DiaryBoard extends Component {
 
     fetch(reqUri, {
       method: 'GET',
-      headers: new Headers({
-        'X-PDS-AUTH': localStorage.getItem("X-PDS-AUTH"),
-        'Authorization': 'Basic ' + btoa('username:password'),
-      })
+      headers: Helper.auth.makeAuthHeader(),
     }).then(function (res) {
       if (!res.ok) {
         if (res.status === 401) {
@@ -182,7 +180,7 @@ class DiaryBoard extends Component {
         return (
           <tr key={'diary-' + data.id} onClick={this.handleEdit.bind(this, data)}>
             <td>{data.id}</td>
-            <td>{dateFormat(new Date(data.wdate))}</td>
+            <td>{Helper.date.dateFormat(new Date(data.wdate))}</td>
             <td>{data.title}</td>
           </tr>
         )

@@ -1,6 +1,7 @@
 import React from 'react';
 import { withRouter } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux'
+import { useForm, Controller } from "react-hook-form";
 
 import {
     CButton, CCol, CRow,
@@ -8,7 +9,6 @@ import {
 } from '@coreui/react';
 import CIcon from '@coreui/icons-react'
 
-import { useForm, Controller } from "react-hook-form";
 import AllActions from 'src/actions';
 
 const LoginForm = props => {

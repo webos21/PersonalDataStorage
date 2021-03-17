@@ -1,4 +1,5 @@
 import React from 'react';
+import { useForm, Controller } from "react-hook-form";
 
 import {
     CModal, CModalHeader, CModalBody, CModalFooter, CButton, CCol,
@@ -6,8 +7,8 @@ import {
     CInputGroup, CInputGroupPrepend, CInputGroupText, CInput, CTextarea,
 } from '@coreui/react';
 
-import { useForm, Controller } from "react-hook-form";
-import { dateFormat } from '../../components/Util/DateUtil'
+import Helper from '../../helpers'
+
 
 const PbFormEdit = props => {
 
@@ -21,10 +22,7 @@ const PbFormEdit = props => {
     const onDelete = () => {
         fetch(REQ_URI + '?siteId=' + props.dataFromParent.id, {
             method: 'DELETE',
-            headers: new Headers({
-                'X-PDS-AUTH': localStorage.getItem("X-PDS-AUTH"),
-                'Authorization': 'Basic ' + btoa('username:password'),
-            }),
+            headers: Helper.auth.makeAuthHeader(),
         }).then(function (res) {
             if (!res.ok) {
                 if (res.status === 401) {
@@ -50,10 +48,7 @@ const PbFormEdit = props => {
 
         fetch(REQ_URI, {
             method: 'PUT',
-            headers: new Headers({
-                'X-PDS-AUTH': localStorage.getItem("X-PDS-AUTH"),
-                'Authorization': 'Basic ' + btoa('username:password'),
-            }),
+            headers: Helper.auth.makeAuthHeader(),
             body: formData
         }).then(function (res) {
             if (!res.ok) {
@@ -306,7 +301,7 @@ const PbFormEdit = props => {
                                     name="regDate"
                                     key={"regDate" + props.dataFromParent.id}
                                     control={control}
-                                    defaultValue={dateFormat(new Date(props.dataFromParent.regDate))}
+                                    defaultValue={Helper.date.dateFormat(new Date(props.dataFromParent.regDate))}
                                     render={(ctrlProps) => (
                                         <CInput
                                             type="date"

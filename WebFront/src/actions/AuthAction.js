@@ -1,10 +1,18 @@
+import * as AclassAction from './AccountClassAction'
+import * as AcodeAction from './AccountCodeAction'
+import * as AnniAction from './AnniversaryAction'
+import * as BankAction from './BankAction'
+
+const AuthDebugLog = (args) => { };
+// const AuthDebugLog = console.log;
+
 const AUTH_RESET = 'AUTH_RESET'
 const AUTH_LOGIN_REQ = 'AUTH_LOGIN_REQ';
 const AUTH_LOGIN_OK = 'AUTH_LOGIN_OK';
 const AUTH_LOGIN_FAIL = 'AUTH_LOGIN_FAIL';
 const AUTH_LOGOUT = 'AUTH_LOGOUT';
+const AUTH_HOME = 'AUTH_HOME';
 
-const REQ_URI = (process.env.NODE_ENV !== 'production') ? 'http://' + window.location.hostname + ':28080/pds/v1/auth' : '/pds/v1/auth';
 
 const authRequest = (formData) => {
     return {
@@ -34,8 +42,15 @@ const authReset = () => {
     }
 }
 
+const authHome = () => {
+    return {
+        type: AUTH_HOME,
+    }
+}
+
 const authLogin = pbpwd => {
     return dispatch => {
+        const REQ_URI = (process.env.NODE_ENV !== 'production') ? 'http://' + window.location.hostname + ':28080/pds/v1/auth' : '/pds/v1/auth';
         const crypto = require('crypto');
 
         let iv = Buffer.from("PasswordBook1234");
@@ -52,12 +67,13 @@ const authLogin = pbpwd => {
 
         dispatch(authRequest(formData));
 
-        fetch(REQ_URI, {
+        return fetch(REQ_URI, {
             method: 'POST',
             body: formData,
             credentials: "include"
         }).then(res => {
             if (!res.ok) {
+                AuthDebugLog("Result is NOK!!!");
                 let err = {
                     type: "ServerResponse",
                     message: "서버응답 : " + res.statusText + "(" + res.status + ")"
@@ -65,15 +81,44 @@ const authLogin = pbpwd => {
                 dispatch(authFailure(err));
                 return {};
             }
+            AuthDebugLog("Result is OK!!!");
             return res.json();
         }).then(resJson => {
-            console.log(resJson.result);
+            AuthDebugLog(resJson.result);
             if (resJson.auth && resJson.auth.ckey && resJson.auth.cval) {
                 dispatch(authSuccess(resJson));
-                window.location.href = '/';
+
+                // Sequence is not guaranted, and the operation is stopped
+                dispatch(AclassAction.aclassFetch()).then(() =>
+                    dispatch(AcodeAction.acodeFetch()).then(() =>
+                        dispatch(AnniAction.anniFetch()).then(() =>
+                            dispatch(BankAction.bankFetch()).then(() =>
+                                dispatch(authHome())
+                            ))));
+
+                // Promise.all([
+                //     dispatch(AclassAction.aclassFetch()),
+                //     dispatch(AcodeAction.acodeFetch()),
+                //     dispatch(AnniAction.anniFetch()),
+                //     dispatch(BankAction.bankFetch()),
+                // ]).then(() => console.log("DONE!!!", new Date()));
+
+                // Promise.all([
+                //     dispatch(AclassAction.aclassFetch()),
+                //     dispatch(AcodeAction.acodeFetch()),
+                //     dispatch(AnniAction.anniFetch()),
+                //     dispatch(BankAction.bankFetch()),
+                // ]).then(() => dispatch(authHome()));
+
+                // dispatch(AclassAction.aclassFetch());
+                // dispatch(AcodeAction.acodeFetch());
+                // dispatch(AnniAction.anniFetch());
+                // dispatch(BankAction.bankFetch());
+                // dispatch(authHome());
+
             }
         }).catch(error => {
-            console.log(error);
+            console.warn("Auth Exception", error);
             dispatch(authFailure(error));
         });
     }
@@ -95,11 +140,13 @@ export {
     AUTH_LOGIN_OK,
     AUTH_LOGIN_FAIL,
     AUTH_LOGOUT,
+    AUTH_HOME,
     authRequest,
     authSuccess,
     authFailure,
     authLogin,
     authReset,
+    authHome,
     authLogout,
     getAuthStatus,
     getAuthError,
