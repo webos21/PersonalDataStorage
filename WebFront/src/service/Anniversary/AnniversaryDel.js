@@ -37,13 +37,13 @@ const AnniversaryDel = props => {
             }
             return res.json();
         }).then(function (resJson) {
-            console.log("PbFormDel::fetch => " + resJson.result);
+            console.log("AnniversaryDel::fetch => " + resJson.result);
             if (resJson.result === "OK") {
                 //toggleOpen();
                 props.callbackFromParent();
             }
         }).catch(function (error) {
-            console.log("PbFormDel::fetch => " + error);
+            console.log("AnniversaryDel::fetch => " + error);
             setError("siteId", "serverResponse", error.message);
         });
     };

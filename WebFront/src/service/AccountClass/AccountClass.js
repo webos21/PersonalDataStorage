@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux'
 import update from 'immutability-helper';
 
 import {
@@ -8,9 +9,9 @@ import {
 import CIcon from '@coreui/icons-react'
 import { freeSet } from '@coreui/icons'
 
-import Pager from '../../components/Pager/Pager';
 import AccountClassAdd from './AccountClassAdd.js';
 import AccountClassEdit from './AccountClassEdit.js';
+import AllActions from '../../actions'
 import Helper from '../../helpers'
 
 class AccountClass extends Component {
@@ -26,23 +27,18 @@ class AccountClass extends Component {
 
     this.handleViewAll = this.handleViewAll.bind(this);
     this.handleSearchGo = this.handleSearchGo.bind(this);
-    this.handlePageChanged = this.handlePageChanged.bind(this);
 
     this.handleAdd = this.handleAdd.bind(this);
     this.handleEdit = this.handleEdit.bind(this);
 
     this.state = {
       emptyId: -1,
-      dataSet: [],
+      dataSet: props.storeAclasses,
       currentData: {
         id: -1,
         title: '',
       },
-      totalCount: 0,
-      itemsPerPage: 10,
-      totalPage: 0,
-      currentPage: 0,
-      visiblePages: 5,
+      totalCount: props.storeAclasses.length,
       keyword: "",
       keywordError: "",
       modalFlagAdd: false,
@@ -56,25 +52,20 @@ class AccountClass extends Component {
       for (var i = 0; i < this.state.dataSet.length; i++) {
         if (this.state.dataSet[i].id === modifiedData.id) {
           var newDataSet = update(this.state.dataSet, { $splice: [[i, 1, modifiedData]] });
-          var renderTimes = this.state.tableRerender + 1;
-          this.setState({ tableRerender: renderTimes, dataSet: newDataSet });
+          this.props.aclassFetchOk(newDataSet);
           break;
         }
       }
     } else {
-      this.requestFetch(this.state.keyword);
+      this.requestFetch();
     }
   }
 
-  requestFetch(query, page) {
+  requestFetch() {
     const parentState = this;
     const REQ_URI = (process.env.NODE_ENV !== 'production') ? 'http://' + window.location.hostname + ':28080/pds/v1/accountClass' : '/pds/v1/accountClass';
 
-    const reqUri = REQ_URI + '?perPage=' + this.state.itemsPerPage +
-      '&page=' + ((page === null || page === undefined) ? 1 : page) +
-      ((query === null || query === undefined) ? '' : '&q=' + query);
-
-    fetch(reqUri, {
+    fetch(REQ_URI, {
       method: 'GET',
       headers: Helper.auth.makeAuthHeader(),
     }).then(function (res) {
@@ -88,14 +79,8 @@ class AccountClass extends Component {
     }).then(function (resJson) {
       console.log("AccountClass::fetch => " + resJson.result);
 
-      var dataLen = resJson.pagination.totalCount;
-      var calcPages = Math.ceil(dataLen / parentState.state.itemsPerPage);
-
+      this.props.aclassFetchOk(resJson.data);
       parentState.setState({
-        dataSet: resJson.data,
-        totalCount: dataLen,
-        currentPage: (resJson.pagination.currentPage - 1),
-        totalPage: calcPages,
         keywordError: '',
       });
     }).catch(function (error) {
@@ -105,7 +90,9 @@ class AccountClass extends Component {
   }
 
   componentDidMount() {
-    this.requestFetch();
+    if (!this.props.storeDataSync) {
+      this.requestFetch();
+    }
   }
 
   genEmptyObj() {
@@ -133,18 +120,12 @@ class AccountClass extends Component {
 
   handleViewAll() {
     this.setState({ keyword: "" });
-    this.requestFetch("");
     document.getElementById("frmRefSearch").reset();
-  }
-
-  handlePageChanged(newPage) {
-    this.requestFetch(this.state.keyword, newPage);
   }
 
   handleSearchGo(event) {
     event.preventDefault();
-    this.setState({ currentPage: 1, keyword: event.target.keyword.value });
-    this.requestFetch(event.target.keyword.value);
+    this.setState({ keyword: event.target.keyword.value });
   }
 
   handleAdd(e) {
@@ -162,14 +143,20 @@ class AccountClass extends Component {
   }
 
   renderTableList(dataArray) {
-    if (dataArray.length === 0) {
+    const filteredData = ((this.state.keyword && this.state.keyword.length > 0) ? dataArray.filter(
+      item => {
+        const lcKewword = this.state.keyword.toLowerCase();
+        return Object.keys(item).some(key => (item[key].includes ? item[key].includes(lcKewword) : false));
+      }
+    ) : dataArray);
+    if (filteredData.length === 0) {
       return (
         <tr key="row-nodata">
           <td colSpan="4" className="text-center align-middle" height="200">No Data</td>
         </tr>
       )
     } else {
-      return dataArray.map((data, index) => {
+      return filteredData.map((data, index) => {
         return (
           <tr key={'memo-' + data.id} onClick={this.handleEdit.bind(this, data)}>
             <td>{data.id}</td>
@@ -240,16 +227,9 @@ class AccountClass extends Component {
                     </tr>
                   </thead>
                   <tbody>
-                    {this.renderTableList(this.state.dataSet)}
+                    {this.renderTableList(this.props.storeAclasses)}
                   </tbody>
                 </table>
-                <Pager
-                  total={this.state.totalPage}
-                  current={this.state.currentPage}
-                  visiblePages={this.state.visiblePages}
-                  titles={{ first: 'First', last: 'Last' }}
-                  onPageChanged={this.handlePageChanged}
-                />
               </CCardBody>
             </CCard>
           </CCol>
@@ -263,4 +243,13 @@ class AccountClass extends Component {
   }
 }
 
-export default AccountClass;
+const mapStateToProps = (state) => ({
+  storeDataSync: state.aclass.dataSync,
+  storeAclasses: state.aclass.aclasses,
+});
+
+const mapDispatchToProps = (dispatch) => ({
+  aclassFetchOk: (data) => dispatch(AllActions.aclass.aclassFetchOk(data)),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(AccountClass);

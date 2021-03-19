@@ -89,7 +89,7 @@ class Anniversary extends Component {
       }
       return res.json();
     }).then(function (resJson) {
-      console.log("Memo::fetch => " + resJson.result);
+      console.log("Anniversary::fetch => " + resJson.result);
 
       var dataLen = resJson.pagination.totalCount;
       var calcPages = Math.ceil(dataLen / parentState.state.itemsPerPage);
@@ -103,7 +103,7 @@ class Anniversary extends Component {
         keywordError: '',
       });
     }).catch(function (error) {
-      console.log("Memo::fetch => " + error);
+      console.log("Anniversary::fetch => " + error);
       parentState.setState({ keywordError: error.message })
     });
   }

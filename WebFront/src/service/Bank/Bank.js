@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux'
 import update from 'immutability-helper';
 
 import {
@@ -10,6 +11,7 @@ import { freeSet } from '@coreui/icons'
 
 import BankAdd from './BankAdd.js';
 import BankEdit from './BankEdit.js';
+import AllActions from '../../actions'
 import Helper from '../../helpers'
 
 class Bank extends Component {
@@ -25,14 +27,13 @@ class Bank extends Component {
 
     this.handleViewAll = this.handleViewAll.bind(this);
     this.handleSearchGo = this.handleSearchGo.bind(this);
-    this.handlePageChanged = this.handlePageChanged.bind(this);
 
     this.handleAdd = this.handleAdd.bind(this);
     this.handleEdit = this.handleEdit.bind(this);
 
     this.state = {
       emptyId: -1,
-      dataSet: [],
+      dataSet: props.storeBanks,
       currentData: {
         id: -1,
         bankName: '',
@@ -47,7 +48,7 @@ class Bank extends Component {
         notUsed: '',
         memo: '',
       },
-      totalCount: 0,
+      totalCount: props.storeBanks.length,
       keyword: "",
       keywordError: "",
       modalFlagAdd: false,
@@ -62,8 +63,7 @@ class Bank extends Component {
       for (var i = 0; i < this.state.dataSet.length; i++) {
         if (this.state.dataSet[i].id === modifiedData.id) {
           var newDataSet = update(this.state.dataSet, { $splice: [[i, 1, modifiedData]] });
-          var renderTimes = this.state.tableRerender + 1;
-          this.setState({ tableRerender: renderTimes, dataSet: newDataSet });
+          this.props.bankFetchOk(newDataSet);
           break;
         }
       }
@@ -76,9 +76,7 @@ class Bank extends Component {
     const parentState = this;
     const REQ_URI = (process.env.NODE_ENV !== 'production') ? 'http://' + window.location.hostname + ':28080/pds/v1/bank' : '/pds/v1/bank';
 
-    const reqUri = REQ_URI + ((query === null || query === undefined) ? '' : '?q=' + query);
-
-    fetch(reqUri, {
+    fetch(REQ_URI, {
       method: 'GET',
       headers: Helper.auth.makeAuthHeader(),
     }).then(function (res) {
@@ -92,9 +90,8 @@ class Bank extends Component {
     }).then(function (resJson) {
       console.log("Bank::fetch => " + resJson.result);
 
+      this.props.acodeFetchOk(resJson.data);
       parentState.setState({
-        dataSet: resJson.data,
-        totalCount: resJson.data.length,
         keywordError: '',
       });
     }).catch(function (error) {
@@ -104,7 +101,9 @@ class Bank extends Component {
   }
 
   componentDidMount() {
-    this.requestFetch();
+    if (!this.props.storeDataSync) {
+      this.requestFetch();
+    }
   }
 
   genEmptyObj() {
@@ -142,18 +141,12 @@ class Bank extends Component {
 
   handleViewAll() {
     this.setState({ keyword: "" });
-    this.requestFetch("");
     document.getElementById("frmRefSearch").reset();
-  }
-
-  handlePageChanged(newPage) {
-    this.requestFetch(this.state.keyword, newPage);
   }
 
   handleSearchGo(event) {
     event.preventDefault();
     this.setState({ keyword: event.target.keyword.value });
-    this.requestFetch(event.target.keyword.value);
   }
 
   handleAdd(e) {
@@ -171,14 +164,20 @@ class Bank extends Component {
   }
 
   renderTableList(dataArray) {
-    if (dataArray.length === 0) {
+    const filteredData = ((this.state.keyword && this.state.keyword.length > 0) ? dataArray.filter(
+      item => {
+        const lcKewword = this.state.keyword.toLowerCase();
+        return Object.keys(item).some(key => (item[key].includes ? item[key].includes(lcKewword) : false));
+      }
+    ) : dataArray);
+    if (filteredData.length === 0) {
       return (
         <tr key="row-nodata">
           <td colSpan="5" className="text-center align-middle" height="200">No Data</td>
         </tr>
       )
     } else {
-      return dataArray.map((data, index) => {
+      return filteredData.map((data, index) => {
         return (
           <tr key={'bankdata-' + data.id} onClick={this.handleEdit.bind(this, data)}>
             <td>{data.id}</td>
@@ -255,7 +254,7 @@ class Bank extends Component {
                     </tr>
                   </thead>
                   <tbody>
-                    {this.renderTableList(this.state.dataSet)}
+                    {this.renderTableList(this.props.storeBanks)}
                   </tbody>
                 </table>
               </CCardBody>
@@ -271,4 +270,13 @@ class Bank extends Component {
   }
 }
 
-export default Bank;
+const mapStateToProps = (state) => ({
+  storeDataSync: state.bank.dataSync,
+  storeBanks: state.bank.banks,
+});
+
+const mapDispatchToProps = (dispatch) => ({
+  bankFetchOk: (data) => dispatch(AllActions.bank.bankFetchOk(data)),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(Bank);

@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux'
 import update from 'immutability-helper';
 
 import {
@@ -8,9 +9,10 @@ import {
 import CIcon from '@coreui/icons-react'
 import { freeSet } from '@coreui/icons'
 
-import Pager from '../../components/Pager/Pager';
+import AcodeSelector from '../../components/AcodeSelector';
 import AccountCodeAdd from './AccountCodeAdd.js';
 import AccountCodeEdit from './AccountCodeEdit.js';
+import AllActions from '../../actions'
 import Helper from '../../helpers'
 
 class AccountCode extends Component {
@@ -18,36 +20,36 @@ class AccountCode extends Component {
     super(props);
 
     this.dataChangedCallback = this.dataChangedCallback.bind(this);
+    this.acodeSelectedCallback = this.acodeSelectedCallback.bind(this);
+
     this.renderTableList = this.renderTableList.bind(this);
     this.genEmptyObj = this.genEmptyObj.bind(this);
 
     this.modalToggleAdd = this.modalToggleAdd.bind(this);
     this.modalToggleEdit = this.modalToggleEdit.bind(this);
+    this.modalToggleTest = this.modalToggleTest.bind(this);
 
     this.handleViewAll = this.handleViewAll.bind(this);
     this.handleSearchGo = this.handleSearchGo.bind(this);
-    this.handlePageChanged = this.handlePageChanged.bind(this);
 
     this.handleAdd = this.handleAdd.bind(this);
     this.handleEdit = this.handleEdit.bind(this);
 
     this.state = {
       emptyId: -1,
-      dataSet: [],
+      dataSet: props.storeAcodes,
       currentData: {
         id: -1,
         accountCode: '',
         title: '',
       },
-      totalCount: 0,
-      itemsPerPage: 10,
-      totalPage: 0,
-      currentPage: 0,
-      visiblePages: 5,
+      totalCount: props.storeAcodes.length,
       keyword: "",
       keywordError: "",
       modalFlagAdd: false,
       modalFlagEdit: false,
+      modalFlagTest: false,
+      acodeSelected: '',
     };
   }
 
@@ -57,25 +59,27 @@ class AccountCode extends Component {
       for (var i = 0; i < this.state.dataSet.length; i++) {
         if (this.state.dataSet[i].id === modifiedData.id) {
           var newDataSet = update(this.state.dataSet, { $splice: [[i, 1, modifiedData]] });
-          var renderTimes = this.state.tableRerender + 1;
-          this.setState({ tableRerender: renderTimes, dataSet: newDataSet });
+          this.props.acodeFetchOk(newDataSet);
           break;
         }
       }
     } else {
-      this.requestFetch(this.state.keyword);
+      this.requestFetch();
     }
   }
 
-  requestFetch(query, page) {
+  acodeSelectedCallback(acode) {
+    console.log("AccountClass::acodeSelectedCallback", acode);
+    this.setState({
+      acodeSelected: acode
+    })
+  }
+
+  requestFetch() {
     const parentState = this;
     const REQ_URI = (process.env.NODE_ENV !== 'production') ? 'http://' + window.location.hostname + ':28080/pds/v1/accountCode' : '/pds/v1/accountCode';
 
-    const reqUri = REQ_URI + '?perPage=' + this.state.itemsPerPage +
-      '&page=' + ((page === null || page === undefined) ? 1 : page) +
-      ((query === null || query === undefined) ? '' : '&q=' + query);
-
-    fetch(reqUri, {
+    fetch(REQ_URI, {
       method: 'GET',
       headers: Helper.auth.makeAuthHeader(),
     }).then(function (res) {
@@ -89,14 +93,8 @@ class AccountCode extends Component {
     }).then(function (resJson) {
       console.log("AccountCode::fetch => " + resJson.result);
 
-      var dataLen = resJson.pagination.totalCount;
-      var calcPages = Math.ceil(dataLen / parentState.state.itemsPerPage);
-
+      this.props.acodeFetchOk(resJson.data);
       parentState.setState({
-        dataSet: resJson.data,
-        totalCount: dataLen,
-        currentPage: (resJson.pagination.currentPage - 1),
-        totalPage: calcPages,
         keywordError: '',
       });
     }).catch(function (error) {
@@ -106,7 +104,9 @@ class AccountCode extends Component {
   }
 
   componentDidMount() {
-    this.requestFetch();
+    if (!this.props.storeDataSync) {
+      this.requestFetch();
+    }
   }
 
   genEmptyObj() {
@@ -133,20 +133,21 @@ class AccountCode extends Component {
     });
   }
 
-  handleViewAll() {
-    this.setState({ keyword: "" });
-    this.requestFetch("");
-    document.getElementById("frmRefSearch").reset();
+  modalToggleTest() {
+    console.log("modalToggleTest");
+    this.setState({
+      modalFlagTest: !this.state.modalFlagTest,
+    });
   }
 
-  handlePageChanged(newPage) {
-    this.requestFetch(this.state.keyword, newPage);
+  handleViewAll() {
+    this.setState({ keyword: "" });
+    document.getElementById("frmRefSearch").reset();
   }
 
   handleSearchGo(event) {
     event.preventDefault();
-    this.setState({ currentPage: 1, keyword: event.target.keyword.value });
-    this.requestFetch(event.target.keyword.value);
+    this.setState({ keyword: event.target.keyword.value });
   }
 
   handleAdd(e) {
@@ -164,14 +165,20 @@ class AccountCode extends Component {
   }
 
   renderTableList(dataArray) {
-    if (dataArray.length === 0) {
+    const filteredData = ((this.state.keyword && this.state.keyword.length > 0) ? dataArray.filter(
+      item => {
+        const lcKewword = this.state.keyword.toLowerCase();
+        return Object.keys(item).some(key => (item[key].includes ? item[key].includes(lcKewword) : false));
+      }
+    ) : dataArray);
+    if (filteredData.length === 0) {
       return (
         <tr key="row-nodata">
           <td colSpan="4" className="text-center align-middle" height="200">No Data</td>
         </tr>
       )
     } else {
-      return dataArray.map((data, index) => {
+      return filteredData.map((data, index) => {
         return (
           <tr key={'memo-' + data.id} onClick={this.handleEdit.bind(this, data)}>
             <td>{data.id}</td>
@@ -190,8 +197,35 @@ class AccountCode extends Component {
           <CCol>
             <CCard>
               <CCardHeader>
+                <strong>Test</strong>
+                <small> AccountCode</small>
+              </CCardHeader>
+              <CCardBody>
+                <CRow>
+                  <CCol>
+                      <CInputGroup>
+                        <CInputGroupPrepend>
+                          <CInputGroupText>Selected Account Code</CInputGroupText>
+                        </CInputGroupPrepend>
+                        <CInput type="text" name="acode" placeholder="Selected Account Code" value={this.state.acodeSelected} onChange={this.acodeSelectedCallback}/>
+                        <CInputGroupAppend>
+                          <CButton onClick={this.modalToggleTest} color="primary">Account Code Select</CButton>
+                        </CInputGroupAppend>
+                      </CInputGroup>
+                      <AcodeSelector modalFlag={this.state.modalFlagTest} modalToggle={this.modalToggleTest} callbackFromParent={this.acodeSelectedCallback} />
+                  </CCol>
+                </CRow>
+              </CCardBody>
+            </CCard>
+          </CCol>
+        </CRow>
+
+        <CRow>
+          <CCol>
+            <CCard>
+              <CCardHeader>
                 <strong>Search</strong>
-                <small> Memo</small>
+                <small> AccountCode</small>
               </CCardHeader>
               <CCardBody>
                 <CRow>
@@ -224,7 +258,7 @@ class AccountCode extends Component {
           <CCol>
             <CCard>
               <CCardHeader>
-                <strong>Memo List</strong>
+                <strong>AccountCode List</strong>
                 <small>  (Total : {this.state.totalCount})</small>
                 <span className="float-right">
                   <CButton color="danger" size="sm" variant="ghost">
@@ -244,16 +278,9 @@ class AccountCode extends Component {
                     </tr>
                   </thead>
                   <tbody>
-                    {this.renderTableList(this.state.dataSet)}
+                    {this.renderTableList(this.props.storeAcodes)}
                   </tbody>
                 </table>
-                <Pager
-                  total={this.state.totalPage}
-                  current={this.state.currentPage}
-                  visiblePages={this.state.visiblePages}
-                  titles={{ first: 'First', last: 'Last' }}
-                  onPageChanged={this.handlePageChanged}
-                />
               </CCardBody>
             </CCard>
           </CCol>
@@ -267,4 +294,13 @@ class AccountCode extends Component {
   }
 }
 
-export default AccountCode;
+const mapStateToProps = (state) => ({
+  storeDataSync: state.acode.dataSync,
+  storeAcodes: state.acode.acodes,
+});
+
+const mapDispatchToProps = (dispatch) => ({
+  acodeFetchOk: (data) => dispatch(AllActions.acode.acodeFetchOk(data)),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(AccountCode);
