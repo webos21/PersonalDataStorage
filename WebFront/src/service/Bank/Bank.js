@@ -90,7 +90,7 @@ class Bank extends Component {
     }).then(function (resJson) {
       console.log("Bank::fetch => " + resJson.result);
 
-      this.props.acodeFetchOk(resJson.data);
+      parentState.props.bankFetchOk(resJson.data);
       parentState.setState({
         keywordError: '',
       });

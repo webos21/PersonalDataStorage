@@ -79,7 +79,7 @@ class AccountClass extends Component {
     }).then(function (resJson) {
       console.log("AccountClass::fetch => " + resJson.result);
 
-      this.props.aclassFetchOk(resJson.data);
+      parentState.props.aclassFetchOk(resJson.data);
       parentState.setState({
         keywordError: '',
       });

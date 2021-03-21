@@ -93,7 +93,7 @@ class AccountCode extends Component {
     }).then(function (resJson) {
       console.log("AccountCode::fetch => " + resJson.result);
 
-      this.props.acodeFetchOk(resJson.data);
+      parentState.props.acodeFetchOk(resJson.data);
       parentState.setState({
         keywordError: '',
       });
@@ -115,7 +115,7 @@ class AccountCode extends Component {
       id: newEmptyId,
       accountCode: '',
       title: '',
-  }
+    }
     this.setState({ emptyId: newEmptyId });
     return emptyObj;
   }
@@ -203,16 +203,15 @@ class AccountCode extends Component {
               <CCardBody>
                 <CRow>
                   <CCol>
-                      <CInputGroup>
-                        <CInputGroupPrepend>
-                          <CInputGroupText>Selected Account Code</CInputGroupText>
-                        </CInputGroupPrepend>
-                        <CInput type="text" name="acode" placeholder="Selected Account Code" value={this.state.acodeSelected} onChange={this.acodeSelectedCallback}/>
-                        <CInputGroupAppend>
-                          <CButton onClick={this.modalToggleTest} color="primary">Account Code Select</CButton>
-                        </CInputGroupAppend>
-                      </CInputGroup>
-                      <AcodeSelector modalFlag={this.state.modalFlagTest} modalToggle={this.modalToggleTest} callbackFromParent={this.acodeSelectedCallback} />
+                    <CInputGroup>
+                      <CInputGroupPrepend>
+                        <CInputGroupText>Selected Account Code</CInputGroupText>
+                      </CInputGroupPrepend>
+                      <CInput type="text" name="acode" placeholder="Selected Account Code" value={this.state.acodeSelected} onChange={this.acodeSelectedCallback} />
+                      <CInputGroupAppend>
+                        <AcodeSelector modalFlag={this.state.modalFlagTest} modalToggle={this.modalToggleTest} callbackFromParent={this.acodeSelectedCallback} />
+                      </CInputGroupAppend>
+                    </CInputGroup>
                   </CCol>
                 </CRow>
               </CCardBody>

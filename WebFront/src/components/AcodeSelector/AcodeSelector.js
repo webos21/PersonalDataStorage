@@ -2,8 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux'
 
 import {
-    CModal, CModalHeader, CModalBody, CModalFooter, CButton, CRow, CCol,
-    CListGroup, CListGroupItem,
+    CDropdown, CDropdownToggle, CDropdownMenu, CDropdownItem,
 } from '@coreui/react';
 
 import AllActions from '../../actions'
@@ -41,56 +40,43 @@ class AcodeSelector extends React.Component {
         this.props.modalToggle();
     }
 
-    renderClass() {
-        return this.props.storeAclasses.map((data, index) => {
-            return (
-                <CListGroupItem
-                    key={data.id}
-                    onClick={this.handleClassSelect.bind(this, data.id)}
-                    active={this.state.selectedClass === data.id}>{data.id} - {data.title}</CListGroupItem>
-            )
-        })
-    }
-
     renderCode(classNo) {
         const classCodes = this.props.storeAcodes.filter(item => {
             return item.accountCode.startsWith('' + classNo);
         });
         return classCodes.map((data, index) => {
             return (
-                <CListGroupItem
-                    key={data.id}
+                <CDropdownItem
+                    key={'acode-' + data.id}
                     onClick={this.handleCodeSelect.bind(this, data.accountCode)}
-                    active={this.state.selectedCode === data.accountCode}>{data.accountCode} - {data.title}</CListGroupItem>
+                    color={this.state.selectedCode === data.accountCode ? 'primary' : 'default'}>{data.accountCode} - {data.title}</CDropdownItem>
+            )
+        })
+    }
+
+    renderClass() {
+        return this.props.storeAclasses.map((data, index) => {
+            return (
+                <CDropdown key={'aclass-' + data.id}>
+                    <CDropdownToggle
+                        onClick={this.handleClassSelect.bind(this, data.id)}
+                        color={this.state.selectedClass === data.id ? 'primary' : 'default'}>{data.id} - {data.title}</CDropdownToggle>
+                    <CDropdownMenu className="pt-0" placement="right-start">
+                        {this.renderCode(data.id)}
+                    </CDropdownMenu>
+                </CDropdown>
             )
         })
     }
 
     render() {
         return (
-            <CModal show={this.props.modalFlag} onClose={this.props.modalToggle}
-                className={'modal-success ' + this.state.className}>
-                <CModalHeader closeButton>계정코드 추가</CModalHeader>
-                <CModalBody>
-                    <CRow>
-                        <CCol>
-                            <CListGroup>
-                                {this.renderClass()}
-                            </CListGroup>
-
-                        </CCol>
-                        <CCol>
-                            <CListGroup>
-                                {this.renderCode(this.state.selectedClass)}
-                            </CListGroup>
-                        </CCol>
-                    </CRow>
-                </CModalBody>
-                <CModalFooter>
-                    <CButton type="submit" color="success">추가</CButton>{' '}
-                    <CButton color="secondary" onClick={this.props.modalToggle}>취소</CButton>
-                </CModalFooter>
-            </CModal>
+            <CDropdown>
+                <CDropdownToggle color="primary">계정코드 선택</CDropdownToggle>
+                <CDropdownMenu className="pt-0" placement="bottom-start">
+                    {this.renderClass()}
+                </CDropdownMenu>
+            </CDropdown>
         );
     }
 }
