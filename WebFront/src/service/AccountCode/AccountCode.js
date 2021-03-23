@@ -27,7 +27,6 @@ class AccountCode extends Component {
 
     this.modalToggleAdd = this.modalToggleAdd.bind(this);
     this.modalToggleEdit = this.modalToggleEdit.bind(this);
-    this.modalToggleTest = this.modalToggleTest.bind(this);
 
     this.handleViewAll = this.handleViewAll.bind(this);
     this.handleSearchGo = this.handleSearchGo.bind(this);
@@ -48,7 +47,6 @@ class AccountCode extends Component {
       keywordError: "",
       modalFlagAdd: false,
       modalFlagEdit: false,
-      modalFlagTest: false,
       acodeSelected: '',
     };
   }
@@ -68,10 +66,11 @@ class AccountCode extends Component {
     }
   }
 
-  acodeSelectedCallback(acode) {
-    console.log("AccountClass::acodeSelectedCallback", acode);
+  acodeSelectedCallback(codeObj) {
+    console.log("AccountClass::acodeSelectedCallback", codeObj);
+    let newVal = codeObj.codeNo + ` / ${codeObj.classTitle}(${codeObj.classId}) > ${codeObj.codeTitle}(${codeObj.codeNo})`;
     this.setState({
-      acodeSelected: acode
+      acodeSelected: newVal
     })
   }
 
@@ -133,13 +132,6 @@ class AccountCode extends Component {
     });
   }
 
-  modalToggleTest() {
-    console.log("modalToggleTest");
-    this.setState({
-      modalFlagTest: !this.state.modalFlagTest,
-    });
-  }
-
   handleViewAll() {
     this.setState({ keyword: "" });
     document.getElementById("frmRefSearch").reset();
@@ -193,32 +185,6 @@ class AccountCode extends Component {
   render() {
     return (
       <>
-        <CRow>
-          <CCol>
-            <CCard>
-              <CCardHeader>
-                <strong>Test</strong>
-                <small> AccountCode</small>
-              </CCardHeader>
-              <CCardBody>
-                <CRow>
-                  <CCol>
-                    <CInputGroup>
-                      <CInputGroupPrepend>
-                        <CInputGroupText>Selected Account Code</CInputGroupText>
-                      </CInputGroupPrepend>
-                      <CInput type="text" name="acode" placeholder="Selected Account Code" value={this.state.acodeSelected} onChange={this.acodeSelectedCallback} />
-                      <CInputGroupAppend>
-                        <AcodeSelector modalFlag={this.state.modalFlagTest} modalToggle={this.modalToggleTest} callbackFromParent={this.acodeSelectedCallback} />
-                      </CInputGroupAppend>
-                    </CInputGroup>
-                  </CCol>
-                </CRow>
-              </CCardBody>
-            </CCard>
-          </CCol>
-        </CRow>
-
         <CRow>
           <CCol>
             <CCard>
@@ -286,6 +252,32 @@ class AccountCode extends Component {
         </CRow>
         <AccountCodeAdd modalFlag={this.state.modalFlagAdd} modalToggle={this.modalToggleAdd} dataFromParent={this.state.currentData} callbackFromParent={this.dataChangedCallback} />
         <AccountCodeEdit modalFlag={this.state.modalFlagEdit} modalToggle={this.modalToggleEdit} dataFromParent={this.state.currentData} callbackFromParent={this.dataChangedCallback} />
+
+        <CRow>
+          <CCol>
+            <CCard>
+              <CCardHeader>
+                <strong>Test</strong>
+                <small> AccountCode</small>
+              </CCardHeader>
+              <CCardBody>
+                <CRow>
+                  <CCol>
+                    <CInputGroup>
+                      <CInputGroupPrepend>
+                        <CInputGroupText>Selected Account Code</CInputGroupText>
+                      </CInputGroupPrepend>
+                      <CInput type="text" name="acode" placeholder="Selected Account Code" value={this.state.acodeSelected} onChange={this.acodeSelectedCallback} />
+                      <CInputGroupAppend>
+                        <AcodeSelector callbackFromParent={this.acodeSelectedCallback} />
+                      </CInputGroupAppend>
+                    </CInputGroup>
+                  </CCol>
+                </CRow>
+              </CCardBody>
+            </CCard>
+          </CCol>
+        </CRow>
 
       </>
 

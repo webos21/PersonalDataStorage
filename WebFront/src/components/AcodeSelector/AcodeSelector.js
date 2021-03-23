@@ -12,6 +12,9 @@ class AcodeSelector extends React.Component {
     constructor(props) {
         super(props);
 
+        this.toggleClass = this.toggleClass.bind(this);
+        this.toggleCode = this.toggleCode.bind(this);
+
         this.handleClassSelect = this.handleClassSelect.bind(this);
         this.handleCodeSelect = this.handleCodeSelect.bind(this);
 
@@ -19,37 +22,68 @@ class AcodeSelector extends React.Component {
         this.renderCode = this.renderCode.bind(this);
 
         this.state = {
-            selectedClass: -1,
-            selectedCode: -1
+            showClass: false,
+            showCode: false,
+            selectedClass: null,
+            selectedCode: null
         }
     }
 
-    handleClassSelect(classId, e) {
-        console.log("handleClassSelect", classId, e);
+    toggleClass(e) {
+        console.log("toggleClass", e);
         this.setState({
-            selectedClass: classId
+            showClass: !this.state.showClass
         })
     }
 
-    handleCodeSelect(acode, e) {
-        console.log("handleCodeSelect", acode, e);
+    toggleCode(e) {
+        console.log("toggleCode", e);
         this.setState({
-            selectedCode: acode
+            showCode: !this.state.showCode
         })
-        this.props.callbackFromParent(acode);
-        this.props.modalToggle();
     }
 
-    renderCode(classNo) {
+    handleClassSelect(classObj, e) {
+        console.log("handleClassSelect", classObj, e);
+        if (this.state.selectedClass === null || this.state.selectedClass.id !== classObj.id) {
+            this.setState({
+                selectedClass: classObj
+            })
+        }
+    }
+
+    handleCodeSelect(codeObj, e) {
+        console.log("handleCodeSelect", codeObj, e);
+        if (this.state.selectedCode === null || this.state.selectedCode !== codeObj) {
+            this.setState({
+                selectedCode: codeObj
+            })
+            let accObj = {
+                classId: this.state.selectedClass.id,
+                classTitle: this.state.selectedClass.title,
+                codeId: codeObj.id,
+                codeNo: codeObj.accountCode,
+                codeTitle: codeObj.title,
+            }
+            this.props.callbackFromParent(accObj);
+            this.toggleClass();
+        }
+    }
+
+    renderCode(classObj) {
         const classCodes = this.props.storeAcodes.filter(item => {
-            return item.accountCode.startsWith('' + classNo);
+            return item.accountCode.startsWith('' + classObj.id);
         });
         return classCodes.map((data, index) => {
             return (
                 <CDropdownItem
                     key={'acode-' + data.id}
-                    onClick={this.handleCodeSelect.bind(this, data.accountCode)}
-                    color={this.state.selectedCode === data.accountCode ? 'primary' : 'default'}>{data.accountCode} - {data.title}</CDropdownItem>
+                    onClick={this.handleCodeSelect.bind(this, data)}
+                    color={this.state.selectedCode && this.state.selectedCode.id === data.id ? 'primary' : ''}
+                    tag='button'
+                    className="m-0">
+                    {data.accountCode} - {data.title}
+                </CDropdownItem>
             )
         })
     }
@@ -57,12 +91,18 @@ class AcodeSelector extends React.Component {
     renderClass() {
         return this.props.storeAclasses.map((data, index) => {
             return (
-                <CDropdown key={'aclass-' + data.id}>
+                <CDropdown
+                    key={'aclass-' + data.id}
+                    className="p-0 m-0">
                     <CDropdownToggle
-                        onClick={this.handleClassSelect.bind(this, data.id)}
-                        color={this.state.selectedClass === data.id ? 'primary' : 'default'}>{data.id} - {data.title}</CDropdownToggle>
-                    <CDropdownMenu className="pt-0" placement="right-start">
-                        {this.renderCode(data.id)}
+                        onClick={this.handleClassSelect.bind(this, data)}
+                        color={this.state.selectedClass && this.state.selectedClass.id === data.id ? 'primary' : ''}>
+                        {data.id} - {data.title}
+                    </CDropdownToggle>
+                    <CDropdownMenu
+                        className="p-0 m-0"
+                        placement="left-start">
+                        {this.renderCode(data)}
                     </CDropdownMenu>
                 </CDropdown>
             )
@@ -72,8 +112,15 @@ class AcodeSelector extends React.Component {
     render() {
         return (
             <CDropdown>
-                <CDropdownToggle color="primary">계정코드 선택</CDropdownToggle>
-                <CDropdownMenu className="pt-0" placement="bottom-start">
+                <CDropdownToggle
+                    color="primary"
+                    onClick={this.toggleClass.bind(this)}>
+                    계정코드 선택
+                </CDropdownToggle>
+                <CDropdownMenu
+                    show={this.state.showClass}
+                    className="p-0 m-0"
+                    placement="bottom-start">
                     {this.renderClass()}
                 </CDropdownMenu>
             </CDropdown>
