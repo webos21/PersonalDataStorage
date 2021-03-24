@@ -56,7 +56,7 @@ function solar2lunar(d) {
 };
 
 function totalDays(solar_date) {
-    if (((solar_date.getFullYear() % 4 == 0) && (solar_date.getFullYear() % 100 != 0)) || (solar_date.getFullYear() % 400 == 0)) {
+    if (((solar_date.getFullYear() % 4 === 0) && (solar_date.getFullYear() % 100 !== 0)) || (solar_date.getFullYear() % 400 === 0)) {
         transData.MonthTable[1] = 29
     } else {
         transData.MonthTable[1] = 28
@@ -125,7 +125,7 @@ function SolarToLunar(solar_date) {
             break
         }
 
-        if ((transData.lunarDate.month) == YunMonth(transData.lunarDate.year) && !transData.lunarDate.isYunMonth) {
+        if ((transData.lunarDate.month) === YunMonth(transData.lunarDate.year) && !transData.lunarDate.isYunMonth) {
             transData.lunarDate.isYunMonth = true
         } else {
             transData.lunarDate.month++

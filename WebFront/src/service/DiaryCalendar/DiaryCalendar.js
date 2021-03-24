@@ -1,9 +1,11 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux'
 import update from 'immutability-helper';
 
 import { CCol, CRow } from '@coreui/react';
 import DiaryAdd from './DiaryAdd.js';
 import DiaryEdit from './DiaryEdit.js';
+import AllActions from '../../actions'
 import Helper from '../../helpers'
 
 import FullCalendar from '@fullcalendar/react'
@@ -48,15 +50,13 @@ class DiaryCalendar extends Component {
     };
   }
 
-  requestAnniversary(year) {
+  requestAnniversary() {
     DiaryDebugLog("[requestAnniversary]");
 
     const parentState = this;
     const REQ_URI = (process.env.NODE_ENV !== 'production') ? 'http://' + window.location.hostname + ':28080/pds/v1/anniversary' : '/pds/v1/anniversary';
 
-    const reqUri = REQ_URI + ((year !== undefined && year !== null) ? '?year=' + year : '');
-
-    fetch(reqUri, {
+    fetch(REQ_URI, {
       method: 'GET',
       headers: Helper.auth.makeAuthHeader(),
     }).then(function (res) {
@@ -70,33 +70,8 @@ class DiaryCalendar extends Component {
     }).then(function (resJson) {
       DiaryDebugLog("Anniversary::fetch => " + resJson.result);
 
-      let anniContents = [];
-
-      resJson.data.forEach((data, index) => {
-        // DiaryDebugLog("Fetched Data!!!!!", data);
-
-        let txtColor = (data.holiday === 1) ? 'fc-day-sun' : 'fc-day';
-
-        let aText = {
-          id: (10000 + data.id),
-          title: data.title,
-          start: data.thisYear,
-          display: 'background',
-          className: txtColor,
-          backgroundColor: 'white',
-          source: 'anniversary',
-          extendedProps: {
-            dataId: data.id
-          }
-        };
-
-        anniContents[index] = aText;
-      });
-
-      parentState.setState({
-        anniversaryEvents: anniContents,
-        currentEvents: [...parentState.state.anniversaryEvents, ...anniContents]
-      });
+      parentState.props.anniFetchOk(resJson.data);
+      // something to do
     }).catch(function (error) {
       DiaryDebugLog("Anniversary::fetch => " + error);
       parentState.setState({ keywordError: error.message })
@@ -176,6 +151,12 @@ class DiaryCalendar extends Component {
     }
   }
 
+  componentDidMount() {
+    if (!this.props.storeDataSync) {
+      this.requestAnniversary();
+    }
+  }
+
   modalToggleAdd() {
     this.setState({
       modalFlagAdd: !this.state.modalFlagAdd,
@@ -203,10 +184,6 @@ class DiaryCalendar extends Component {
     })
 
     this.requestFetch(year, month);
-    
-    if (yearChanged || this.state.anniversaryEvents.length === 0) {
-      this.requestAnniversary(year);
-    }
   }
 
   // When the date is clicked
@@ -281,4 +258,13 @@ class DiaryCalendar extends Component {
   }
 }
 
-export default DiaryCalendar;
+const mapStateToProps = (state) => ({
+  storeDataSync: state.anni.dataSync,
+  storeAnnis: state.anni.annis,
+});
+
+const mapDispatchToProps = (dispatch) => ({
+  anniFetchOk: (data) => dispatch(AllActions.anni.anniFetchOk(data)),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(DiaryCalendar);
