@@ -12,8 +12,8 @@ import FullCalendar from '@fullcalendar/react'
 import dayGridPlugin from '@fullcalendar/daygrid'
 import interactionPlugin from '@fullcalendar/interaction'
 
-// const DiaryDebugLog = (args) => { };
-const DiaryDebugLog = console.log;
+const DiaryDebugLog = (args) => { };
+// const DiaryDebugLog = console.log;
 
 class DiaryCalendar extends Component {
   constructor(props) {
@@ -175,38 +175,70 @@ class DiaryCalendar extends Component {
     let lsdate = Helper.date.solar2lunar(dateInfo.start);
     let ledate = Helper.date.solar2lunar(dateInfo.end);
 
-    let sm = dateInfo.start.getMonth() + 1;
-    let sd = dateInfo.start.getDate();
-
-    let em = dateInfo.end.getMonth() + 1;
-    let ed = dateInfo.end.getDate();
-
-    let ssdate = '' + (sm < 10 ? '0' + sm : sm) + (sd < 10 ? '0' + sd : sd);
-    let sedate = '' + (em < 10 ? '0' + em : em) + (ed < 10 ? '0' + ed : ed);
+    let lunarCalendar = [];
+    for (let i = dateInfo.start.getTime(); i < dateInfo.end.getTime(); i += 86400000) {
+      let solarDate = new Date(i);
+      let tmp = Helper.date.solar2lunar(solarDate);
+      lunarCalendar[new Date(tmp.year, tmp.month, tmp.day)] = solarDate;
+    }
 
     let lunarStart = new Date(lsdate.year, lsdate.month, lsdate.day);
     let lunarEnd = new Date(ledate.year, ledate.month, ledate.day);
 
-    console.log("Lunar Start", lunarStart);
+    let lunarYearDiff = (lsdate.year !== ledate.year);
+    let solarYearDiff = (dateInfo.start.getFullYear() !== dateInfo.end.getFullYear());
+
+    DiaryDebugLog("Lunar Start", lunarStart);
+    DiaryDebugLog("Lunar End", lunarEnd);
 
     let anniEvents = [];
     this.props.storeAnnis.filter((data, index) => {
-      let solarYearChanged = (dateInfo.start.getFullYear() !== dateInfo.end.getFullYear());
-      let lunarYearChanged = (lsdate.year !== ledate.year);
+
+      let dataMon = data.applyDate.substring(0, 2) - 1;
+      let dataDay = data.applyDate.substring(2, 4) - 0;
 
       let startDate = null;
+      let viewTitle = null;
+
       if (data.lunar === 1) {
-        let dataDate = new Date(lunarEnd.getFullYear(), (data.applyDate.substring(0, 2) - 1), data.applyDate.substring(2, 4));
-        console.log("Data Date", dataDate);
-        if (data.applyDate >= lunarStart && data.applyDate < lunarEnd) {
-          let diffDate = dataDate.getTime() - lunarStart.getTime();
-          startDate = Helper.date.dateFormat(new Date(dateInfo.start.getTime() + diffDate));
+        let yearVal = lunarEnd.getFullYear();
+        if (lunarYearDiff && dataMon === 11) {
+          yearVal--;
+        }
+        let dataDate = new Date(yearVal, dataMon, dataDay);
+        if (dataDate >= lunarStart && dataDate < lunarEnd) {
+          DiaryDebugLog("Lunar : Data Date", dataDate, data);
+
+          let findSolarDay = lunarCalendar[dataDate];
+          if (!findSolarDay) {
+            DiaryDebugLog('find solar date : error1', findSolarDay);
+            dataDate = new Date(yearVal, dataMon, (dataDay - 1))
+            findSolarDay = lunarCalendar[dataDate];
+            if (!findSolarDay) {
+              DiaryDebugLog('find solar date : error2', findSolarDay);
+              dataDate = new Date(yearVal, dataMon, (dataDay - 2))
+              findSolarDay = lunarCalendar[dataDate];
+            }
+          }
+          DiaryDebugLog('find solar date : last', findSolarDay);
+
+          startDate = Helper.date.dateFormat(findSolarDay);
+          DiaryDebugLog("Lunar : View Date", startDate);
+
+          viewTitle = data.title + '(음 ' + (dataDate.getMonth() + 1) + '.' + dataDate.getDate() + ')';
         } else {
           return false;
         }
       } else {
-        if (data.applyDate >= ssdate && data.applyDate < sedate) {
+        let yearVal = dateInfo.end.getFullYear();
+        if (solarYearDiff && dataMon === 11) {
+          yearVal--;
+        }
+        let dataDate = new Date(yearVal, dataMon, dataDay);
+        if (dataDate >= dateInfo.start && dataDate < dateInfo.end) {
+          DiaryDebugLog("Solar : Data Date", dataDate, data);
           startDate = dateInfo.start.getFullYear() + '-' + data.applyDate.substring(0, 2) + '-' + data.applyDate.substring(2, 4);
+          viewTitle = data.title;
         } else {
           return false;
         }
@@ -215,7 +247,7 @@ class DiaryCalendar extends Component {
       let txtColor = (data.holiday === 1) ? 'fc-day-sun' : 'fc-day';
       let aText = {
         id: (10000 + data.id),
-        title: data.title,
+        title: viewTitle,
         start: startDate,
         display: 'background',
         className: txtColor,
@@ -231,7 +263,7 @@ class DiaryCalendar extends Component {
       return true;
     });
 
-    console.log(anniEvents);
+    DiaryDebugLog(anniEvents);
 
     this.setState({
       anniversaryEvents: anniEvents
