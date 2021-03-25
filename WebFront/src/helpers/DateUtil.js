@@ -47,11 +47,21 @@ const transData = {
 
 
 function solar2lunar(d) {
-    let yun = SolarToLunar(d)
+    let yun = SolarToLunar(d);
+    let mon = yun.month + 1;
+    let dd = yun.day;
+    let mdStr = '' + (mon < 10 ? '0' + mon : mon) + '-' + (dd < 10 ? '0' + dd : dd);
+    let ymdStr = yun.year + "-" + mdStr;
+
     return {
-        'day': yun.year + "-" + (yun.month + 1) + "-" + yun.day,
-        'dayTxt': (yun.month + 1) + "." + yun.day,
-        'isYunMonth': yun.isYunMonth
+        year: yun.year,
+        month: yun.month,
+        day: yun.day,
+        isYunMonth: yun.isYunMonth,
+        ymdTxt: ymdStr,
+        mdTxt: mdStr,
+        ymdNo: ymdStr.replaceAll('-',''),
+        mdNo: mdStr.replaceAll('-', ''),
     }
 };
 

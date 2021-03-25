@@ -26,6 +26,8 @@ class DiaryCalendar extends Component {
     this.modalToggleAdd = this.modalToggleAdd.bind(this);
     this.modalToggleEdit = this.modalToggleEdit.bind(this);
 
+    this.applyAnni = this.applyAnni.bind(this);
+
     this.handleDateSet = this.handleDateSet.bind(this);
     this.handleDateSelect = this.handleDateSelect.bind(this);
     this.handleEventClick = this.handleEventClick.bind(this);
@@ -169,6 +171,73 @@ class DiaryCalendar extends Component {
     });
   }
 
+  applyAnni(dateInfo) {
+    let lsdate = Helper.date.solar2lunar(dateInfo.start);
+    let ledate = Helper.date.solar2lunar(dateInfo.end);
+
+    let sm = dateInfo.start.getMonth() + 1;
+    let sd = dateInfo.start.getDate();
+
+    let em = dateInfo.end.getMonth() + 1;
+    let ed = dateInfo.end.getDate();
+
+    let ssdate = '' + (sm < 10 ? '0' + sm : sm) + (sd < 10 ? '0' + sd : sd);
+    let sedate = '' + (em < 10 ? '0' + em : em) + (ed < 10 ? '0' + ed : ed);
+
+    let lunarStart = new Date(lsdate.year, lsdate.month, lsdate.day);
+    let lunarEnd = new Date(ledate.year, ledate.month, ledate.day);
+
+    console.log("Lunar Start", lunarStart);
+
+    let anniEvents = [];
+    this.props.storeAnnis.filter((data, index) => {
+      let solarYearChanged = (dateInfo.start.getFullYear() !== dateInfo.end.getFullYear());
+      let lunarYearChanged = (lsdate.year !== ledate.year);
+
+      let startDate = null;
+      if (data.lunar === 1) {
+        let dataDate = new Date(lunarEnd.getFullYear(), (data.applyDate.substring(0, 2) - 1), data.applyDate.substring(2, 4));
+        console.log("Data Date", dataDate);
+        if (data.applyDate >= lunarStart && data.applyDate < lunarEnd) {
+          let diffDate = dataDate.getTime() - lunarStart.getTime();
+          startDate = Helper.date.dateFormat(new Date(dateInfo.start.getTime() + diffDate));
+        } else {
+          return false;
+        }
+      } else {
+        if (data.applyDate >= ssdate && data.applyDate < sedate) {
+          startDate = dateInfo.start.getFullYear() + '-' + data.applyDate.substring(0, 2) + '-' + data.applyDate.substring(2, 4);
+        } else {
+          return false;
+        }
+      }
+
+      let txtColor = (data.holiday === 1) ? 'fc-day-sun' : 'fc-day';
+      let aText = {
+        id: (10000 + data.id),
+        title: data.title,
+        start: startDate,
+        display: 'background',
+        className: txtColor,
+        backgroundColor: 'white',
+        source: 'anniversary',
+        extendedProps: {
+          dataId: data.id
+        }
+      };
+
+      anniEvents[anniEvents.length] = aText;
+
+      return true;
+    });
+
+    console.log(anniEvents);
+
+    this.setState({
+      anniversaryEvents: anniEvents
+    })
+  }
+
   handleDateSet(dateInfo) {
     DiaryDebugLog("handleDateSet!!!!!", dateInfo);
 
@@ -176,12 +245,12 @@ class DiaryCalendar extends Component {
     let year = monthStart.getFullYear();
     let month = monthStart.getMonth() + 1;
 
-    let yearChanged = (year !== this.state.viewYear);
-
     this.setState({
       viewYear: year,
       viewMonth: month,
     })
+
+    this.applyAnni(dateInfo);
 
     this.requestFetch(year, month);
   }
