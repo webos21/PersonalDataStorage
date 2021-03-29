@@ -69,6 +69,8 @@ const bankFetch = () => {
     }
 }
 
+const getBanks = state => state.bank.banks;
+
 export {
     BANK_CLEAR,
     BANK_FETCH_REQ,
@@ -79,4 +81,5 @@ export {
     bankFetchOk,
     bankFetchFail,
     bankFetch,
+    getBanks,
 }

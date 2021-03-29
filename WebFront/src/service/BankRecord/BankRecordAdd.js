@@ -1,23 +1,27 @@
 import React from 'react';
 import { useForm, Controller } from "react-hook-form";
+import { useSelector } from 'react-redux'
 
 import {
     CModal, CModalHeader, CModalBody, CModalFooter, CButton, CCol,
     CForm, CFormGroup, CInvalidFeedback,
-    CInputGroup, CInputGroupPrepend, CInputGroupText, CInput, CInputRadio, CLabel, CTextarea,
+    CInputGroup, CInputGroupPrepend, CInputGroupText, CInput, CSelect, CTextarea,
 } from '@coreui/react';
 
+import AllActions from '../../actions'
 import Helper from '../../helpers'
 
 
 const BankRecordAdd = props => {
 
-    const REQ_URI = (process.env.NODE_ENV !== 'production') ? 'http://' + window.location.hostname + ':28080/pds/v1/bankRecord' : '/pds/v1/bankRecord';
+    const REQ_URI = (process.env.NODE_ENV !== 'production') ? 'http://' + window.location.hostname + ':28080/pds/v1/brecord' : '/pds/v1/brecord';
 
     const { handleSubmit, errors, setError, control } = useForm({
         submitFocusError: true,
         nativeValidation: false,
     });
+
+    const bankList = useSelector(state => AllActions.bank.getBanks(state));
 
     const onSubmit = (data, e) => {
         const formData = new FormData(e.target);
@@ -50,46 +54,51 @@ const BankRecordAdd = props => {
     return (
         <CModal show={props.modalFlag} onClose={props.modalToggle}
             className={'modal-success ' + props.className}>
-            <CModalHeader closeButton>은행계좌 추가</CModalHeader>
+            <CModalHeader closeButton>은행거래내역 추가</CModalHeader>
             <CForm onSubmit={handleSubmit(onSubmit)}>
                 <CModalBody>
                     <CFormGroup row>
                         <CCol xs="12" md="12">
                             <CInputGroup>
                                 <CInputGroupPrepend>
-                                    <CInputGroupText style={{ minWidth: 80 }}>은행명</CInputGroupText>
+                                    <CInputGroupText style={{ minWidth: 80 }}>계좌선택</CInputGroupText>
                                 </CInputGroupPrepend>
                                 <Controller
-                                    name="bankName"
-                                    key={"bankName" + props.dataFromParent.id}
+                                    name="accountId"
+                                    key={"accountId" + props.dataFromParent.id}
                                     control={control}
-                                    defaultValue={props.dataFromParent.bankName}
+                                    defaultValue={props.dataFromParent.accountId}
                                     render={(ctrlProps) => (
-                                        <CInput
-                                            type="text"
-                                            name="bankName"
-                                            placeholder="은행명을 입력해 주세요."
-                                            className={"form-control" + (errors.bankName ? " is-invalid" : " is-valid")}
+                                        <CSelect
+                                            type="select"
+                                            name="accountId"
+                                            placeholder="계좌를 선택해 주세요."
+                                            className={"form-control" + (errors.accountId ? " is-invalid" : " is-valid")}
                                             value={ctrlProps.value}
-                                            onChange={ctrlProps.onChange}
-                                        />
+                                            onChange={ctrlProps.onChange}>
+                                            <option key={'accountId-item--1'} value={-1}>계좌를 선택해 주세요.</option>
+                                            <option key={'accountId-item--2'} value={-2}>----------------</option>
+                                            {
+                                                bankList.map((data, index) => {
+                                                    return (
+                                                        <option key={'accountId-item-' + data.id} value={data.id}>{data.bankName} - {data.accountName}</option>
+                                                    )
+                                                })
+                                            }
+                                        </CSelect>
                                     )}
                                     rules={{
                                         required: {
                                             value: true,
-                                            message: "(Req) 은행명을 입력해 주세요."
+                                            message: "(Req) 계좌를 선택해 주세요."
                                         },
-                                        minLength: {
-                                            value: 1,
-                                            message: "(Min) 은행명은 1자 이상 입니다."
+                                        min: {
+                                            value: 0,
+                                            message: "(Min) 계좌를 선택해 주세요."
                                         },
-                                        maxLength: {
-                                            value: 60,
-                                            message: "(Max) 은행명은 60자 이내 입니다."
-                                        }
                                     }}
                                 />
-                                {errors.bankName && <CInvalidFeedback>{errors.bankName.message}</CInvalidFeedback>}
+                                {errors.accountId && <CInvalidFeedback>{errors.accountId.message}</CInvalidFeedback>}
                             </CInputGroup>
                         </CCol>
                     </CFormGroup>
@@ -97,19 +106,19 @@ const BankRecordAdd = props => {
                         <CCol xs="12" md="12">
                             <CInputGroup>
                                 <CInputGroupPrepend>
-                                    <CInputGroupText style={{ minWidth: 80 }}>계좌명</CInputGroupText>
+                                    <CInputGroupText style={{ minWidth: 80 }}>거래일</CInputGroupText>
                                 </CInputGroupPrepend>
                                 <Controller
-                                    name="accountName"
-                                    key={"accountName" + props.dataFromParent.id}
+                                    name="transactionDate"
+                                    key={"transactionDate" + props.dataFromParent.id}
                                     control={control}
-                                    defaultValue={props.dataFromParent.accountName}
+                                    defaultValue={props.dataFromParent.transactionDate}
                                     render={(ctrlProps) => (
                                         <CInput
-                                            type="text"
-                                            name="accountName"
-                                            placeholder="계좌명을 입력해 주세요."
-                                            className={"form-control" + (errors.accountName ? " is-invalid" : " is-valid")}
+                                            type="date"
+                                            name="transactionDate"
+                                            placeholder="거래일을 입력해 주세요."
+                                            className={"form-control" + (errors.transactionDate ? " is-invalid" : " is-valid")}
                                             value={ctrlProps.value}
                                             onChange={ctrlProps.onChange}
                                         />
@@ -117,19 +126,19 @@ const BankRecordAdd = props => {
                                     rules={{
                                         required: {
                                             value: true,
-                                            message: "(Req) 계좌명을 입력해 주세요."
+                                            message: "(Req) 거래일을 입력해 주세요."
                                         },
                                         minLength: {
                                             value: 1,
-                                            message: "(Min) 계좌명은 1자 이상 입니다."
+                                            message: "(Min) 거래일을 1자 이상 입니다."
                                         },
                                         maxLength: {
                                             value: 60,
-                                            message: "(Max) 계좌명은 60자 이내 입니다."
+                                            message: "(Max) 거래일을 60자 이내 입니다."
                                         }
                                     }}
                                 />
-                                {errors.accountName && <CInvalidFeedback>{errors.accountName.message}</CInvalidFeedback>}
+                                {errors.transactionDate && <CInvalidFeedback>{errors.transactionDate.message}</CInvalidFeedback>}
                             </CInputGroup>
                         </CCol>
                     </CFormGroup>
@@ -137,19 +146,19 @@ const BankRecordAdd = props => {
                         <CCol xs="12" md="12">
                             <CInputGroup>
                                 <CInputGroupPrepend>
-                                    <CInputGroupText style={{ minWidth: 80 }}>소유주</CInputGroupText>
+                                    <CInputGroupText style={{ minWidth: 80 }}>적요</CInputGroupText>
                                 </CInputGroupPrepend>
                                 <Controller
-                                    name="holder"
-                                    key={"holder" + props.dataFromParent.id}
+                                    name="title"
+                                    key={"title" + props.dataFromParent.id}
                                     control={control}
-                                    defaultValue={props.dataFromParent.holder}
+                                    defaultValue={props.dataFromParent.title}
                                     render={(ctrlProps) => (
                                         <CInput
                                             type="text"
-                                            name="holder"
-                                            placeholder="소유주를 입력해 주세요."
-                                            className={"form-control" + (errors.holder ? " is-invalid" : " is-valid")}
+                                            name="title"
+                                            placeholder="적요를 입력해 주세요."
+                                            className={"form-control" + (errors.title ? " is-invalid" : " is-valid")}
                                             value={ctrlProps.value}
                                             onChange={ctrlProps.onChange}
 
@@ -158,19 +167,19 @@ const BankRecordAdd = props => {
                                     rules={{
                                         required: {
                                             value: true,
-                                            message: "(Req) 소유주를 입력해 주세요."
+                                            message: "(Req) 적요를 입력해 주세요."
                                         },
                                         minLength: {
                                             value: 1,
-                                            message: "(Min) 소유주는 1자 이상 입니다."
+                                            message: "(Min) 적요는 1자 이상 입니다."
                                         },
                                         maxLength: {
                                             value: 60,
-                                            message: "(Max) 소유주는 60자 이내 입니다."
+                                            message: "(Max) 적요는 60자 이내 입니다."
                                         }
                                     }}
                                 />
-                                {errors.holder && <CInvalidFeedback>{errors.holder.message}</CInvalidFeedback>}
+                                {errors.title && <CInvalidFeedback>{errors.title.message}</CInvalidFeedback>}
                             </CInputGroup>
                         </CCol>
                     </CFormGroup>
@@ -178,18 +187,18 @@ const BankRecordAdd = props => {
                         <CCol xs="12" md="12">
                             <CInputGroup>
                                 <CInputGroupPrepend>
-                                    <CInputGroupText style={{ minWidth: 80 }}>계좌번호</CInputGroupText>
+                                    <CInputGroupText style={{ minWidth: 80 }}>입금액</CInputGroupText>
                                 </CInputGroupPrepend>
                                 <Controller
-                                    name="accountNumber"
-                                    key={"accountNumber" + props.dataFromParent.id}
+                                    name="deposit"
+                                    key={"deposit" + props.dataFromParent.id}
                                     control={control}
-                                    defaultValue={props.dataFromParent.accountNumber}
+                                    defaultValue={props.dataFromParent.deposit}
                                     render={(ctrlProps) => (
                                         <CInput
                                             type="tel"
-                                            name="accountNumber" placeholder="계좌번호를 입력해 주세요."
-                                            className={"form-control" + (errors.accountNumber ? " is-invalid" : " is-valid")}
+                                            name="deposit" placeholder="입금액을 입력해 주세요."
+                                            className={"form-control" + (errors.deposit ? " is-invalid" : " is-valid")}
                                             value={ctrlProps.value}
                                             onChange={ctrlProps.onChange}
                                         />
@@ -197,19 +206,19 @@ const BankRecordAdd = props => {
                                     rules={{
                                         required: {
                                             value: true,
-                                            message: "(Req) 계좌번호를 입력해 주세요."
+                                            message: "(Req) 입금액을 입력해 주세요."
                                         },
                                         minLength: {
                                             value: 1,
-                                            message: "(Min) 계좌번호는 1자 이상 입니다."
+                                            message: "(Min) 입금액은 1자 이상 입니다."
                                         },
                                         maxLength: {
                                             value: 60,
-                                            message: "(Max) 계좌번호는 60자 이내 입니다."
+                                            message: "(Max) 입금액은 60자 이내 입니다."
                                         }
                                     }}
                                 />
-                                {errors.accountNumber && <CInvalidFeedback>{errors.accountNumber.message}</CInvalidFeedback>}
+                                {errors.deposit && <CInvalidFeedback>{errors.deposit.message}</CInvalidFeedback>}
                             </CInputGroup>
                         </CCol>
                     </CFormGroup>
@@ -217,19 +226,19 @@ const BankRecordAdd = props => {
                         <CCol xs="12" md="12">
                             <CInputGroup>
                                 <CInputGroupPrepend>
-                                    <CInputGroupText style={{ minWidth: 80 }}>초기잔고</CInputGroupText>
+                                    <CInputGroupText style={{ minWidth: 80 }}>출금액</CInputGroupText>
                                 </CInputGroupPrepend>
                                 <Controller
-                                    name="initialBalance"
-                                    key={"initialBalance" + props.dataFromParent.id}
+                                    name="withdrawal"
+                                    key={"withdrawal" + props.dataFromParent.id}
                                     control={control}
-                                    defaultValue={props.dataFromParent.initialBalance}
+                                    defaultValue={props.dataFromParent.withdrawal}
                                     render={(ctrlProps) => (
                                         <CInput
                                             type="number"
-                                            name="initialBalance"
-                                            placeholder="초기잔고를 입력해 주세요."
-                                            className={"form-control" + (errors.initialBalance ? " is-invalid" : " is-valid")}
+                                            name="withdrawal"
+                                            placeholder="출금액을 입력해 주세요."
+                                            className={"form-control" + (errors.withdrawal ? " is-invalid" : " is-valid")}
                                             value={ctrlProps.value}
                                             onChange={ctrlProps.onChange}
                                         />
@@ -237,194 +246,19 @@ const BankRecordAdd = props => {
                                     rules={{
                                         required: {
                                             value: true,
-                                            message: "(Req) 초기잔고를 입력해 주세요."
+                                            message: "(Req) 출금액을 입력해 주세요."
                                         },
                                         minLength: {
                                             value: 1,
-                                            message: "(Min) 초기잔고는 1자 이상 입니다."
-                                        },
-                                    }}
-                                />
-                                {errors.initialBalance && <CInvalidFeedback>{errors.initialBalance.message}</CInvalidFeedback>}
-                            </CInputGroup>
-                        </CCol>
-                    </CFormGroup>
-                    <CFormGroup row>
-                        <CCol xs="12" md="12">
-                            <CInputGroup>
-                                <CInputGroupPrepend>
-                                    <CInputGroupText style={{ minWidth: 80 }}>비밀번호</CInputGroupText>
-                                </CInputGroupPrepend>
-                                <Controller
-                                    name="accountPassword"
-                                    key={"accountPassword" + props.dataFromParent.id}
-                                    control={control}
-                                    defaultValue={props.dataFromParent.accountPassword}
-                                    render={(ctrlProps) => (
-                                        <CInput
-                                            type="password"
-                                            name="accountPassword"
-                                            placeholder="비밀번호를 입력해 주세요."
-                                            className={"form-control" + (errors.accountPassword ? " is-invalid" : " is-valid")}
-                                            autoComplete="password"
-                                            value={ctrlProps.value}
-                                            onChange={ctrlProps.onChange}
-                                        />
-                                    )}
-                                    rules={{
-                                        required: {
-                                            value: true,
-                                            message: "(Req) 비밀번호를 입력해 주세요."
-                                        },
-                                        minLength: {
-                                            value: 4,
-                                            message: "(Min) 비밀번호는 4자 입니다."
+                                            message: "(Min) 출금액은 1자 이상 입니다."
                                         },
                                         maxLength: {
-                                            value: 4,
-                                            message: "(Max) 비밀번호는 4자 입니다."
+                                            value: 60,
+                                            message: "(Max) 출금액은 60자 이내 입니다."
                                         }
                                     }}
                                 />
-                                {errors.accountPassword && <CInvalidFeedback>{errors.accountPassword.message}</CInvalidFeedback>}
-                            </CInputGroup>
-                        </CCol>
-                    </CFormGroup>
-                    <CFormGroup row>
-                        <CCol xs="12" md="12">
-                            <CInputGroup>
-                                <CInputGroupPrepend>
-                                    <CInputGroupText style={{ minWidth: 80 }}>발행일</CInputGroupText>
-                                </CInputGroupPrepend>
-                                <Controller
-                                    name="issueDate"
-                                    key={"issueDate" + props.dataFromParent.id}
-                                    control={control}
-                                    defaultValue={''}
-                                    render={(ctrlProps) => (
-                                        <CInput
-                                            type="date"
-                                            name="issueDate"
-                                            placeholder="계좌 발행일을 선택해 주세요."
-                                            className={"form-control" + (errors.issueDate ? " is-invalid" : " is-valid")}
-                                            value={ctrlProps.value}
-                                            onChange={ctrlProps.onChange}
-                                        />
-                                    )}
-                                    rules={{
-                                        required: {
-                                            value: true,
-                                        }
-                                    }}
-                                />
-                                {errors.issueDate && <CInvalidFeedback>{errors.issueDate.message}</CInvalidFeedback>}
-                            </CInputGroup>
-                        </CCol>
-                    </CFormGroup>
-                    <CFormGroup row>
-                        <CCol xs="12" md="12">
-                            <CInputGroup>
-                                <CInputGroupPrepend>
-                                    <CInputGroupText style={{ minWidth: 80 }}>만기일</CInputGroupText>
-                                </CInputGroupPrepend>
-                                <Controller
-                                    name="expireDate"
-                                    key={"expireDate" + props.dataFromParent.id}
-                                    control={control}
-                                    defaultValue={''}
-                                    render={(ctrlProps) => (
-                                        <CInput
-                                            type="date"
-                                            name="expireDate"
-                                            placeholder="계좌 만기일을 선택해 주세요."
-                                            className={"form-control" + (errors.expireDate ? " is-invalid" : " is-valid")}
-                                            value={ctrlProps.value}
-                                            onChange={ctrlProps.onChange}
-                                        />
-                                    )}
-                                    rules={{
-                                        required: {
-                                            value: false,
-                                        }
-                                    }}
-                                />
-                                {errors.expireDate && <CInvalidFeedback>{errors.expireDate.message}</CInvalidFeedback>}
-                            </CInputGroup>
-                        </CCol>
-                    </CFormGroup>
-                    <CFormGroup row>
-                        <CCol xs="12" md="12">
-                            <CInputGroup>
-                                <CInputGroupPrepend>
-                                    <CInputGroupText style={{ minWidth: 80 }}>배열순서</CInputGroupText>
-                                </CInputGroupPrepend>
-                                <Controller
-                                    name="arrange"
-                                    key={"arrange" + props.dataFromParent.id}
-                                    control={control}
-                                    defaultValue={props.dataFromParent.arrange}
-                                    render={(ctrlProps) => (
-                                        <CInput
-                                            type="number"
-                                            name="arrange"
-                                            placeholder="배열순서를 입력해 주세요."
-                                            className={"form-control" + (errors.arrange ? " is-invalid" : " is-valid")}
-                                            value={ctrlProps.value}
-                                            onChange={ctrlProps.onChange}
-                                        />
-                                    )}
-                                    rules={{
-                                        required: {
-                                            value: true,
-                                        }
-                                    }}
-                                />
-                                {errors.arrange && <CInvalidFeedback>{errors.arrange.message}</CInvalidFeedback>}
-                            </CInputGroup>
-                        </CCol>
-                    </CFormGroup>
-                    <CFormGroup row>
-                        <CCol xs="12" md="12">
-                            <CInputGroup>
-                                <CInputGroupPrepend>
-                                    <CInputGroupText style={{ minWidth: 80 }}>사용여부</CInputGroupText>
-                                </CInputGroupPrepend>
-                                <Controller
-                                    name="notUsed"
-                                    key={"notUsed" + props.dataFromParent.id}
-                                    control={control}
-                                    defaultValue={''}
-                                    render={(ctrlProps) => (
-                                        <CFormGroup className={"form-control" + (errors.holiday ? " is-invalid" : " is-valid")}>
-                                            <CFormGroup variant="custom-radio" inline>
-                                                <CInputRadio
-                                                    custom
-                                                    name="notUsed"
-                                                    value="0"
-                                                    id="notUsed-add-radio1"
-                                                    checked={ctrlProps.value === '0'}
-                                                    onChange={ctrlProps.onChange}
-                                                /><CLabel variant="custom-checkbox" htmlFor="notUsed-add-radio1">사용중</CLabel>
-                                            </CFormGroup>
-                                            <CFormGroup variant="custom-radio" inline>
-                                                <CInputRadio
-                                                    custom
-                                                    name="notUsed"
-                                                    value="1"
-                                                    id="notUsed-add-radio2"
-                                                    checked={ctrlProps.value === '1'}
-                                                    onChange={ctrlProps.onChange}
-                                                /><CLabel variant="custom-checkbox" htmlFor="notUsed-add-radio2">미사용</CLabel>
-                                            </CFormGroup>
-                                        </CFormGroup>
-                                    )}
-                                    rules={{
-                                        required: {
-                                            value: true,
-                                        }
-                                    }}
-                                />
-                                {errors.notUsed && <CInvalidFeedback>{errors.notUsed.message}</CInvalidFeedback>}
+                                {errors.withdrawal && <CInvalidFeedback>{errors.withdrawal.message}</CInvalidFeedback>}
                             </CInputGroup>
                         </CCol>
                     </CFormGroup>

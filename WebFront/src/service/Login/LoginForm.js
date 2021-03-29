@@ -12,7 +12,7 @@ import CIcon from '@coreui/icons-react'
 import AllActions from 'src/actions';
 
 const LoginForm = props => {
-    const dispatch = useDispatch()
+    const dispatch = useDispatch();
 
     const authError = useSelector(state => AllActions.auth.getAuthError(state));
 
