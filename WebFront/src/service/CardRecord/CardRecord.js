@@ -10,12 +10,12 @@ import {
 import CIcon from '@coreui/icons-react'
 import { freeSet } from '@coreui/icons'
 
-import BankRecordAdd from './BankRecordAdd.js';
-import BankRecordEdit from './BankRecordEdit.js';
+import CardRecordAdd from './CardRecordAdd.js';
+import CardRecordEdit from './CardRecordEdit.js';
 import AllActions from '../../actions'
 import Helper from '../../helpers'
 
-class BankRecord extends Component {
+class CardRecord extends Component {
   constructor(props) {
     super(props);
 
@@ -76,13 +76,9 @@ class BankRecord extends Component {
     }
   }
 
-  requestBankFetch() {
-
-  }
-
   requestFetch(query, page) {
     const parentState = this;
-    const REQ_URI = (process.env.NODE_ENV !== 'production') ? 'http://' + window.location.hostname + ':28080/pds/v1/bankRecord' : '/pds/v1/bankRecord';
+    const REQ_URI = (process.env.NODE_ENV !== 'production') ? 'http://' + window.location.hostname + ':28080/pds/v1/cardRecord' : '/pds/v1/cardRecord';
 
     const reqUri = REQ_URI + ((query === null || query === undefined) ? '' : '?q=' + query);
 
@@ -104,11 +100,7 @@ class BankRecord extends Component {
       let calcBalance = [];
       sortedData.filter(data => {
         if (!calcBalance[data.accountId]) {
-          if (parentState.state.bankMap && parentState.state.bankMap[data.accountId] && parentState.state.bankMap[data.accountId].initialBalance) {
-            calcBalance[data.accountId] = parentState.state.bankMap[data.accountId].initialBalance;
-          } else {
-            calcBalance[data.accountId] = 0;
-          }
+          calcBalance[data.accountId] = parentState.state.bankMap[data.accountId].initialBalance;
         }
         calcBalance[data.accountId] += data.deposit - data.withdrawal;
         return false;
@@ -129,16 +121,15 @@ class BankRecord extends Component {
   componentDidMount() {
     if (!this.props.storeDataSync) {
       this.props.bankFetch();
+    } else {
+      let bmap = this.props.storeBanks.reduce((map, obj) => {
+        map[obj.id] = obj;
+        return map;
+      }, {});
+      this.setState({
+        bankMap: bmap
+      })
     }
-
-    let bmap = this.props.storeBanks.reduce((map, obj) => {
-      map[obj.id] = obj;
-      return map;
-    }, {});
-    this.setState({
-      bankMap: bmap
-    })
-
     this.requestFetch();
   }
 
@@ -216,7 +207,7 @@ class BankRecord extends Component {
               className={this.state.selectedBank === data.id ? 'text-white' : 'text-muted'}
               onClick={this.handleBankSelect.bind(this, data.id)}>{data.bankName}<br />{data.accountName}</CLink>
           </CCardHeader>
-          <CCardBody align="right" className="p-2" style={{ color: (this.state.bankBalance[data.id] && (this.state.bankBalance[data.id] < 0)) ? 'blue' : 'black' }}>
+          <CCardBody align="right" className="p-2" style={{ color: this.state.bankBalance[data.id] < 0 ? 'blue' : 'black' }}>
             {this.state.bankBalance[data.id] ?
               Helper.num.formatDecimal(this.state.bankBalance[data.id])
               : '0'}
@@ -350,8 +341,8 @@ class BankRecord extends Component {
             </CCard>
           </CCol>
         </CRow>
-        <BankRecordAdd modalFlag={this.state.modalFlagAdd} modalToggle={this.modalToggleAdd} dataFromParent={this.state.currentData} callbackFromParent={this.dataChangedCallback} />
-        <BankRecordEdit modalFlag={this.state.modalFlagEdit} modalToggle={this.modalToggleEdit} dataFromParent={this.state.currentData} callbackFromParent={this.dataChangedCallback} />
+        <CardRecordAdd modalFlag={this.state.modalFlagAdd} modalToggle={this.modalToggleAdd} dataFromParent={this.state.currentData} callbackFromParent={this.dataChangedCallback} />
+        <CardRecordEdit modalFlag={this.state.modalFlagEdit} modalToggle={this.modalToggleEdit} dataFromParent={this.state.currentData} callbackFromParent={this.dataChangedCallback} />
 
       </>
 
@@ -368,4 +359,4 @@ const mapDispatchToProps = (dispatch) => ({
   bankFetch: () => dispatch(AllActions.bank.bankFetch()),
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(BankRecord);
+export default connect(mapStateToProps, mapDispatchToProps)(CardRecord);

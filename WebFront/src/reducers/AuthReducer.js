@@ -37,6 +37,7 @@ const AuthReducer = (state = initialState, { type, ...rest }) => {
             localStorage.removeItem('authKey');
             localStorage.removeItem('authVal');
             return {
+                logOn: false,
                 status: AllActions.auth.AUTH_LOGIN_FAIL,
                 authKey: localStorage.getItem('authKey'),
                 authVal: localStorage.getItem('authVal'),

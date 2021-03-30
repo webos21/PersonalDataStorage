@@ -12,9 +12,9 @@ import AllActions from '../../actions'
 import Helper from '../../helpers'
 
 
-const BankRecordEdit = props => {
+const CardRecordAdd = props => {
 
-    const REQ_URI = (process.env.NODE_ENV !== 'production') ? 'http://' + window.location.hostname + ':28080/pds/v1/bankRecord' : '/pds/v1/bankRecord';
+    const REQ_URI = (process.env.NODE_ENV !== 'production') ? 'http://' + window.location.hostname + ':28080/pds/v1/cardRecord' : '/pds/v1/cardRecord';
 
     const { handleSubmit, errors, setError, control } = useForm({
         submitFocusError: true,
@@ -23,35 +23,11 @@ const BankRecordEdit = props => {
 
     const bankList = useSelector(state => AllActions.bank.getBanks(state));
 
-    const onDelete = () => {
-        fetch(REQ_URI + '?brId=' + props.dataFromParent.id, {
-            method: 'DELETE',
-            headers: Helper.auth.makeAuthHeader(),
-        }).then(function (res) {
-            if (!res.ok) {
-                if (res.status === 401) {
-                    window.location = "/#/logout";
-                }
-                throw Error("서버응답 : " + res.statusText + "(" + res.status + ")");
-            }
-            return res.json();
-        }).then(function (resJson) {
-            console.log("BankRecordDel::fetch => " + resJson.result);
-            if (resJson.result === "OK") {
-                props.modalToggle();
-                props.callbackFromParent();
-            }
-        }).catch(function (error) {
-            console.log("BankRecordDel::fetch => " + error);
-            setError("siteId", "serverResponse", error.message);
-        });
-    };
-
     const onSubmit = (data, e) => {
         const formData = new FormData(e.target);
 
         fetch(REQ_URI, {
-            method: 'PUT',
+            method: 'POST',
             headers: Helper.auth.makeAuthHeader(),
             body: formData
         }).then(function (res) {
@@ -63,40 +39,26 @@ const BankRecordEdit = props => {
             }
             return res.json();
         }).then(function (resJson) {
-            console.log("BankRecordEdit::fetch => " + resJson.result);
+            console.log("BankAdd::fetch => " + resJson.result);
             if (resJson.result === "OK") {
                 props.modalToggle();
-                props.callbackFromParent(resJson.data[0]);
+                props.callbackFromParent();
             }
         }).catch(function (error) {
-            console.log("BankRecordEdit::fetch => " + error);
-            setError("siteUrl", "serverResponse", error.message);
+            console.log("BankAdd::fetch => " + error);
+            setError("bankName", "serverResponse", error.message);
+            //e.target.reset();
         });
     };
 
     return (
         <CModal show={props.modalFlag} onClose={props.modalToggle}
-            className={'modal-warning ' + props.className}>
-            <CModalHeader closeButton>은행계좌 수정</CModalHeader>
-
+            className={'modal-success ' + props.className}>
+            <CModalHeader closeButton>은행거래내역 추가</CModalHeader>
             <CForm onSubmit={handleSubmit(onSubmit)}>
                 <CModalBody>
                     <CFormGroup row>
                         <CCol xs="12" md="12">
-                            <Controller
-                                name="brId"
-                                key={"brId" + props.dataFromParent.id}
-                                control={control}
-                                defaultValue={props.dataFromParent.id}
-                                render={(ctrlProps) => (
-                                    <CInput
-                                        type="hidden"
-                                        name="brId"
-                                        value={ctrlProps.value}
-                                        onChange={ctrlProps.onChange}
-                                    />
-                                )}
-                                rules={{ required: true }} />
                             <CInputGroup>
                                 <CInputGroupPrepend>
                                     <CInputGroupText style={{ minWidth: 80 }}>계좌선택</CInputGroupText>
@@ -136,7 +98,6 @@ const BankRecordEdit = props => {
                                         },
                                     }}
                                 />
-                                {errors.brId && <CInvalidFeedback>{errors.brId.message}</CInvalidFeedback>}
                                 {errors.accountId && <CInvalidFeedback>{errors.accountId.message}</CInvalidFeedback>}
                             </CInputGroup>
                         </CCol>
@@ -151,7 +112,7 @@ const BankRecordEdit = props => {
                                     name="transactionDate"
                                     key={"transactionDate" + props.dataFromParent.id}
                                     control={control}
-                                    defaultValue={Helper.date.dateFormat(new Date(props.dataFromParent.transactionDate))}
+                                    defaultValue={props.dataFromParent.transactionDate}
                                     render={(ctrlProps) => (
                                         <CInput
                                             type="date"
@@ -336,8 +297,7 @@ const BankRecordEdit = props => {
 
                 </CModalBody>
                 <CModalFooter>
-                    <CButton color="danger" className="mr-auto" onClick={onDelete}>삭제</CButton>
-                    <CButton type="submit" color="warning">수정</CButton>{' '}
+                    <CButton type="submit" color="success">추가</CButton>{' '}
                     <CButton color="secondary" onClick={props.modalToggle}>취소</CButton>
                 </CModalFooter>
             </CForm>
@@ -345,4 +305,4 @@ const BankRecordEdit = props => {
     );
 };
 
-export default BankRecordEdit;
+export default CardRecordAdd;

@@ -26,12 +26,14 @@ const AccountClassReducer = (state = initialState, { type, ...rest }) => {
             localStorage.setItem('aclassData', JSON.stringify(rest.aclasses));
             return {
                 ...state,
+                dataSync: true,
                 pending: false,
                 ...rest
             };
         case AllActions.aclass.ACLASS_FETCH_FAIL:
             return {
                 ...state,
+                dataSync: false,
                 pending: false,
                 ...rest
             };

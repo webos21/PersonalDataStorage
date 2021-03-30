@@ -26,12 +26,14 @@ const BankReducer = (state = initialState, { type, ...rest }) => {
             localStorage.setItem('bankData', JSON.stringify(rest.banks));
             return {
                 ...state,
+                dataSync: true,
                 pending: false,
                 ...rest
             };
         case AllActions.bank.BANK_FETCH_FAIL:
             return {
                 ...state,
+                dataSync: false,
                 pending: false,
                 ...rest
             };

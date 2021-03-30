@@ -26,12 +26,14 @@ const AnniversaryReducer = (state = initialState, { type, ...rest }) => {
             localStorage.setItem('anniData', JSON.stringify(rest.annis));
             return {
                 ...state,
+                dataSync: true,
                 pending: false,
                 ...rest
             };
         case AllActions.anni.ANNI_FETCH_FAIL:
             return {
                 ...state,
+                dataSync: false,
                 pending: false,
                 ...rest
             };

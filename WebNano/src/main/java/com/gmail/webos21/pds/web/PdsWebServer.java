@@ -56,7 +56,7 @@ public class PdsWebServer extends NanoHTTPD {
 		dynamicRouter.addDynamicPage("/pds/v1/address", AddressBookHandler.class);
 		dynamicRouter.addDynamicPage("/pds/v1/anniversary", AnniversaryHandler.class);
 		dynamicRouter.addDynamicPage("/pds/v1/bank", BankHandler.class);
-		dynamicRouter.addDynamicPage("/pds/v1/brecord", BankRecordHandler.class);
+		dynamicRouter.addDynamicPage("/pds/v1/bankRecord", BankRecordHandler.class);
 		dynamicRouter.addDynamicPage("/pds/v1/pwbook", PasswordBookHandler.class);
 		dynamicRouter.addDynamicPage("/pds/v1/diary", DiaryHandler.class);
 		dynamicRouter.addDynamicPage("/pds/v1/memo", MemoHandler.class);

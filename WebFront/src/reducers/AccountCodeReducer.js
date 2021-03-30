@@ -26,12 +26,14 @@ const AccountCodeReducer = (state = initialState, { type, ...rest }) => {
             localStorage.setItem('acodeData', JSON.stringify(rest.acodes));
             return {
                 ...state,
+                dataSync: true,
                 pending: false,
                 ...rest
             };
         case AllActions.acode.ACODE_FETCH_FAIL:
             return {
                 ...state,
+                dataSync: false,
                 pending: false,
                 ...rest
             };

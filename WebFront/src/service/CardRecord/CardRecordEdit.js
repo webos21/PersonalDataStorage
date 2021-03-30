@@ -12,9 +12,9 @@ import AllActions from '../../actions'
 import Helper from '../../helpers'
 
 
-const BankRecordEdit = props => {
+const CardRecordEdit = props => {
 
-    const REQ_URI = (process.env.NODE_ENV !== 'production') ? 'http://' + window.location.hostname + ':28080/pds/v1/bankRecord' : '/pds/v1/bankRecord';
+    const REQ_URI = (process.env.NODE_ENV !== 'production') ? 'http://' + window.location.hostname + ':28080/pds/v1/cardRecord' : '/pds/v1/cardRecord';
 
     const { handleSubmit, errors, setError, control } = useForm({
         submitFocusError: true,
@@ -345,4 +345,4 @@ const BankRecordEdit = props => {
     );
 };
 
-export default BankRecordEdit;
+export default CardRecordEdit;
