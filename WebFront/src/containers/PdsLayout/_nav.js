@@ -40,6 +40,21 @@ const navItems = [
         name: 'BankRecord',
         to: '/bankRecord',
       },
+      {
+        _tag: 'CSidebarNavItem',
+        name: 'Budget',
+        to: '/budget',
+      },
+      {
+        _tag: 'CSidebarNavItem',
+        name: 'Card',
+        to: '/card',
+      },
+      {
+        _tag: 'CSidebarNavItem',
+        name: 'CardRecord',
+        to: '/cardRecord',
+      },
     ]
   },
   {

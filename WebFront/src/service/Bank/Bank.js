@@ -72,7 +72,7 @@ class Bank extends Component {
     }
   }
 
-  requestFetch(query, page) {
+  requestFetch() {
     const parentState = this;
     const REQ_URI = (process.env.NODE_ENV !== 'production') ? 'http://' + window.location.hostname + ':28080/pds/v1/bank' : '/pds/v1/bank';
 

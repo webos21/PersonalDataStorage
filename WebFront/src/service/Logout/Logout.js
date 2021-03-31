@@ -13,6 +13,7 @@ const Logout = props => {
     dispatch(AllActions.acode.acodeClear());
     dispatch(AllActions.anni.anniClear());
     dispatch(AllActions.bank.bankClear());
+    dispatch(AllActions.card.cardClear());
     dispatch(AllActions.auth.authLogout());
     dispatch(AllActions.auth.authHome());
   }, [dispatch]);

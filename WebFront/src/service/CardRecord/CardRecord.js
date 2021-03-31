@@ -20,14 +20,14 @@ class CardRecord extends Component {
     super(props);
 
     this.dataChangedCallback = this.dataChangedCallback.bind(this);
-    this.renderBankList = this.renderBankList.bind(this);
+    this.renderCardList = this.renderCardList.bind(this);
     this.renderTableList = this.renderTableList.bind(this);
     this.genEmptyObj = this.genEmptyObj.bind(this);
 
     this.modalToggleAdd = this.modalToggleAdd.bind(this);
     this.modalToggleEdit = this.modalToggleEdit.bind(this);
 
-    this.handleBankSelect = this.handleBankSelect.bind(this);
+    this.handleCardSelect = this.handleCardSelect.bind(this);
 
     this.handleViewAll = this.handleViewAll.bind(this);
     this.handleSearchGo = this.handleSearchGo.bind(this);
@@ -41,16 +41,23 @@ class CardRecord extends Component {
       dataSet: [],
       currentData: {
         id: -1,
-        accountId: -1,
-        transactionDate: '',
+        cardId: -1,
+        transactionDate: new Date(),
         title: '',
-        deposit: 0,
-        withdrawal: 0,
+        price: 0,
+        commission: 0,
+        installment: 0,
+        installmentId: 0,
+        installmentTurn: 0,
+        amount: 0,
+        remainder: 0,
+        settlementDate: new Date(),
+        paid: 0,
         memo: '',
       },
-      bankMap: [],
-      bankBalance: [],
-      selectedBank: null,
+      cardMap: [],
+      cardBalance: [],
+      selectedCard: null,
       totalCount: 0,
       keyword: "",
       keywordError: "",
@@ -61,7 +68,7 @@ class CardRecord extends Component {
   }
 
   dataChangedCallback(modifiedData) {
-    console.log("BankRecord::dataChangedCallback");
+    console.log("CardRecord::dataChangedCallback");
     if (modifiedData !== undefined && modifiedData !== null) {
       for (var i = 0; i < this.state.dataSet.length; i++) {
         if (this.state.dataSet[i].id === modifiedData.id) {
@@ -94,40 +101,42 @@ class CardRecord extends Component {
       }
       return res.json();
     }).then(function (resJson) {
-      console.log("BankRecord::fetch => " + resJson.result);
+      console.log("CardRecord::fetch => " + resJson.result);
 
       let sortedData = [].concat(resJson.data).sort((a, b) => a.transactionDate > b.transactionDate ? -1 : 1);
       let calcBalance = [];
       sortedData.filter(data => {
-        if (!calcBalance[data.accountId]) {
-          calcBalance[data.accountId] = parentState.state.bankMap[data.accountId].initialBalance;
+        if (data.paid === 0) {
+          if (!calcBalance[data.cardId]) {
+            calcBalance[data.cardId] = 0;
+          }
+          calcBalance[data.cardId] += (data.price + data.commission);
         }
-        calcBalance[data.accountId] += data.deposit - data.withdrawal;
         return false;
-      })
+      });
 
       parentState.setState({
         dataSet: sortedData,
-        bankBalance: calcBalance,
+        cardBalance: calcBalance,
         totalCount: sortedData.length,
         keywordError: '',
       });
     }).catch(function (error) {
-      console.log("BankRecord::fetch => " + error);
+      console.log("CardRecord::fetch => " + error);
       parentState.setState({ keywordError: error.message })
     });
   }
 
   componentDidMount() {
     if (!this.props.storeDataSync) {
-      this.props.bankFetch();
+      this.props.cardFetch();
     } else {
-      let bmap = this.props.storeBanks.reduce((map, obj) => {
+      let cmap = this.props.storeCards.reduce((map, obj) => {
         map[obj.id] = obj;
         return map;
       }, {});
       this.setState({
-        bankMap: bmap
+        cardMap: cmap
       })
     }
     this.requestFetch();
@@ -137,13 +146,20 @@ class CardRecord extends Component {
     let newEmptyId = (this.state.emptyId ? (this.state.emptyId - 1) : -1);
     let emptyObj = {
       id: newEmptyId,
-      accountId: -1,
-      transactionDate: '',
+      cardId: -1,
+      transactionDate: new Date(),
       title: '',
-      deposit: 0,
-      withdrawal: 0,
+      price: 0,
+      commission: 0,
+      installment: 0,
+      installmentId: 0,
+      installmentTurn: 0,
+      amount: 0,
+      remainder: 0,
+      settlementDate: new Date(),
+      paid: 0,
       memo: '',
-    }
+  }
     this.setState({ emptyId: newEmptyId });
     return emptyObj;
   }
@@ -161,9 +177,9 @@ class CardRecord extends Component {
     });
   }
 
-  handleBankSelect(dataId) {
+  handleCardSelect(dataId) {
     this.setState({
-      selectedBank: dataId
+      selectedCard: dataId
     })
   }
 
@@ -196,20 +212,20 @@ class CardRecord extends Component {
     this.modalToggleEdit();
   }
 
-  renderBankList(dataArray) {
+  renderCardList(dataArray) {
     return dataArray.map((data, index) => {
       return (data.notUsed === 1) ? '' : (
         <CCard
-          key={"bank-" + data.id}
-          color={this.state.selectedBank === data.id ? 'info' : 'default'}>
+          key={"card-" + data.id}
+          color={this.state.selectedCard === data.id ? 'info' : 'default'}>
           <CCardHeader align="center" className="p-1 small">
             <CLink
-              className={this.state.selectedBank === data.id ? 'text-white' : 'text-muted'}
-              onClick={this.handleBankSelect.bind(this, data.id)}>{data.bankName}<br />{data.accountName}</CLink>
+              className={this.state.selectedCard === data.id ? 'text-white' : 'text-muted'}
+              onClick={this.handleCardSelect.bind(this, data.id)}>{data.company}<br />{data.cardName}</CLink>
           </CCardHeader>
-          <CCardBody align="right" className="p-2" style={{ color: this.state.bankBalance[data.id] < 0 ? 'blue' : 'black' }}>
-            {this.state.bankBalance[data.id] ?
-              Helper.num.formatDecimal(this.state.bankBalance[data.id])
+          <CCardBody align="right" className="p-2" style={{ color: this.state.cardBalance[data.id] < 0 ? 'blue' : 'black' }}>
+            {this.state.cardBalance[data.id] ?
+              Helper.num.formatDecimal(this.state.cardBalance[data.id])
               : '0'}
           </CCardBody>
         </CCard>
@@ -227,18 +243,18 @@ class CardRecord extends Component {
       )
     } else {
       let filteredData = dataArray.filter(data => {
-        if (!this.state.selectedBank) return true;
-        return (data.accountId === this.state.selectedBank);
+        if (!this.state.selectedCard) return true;
+        return (data.cardId === this.state.selectedCard);
       })
       return filteredData.map((data, index) => {
         return (
-          <tr key={'bankRecordData-' + data.id} onClick={this.handleEdit.bind(this, data)}>
+          <tr key={'cardRecordData-' + data.id} onClick={this.handleEdit.bind(this, data)}>
             <td>{data.id}</td>
-            <td>{this.state.bankMap[data.accountId].accountName}</td>
+            <td>{this.state.cardMap[data.cardId].cardName}</td>
             <td>{Helper.date.dateFormat(new Date(data.transactionDate))}</td>
+            <td>{Helper.date.dateFormat(new Date(data.settlementDate))}</td>
             <td>{data.title}</td>
-            <td align="right"><span style={{ color: 'black' }}>{Helper.num.formatDecimal(data.deposit)}</span></td>
-            <td align="right"><span style={{ color: 'blue' }}>{Helper.num.formatDecimal(data.withdrawal)}</span></td>
+            <td align="right">{Helper.num.formatDecimal(data.price)}</td>
             <td><div style={{
               width: '140px',
               overflow: 'hidden',
@@ -257,17 +273,17 @@ class CardRecord extends Component {
         <CRow>
           <CCol>
             <CCardGroup className="mb-4">
-              {this.state.selectedBank ?
+              {this.state.selectedCard ?
                 <CCard
                   color='default'>
                   <CCardHeader align="center" className="p-1 small">
                     <CLink
-                      className='text-muted' onClick={this.handleBankSelect.bind(this, null)}>모든 은행<br />모든 계좌 보기</CLink>
+                      className='text-muted' onClick={this.handleCardSelect.bind(this, null)}>모든 은행<br />모든 계좌 보기</CLink>
                   </CCardHeader>
                 </CCard>
                 : ''
               }
-              {this.renderBankList(this.props.storeBanks)}
+              {this.renderCardList(this.props.storeCards)}
             </CCardGroup>
           </CCol>
         </CRow>
@@ -277,7 +293,7 @@ class CardRecord extends Component {
             <CCard>
               <CCardHeader>
                 <strong>Search</strong>
-                <small> Bank Record</small>
+                <small> Card Record</small>
               </CCardHeader>
               <CCardBody>
                 <CRow>
@@ -310,7 +326,7 @@ class CardRecord extends Component {
           <CCol>
             <CCard>
               <CCardHeader>
-                <strong>Bank Record List</strong>
+                <strong>Card Record List</strong>
                 <small>  (Total : {this.state.totalCount})</small>
                 <span className="float-right">
                   <CButton color="danger" size="sm" variant="ghost">
@@ -325,11 +341,11 @@ class CardRecord extends Component {
                   <thead>
                     <tr>
                       <th>ID</th>
-                      <th>계좌명</th>
+                      <th>카드명</th>
                       <th>거래일</th>
+                      <th>결제일</th>
                       <th>적요</th>
-                      <th>입금액</th>
-                      <th>출금액</th>
+                      <th>결제금액</th>
                       <th width="150">메모</th>
                     </tr>
                   </thead>
@@ -351,12 +367,12 @@ class CardRecord extends Component {
 }
 
 const mapStateToProps = (state) => ({
-  storeDataSync: state.bank.dataSync,
-  storeBanks: state.bank.banks,
+  storeDataSync: state.card.dataSync,
+  storeCards: state.card.cards,
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  bankFetch: () => dispatch(AllActions.bank.bankFetch()),
+  cardFetch: () => dispatch(AllActions.card.cardFetch()),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(CardRecord);

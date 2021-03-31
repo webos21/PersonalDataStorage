@@ -4,30 +4,27 @@ import update from 'immutability-helper';
 
 import {
   CButton, CCard, CCardBody, CCardHeader, CCol, CRow,
-  CCardGroup, CLink,
   CForm, CInput, CInputGroup, CInputGroupPrepend, CInputGroupAppend, CInputGroupText,
 } from '@coreui/react';
 import CIcon from '@coreui/icons-react'
 import { freeSet } from '@coreui/icons'
 
-import BankRecordAdd from './BankRecordAdd.js';
-import BankRecordEdit from './BankRecordEdit.js';
+import Pager from '../../components/Pager/Pager';
+import BudgetAdd from './BudgetAdd.js';
+import BudgetEdit from './BudgetEdit.js';
 import AllActions from '../../actions'
 import Helper from '../../helpers'
 
-class BankRecord extends Component {
+class Budget extends Component {
   constructor(props) {
     super(props);
 
     this.dataChangedCallback = this.dataChangedCallback.bind(this);
-    this.renderBankList = this.renderBankList.bind(this);
     this.renderTableList = this.renderTableList.bind(this);
     this.genEmptyObj = this.genEmptyObj.bind(this);
 
     this.modalToggleAdd = this.modalToggleAdd.bind(this);
     this.modalToggleEdit = this.modalToggleEdit.bind(this);
-
-    this.handleBankSelect = this.handleBankSelect.bind(this);
 
     this.handleViewAll = this.handleViewAll.bind(this);
     this.handleSearchGo = this.handleSearchGo.bind(this);
@@ -41,27 +38,27 @@ class BankRecord extends Component {
       dataSet: [],
       currentData: {
         id: -1,
-        accountId: -1,
-        transactionDate: '',
-        title: '',
+        budgetDate: new Date(),
         deposit: 0,
         withdrawal: 0,
+        accountCode: '',
         memo: '',
       },
-      bankMap: [],
-      bankBalance: [],
-      selectedBank: null,
+      classCodeMap: null,
       totalCount: 0,
+      itemsPerPage: 10,
+      totalPage: 0,
+      currentPage: 0,
+      visiblePages: 5,
       keyword: "",
       keywordError: "",
       modalFlagAdd: false,
       modalFlagEdit: false,
-
     };
   }
 
   dataChangedCallback(modifiedData) {
-    console.log("BankRecord::dataChangedCallback");
+    console.log("Budget::dataChangedCallback");
     if (modifiedData !== undefined && modifiedData !== null) {
       for (var i = 0; i < this.state.dataSet.length; i++) {
         if (this.state.dataSet[i].id === modifiedData.id) {
@@ -78,9 +75,11 @@ class BankRecord extends Component {
 
   requestFetch(query, page) {
     const parentState = this;
-    const REQ_URI = (process.env.NODE_ENV !== 'production') ? 'http://' + window.location.hostname + ':28080/pds/v1/bankRecord' : '/pds/v1/bankRecord';
+    const REQ_URI = (process.env.NODE_ENV !== 'production') ? 'http://' + window.location.hostname + ':28080/pds/v1/budget' : '/pds/v1/budget';
 
-    const reqUri = REQ_URI + ((query === null || query === undefined) ? '' : '?q=' + query);
+    const reqUri = REQ_URI + '?perPage=' + this.state.itemsPerPage +
+      '&page=' + ((page === null || page === undefined) ? 1 : page) +
+      ((query === null || query === undefined) ? '' : '&q=' + query);
 
     fetch(reqUri, {
       method: 'GET',
@@ -94,47 +93,44 @@ class BankRecord extends Component {
       }
       return res.json();
     }).then(function (resJson) {
-      console.log("BankRecord::fetch => " + resJson.result);
+      console.log("Budget::fetch => " + resJson.result);
 
-      let sortedData = [].concat(resJson.data).sort((a, b) => a.transactionDate > b.transactionDate ? -1 : 1);
-      let calcBalance = [];
-      sortedData.filter(data => {
-        if (!calcBalance[data.accountId]) {
-          if (parentState.state.bankMap && parentState.state.bankMap[data.accountId] && parentState.state.bankMap[data.accountId].initialBalance) {
-            calcBalance[data.accountId] = parentState.state.bankMap[data.accountId].initialBalance;
-          } else {
-            calcBalance[data.accountId] = 0;
-          }
-        }
-        calcBalance[data.accountId] += data.deposit - data.withdrawal;
-        return false;
-      })
+      var dataLen = resJson.pagination.totalCount;
+      var calcPages = Math.ceil(dataLen / parentState.state.itemsPerPage);
 
       parentState.setState({
-        dataSet: sortedData,
-        bankBalance: calcBalance,
-        totalCount: sortedData.length,
+        dataSet: resJson.data,
+        totalCount: dataLen,
+        currentPage: (resJson.pagination.currentPage - 1),
+        totalPage: calcPages,
         keywordError: '',
       });
     }).catch(function (error) {
-      console.log("BankRecord::fetch => " + error);
+      console.log("Budget::fetch => " + error);
       parentState.setState({ keywordError: error.message })
     });
   }
 
   componentDidMount() {
-    if (!this.props.storeDataSync) {
-      this.props.bankFetch();
+    if (this.props.storeDataSync) {
+      let classMap = this.props.storeClasses.reduce((map, obj) => {
+        map[obj.id] = obj;
+        return map;
+      }, {});
+
+      let codeMap = this.props.storeCodes.reduce((map, obj) => {
+        let newObj = {
+          ...obj,
+          classInfo: classMap[obj.accountCode.substring(0, 1)],
+        }
+        map[obj.accountCode] = newObj;
+        return map;
+      }, {});
+
+      this.setState({
+        classCodeMap: codeMap
+      })
     }
-
-    let bmap = this.props.storeBanks.reduce((map, obj) => {
-      map[obj.id] = obj;
-      return map;
-    }, {});
-    this.setState({
-      bankMap: bmap
-    })
-
     this.requestFetch();
   }
 
@@ -142,11 +138,10 @@ class BankRecord extends Component {
     let newEmptyId = (this.state.emptyId ? (this.state.emptyId - 1) : -1);
     let emptyObj = {
       id: newEmptyId,
-      accountId: -1,
-      transactionDate: '',
-      title: '',
+      budgetDate: new Date(),
       deposit: 0,
       withdrawal: 0,
+      accountCode: '',
       memo: '',
     }
     this.setState({ emptyId: newEmptyId });
@@ -166,12 +161,6 @@ class BankRecord extends Component {
     });
   }
 
-  handleBankSelect(dataId) {
-    this.setState({
-      selectedBank: dataId
-    })
-  }
-
   handleViewAll() {
     this.setState({ keyword: "" });
     this.requestFetch("");
@@ -184,7 +173,7 @@ class BankRecord extends Component {
 
   handleSearchGo(event) {
     event.preventDefault();
-    this.setState({ keyword: event.target.keyword.value });
+    this.setState({ currentPage: 1, keyword: event.target.keyword.value });
     this.requestFetch(event.target.keyword.value);
   }
 
@@ -197,59 +186,30 @@ class BankRecord extends Component {
 
   handleEdit(data, e) {
     e.preventDefault();
+    console.log("handleEdit", e, data);
     this.setState({ currentData: data });
     this.modalToggleEdit();
-  }
-
-  renderBankList(dataArray) {
-    return dataArray.map((data, index) => {
-      return (data.notUsed === 1) ? '' : (
-        <CCard
-          key={"bank-" + data.id}
-          color={this.state.selectedBank === data.id ? 'info' : 'default'}>
-          <CCardHeader align="center" className="p-1 small">
-            <CLink
-              className={this.state.selectedBank === data.id ? 'text-white' : 'text-muted'}
-              onClick={this.handleBankSelect.bind(this, data.id)}>{data.bankName}<br />{data.accountName}</CLink>
-          </CCardHeader>
-          <CCardBody align="right" className="p-2" style={{ color: (this.state.bankBalance[data.id] && (this.state.bankBalance[data.id] < 0)) ? 'blue' : 'black' }}>
-            {this.state.bankBalance[data.id] ?
-              Helper.num.formatDecimal(this.state.bankBalance[data.id])
-              : '0'}
-          </CCardBody>
-        </CCard>
-
-      )
-    })
   }
 
   renderTableList(dataArray) {
     if (dataArray.length === 0) {
       return (
         <tr key="row-nodata">
-          <td colSpan="7" className="text-center align-middle" height="200">No Data</td>
+          <td colSpan="4" className="text-center align-middle" height="200">No Data</td>
         </tr>
       )
     } else {
-      let filteredData = dataArray.filter(data => {
-        if (!this.state.selectedBank) return true;
-        return (data.accountId === this.state.selectedBank);
-      })
-      return filteredData.map((data, index) => {
+      return dataArray.map((data, index) => {
         return (
-          <tr key={'bankRecordData-' + data.id} onClick={this.handleEdit.bind(this, data)}>
+          <tr key={'budget-' + data.id} onClick={this.handleEdit.bind(this, data)}>
             <td>{data.id}</td>
-            <td>{this.state.bankMap[data.accountId].accountName}</td>
-            <td>{Helper.date.dateFormat(new Date(data.transactionDate))}</td>
-            <td>{data.title}</td>
-            <td align="right"><span style={{ color: 'black' }}>{Helper.num.formatDecimal(data.deposit)}</span></td>
-            <td align="right"><span style={{ color: 'blue' }}>{Helper.num.formatDecimal(data.withdrawal)}</span></td>
-            <td><div style={{
-              width: '140px',
-              overflow: 'hidden',
-              textOverflow: 'ellipsis',
-              whiteSpace: 'nowrap',
-            }}>{data.memo}</div></td>
+            <td>{Helper.date.monthFormat(new Date(data.budgetDate))}</td>
+            <td>{this.state.classCodeMap[data.accountCode].classInfo.title +
+              `(${data.accountCode.substring(0, 1)}) > `
+              + this.state.classCodeMap[data.accountCode].title
+              + `(${data.accountCode})`}</td>
+            <td>{Helper.num.formatDecimal(data.deposit)}</td>
+            <td>{Helper.num.formatDecimal(data.withdrawal)}</td>
           </tr>
         )
       })
@@ -261,28 +221,10 @@ class BankRecord extends Component {
       <>
         <CRow>
           <CCol>
-            <CCardGroup className="mb-4">
-              {this.state.selectedBank ?
-                <CCard
-                  color='default'>
-                  <CCardHeader align="center" className="p-1 small">
-                    <CLink
-                      className='text-muted' onClick={this.handleBankSelect.bind(this, null)}>모든 은행<br />모든 계좌 보기</CLink>
-                  </CCardHeader>
-                </CCard>
-                : ''
-              }
-              {this.renderBankList(this.props.storeBanks)}
-            </CCardGroup>
-          </CCol>
-        </CRow>
-
-        <CRow>
-          <CCol>
             <CCard>
               <CCardHeader>
                 <strong>Search</strong>
-                <small> Bank Record</small>
+                <small> Budget</small>
               </CCardHeader>
               <CCardBody>
                 <CRow>
@@ -315,7 +257,7 @@ class BankRecord extends Component {
           <CCol>
             <CCard>
               <CCardHeader>
-                <strong>Bank Record List</strong>
+                <strong>Budget List</strong>
                 <small>  (Total : {this.state.totalCount})</small>
                 <span className="float-right">
                   <CButton color="danger" size="sm" variant="ghost">
@@ -329,25 +271,30 @@ class BankRecord extends Component {
                 <table className="table table-sm table-striped table-hover">
                   <thead>
                     <tr>
-                      <th>ID</th>
-                      <th>계좌명</th>
-                      <th>거래일</th>
-                      <th>적요</th>
-                      <th>입금액</th>
-                      <th>출금액</th>
-                      <th width="150">메모</th>
+                      <th>번호</th>
+                      <th>예산월</th>
+                      <th>계정분류</th>
+                      <th>입금예정</th>
+                      <th>출금예정</th>
                     </tr>
                   </thead>
                   <tbody>
                     {this.renderTableList(this.state.dataSet)}
                   </tbody>
                 </table>
+                <Pager
+                  total={this.state.totalPage}
+                  current={this.state.currentPage}
+                  visiblePages={this.state.visiblePages}
+                  titles={{ first: 'First', last: 'Last' }}
+                  onPageChanged={this.handlePageChanged}
+                />
               </CCardBody>
             </CCard>
           </CCol>
         </CRow>
-        <BankRecordAdd modalFlag={this.state.modalFlagAdd} modalToggle={this.modalToggleAdd} dataFromParent={this.state.currentData} callbackFromParent={this.dataChangedCallback} />
-        <BankRecordEdit modalFlag={this.state.modalFlagEdit} modalToggle={this.modalToggleEdit} dataFromParent={this.state.currentData} callbackFromParent={this.dataChangedCallback} />
+        <BudgetAdd modalFlag={this.state.modalFlagAdd} modalToggle={this.modalToggleAdd} dataFromParent={this.state.currentData} callbackFromParent={this.dataChangedCallback} />
+        <BudgetEdit modalFlag={this.state.modalFlagEdit} modalToggle={this.modalToggleEdit} dataFromParent={this.state.currentData} callbackFromParent={this.dataChangedCallback} />
 
       </>
 
@@ -356,12 +303,14 @@ class BankRecord extends Component {
 }
 
 const mapStateToProps = (state) => ({
-  storeDataSync: state.bank.dataSync,
-  storeBanks: state.bank.banks,
+  storeDataSync: state.acode.dataSync,
+  storeClasses: state.aclass.aclasses,
+  storeCodes: state.acode.acodes,
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  bankFetch: () => dispatch(AllActions.bank.bankFetch()),
+  aclassFetch: () => dispatch(AllActions.aclass.aclassFetch()),
+  acodeFetch: () => dispatch(AllActions.acode.acodeFetch()),
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(BankRecord);
+export default connect(mapStateToProps, mapDispatchToProps)(Budget);

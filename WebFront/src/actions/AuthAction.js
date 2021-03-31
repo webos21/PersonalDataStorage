@@ -2,6 +2,7 @@ import * as AclassAction from './AccountClassAction'
 import * as AcodeAction from './AccountCodeAction'
 import * as AnniAction from './AnniversaryAction'
 import * as BankAction from './BankAction'
+import * as CardAction from './CardAction'
 
 const AuthDebugLog = (args) => { };
 // const AuthDebugLog = console.log;
@@ -93,8 +94,9 @@ const authLogin = pbpwd => {
                     dispatch(AcodeAction.acodeFetch()).then(() =>
                         dispatch(AnniAction.anniFetch()).then(() =>
                             dispatch(BankAction.bankFetch()).then(() =>
-                                dispatch(authHome())
-                            ))));
+                                dispatch(CardAction.cardFetch()).then(() =>
+                                    dispatch(authHome())
+                                )))));
 
                 // Promise.all([
                 //     dispatch(AclassAction.aclassFetch()),

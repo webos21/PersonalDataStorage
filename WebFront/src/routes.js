@@ -42,8 +42,11 @@ const AccountClass = React.lazy(() => import('./service/AccountClass'));
 const AccountCode = React.lazy(() => import('./service/AccountCode'));
 const Anniversary = React.lazy(() => import('./service/Anniversary'));
 const Bank = React.lazy(() => import('./service/Bank'));
-const AddressBook = React.lazy(() => import('./service/AddressBook'));
 const BankRecord = React.lazy(() => import('./service/BankRecord'));
+const Budget = React.lazy(() => import('./service/Budget'));
+const Card = React.lazy(() => import('./service/Card'));
+const CardRecord = React.lazy(() => import('./service/CardRecord'));
+const AddressBook = React.lazy(() => import('./service/AddressBook'));
 const DiaryBoard = React.lazy(() => import('./service/DiaryBoard'));
 const DiaryCalendar = React.lazy(() => import('./service/DiaryCalendar'));
 const Memo = React.lazy(() => import('./service/Memo'));
@@ -97,8 +100,11 @@ const routes = [
   { path: '/accountCode', name: 'AccountCode', component: AccountCode },
   { path: '/anniversary', name: 'Anniversary', component: Anniversary },
   { path: '/bank', name: 'Bank', component: Bank },
-  { path: '/addressbook', name: 'AddressBook', component: AddressBook },
   { path: '/bankRecord', name: 'BankRecord', component: BankRecord },
+  { path: '/budget', name: 'Budget', component: Budget },
+  { path: '/card', name: 'Card', component: Card },
+  { path: '/cardRecord', name: 'CardRecord', component: CardRecord },
+  { path: '/addressbook', name: 'AddressBook', component: AddressBook },
   { path: '/diary-board', name: 'DiaryBoard', component: DiaryBoard },
   { path: '/diary-calendar', name: 'DiaryCalendar', component: DiaryCalendar },
   { path: '/memo', name: 'Memo', component: Memo },

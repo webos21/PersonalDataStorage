@@ -70,14 +70,14 @@ const BankRecordEdit = props => {
             }
         }).catch(function (error) {
             console.log("BankRecordEdit::fetch => " + error);
-            setError("siteUrl", "serverResponse", error.message);
+            setError("accountId", "serverResponse", error.message);
         });
     };
 
     return (
         <CModal show={props.modalFlag} onClose={props.modalToggle}
             className={'modal-warning ' + props.className}>
-            <CModalHeader closeButton>은행계좌 수정</CModalHeader>
+            <CModalHeader closeButton>은행거래내역 수정</CModalHeader>
 
             <CForm onSubmit={handleSubmit(onSubmit)}>
                 <CModalBody>
@@ -235,7 +235,7 @@ const BankRecordEdit = props => {
                                     defaultValue={props.dataFromParent.deposit}
                                     render={(ctrlProps) => (
                                         <CInput
-                                            type="tel"
+                                            type="number"
                                             name="deposit" placeholder="입금액을 입력해 주세요."
                                             className={"form-control" + (errors.deposit ? " is-invalid" : " is-valid")}
                                             value={ctrlProps.value}

@@ -21,7 +21,7 @@ const CardRecordAdd = props => {
         nativeValidation: false,
     });
 
-    const bankList = useSelector(state => AllActions.bank.getBanks(state));
+    const cardList = useSelector(state => AllActions.card.getCards(state));
 
     const onSubmit = (data, e) => {
         const formData = new FormData(e.target);
@@ -39,14 +39,14 @@ const CardRecordAdd = props => {
             }
             return res.json();
         }).then(function (resJson) {
-            console.log("BankAdd::fetch => " + resJson.result);
+            console.log("CardAdd::fetch => " + resJson.result);
             if (resJson.result === "OK") {
                 props.modalToggle();
                 props.callbackFromParent();
             }
         }).catch(function (error) {
-            console.log("BankAdd::fetch => " + error);
-            setError("bankName", "serverResponse", error.message);
+            console.log("CardAdd::fetch => " + error);
+            setError("cardId", "serverResponse", error.message);
             //e.target.reset();
         });
     };
@@ -54,34 +54,48 @@ const CardRecordAdd = props => {
     return (
         <CModal show={props.modalFlag} onClose={props.modalToggle}
             className={'modal-success ' + props.className}>
-            <CModalHeader closeButton>은행거래내역 추가</CModalHeader>
+            <CModalHeader closeButton>카드거래내역 추가</CModalHeader>
             <CForm onSubmit={handleSubmit(onSubmit)}>
                 <CModalBody>
-                    <CFormGroup row>
+                <CFormGroup row>
                         <CCol xs="12" md="12">
+                            <Controller
+                                name="crId"
+                                key={"crId" + props.dataFromParent.id}
+                                control={control}
+                                defaultValue={props.dataFromParent.id}
+                                render={(ctrlProps) => (
+                                    <CInput
+                                        type="hidden"
+                                        name="crId"
+                                        value={ctrlProps.value}
+                                        onChange={ctrlProps.onChange}
+                                    />
+                                )}
+                                rules={{ required: true }} />
                             <CInputGroup>
                                 <CInputGroupPrepend>
-                                    <CInputGroupText style={{ minWidth: 80 }}>계좌선택</CInputGroupText>
+                                    <CInputGroupText style={{ minWidth: 80 }}>카드선택</CInputGroupText>
                                 </CInputGroupPrepend>
                                 <Controller
-                                    name="accountId"
-                                    key={"accountId" + props.dataFromParent.id}
+                                    name="cardId"
+                                    key={"cardId" + props.dataFromParent.id}
                                     control={control}
-                                    defaultValue={props.dataFromParent.accountId}
+                                    defaultValue={props.dataFromParent.cardId}
                                     render={(ctrlProps) => (
                                         <CSelect
                                             type="select"
-                                            name="accountId"
-                                            placeholder="계좌를 선택해 주세요."
+                                            name="cardId"
+                                            placeholder="카드를 선택해 주세요."
                                             className={"form-control" + (errors.accountId ? " is-invalid" : " is-valid")}
                                             value={ctrlProps.value}
                                             onChange={ctrlProps.onChange}>
-                                            <option key={'accountId-item--1'} value={-1}>계좌를 선택해 주세요.</option>
-                                            <option key={'accountId-item--2'} value={-2}>----------------</option>
+                                            <option key={'cardId-item--1'} value={-1}>카드를 선택해 주세요.</option>
+                                            <option key={'cardId-item--2'} value={-2}>----------------</option>
                                             {
-                                                bankList.map((data, index) => {
+                                                cardList.map((data, index) => {
                                                     return (
-                                                        <option key={'accountId-item-' + data.id} value={data.id}>{data.bankName} - {data.accountName}</option>
+                                                        <option key={'cardId-item-' + data.id} value={data.id}>{data.company} - {data.cardName}</option>
                                                     )
                                                 })
                                             }
@@ -90,15 +104,16 @@ const CardRecordAdd = props => {
                                     rules={{
                                         required: {
                                             value: true,
-                                            message: "(Req) 계좌를 선택해 주세요."
+                                            message: "(Req) 카드를 선택해 주세요."
                                         },
                                         min: {
                                             value: 0,
-                                            message: "(Min) 계좌를 선택해 주세요."
+                                            message: "(Min) 카드를 선택해 주세요."
                                         },
                                     }}
                                 />
-                                {errors.accountId && <CInvalidFeedback>{errors.accountId.message}</CInvalidFeedback>}
+                                {errors.crId && <CInvalidFeedback>{errors.crId.message}</CInvalidFeedback>}
+                                {errors.cardId && <CInvalidFeedback>{errors.cardId.message}</CInvalidFeedback>}
                             </CInputGroup>
                         </CCol>
                     </CFormGroup>
@@ -112,7 +127,7 @@ const CardRecordAdd = props => {
                                     name="transactionDate"
                                     key={"transactionDate" + props.dataFromParent.id}
                                     control={control}
-                                    defaultValue={props.dataFromParent.transactionDate}
+                                    defaultValue={Helper.date.dateFormat(new Date(props.dataFromParent.transactionDate))}
                                     render={(ctrlProps) => (
                                         <CInput
                                             type="date"
@@ -133,8 +148,8 @@ const CardRecordAdd = props => {
                                             message: "(Min) 거래일을 1자 이상 입니다."
                                         },
                                         maxLength: {
-                                            value: 60,
-                                            message: "(Max) 거래일을 60자 이내 입니다."
+                                            value: 15,
+                                            message: "(Max) 거래일을 15자 이내 입니다."
                                         }
                                     }}
                                 />
@@ -187,18 +202,18 @@ const CardRecordAdd = props => {
                         <CCol xs="12" md="12">
                             <CInputGroup>
                                 <CInputGroupPrepend>
-                                    <CInputGroupText style={{ minWidth: 80 }}>입금액</CInputGroupText>
+                                    <CInputGroupText style={{ minWidth: 80 }}>결제금액</CInputGroupText>
                                 </CInputGroupPrepend>
                                 <Controller
-                                    name="deposit"
-                                    key={"deposit" + props.dataFromParent.id}
+                                    name="price"
+                                    key={"price" + props.dataFromParent.id}
                                     control={control}
-                                    defaultValue={props.dataFromParent.deposit}
+                                    defaultValue={props.dataFromParent.price}
                                     render={(ctrlProps) => (
                                         <CInput
-                                            type="tel"
-                                            name="deposit" placeholder="입금액을 입력해 주세요."
-                                            className={"form-control" + (errors.deposit ? " is-invalid" : " is-valid")}
+                                            type="number"
+                                            name="price" placeholder="결제금액을 입력해 주세요."
+                                            className={"form-control" + (errors.price ? " is-invalid" : " is-valid")}
                                             value={ctrlProps.value}
                                             onChange={ctrlProps.onChange}
                                         />
@@ -206,19 +221,19 @@ const CardRecordAdd = props => {
                                     rules={{
                                         required: {
                                             value: true,
-                                            message: "(Req) 입금액을 입력해 주세요."
+                                            message: "(Req) 결제금액을 입력해 주세요."
                                         },
                                         minLength: {
                                             value: 1,
-                                            message: "(Min) 입금액은 1자 이상 입니다."
+                                            message: "(Min) 결제금액은 1자 이상 입니다."
                                         },
                                         maxLength: {
-                                            value: 60,
-                                            message: "(Max) 입금액은 60자 이내 입니다."
+                                            value: 20,
+                                            message: "(Max) 결제금액은 20자 이내 입니다."
                                         }
                                     }}
                                 />
-                                {errors.deposit && <CInvalidFeedback>{errors.deposit.message}</CInvalidFeedback>}
+                                {errors.price && <CInvalidFeedback>{errors.price.message}</CInvalidFeedback>}
                             </CInputGroup>
                         </CCol>
                     </CFormGroup>
@@ -226,19 +241,19 @@ const CardRecordAdd = props => {
                         <CCol xs="12" md="12">
                             <CInputGroup>
                                 <CInputGroupPrepend>
-                                    <CInputGroupText style={{ minWidth: 80 }}>출금액</CInputGroupText>
+                                    <CInputGroupText style={{ minWidth: 80 }}>수수료</CInputGroupText>
                                 </CInputGroupPrepend>
                                 <Controller
-                                    name="withdrawal"
-                                    key={"withdrawal" + props.dataFromParent.id}
+                                    name="commission"
+                                    key={"commission" + props.dataFromParent.id}
                                     control={control}
-                                    defaultValue={props.dataFromParent.withdrawal}
+                                    defaultValue={props.dataFromParent.commission}
                                     render={(ctrlProps) => (
                                         <CInput
                                             type="number"
-                                            name="withdrawal"
-                                            placeholder="출금액을 입력해 주세요."
-                                            className={"form-control" + (errors.withdrawal ? " is-invalid" : " is-valid")}
+                                            name="commission"
+                                            placeholder="수수료를 입력해 주세요."
+                                            className={"form-control" + (errors.commission ? " is-invalid" : " is-valid")}
                                             value={ctrlProps.value}
                                             onChange={ctrlProps.onChange}
                                         />
@@ -246,19 +261,105 @@ const CardRecordAdd = props => {
                                     rules={{
                                         required: {
                                             value: true,
-                                            message: "(Req) 출금액을 입력해 주세요."
+                                            message: "(Req) 수수료를 입력해 주세요."
                                         },
                                         minLength: {
                                             value: 1,
-                                            message: "(Min) 출금액은 1자 이상 입니다."
+                                            message: "(Min) 수수료는 1자 이상 입니다."
                                         },
                                         maxLength: {
-                                            value: 60,
-                                            message: "(Max) 출금액은 60자 이내 입니다."
+                                            value: 20,
+                                            message: "(Max) 수수료는 20자 이내 입니다."
                                         }
                                     }}
                                 />
-                                {errors.withdrawal && <CInvalidFeedback>{errors.withdrawal.message}</CInvalidFeedback>}
+                                {errors.commission && <CInvalidFeedback>{errors.commission.message}</CInvalidFeedback>}
+                            </CInputGroup>
+                        </CCol>
+                    </CFormGroup>
+                    <CFormGroup row>
+                        <CCol xs="12" md="12">
+                            <CInputGroup>
+                                <CInputGroupPrepend>
+                                    <CInputGroupText style={{ minWidth: 80 }}>할부개월</CInputGroupText>
+                                </CInputGroupPrepend>
+                                <Controller
+                                    name="installment"
+                                    key={"installment" + props.dataFromParent.id}
+                                    control={control}
+                                    defaultValue={props.dataFromParent.installment}
+                                    render={(ctrlProps) => (
+                                        <CSelect
+                                            type="select"
+                                            name="installment"
+                                            placeholder="할부개월을 선택해 주세요."
+                                            className={"form-control" + (errors.installment ? " is-invalid" : " is-valid")}
+                                            value={ctrlProps.value}
+                                            onChange={ctrlProps.onChange}>
+                                            <option key={'installment-item-0'} value={0}>일시불</option>
+                                            <option key={'installment-item-2'} value={2}>2개월</option>
+                                            <option key={'installment-item-3'} value={3}>3개월</option>
+                                            <option key={'installment-item-4'} value={4}>4개월</option>
+                                            <option key={'installment-item-5'} value={5}>5개월</option>
+                                            <option key={'installment-item-6'} value={6}>6개월</option>
+                                            <option key={'installment-item-9'} value={9}>9개월</option>
+                                            <option key={'installment-item-10'} value={10}>10개월</option>
+                                            <option key={'installment-item-12'} value={12}>12개월</option>
+                                            <option key={'installment-item-15'} value={15}>15개월</option>
+                                            <option key={'installment-item-18'} value={18}>18개월</option>
+                                            <option key={'installment-item-24'} value={24}>24개월</option>
+                                            <option key={'installment-item-30'} value={30}>30개월</option>
+                                            <option key={'installment-item-36'} value={36}>36개월</option>
+                                        </CSelect>
+                                    )}
+                                    rules={{
+                                        required: {
+                                            value: true,
+                                            message: "(Req) 할부개월을 선택해 주세요."
+                                        },
+                                    }}
+                                />
+                                {errors.installment && <CInvalidFeedback>{errors.installment.message}</CInvalidFeedback>}
+                            </CInputGroup>
+                        </CCol>
+                    </CFormGroup>
+                    <CFormGroup row>
+                        <CCol xs="12" md="12">
+                            <CInputGroup>
+                                <CInputGroupPrepend>
+                                    <CInputGroupText style={{ minWidth: 80 }}>납부일</CInputGroupText>
+                                </CInputGroupPrepend>
+                                <Controller
+                                    name="settlementDate"
+                                    key={"settlementDate" + props.dataFromParent.id}
+                                    control={control}
+                                    defaultValue={Helper.date.dateFormat(new Date(props.dataFromParent.settlementDate))}
+                                    render={(ctrlProps) => (
+                                        <CInput
+                                            type="date"
+                                            name="settlementDate"
+                                            placeholder="납부일을 입력해 주세요."
+                                            className={"form-control" + (errors.settlementDate ? " is-invalid" : " is-valid")}
+                                            value={ctrlProps.value}
+                                            onChange={ctrlProps.onChange}
+                                        />
+                                    )}
+                                    rules={{
+                                        required: {
+                                            value: true,
+                                            message: "(Req) 납부일을 입력해 주세요."
+                                        },
+                                        minLength: {
+                                            value: 1,
+                                            message: "(Min) 납부일을 1자 이상 입니다."
+                                        },
+                                        maxLength: {
+                                            value: 15,
+                                            message: "(Max) 납부일을 15자 이내 입니다."
+                                        }
+                                    }}
+                                />
+                                {errors.settlementDate && <CInvalidFeedback>{errors.settlementDate.message}</CInvalidFeedback>}
                             </CInputGroup>
                         </CCol>
                     </CFormGroup>

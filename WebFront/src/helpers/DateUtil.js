@@ -42,7 +42,7 @@ const transData = {
         day: 1,
         isYunMonth: false
     },
-    temp : 1
+    temp: 1
 }
 
 
@@ -60,7 +60,7 @@ function solar2lunar(d) {
         isYunMonth: yun.isYunMonth,
         ymdTxt: ymdStr,
         mdTxt: mdStr,
-        ymdNo: ymdStr.replaceAll('-',''),
+        ymdNo: ymdStr.replaceAll('-', ''),
         mdNo: mdStr.replaceAll('-', ''),
     }
 };
@@ -147,20 +147,58 @@ function SolarToLunar(solar_date) {
     return transData.lunarDate
 }
 
-function dateFormat(dateObj) {
-    var year = dateObj.getFullYear();
-    var month = dateObj.getMonth() + 1;
+function monthFormat(dateObj) {
+    let year = dateObj.getFullYear();
+    let month = dateObj.getMonth() + 1;
     if (month < 10) {
         month = '0' + month;
     }
-    var date = dateObj.getDate();
+    return year + "-" + month
+}
+
+function dateFormat(dateObj) {
+    let year = dateObj.getFullYear();
+    let month = dateObj.getMonth() + 1;
+    if (month < 10) {
+        month = '0' + month;
+    }
+    let date = dateObj.getDate();
     if (date < 10) {
         date = '0' + date;
     }
     return year + "-" + month + "-" + date
 }
 
+function datetimeFormat(dateObj) {
+    let year = dateObj.getFullYear();
+    let month = dateObj.getMonth() + 1;
+    if (month < 10) {
+        month = '0' + month;
+    }
+    let date = dateObj.getDate();
+    if (date < 10) {
+        date = '0' + date;
+    }
+
+    let hour = dateObj.getHours();
+    if (hour < 10) {
+        hour = '0' + hour;
+    }
+    let min = dateObj.getMinutes();
+    if (min < 10) {
+        min = '0' + min;
+    }
+    let sec = dateObj.getSeconds();
+    if (sec < 10) {
+        sec = '0' + sec;
+    }
+
+    return year + "-" + month + "-" + date + "T" + hour + ":" + min + ":" + sec;
+}
+
 export {
     solar2lunar,
     dateFormat,
+    monthFormat,
+    datetimeFormat,
 }

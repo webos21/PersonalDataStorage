@@ -25,10 +25,10 @@ public class BankRepoImpl implements BankRepo {
 		try {
 			H2Database db = opener.getReadableDatabase();
 			ResultSet rset = db.rawQuery( // indent
-					/* intent -------- */ "SELECT id, bank_name, account_name, holder, " + // indent
-					/* intent -------- */ "       account_number, initial_balance, account_password, " + // indent
-					/* intent -------- */ "       issue_date, expire_date, arrange, notused, memo " + // indent
-					/* intent -------- */ "  FROM " + DbConsts.TB_BANK, // indent
+					/* indent -------- */ "SELECT id, bank_name, account_name, holder, " + // indent
+					/* indent -------- */ "       account_number, initial_balance, account_password, " + // indent
+					/* indent -------- */ "       issue_date, expire_date, arrange, notused, memo " + // indent
+					/* indent -------- */ "  FROM " + DbConsts.TB_BANK, // indent
 					null);
 			if (rset == null || !rset.first()) {
 				return aList;
@@ -73,13 +73,13 @@ public class BankRepoImpl implements BankRepo {
 		try {
 			H2Database db = opener.getReadableDatabase();
 			ResultSet rset = db.rawQuery( // indent
-					/* intent -------- */ "SELECT id, bank_name, account_name, holder, " + // indent
-					/* intent -------- */ "       account_number, initial_balance, account_password, " + // indent
-					/* intent -------- */ "       issue_date, expire_date, arrange, notused, memo " + // indent
-					/* intent -------- */ " FROM " + DbConsts.TB_BANK + " " + // indent
-					/* intent -------- */ " WHERE (bank_name LIKE ?) OR " + // indent
-					/* intent -------- */ "        (account_name LIKE ?) OR " + // indent
-					/* intent -------- */ "        (account_number LIKE ?)", // indent
+					/* indent -------- */ "SELECT id, bank_name, account_name, holder, " + // indent
+					/* indent -------- */ "       account_number, initial_balance, account_password, " + // indent
+					/* indent -------- */ "       issue_date, expire_date, arrange, notused, memo " + // indent
+					/* indent -------- */ " FROM " + DbConsts.TB_BANK + " " + // indent
+					/* indent -------- */ " WHERE (bank_name LIKE ?) OR " + // indent
+					/* indent -------- */ "        (account_name LIKE ?) OR " + // indent
+					/* indent -------- */ "        (account_number LIKE ?)", // indent
 					new String[] { "%" + keyString + "%", "%" + keyString + "%", "%" + keyString + "%" });
 			if (rset == null || !rset.first()) {
 				return aList;
@@ -120,11 +120,11 @@ public class BankRepoImpl implements BankRepo {
 		try {
 			H2Database db = opener.getReadableDatabase();
 			ResultSet rset = db.rawQuery( // indent
-					/* intent -------- */ "SELECT id, bank_name, account_name, holder, " + // indent
-					/* intent -------- */ "       account_number, initial_balance, account_password, " + // indent
-					/* intent -------- */ "       issue_date, expire_date, arrange, notused, memo " + // indent
-					/* intent -------- */ "  FROM " + DbConsts.TB_BANK + // indent
-					/* intent -------- */ " WHERE id = " + id, null);
+					/* indent -------- */ "SELECT id, bank_name, account_name, holder, " + // indent
+					/* indent -------- */ "       account_number, initial_balance, account_password, " + // indent
+					/* indent -------- */ "       issue_date, expire_date, arrange, notused, memo " + // indent
+					/* indent -------- */ "  FROM " + DbConsts.TB_BANK + // indent
+					/* indent -------- */ " WHERE id = " + id, null);
 			if (rset == null || !rset.first()) {
 				return null;
 			}
@@ -164,11 +164,11 @@ public class BankRepoImpl implements BankRepo {
 
 			if (newRow.getId() != null) {
 				rset = db.rawQuery( // indent
-						/* intent -------- */ "SELECT id, bank_name, account_name, holder, " + // indent
-						/* intent -------- */ "       account_number, initial_balance, account_password, " + // indent
-						/* intent -------- */ "       issue_date, expire_date, arrange, notused, memo " + // indent
-						/* intent -------- */ "  FROM " + DbConsts.TB_BANK + // indent
-						/* intent -------- */ " WHERE id = " + newRow.getId(), // indent
+						/* indent -------- */ "SELECT id, bank_name, account_name, holder, " + // indent
+						/* indent -------- */ "       account_number, initial_balance, account_password, " + // indent
+						/* indent -------- */ "       issue_date, expire_date, arrange, notused, memo " + // indent
+						/* indent -------- */ "  FROM " + DbConsts.TB_BANK + // indent
+						/* indent -------- */ " WHERE id = " + newRow.getId(), // indent
 						null);
 				if (rset != null && rset.first()) {
 					rset.close();

@@ -33,22 +33,28 @@ class Card extends Component {
 
     this.state = {
       emptyId: -1,
-      dataSet: props.storeBanks,
+      dataSet: props.storeCards,
       currentData: {
         id: -1,
-        bankName: '',
-        accountName: '',
-        holder: '',
-        accountNumber: '',
-        initialBalance: '',
-        accountPassword: '',
+        company: '',
+        cardName: '',
+        cardNumber: '',
+        cardPassword: '',
+        validYear: '',
+        validMonth: '',
+        chargeDate: '',
+        cvcNumber: '',
+        bankId: '',
+        creditLimit: '',
+        cashAdvance: '',
+        cardLoan: '',
         issueDate: '',
-        expireDate: '',
+        refreshNormal: '',
+        refreshShort: '',
         arrange: '',
-        notUsed: '',
         memo: '',
       },
-      totalCount: props.storeBanks.length,
+      totalCount: props.storeCards.length,
       keyword: "",
       keywordError: "",
       modalFlagAdd: false,
@@ -58,12 +64,12 @@ class Card extends Component {
   }
 
   dataChangedCallback(modifiedData) {
-    console.log("Bank::dataChangedCallback");
+    console.log("Card::dataChangedCallback");
     if (modifiedData !== undefined && modifiedData !== null) {
       for (var i = 0; i < this.state.dataSet.length; i++) {
         if (this.state.dataSet[i].id === modifiedData.id) {
           var newDataSet = update(this.state.dataSet, { $splice: [[i, 1, modifiedData]] });
-          this.props.bankFetchOk(newDataSet);
+          this.props.cardFetchOk(newDataSet);
           break;
         }
       }
@@ -72,9 +78,9 @@ class Card extends Component {
     }
   }
 
-  requestFetch(query, page) {
+  requestFetch() {
     const parentState = this;
-    const REQ_URI = (process.env.NODE_ENV !== 'production') ? 'http://' + window.location.hostname + ':28080/pds/v1/bank' : '/pds/v1/bank';
+    const REQ_URI = (process.env.NODE_ENV !== 'production') ? 'http://' + window.location.hostname + ':28080/pds/v1/card' : '/pds/v1/card';
 
     fetch(REQ_URI, {
       method: 'GET',
@@ -88,14 +94,14 @@ class Card extends Component {
       }
       return res.json();
     }).then(function (resJson) {
-      console.log("Bank::fetch => " + resJson.result);
+      console.log("Card::fetch => " + resJson.result);
 
-      parentState.props.bankFetchOk(resJson.data);
+      parentState.props.cardFetchOk(resJson.data);
       parentState.setState({
         keywordError: '',
       });
     }).catch(function (error) {
-      console.log("Bank::fetch => " + error);
+      console.log("Card::fetch => " + error);
       parentState.setState({ keywordError: error.message })
     });
   }
@@ -110,18 +116,24 @@ class Card extends Component {
     let newEmptyId = (this.state.emptyId ? (this.state.emptyId - 1) : -1);
     let emptyObj = {
       id: newEmptyId,
-      bankName: '',
-      accountName: '',
-      holder: '',
-      accountNumber: '',
-      initialBalance: '',
-      accountPassword: '',
+      company: '',
+      cardName: '',
+      cardNumber: '',
+      cardPassword: '',
+      validYear: '',
+      validMonth: '',
+      chargeDate: '',
+      cvcNumber: '',
+      bankId: '',
+      creditLimit: '',
+      cashAdvance: '',
+      cardLoan: '',
       issueDate: '',
-      expireDate: '',
+      refreshNormal: '',
+      refreshShort: '',
       arrange: '',
-      notUsed: '',
       memo: '',
-    }
+  }
     this.setState({ emptyId: newEmptyId });
     return emptyObj;
   }
@@ -181,10 +193,10 @@ class Card extends Component {
         return (
           <tr key={'bankdata-' + data.id} onClick={this.handleEdit.bind(this, data)}>
             <td>{data.id}</td>
-            <td>{data.bankName}</td>
-            <td>{data.accountName}</td>
-            <td>{data.accountNumber}</td>
-            <td>{data.notUsed === 1 ? '미사용' : '사용중'}</td>
+            <td>{data.company}</td>
+            <td>{data.cardName}</td>
+            <td>{data.cardNumber}</td>
+            <td>{'매월 ' + (data.chargeDate + 1) + '일'}</td>
           </tr>
         )
       })
@@ -199,7 +211,7 @@ class Card extends Component {
             <CCard>
               <CCardHeader>
                 <strong>Search</strong>
-                <small> Bank</small>
+                <small> Card</small>
               </CCardHeader>
               <CCardBody>
                 <CRow>
@@ -232,7 +244,7 @@ class Card extends Component {
           <CCol>
             <CCard>
               <CCardHeader>
-                <strong>Bank List</strong>
+                <strong>Card List</strong>
                 <small>  (Total : {this.state.totalCount})</small>
                 <span className="float-right">
                   <CButton color="danger" size="sm" variant="ghost">
@@ -247,14 +259,14 @@ class Card extends Component {
                   <thead>
                     <tr>
                       <th>ID</th>
-                      <th>은행명</th>
-                      <th>계좌명</th>
-                      <th>계좌번호</th>
-                      <th>사용여부</th>
+                      <th>카드사</th>
+                      <th>카드명</th>
+                      <th>카드번호</th>
+                      <th>결제일</th>
                     </tr>
                   </thead>
                   <tbody>
-                    {this.renderTableList(this.props.storeBanks)}
+                    {this.renderTableList(this.props.storeCards)}
                   </tbody>
                 </table>
               </CCardBody>
@@ -271,12 +283,12 @@ class Card extends Component {
 }
 
 const mapStateToProps = (state) => ({
-  storeDataSync: state.bank.dataSync,
-  storeBanks: state.bank.banks,
+  storeDataSync: state.card.dataSync,
+  storeCards: state.card.cards,
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  bankFetchOk: (data) => dispatch(AllActions.bank.bankFetchOk(data)),
+  cardFetchOk: (data) => dispatch(AllActions.card.cardFetchOk(data)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Card);
