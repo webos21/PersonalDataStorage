@@ -46,6 +46,15 @@ const BankRecord = React.lazy(() => import('./service/BankRecord'));
 const Budget = React.lazy(() => import('./service/Budget'));
 const Card = React.lazy(() => import('./service/Card'));
 const CardRecord = React.lazy(() => import('./service/CardRecord'));
+const Insurance = React.lazy(() => import('./service/Insurance'));
+const InsuranceRecord = React.lazy(() => import('./service/InsuranceRecord'));
+const RealEstate = React.lazy(() => import('./service/RealEstate'));
+const RealEstateRecord = React.lazy(() => import('./service/RealEstateRecord'));
+const RegularPay = React.lazy(() => import('./service/RegularPay'));
+const RegularRecord = React.lazy(() => import('./service/RegularRecord'));
+const Stock = React.lazy(() => import('./service/Stock'));
+const StockRecord = React.lazy(() => import('./service/StockRecord'));
+
 const AddressBook = React.lazy(() => import('./service/AddressBook'));
 const DiaryBoard = React.lazy(() => import('./service/DiaryBoard'));
 const DiaryCalendar = React.lazy(() => import('./service/DiaryCalendar'));
@@ -104,6 +113,15 @@ const routes = [
   { path: '/budget', name: 'Budget', component: Budget },
   { path: '/card', name: 'Card', component: Card },
   { path: '/cardRecord', name: 'CardRecord', component: CardRecord },
+  { path: '/insurance', name: 'Insurance', component: Insurance },
+  { path: '/insuranceRecord', name: 'InsuranceRecord', component: InsuranceRecord },
+  { path: '/realestate', name: 'RealEstate', component: RealEstate },
+  { path: '/realestateRecord', name: 'RealEstateRecord', component: RealEstateRecord },
+  { path: '/regularPay', name: 'RegularPay', component: RegularPay },
+  { path: '/regularRecord', name: 'RegularRecord', component: RegularRecord },
+  { path: '/stock', name: 'Stock', component: Stock },
+  { path: '/stockRecord', name: 'StockRecord', component: StockRecord },
+
   { path: '/addressbook', name: 'AddressBook', component: AddressBook },
   { path: '/diary-board', name: 'DiaryBoard', component: DiaryBoard },
   { path: '/diary-calendar', name: 'DiaryCalendar', component: DiaryCalendar },

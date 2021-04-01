@@ -69,7 +69,7 @@ const CardEdit = props => {
             }
         }).catch(function (error) {
             console.log("CardEdit::fetch => " + error);
-            setError("siteUrl", "serverResponse", error.message);
+            setError("company", "serverResponse", error.message);
         });
     };
 

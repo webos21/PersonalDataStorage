@@ -5,6 +5,10 @@ import * as app from './AppAction'
 import * as auth from './AuthAction'
 import * as bank from './BankAction'
 import * as card from './CardAction'
+import * as insure from './InsuranceAction'
+import * as restate from './RealEstateAction'
+import * as rpay from './RegularPayAction'
+import * as stock from './StockAction'
 
 const AllActions = {
     aclass,
@@ -14,6 +18,10 @@ const AllActions = {
     auth,
     bank,
     card,
+    insure,
+    restate,
+    rpay,
+    stock,
 }
 
 export default AllActions;

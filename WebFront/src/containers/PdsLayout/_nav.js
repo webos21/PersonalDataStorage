@@ -55,6 +55,47 @@ const navItems = [
         name: 'CardRecord',
         to: '/cardRecord',
       },
+      {
+        _tag: 'CSidebarNavItem',
+        name: 'Insurance',
+        to: '/insurance',
+      },
+      {
+        _tag: 'CSidebarNavItem',
+        name: 'InsuranceRecord',
+        to: '/insuranceRecord',
+      },
+      {
+        _tag: 'CSidebarNavItem',
+        name: 'RealEstate',
+        to: '/realestate',
+      },
+      {
+        _tag: 'CSidebarNavItem',
+        name: 'RealEstateRecord',
+        to: '/realestateRecord',
+      },
+      {
+        _tag: 'CSidebarNavItem',
+        name: 'RegularPay',
+        to: '/regularPay',
+      },
+      {
+        _tag: 'CSidebarNavItem',
+        name: 'RegularRecord',
+        to: '/regularRecord',
+      },
+      {
+        _tag: 'CSidebarNavItem',
+        name: 'Stock',
+        to: '/stock',
+      },
+      {
+        _tag: 'CSidebarNavItem',
+        name: 'StockRecord',
+        to: '/stockRecord',
+      },
+
     ]
   },
   {

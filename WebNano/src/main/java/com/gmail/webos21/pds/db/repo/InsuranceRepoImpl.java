@@ -27,8 +27,8 @@ public class InsuranceRepoImpl implements InsuranceRepo {
 			ResultSet rset = db.rawQuery( // indent
 					/* indent -------- */ "SELECT id, company, product, insurance_type, policy_type, " + // indent
 					/* indent -------- */ "       contract_id, policy_holder, insured, pay_count_total, " + // indent
-					/* indent -------- */ "       pay_count_done,premium_volume, premium_mode, arranger, " + // indent
-					/* indent -------- */ "       contract_date, maturity_date, memo " + // indent
+					/* indent -------- */ "       pay_count_done, premium_volume, premium_mode, arranger, " + // indent
+					/* indent -------- */ "       contract_status, contract_date, maturity_date, memo " + // indent
 					/* indent -------- */ "  FROM " + DbConsts.TB_INSURANCE, // indent
 					null);
 			if (rset == null || !rset.first()) {
@@ -81,8 +81,8 @@ public class InsuranceRepoImpl implements InsuranceRepo {
 			ResultSet rset = db.rawQuery( // indent
 					/* indent -------- */ "SELECT id, company, product, insurance_type, policy_type, " + // indent
 					/* indent -------- */ "       contract_id, policy_holder, insured, pay_count_total, " + // indent
-					/* indent -------- */ "       pay_count_done,premium_volume, premium_mode, arranger, " + // indent
-					/* indent -------- */ "       contract_date, maturity_date, memo " + // indent
+					/* indent -------- */ "       pay_count_done, premium_volume, premium_mode, arranger, " + // indent
+					/* indent -------- */ "       contract_status, contract_date, maturity_date, memo " + // indent
 					/* indent -------- */ "  FROM " + DbConsts.TB_INSURANCE + // indent
 					/* indent -------- */ " WHERE (company LIKE ?) OR " + // indent
 					/* indent -------- */ "       (product LIKE ?) OR " + // indent
@@ -134,7 +134,7 @@ public class InsuranceRepoImpl implements InsuranceRepo {
 			ResultSet rset = db.rawQuery( // indent
 					/* indent -------- */ "SELECT id, company, product, insurance_type, policy_type, " + // indent
 					/* indent -------- */ "       contract_id, policy_holder, insured, pay_count_total, " + // indent
-					/* indent -------- */ "       pay_count_done,premium_volume, premium_mode, arranger, " + // indent
+					/* indent -------- */ "       pay_count_done, premium_volume, premium_mode, arranger, " + // indent
 					/* indent -------- */ "       contract_status, contract_date, maturity_date, memo " + // indent
 					/* indent -------- */ "  FROM " + DbConsts.TB_INSURANCE + // indent
 					/* indent -------- */ " WHERE id = " + id, // indent
@@ -185,7 +185,7 @@ public class InsuranceRepoImpl implements InsuranceRepo {
 				rset = db.rawQuery( // indent
 						/* indent -------- */ "SELECT id, company, product, insurance_type, policy_type, " + // indent
 						/* indent -------- */ "       contract_id, policy_holder, insured, pay_count_total, " + // indent
-						/* indent -------- */ "       pay_count_done,premium_volume, premium_mode, arranger, " + // indent
+						/* indent -------- */ "       pay_count_done, premium_volume, premium_mode, arranger, " + // indent
 						/* indent -------- */ "       contract_status, contract_date, maturity_date, memo " + // indent
 						/* indent -------- */ "  FROM " + DbConsts.TB_INSURANCE + // indent
 						/* indent -------- */ " WHERE id = " + newRow.getId(), // indent

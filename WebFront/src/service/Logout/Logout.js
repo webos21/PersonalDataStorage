@@ -14,6 +14,10 @@ const Logout = props => {
     dispatch(AllActions.anni.anniClear());
     dispatch(AllActions.bank.bankClear());
     dispatch(AllActions.card.cardClear());
+    dispatch(AllActions.insure.insureClear());
+    dispatch(AllActions.restate.restateClear());
+    dispatch(AllActions.rpay.rpayClear());
+    dispatch(AllActions.stock.stockClear());
     dispatch(AllActions.auth.authLogout());
     dispatch(AllActions.auth.authHome());
   }, [dispatch]);

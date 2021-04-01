@@ -11,8 +11,7 @@ import {
 import AllActions from '../../actions'
 import Helper from '../../helpers'
 
-
-const CardAdd = props => {
+const RegularPayEdit = props => {
 
     const REQ_URI = (process.env.NODE_ENV !== 'production') ? 'http://' + window.location.hostname + ':28080/pds/v1/card' : '/pds/v1/card';
 
@@ -23,11 +22,35 @@ const CardAdd = props => {
 
     const bankList = useSelector(state => AllActions.bank.getBanks(state));
 
+    const onDelete = () => {
+        fetch(REQ_URI + '?cardId=' + props.dataFromParent.id, {
+            method: 'DELETE',
+            headers: Helper.auth.makeAuthHeader(),
+        }).then(function (res) {
+            if (!res.ok) {
+                if (res.status === 401) {
+                    window.location = "/#/logout";
+                }
+                throw Error("서버응답 : " + res.statusText + "(" + res.status + ")");
+            }
+            return res.json();
+        }).then(function (resJson) {
+            console.log("RegularPayDel::fetch => " + resJson.result);
+            if (resJson.result === "OK") {
+                props.modalToggle();
+                props.callbackFromParent();
+            }
+        }).catch(function (error) {
+            console.log("RegularPayDel::fetch => " + error);
+            setError("siteId", "serverResponse", error.message);
+        });
+    };
+
     const onSubmit = (data, e) => {
         const formData = new FormData(e.target);
 
         fetch(REQ_URI, {
-            method: 'POST',
+            method: 'PUT',
             headers: Helper.auth.makeAuthHeader(),
             body: formData
         }).then(function (res) {
@@ -39,26 +62,40 @@ const CardAdd = props => {
             }
             return res.json();
         }).then(function (resJson) {
-            console.log("CardAdd::fetch => " + resJson.result);
+            console.log("RegularPayEdit::fetch => " + resJson.result);
             if (resJson.result === "OK") {
                 props.modalToggle();
-                props.callbackFromParent();
+                props.callbackFromParent(resJson.data[0]);
             }
         }).catch(function (error) {
-            console.log("CardAdd::fetch => " + error);
-            setError("company", "serverResponse", error.message);
-            //e.target.reset();
+            console.log("RegularPayEdit::fetch => " + error);
+            setError("siteUrl", "serverResponse", error.message);
         });
     };
 
     return (
         <CModal show={props.modalFlag} onClose={props.modalToggle}
-            className={'modal-success ' + props.className}>
-            <CModalHeader closeButton>카드 추가</CModalHeader>
+            className={'modal-warning ' + props.className}>
+            <CModalHeader closeButton>카드 수정</CModalHeader>
+
             <CForm onSubmit={handleSubmit(onSubmit)}>
                 <CModalBody>
-                <CFormGroup row>
+                    <CFormGroup row>
                         <CCol xs="12" md="12">
+                            <Controller
+                                name="cardId"
+                                key={"cardId" + props.dataFromParent.id}
+                                control={control}
+                                defaultValue={props.dataFromParent.id}
+                                render={(ctrlProps) => (
+                                    <CInput
+                                        type="hidden"
+                                        name="cardId"
+                                        value={ctrlProps.value}
+                                        onChange={ctrlProps.onChange}
+                                    />
+                                )}
+                                rules={{ required: true }} />
                             <CInputGroup>
                                 <CInputGroupPrepend>
                                     <CInputGroupText style={{ minWidth: 80 }}>카드사</CInputGroupText>
@@ -93,6 +130,7 @@ const CardAdd = props => {
                                         }
                                     }}
                                 />
+                                {errors.cardId && <CInvalidFeedback>{errors.cardId.message}</CInvalidFeedback>}
                                 {errors.company && <CInvalidFeedback>{errors.company.message}</CInvalidFeedback>}
                             </CInputGroup>
                         </CCol>
@@ -768,7 +806,8 @@ const CardAdd = props => {
 
                 </CModalBody>
                 <CModalFooter>
-                    <CButton type="submit" color="success">추가</CButton>{' '}
+                    <CButton color="danger" className="mr-auto" onClick={onDelete}>삭제</CButton>
+                    <CButton type="submit" color="warning">수정</CButton>{' '}
                     <CButton color="secondary" onClick={props.modalToggle}>취소</CButton>
                 </CModalFooter>
             </CForm>
@@ -776,4 +815,4 @@ const CardAdd = props => {
     );
 };
 
-export default CardAdd;
+export default RegularPayEdit;

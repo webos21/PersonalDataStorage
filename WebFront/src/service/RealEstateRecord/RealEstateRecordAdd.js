@@ -12,7 +12,7 @@ import AllActions from '../../actions'
 import Helper from '../../helpers'
 
 
-const CardRecordAdd = props => {
+const RealEstateRecordAdd = props => {
 
     const REQ_URI = (process.env.NODE_ENV !== 'production') ? 'http://' + window.location.hostname + ':28080/pds/v1/cardRecord' : '/pds/v1/cardRecord';
 
@@ -39,13 +39,13 @@ const CardRecordAdd = props => {
             }
             return res.json();
         }).then(function (resJson) {
-            console.log("CardRecordAdd::fetch => " + resJson.result);
+            console.log("CardAdd::fetch => " + resJson.result);
             if (resJson.result === "OK") {
                 props.modalToggle();
                 props.callbackFromParent();
             }
         }).catch(function (error) {
-            console.log("CardRecordAdd::fetch => " + error);
+            console.log("CardAdd::fetch => " + error);
             setError("cardId", "serverResponse", error.message);
             //e.target.reset();
         });
@@ -406,4 +406,4 @@ const CardRecordAdd = props => {
     );
 };
 
-export default CardRecordAdd;
+export default RealEstateRecordAdd;

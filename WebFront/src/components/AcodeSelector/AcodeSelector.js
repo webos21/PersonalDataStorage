@@ -7,6 +7,8 @@ import {
 
 import AllActions from '../../actions'
 
+const AcodeDebugLog = (args) => { };
+// const AcodeDebugLog = console.log;
 
 class AcodeSelector extends React.Component {
     constructor(props) {
@@ -24,27 +26,27 @@ class AcodeSelector extends React.Component {
         this.state = {
             showClass: false,
             showCode: false,
-            selectedClass: null,
-            selectedCode: null
+            selectedClass: (props.initVal ? props.initVal.substring(0,1) : null),
+            selectedCode: props.initVal,
         }
     }
 
     toggleClass(e) {
-        console.log("toggleClass", e);
+        AcodeDebugLog("toggleClass", e);
         this.setState({
             showClass: !this.state.showClass
         })
     }
 
     toggleCode(e) {
-        console.log("toggleCode", e);
+        AcodeDebugLog("toggleCode", e);
         this.setState({
             showCode: !this.state.showCode
         })
     }
 
     handleClassSelect(classObj, e) {
-        console.log("handleClassSelect", classObj, e);
+        AcodeDebugLog("handleClassSelect", classObj, e);
         if (this.state.selectedClass === null || this.state.selectedClass.id !== classObj.id) {
             this.setState({
                 selectedClass: classObj
@@ -53,7 +55,7 @@ class AcodeSelector extends React.Component {
     }
 
     handleCodeSelect(codeObj, e) {
-        console.log("handleCodeSelect", codeObj, e);
+        AcodeDebugLog("handleCodeSelect", codeObj, e);
         if (this.state.selectedCode === null || this.state.selectedCode !== codeObj) {
             this.setState({
                 selectedCode: codeObj
@@ -65,7 +67,7 @@ class AcodeSelector extends React.Component {
                 codeNo: codeObj.accountCode,
                 codeTitle: codeObj.title,
             }
-            this.props.callbackFromParent(accObj);
+            this.props.accountCodeSelected(accObj);
             this.toggleClass();
         }
     }
@@ -81,6 +83,7 @@ class AcodeSelector extends React.Component {
                     onClick={this.handleCodeSelect.bind(this, data)}
                     color={this.state.selectedCode && this.state.selectedCode.id === data.id ? 'primary' : ''}
                     tag='button'
+                    type="button"
                     className="m-0">
                     {data.accountCode} - {data.title}
                 </CDropdownItem>

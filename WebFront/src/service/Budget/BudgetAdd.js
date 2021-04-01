@@ -20,8 +20,8 @@ const BudgetAdd = props => {
         nativeValidation: false,
     });
 
-    const acodeSelectedCallback = (retVal) => {
-        console.log("acodeSelectedCallback", retVal);
+    const acodeSelected = (retVal) => {
+        console.log("accountCodeSelected", retVal);
         setValue("accountCode", retVal.codeNo);
     }
 
@@ -56,26 +56,26 @@ const BudgetAdd = props => {
     return (
         <CModal show={props.modalFlag} onClose={props.modalToggle}
             className={'modal-success ' + props.className}>
-            <CModalHeader closeButton>메모 추가</CModalHeader>
+            <CModalHeader closeButton>예산 추가</CModalHeader>
             <CForm onSubmit={handleSubmit(onSubmit)}>
                 <CModalBody>
-                <CFormGroup row>
+                    <CFormGroup row>
                         <CCol xs="12" md="12">
                             <CInputGroup>
                                 <CInputGroupPrepend>
                                     <CInputGroupText style={{ minWidth: 80 }}>예산월</CInputGroupText>
                                 </CInputGroupPrepend>
                                 <Controller
-                                    name="bugetDate"
-                                    key={"bugetDate" + props.dataFromParent.id}
+                                    name="budgetDate"
+                                    key={"budgetDate" + props.dataFromParent.id}
                                     control={control}
                                     defaultValue={Helper.date.monthFormat(new Date(props.dataFromParent.budgetDate))}
                                     render={(ctrlProps) => (
                                         <CInput
                                             type="month"
-                                            name="bugetDate"
+                                            name="budgetDate"
                                             placeholder="예산월을 선택해 주세요."
-                                            className={"form-control" + (errors.bugetDate ? " is-invalid" : " is-valid")}
+                                            className={"form-control" + (errors.budgetDate ? " is-invalid" : " is-valid")}
                                             value={ctrlProps.value}
                                             onChange={ctrlProps.onChange}
                                         />
@@ -87,7 +87,7 @@ const BudgetAdd = props => {
                                         }
                                     }}
                                 />
-                                {errors.bugetDate && <CInvalidFeedback>{errors.bugetDate.message}</CInvalidFeedback>}
+                                {errors.budgetDate && <CInvalidFeedback>{errors.budgetDate.message}</CInvalidFeedback>}
                             </CInputGroup>
                         </CCol>
                     </CFormGroup>
@@ -119,7 +119,7 @@ const BudgetAdd = props => {
                                         }
                                     }}
                                 />
-                                <ASelector callbackFromParent={acodeSelectedCallback.bind(this)} />
+                                <ASelector accountCodeSelected={acodeSelected} />
                                 {errors.accountCode && <CInvalidFeedback>{errors.accountCode.message}</CInvalidFeedback>}
                             </CInputGroup>
                         </CCol>

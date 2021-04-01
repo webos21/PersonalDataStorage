@@ -3,6 +3,10 @@ import * as AcodeAction from './AccountCodeAction'
 import * as AnniAction from './AnniversaryAction'
 import * as BankAction from './BankAction'
 import * as CardAction from './CardAction'
+import * as InsureAction from './InsuranceAction'
+import * as RestateAction from './RealEstateAction'
+import * as RpayAction from './RegularPayAction'
+import * as StockAction from './StockAction'
 
 const AuthDebugLog = (args) => { };
 // const AuthDebugLog = console.log;
@@ -95,8 +99,12 @@ const authLogin = pbpwd => {
                         dispatch(AnniAction.anniFetch()).then(() =>
                             dispatch(BankAction.bankFetch()).then(() =>
                                 dispatch(CardAction.cardFetch()).then(() =>
-                                    dispatch(authHome())
-                                )))));
+                                    dispatch(InsureAction.insureFetch()).then(() =>
+                                        dispatch(RestateAction.restateFetch()).then(() =>
+                                            dispatch(RpayAction.rpayFetch()).then(() =>
+                                                dispatch(StockAction.stockFetch()).then(() =>
+                                                    dispatch(authHome())
+                                                )))))))));
 
                 // Promise.all([
                 //     dispatch(AclassAction.aclassFetch()),

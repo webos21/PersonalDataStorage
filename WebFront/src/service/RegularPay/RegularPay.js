@@ -9,19 +9,16 @@ import {
 import CIcon from '@coreui/icons-react'
 import { freeSet } from '@coreui/icons'
 
-import AcodeSelector from '../../components/AcodeSelector';
-import AccountCodeAdd from './AccountCodeAdd.js';
-import AccountCodeEdit from './AccountCodeEdit.js';
+import RegularPayAdd from './RegularPayAdd.js';
+import RegularPayEdit from './RegularPayEdit.js';
 import AllActions from '../../actions'
 import Helper from '../../helpers'
 
-class AccountCode extends Component {
+class RegularPay extends Component {
   constructor(props) {
     super(props);
 
     this.dataChangedCallback = this.dataChangedCallback.bind(this);
-    this.acodeSelectedCallback = this.acodeSelectedCallback.bind(this);
-
     this.renderTableList = this.renderTableList.bind(this);
     this.genEmptyObj = this.genEmptyObj.bind(this);
 
@@ -36,47 +33,54 @@ class AccountCode extends Component {
 
     this.state = {
       emptyId: -1,
-      dataSet: props.storeAcodes,
+      dataSet: props.storeCards,
       currentData: {
         id: -1,
-        accountCode: '',
-        title: '',
+        company: '',
+        cardName: '',
+        cardNumber: '',
+        cardPassword: '',
+        validYear: '',
+        validMonth: '',
+        chargeDate: '',
+        cvcNumber: '',
+        bankId: '',
+        creditLimit: '',
+        cashAdvance: '',
+        cardLoan: '',
+        issueDate: '',
+        refreshNormal: '',
+        refreshShort: '',
+        arrange: '',
+        memo: '',
       },
-      totalCount: props.storeAcodes.length,
+      totalCount: props.storeCards.length,
       keyword: "",
       keywordError: "",
       modalFlagAdd: false,
       modalFlagEdit: false,
-      acodeSelected: '',
+
     };
   }
 
   dataChangedCallback(modifiedData) {
-    console.log("AccountClass::dataChangedCallback");
+    console.log("RegularPay::dataChangedCallback");
     if (modifiedData !== undefined && modifiedData !== null) {
       for (var i = 0; i < this.state.dataSet.length; i++) {
         if (this.state.dataSet[i].id === modifiedData.id) {
           var newDataSet = update(this.state.dataSet, { $splice: [[i, 1, modifiedData]] });
-          this.props.acodeFetchOk(newDataSet);
+          this.props.cardFetchOk(newDataSet);
           break;
         }
       }
     } else {
-      this.requestFetch();
+      this.requestFetch(this.state.keyword);
     }
-  }
-
-  acodeSelectedCallback(codeObj) {
-    console.log("AccountClass::acodeSelectedCallback", codeObj);
-    let newVal = codeObj.codeNo + ` / ${codeObj.classTitle}(${codeObj.classId}) > ${codeObj.codeTitle}(${codeObj.codeNo})`;
-    this.setState({
-      acodeSelected: newVal
-    })
   }
 
   requestFetch() {
     const parentState = this;
-    const REQ_URI = (process.env.NODE_ENV !== 'production') ? 'http://' + window.location.hostname + ':28080/pds/v1/accountCode' : '/pds/v1/accountCode';
+    const REQ_URI = (process.env.NODE_ENV !== 'production') ? 'http://' + window.location.hostname + ':28080/pds/v1/card' : '/pds/v1/card';
 
     fetch(REQ_URI, {
       method: 'GET',
@@ -90,14 +94,14 @@ class AccountCode extends Component {
       }
       return res.json();
     }).then(function (resJson) {
-      console.log("AccountCode::fetch => " + resJson.result);
+      console.log("RegularPay::fetch => " + resJson.result);
 
-      parentState.props.acodeFetchOk(resJson.data);
+      parentState.props.cardFetchOk(resJson.data);
       parentState.setState({
         keywordError: '',
       });
     }).catch(function (error) {
-      console.log("AccountCode::fetch => " + error);
+      console.log("RegularPay::fetch => " + error);
       parentState.setState({ keywordError: error.message })
     });
   }
@@ -112,9 +116,24 @@ class AccountCode extends Component {
     let newEmptyId = (this.state.emptyId ? (this.state.emptyId - 1) : -1);
     let emptyObj = {
       id: newEmptyId,
-      accountCode: '',
-      title: '',
-    }
+      company: '',
+      cardName: '',
+      cardNumber: '',
+      cardPassword: '',
+      validYear: '',
+      validMonth: '',
+      chargeDate: '',
+      cvcNumber: '',
+      bankId: '',
+      creditLimit: '',
+      cashAdvance: '',
+      cardLoan: '',
+      issueDate: '',
+      refreshNormal: '',
+      refreshShort: '',
+      arrange: '',
+      memo: '',
+  }
     this.setState({ emptyId: newEmptyId });
     return emptyObj;
   }
@@ -166,16 +185,18 @@ class AccountCode extends Component {
     if (filteredData.length === 0) {
       return (
         <tr key="row-nodata">
-          <td colSpan="4" className="text-center align-middle" height="200">No Data</td>
+          <td colSpan="5" className="text-center align-middle" height="200">No Data</td>
         </tr>
       )
     } else {
       return filteredData.map((data, index) => {
         return (
-          <tr key={'memo-' + data.id} onClick={this.handleEdit.bind(this, data)}>
+          <tr key={'bankdata-' + data.id} onClick={this.handleEdit.bind(this, data)}>
             <td>{data.id}</td>
-            <td>{data.accountCode}</td>
-            <td>{data.title}</td>
+            <td>{data.company}</td>
+            <td>{data.cardName}</td>
+            <td>{data.cardNumber}</td>
+            <td>{'매월 ' + (data.chargeDate + 1) + '일'}</td>
           </tr>
         )
       })
@@ -190,7 +211,7 @@ class AccountCode extends Component {
             <CCard>
               <CCardHeader>
                 <strong>Search</strong>
-                <small> AccountCode</small>
+                <small> Card</small>
               </CCardHeader>
               <CCardBody>
                 <CRow>
@@ -223,7 +244,7 @@ class AccountCode extends Component {
           <CCol>
             <CCard>
               <CCardHeader>
-                <strong>AccountCode List</strong>
+                <strong>Card List</strong>
                 <small>  (Total : {this.state.totalCount})</small>
                 <span className="float-right">
                   <CButton color="danger" size="sm" variant="ghost">
@@ -238,46 +259,22 @@ class AccountCode extends Component {
                   <thead>
                     <tr>
                       <th>ID</th>
-                      <th>분류코드</th>
-                      <th>코드명</th>
+                      <th>카드사</th>
+                      <th>카드명</th>
+                      <th>카드번호</th>
+                      <th>결제일</th>
                     </tr>
                   </thead>
                   <tbody>
-                    {this.renderTableList(this.props.storeAcodes)}
+                    {this.renderTableList(this.props.storeCards)}
                   </tbody>
                 </table>
               </CCardBody>
             </CCard>
           </CCol>
         </CRow>
-        <AccountCodeAdd modalFlag={this.state.modalFlagAdd} modalToggle={this.modalToggleAdd} dataFromParent={this.state.currentData} callbackFromParent={this.dataChangedCallback} />
-        <AccountCodeEdit modalFlag={this.state.modalFlagEdit} modalToggle={this.modalToggleEdit} dataFromParent={this.state.currentData} callbackFromParent={this.dataChangedCallback} />
-
-        <CRow>
-          <CCol>
-            <CCard>
-              <CCardHeader>
-                <strong>Test</strong>
-                <small> AccountCode</small>
-              </CCardHeader>
-              <CCardBody>
-                <CRow>
-                  <CCol>
-                    <CInputGroup>
-                      <CInputGroupPrepend>
-                        <CInputGroupText>Selected Account Code</CInputGroupText>
-                      </CInputGroupPrepend>
-                      <CInput type="text" name="acode" placeholder="Selected Account Code" value={this.state.acodeSelected} onChange={this.acodeSelectedCallback} />
-                      <CInputGroupAppend>
-                        <AcodeSelector accountCodeSelected={this.acodeSelectedCallback} />
-                      </CInputGroupAppend>
-                    </CInputGroup>
-                  </CCol>
-                </CRow>
-              </CCardBody>
-            </CCard>
-          </CCol>
-        </CRow>
+        <RegularPayAdd modalFlag={this.state.modalFlagAdd} modalToggle={this.modalToggleAdd} dataFromParent={this.state.currentData} callbackFromParent={this.dataChangedCallback} />
+        <RegularPayEdit modalFlag={this.state.modalFlagEdit} modalToggle={this.modalToggleEdit} dataFromParent={this.state.currentData} callbackFromParent={this.dataChangedCallback} />
 
       </>
 
@@ -286,12 +283,12 @@ class AccountCode extends Component {
 }
 
 const mapStateToProps = (state) => ({
-  storeDataSync: state.acode.dataSync,
-  storeAcodes: state.acode.acodes,
+  storeDataSync: state.card.dataSync,
+  storeCards: state.card.cards,
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  acodeFetchOk: (data) => dispatch(AllActions.acode.acodeFetchOk(data)),
+  cardFetchOk: (data) => dispatch(AllActions.card.cardFetchOk(data)),
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(AccountCode);
+export default connect(mapStateToProps, mapDispatchToProps)(RegularPay);

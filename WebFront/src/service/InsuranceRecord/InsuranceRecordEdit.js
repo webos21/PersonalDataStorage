@@ -5,14 +5,14 @@ import { useSelector } from 'react-redux'
 import {
     CModal, CModalHeader, CModalBody, CModalFooter, CButton, CCol,
     CForm, CFormGroup, CInvalidFeedback,
-    CInputGroup, CInputGroupPrepend, CInputGroupText, CInput, CSelect, CTextarea,
+    CInputGroup, CInputGroupPrepend, CInputGroupText, CInput, CSelect, CInputRadio, CLabel, CTextarea,
 } from '@coreui/react';
 
 import AllActions from '../../actions'
 import Helper from '../../helpers'
 
 
-const CardRecordAdd = props => {
+const InsuranceRecordEdit = props => {
 
     const REQ_URI = (process.env.NODE_ENV !== 'production') ? 'http://' + window.location.hostname + ':28080/pds/v1/cardRecord' : '/pds/v1/cardRecord';
 
@@ -23,11 +23,35 @@ const CardRecordAdd = props => {
 
     const cardList = useSelector(state => AllActions.card.getCards(state));
 
+    const onDelete = () => {
+        fetch(REQ_URI + '?brId=' + props.dataFromParent.id, {
+            method: 'DELETE',
+            headers: Helper.auth.makeAuthHeader(),
+        }).then(function (res) {
+            if (!res.ok) {
+                if (res.status === 401) {
+                    window.location = "/#/logout";
+                }
+                throw Error("서버응답 : " + res.statusText + "(" + res.status + ")");
+            }
+            return res.json();
+        }).then(function (resJson) {
+            console.log("InsuranceRecordDel::fetch => " + resJson.result);
+            if (resJson.result === "OK") {
+                props.modalToggle();
+                props.callbackFromParent();
+            }
+        }).catch(function (error) {
+            console.log("InsuranceRecordDel::fetch => " + error);
+            setError("siteId", "serverResponse", error.message);
+        });
+    };
+
     const onSubmit = (data, e) => {
         const formData = new FormData(e.target);
 
         fetch(REQ_URI, {
-            method: 'POST',
+            method: 'PUT',
             headers: Helper.auth.makeAuthHeader(),
             body: formData
         }).then(function (res) {
@@ -39,25 +63,25 @@ const CardRecordAdd = props => {
             }
             return res.json();
         }).then(function (resJson) {
-            console.log("CardRecordAdd::fetch => " + resJson.result);
+            console.log("InsuranceRecordEdit::fetch => " + resJson.result);
             if (resJson.result === "OK") {
                 props.modalToggle();
-                props.callbackFromParent();
+                props.callbackFromParent(resJson.data[0]);
             }
         }).catch(function (error) {
-            console.log("CardRecordAdd::fetch => " + error);
+            console.log("InsuranceRecordEdit::fetch => " + error);
             setError("cardId", "serverResponse", error.message);
-            //e.target.reset();
         });
     };
 
     return (
         <CModal show={props.modalFlag} onClose={props.modalToggle}
-            className={'modal-success ' + props.className}>
-            <CModalHeader closeButton>카드거래내역 추가</CModalHeader>
+            className={'modal-warning ' + props.className}>
+            <CModalHeader closeButton>카드거래내역 수정</CModalHeader>
+
             <CForm onSubmit={handleSubmit(onSubmit)}>
                 <CModalBody>
-                <CFormGroup row>
+                    <CFormGroup row>
                         <CCol xs="12" md="12">
                             <Controller
                                 name="crId"
@@ -327,6 +351,166 @@ const CardRecordAdd = props => {
                         <CCol xs="12" md="12">
                             <CInputGroup>
                                 <CInputGroupPrepend>
+                                    <CInputGroupText style={{ minWidth: 80 }}>할부 ID</CInputGroupText>
+                                </CInputGroupPrepend>
+                                <Controller
+                                    name="installmentId"
+                                    key={"installmentId" + props.dataFromParent.id}
+                                    control={control}
+                                    defaultValue={props.dataFromParent.installmentId}
+                                    render={(ctrlProps) => (
+                                        <CInput
+                                            type="number"
+                                            name="installmentId"
+                                            placeholder="할부거래ID를 입력해 주세요."
+                                            className={"form-control" + (errors.installmentId ? " is-invalid" : " is-valid")}
+                                            value={ctrlProps.value}
+                                            onChange={ctrlProps.onChange}
+                                        />
+                                    )}
+                                    rules={{
+                                        required: {
+                                            value: true,
+                                            message: "(Req) 할부거래ID를 입력해 주세요."
+                                        },
+                                        minLength: {
+                                            value: 1,
+                                            message: "(Min) 할부거래ID는 1자 이상 입니다."
+                                        },
+                                        maxLength: {
+                                            value: 20,
+                                            message: "(Max) 할부거래ID는 20자 이내 입니다."
+                                        }
+                                    }}
+                                />
+                                {errors.installmentId && <CInvalidFeedback>{errors.installmentId.message}</CInvalidFeedback>}
+                            </CInputGroup>
+                        </CCol>
+                    </CFormGroup>
+                    <CFormGroup row>
+                        <CCol xs="12" md="12">
+                            <CInputGroup>
+                                <CInputGroupPrepend>
+                                    <CInputGroupText style={{ minWidth: 80 }}>할부회차</CInputGroupText>
+                                </CInputGroupPrepend>
+                                <Controller
+                                    name="installmentTurn"
+                                    key={"installmentTurn" + props.dataFromParent.id}
+                                    control={control}
+                                    defaultValue={props.dataFromParent.installmentTurn}
+                                    render={(ctrlProps) => (
+                                        <CInput
+                                            type="number"
+                                            name="installmentTurn"
+                                            placeholder="할부회차를 입력해 주세요."
+                                            className={"form-control" + (errors.installmentTurn ? " is-invalid" : " is-valid")}
+                                            value={ctrlProps.value}
+                                            onChange={ctrlProps.onChange}
+                                        />
+                                    )}
+                                    rules={{
+                                        required: {
+                                            value: true,
+                                            message: "(Req) 할부회차를 입력해 주세요."
+                                        },
+                                        minLength: {
+                                            value: 1,
+                                            message: "(Min) 할부회차는 1자 이상 입니다."
+                                        },
+                                        maxLength: {
+                                            value: 2,
+                                            message: "(Max) 할부회차는 2자 이내 입니다."
+                                        }
+                                    }}
+                                />
+                                {errors.installmentTurn && <CInvalidFeedback>{errors.installmentTurn.message}</CInvalidFeedback>}
+                            </CInputGroup>
+                        </CCol>
+                    </CFormGroup>
+                    <CFormGroup row>
+                        <CCol xs="12" md="12">
+                            <CInputGroup>
+                                <CInputGroupPrepend>
+                                    <CInputGroupText style={{ minWidth: 80 }}>납부금액</CInputGroupText>
+                                </CInputGroupPrepend>
+                                <Controller
+                                    name="amount"
+                                    key={"amount" + props.dataFromParent.id}
+                                    control={control}
+                                    defaultValue={props.dataFromParent.amount}
+                                    render={(ctrlProps) => (
+                                        <CInput
+                                            type="number"
+                                            name="amount"
+                                            placeholder="납부금액을 입력해 주세요."
+                                            className={"form-control" + (errors.amount ? " is-invalid" : " is-valid")}
+                                            value={ctrlProps.value}
+                                            onChange={ctrlProps.onChange}
+                                        />
+                                    )}
+                                    rules={{
+                                        required: {
+                                            value: true,
+                                            message: "(Req) 납부금액을 입력해 주세요."
+                                        },
+                                        minLength: {
+                                            value: 1,
+                                            message: "(Min) 납부금액은 1자 이상 입니다."
+                                        },
+                                        maxLength: {
+                                            value: 20,
+                                            message: "(Max) 납부금액은 20자 이내 입니다."
+                                        }
+                                    }}
+                                />
+                                {errors.amount && <CInvalidFeedback>{errors.amount.message}</CInvalidFeedback>}
+                            </CInputGroup>
+                        </CCol>
+                    </CFormGroup>
+                    <CFormGroup row>
+                        <CCol xs="12" md="12">
+                            <CInputGroup>
+                                <CInputGroupPrepend>
+                                    <CInputGroupText style={{ minWidth: 80 }}>잔여금액</CInputGroupText>
+                                </CInputGroupPrepend>
+                                <Controller
+                                    name="remainder"
+                                    key={"remainder" + props.dataFromParent.id}
+                                    control={control}
+                                    defaultValue={props.dataFromParent.remainder}
+                                    render={(ctrlProps) => (
+                                        <CInput
+                                            type="number"
+                                            name="remainder"
+                                            placeholder="잔여금액을 입력해 주세요."
+                                            className={"form-control" + (errors.remainder ? " is-invalid" : " is-valid")}
+                                            value={ctrlProps.value}
+                                            onChange={ctrlProps.onChange}
+                                        />
+                                    )}
+                                    rules={{
+                                        required: {
+                                            value: true,
+                                            message: "(Req) 잔여금액을 입력해 주세요."
+                                        },
+                                        minLength: {
+                                            value: 1,
+                                            message: "(Min) 잔여금액은 1자 이상 입니다."
+                                        },
+                                        maxLength: {
+                                            value: 20,
+                                            message: "(Max) 잔여금액은 20자 이내 입니다."
+                                        }
+                                    }}
+                                />
+                                {errors.remainder && <CInvalidFeedback>{errors.remainder.message}</CInvalidFeedback>}
+                            </CInputGroup>
+                        </CCol>
+                    </CFormGroup>
+                    <CFormGroup row>
+                        <CCol xs="12" md="12">
+                            <CInputGroup>
+                                <CInputGroupPrepend>
                                     <CInputGroupText style={{ minWidth: 80 }}>납부일</CInputGroupText>
                                 </CInputGroupPrepend>
                                 <Controller
@@ -367,6 +551,51 @@ const CardRecordAdd = props => {
                         <CCol xs="12" md="12">
                             <CInputGroup>
                                 <CInputGroupPrepend>
+                                    <CInputGroupText style={{ minWidth: 80 }}>납부여부</CInputGroupText>
+                                </CInputGroupPrepend>
+                                <Controller
+                                    name="paid"
+                                    key={"paid" + props.dataFromParent.id}
+                                    control={control}
+                                    defaultValue={"" + props.dataFromParent.paid}
+                                    render={(ctrlProps) => (
+                                        <CFormGroup className={"form-control" + (errors.holiday ? " is-invalid" : " is-valid")}>
+                                            <CFormGroup variant="custom-radio" inline>
+                                                <CInputRadio
+                                                    custom
+                                                    name="paid"
+                                                    value="0"
+                                                    id="paid-edit-radio1"
+                                                    checked={ctrlProps.value === '0'}
+                                                    onChange={ctrlProps.onChange}
+                                                /><CLabel variant="custom-checkbox" htmlFor="paid-edit-radio1">미납부</CLabel>
+                                            </CFormGroup>
+                                            <CFormGroup variant="custom-radio" inline>
+                                                <CInputRadio
+                                                    custom
+                                                    name="paid"
+                                                    value="1"
+                                                    id="paid-edit-radio2"
+                                                    checked={ctrlProps.value === '1'}
+                                                    onChange={ctrlProps.onChange}
+                                                /><CLabel variant="custom-checkbox" htmlFor="paid-edit-radio2">납부완료</CLabel>
+                                            </CFormGroup>
+                                        </CFormGroup>
+                                    )}
+                                    rules={{
+                                        required: {
+                                            value: true,
+                                        }
+                                    }}
+                                />
+                                {errors.paid && <CInvalidFeedback>{errors.paid.message}</CInvalidFeedback>}
+                            </CInputGroup>
+                        </CCol>
+                    </CFormGroup>
+                    <CFormGroup row>
+                        <CCol xs="12" md="12">
+                            <CInputGroup>
+                                <CInputGroupPrepend>
                                     <CInputGroupText style={{ minWidth: 80 }}>메모</CInputGroupText>
                                 </CInputGroupPrepend>
                                 <Controller
@@ -398,7 +627,8 @@ const CardRecordAdd = props => {
 
                 </CModalBody>
                 <CModalFooter>
-                    <CButton type="submit" color="success">추가</CButton>{' '}
+                    <CButton color="danger" className="mr-auto" onClick={onDelete}>삭제</CButton>
+                    <CButton type="submit" color="warning">수정</CButton>{' '}
                     <CButton color="secondary" onClick={props.modalToggle}>취소</CButton>
                 </CModalFooter>
             </CForm>
@@ -406,4 +636,4 @@ const CardRecordAdd = props => {
     );
 };
 
-export default CardRecordAdd;
+export default InsuranceRecordEdit;
