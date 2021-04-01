@@ -24,7 +24,9 @@ public class AnniversaryRepoImpl implements AnniversaryRepo {
 
 		try {
 			H2Database db = opener.getReadableDatabase();
-			ResultSet rset = db.rawQuery("SELECT id, title, apply_date, lunar, holiday FROM " + DbConsts.TB_ANNIVERSARY,
+			ResultSet rset = db.rawQuery( // indent
+					/* indent -------- */ "SELECT id, title, apply_date, lunar, holiday " + // indent
+					/* indent -------- */ "  FROM " + DbConsts.TB_ANNIVERSARY, // indent
 					null);
 			if (rset == null || !rset.first()) {
 				return aList;
@@ -63,7 +65,7 @@ public class AnniversaryRepoImpl implements AnniversaryRepo {
 			H2Database db = opener.getReadableDatabase();
 			ResultSet rset = db.rawQuery( // indent
 					/* indent -------- */ "SELECT id, title, apply_date, lunar, holiday " + // indent
-					/* indent -------- */ " FROM " + DbConsts.TB_ANNIVERSARY + " " + // indent
+					/* indent -------- */ "  FROM " + DbConsts.TB_ANNIVERSARY + // indent
 					/* indent -------- */ " WHERE (title LIKE ?)", // indent
 					new String[] { "%" + keyString + "%" });
 			if (rset == null || !rset.first()) {
@@ -97,8 +99,11 @@ public class AnniversaryRepoImpl implements AnniversaryRepo {
 
 		try {
 			H2Database db = opener.getReadableDatabase();
-			ResultSet rset = db.rawQuery("SELECT id, title, apply_date, lunar, holiday FROM " + DbConsts.TB_ANNIVERSARY
-					+ " WHERE id = " + id, null);
+			ResultSet rset = db.rawQuery( // indent
+					/* indent -------- */ "SELECT id, title, apply_date, lunar, holiday " + // indent
+					/* indent -------- */ "  FROM " + DbConsts.TB_ANNIVERSARY + // indent
+					/* indent -------- */ " WHERE id = " + id, // indent
+					null);
 			if (rset == null || !rset.first()) {
 				return null;
 			}
@@ -130,8 +135,11 @@ public class AnniversaryRepoImpl implements AnniversaryRepo {
 			ResultSet rset = null;
 
 			if (newRow.getId() != null) {
-				rset = db.rawQuery("SELECT id, title, apply_date, lunar, holiday FROM " + DbConsts.TB_ANNIVERSARY
-						+ " WHERE id = " + newRow.getId(), null);
+				rset = db.rawQuery(// indent
+						/* indent -------- */ "SELECT id, title, apply_date, lunar, holiday " + // indent
+						/* indent -------- */ "  FROM " + DbConsts.TB_ANNIVERSARY + // indent
+						/* indent -------- */ " WHERE id = " + newRow.getId(), // indent
+						null);
 				if (rset != null && rset.first()) {
 					rset.close();
 

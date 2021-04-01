@@ -66,7 +66,7 @@ public class BudgetRepoImpl implements BudgetRepo {
 			H2Database db = opener.getReadableDatabase();
 			ResultSet rset = db.rawQuery( // indent
 					/* indent -------- */ "SELECT id, budget_date, deposit, withdrawal, account_code, memo " + // indent
-					/* indent -------- */ "  FROM " + DbConsts.TB_BUDGET + " " + // indent
+					/* indent -------- */ "  FROM " + DbConsts.TB_BUDGET + // indent
 					/* indent -------- */ " WHERE (memo LIKE ?)", // indent
 					new String[] { "%" + keyString + "%" });
 			if (rset == null || !rset.first()) {

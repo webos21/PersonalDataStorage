@@ -25,9 +25,9 @@ public class AccountCodeRepoImpl implements AccountCodeRepo {
 		try {
 			H2Database db = opener.getReadableDatabase();
 			ResultSet rset = db.rawQuery( // indent
-					/* intent -------- */ "SELECT id, account_code, title FROM " + // indent
-					/* intent -------- */ DbConsts.TB_ACCOUNT_CODE + // indent
-					/* intent -------- */ " ORDER BY account_code", null); // indent
+					/* indent -------- */ "SELECT id, account_code, title " + // indent
+					/* indent -------- */ "  FROM " + DbConsts.TB_ACCOUNT_CODE + // indent
+					/* indent -------- */ " ORDER BY account_code", null); // indent
 			if (rset == null || !rset.first()) {
 				return aList;
 			}
@@ -62,10 +62,10 @@ public class AccountCodeRepoImpl implements AccountCodeRepo {
 		try {
 			H2Database db = opener.getReadableDatabase();
 			ResultSet rset = db.rawQuery( // indent
-					/* intent -------- */ "SELECT id, account_code, title " + // indent
-					/* intent -------- */ " FROM " + DbConsts.TB_ACCOUNT_CODE + " " + // indent
-					/* intent -------- */ " WHERE (title LIKE ?)" + // indent
-					/* intent -------- */ " ORDER BY account_code", // indent
+					/* indent -------- */ "SELECT id, account_code, title " + // indent
+					/* indent -------- */ "  FROM " + DbConsts.TB_ACCOUNT_CODE + // indent
+					/* indent -------- */ " WHERE (title LIKE ?)" + // indent
+					/* indent -------- */ " ORDER BY account_code", // indent
 					new String[] { "%" + keyString + "%" });
 			if (rset == null || !rset.first()) {
 				return aList;
@@ -97,9 +97,9 @@ public class AccountCodeRepoImpl implements AccountCodeRepo {
 		try {
 			H2Database db = opener.getReadableDatabase();
 			ResultSet rset = db.rawQuery( // indent
-					/* intent -------- */ "SELECT id, account_code, title FROM " + // indent
-					/* intent -------- */ DbConsts.TB_ACCOUNT_CODE + // indent
-					/* intent -------- */ " WHERE id = " + id, // indent
+					/* indent -------- */ "SELECT id, account_code, title " + // indent
+					/* indent -------- */ "  FROM " + DbConsts.TB_ACCOUNT_CODE + // indent
+					/* indent -------- */ " WHERE id = " + id, // indent
 					null);
 			if (rset == null || !rset.first()) {
 				return null;
@@ -131,9 +131,9 @@ public class AccountCodeRepoImpl implements AccountCodeRepo {
 
 			if (newRow.getId() != null) {
 				rset = db.rawQuery( // indent
-						/* intent -------- */ "SELECT id, account_code, title FROM " + // indent
-						/* intent -------- */ DbConsts.TB_ACCOUNT_CODE + // indent
-						/* intent -------- */ " WHERE id = " + newRow.getId(), // indent
+						/* indent -------- */ "SELECT id, account_code, title " + // indent
+						/* indent -------- */ "  FROM " + DbConsts.TB_ACCOUNT_CODE + // indent
+						/* indent -------- */ " WHERE id = " + newRow.getId(), // indent
 						null);
 				if (rset != null && rset.first()) {
 					rset.close();

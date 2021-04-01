@@ -12,158 +12,169 @@ import java.util.List;
 
 public class TitlesRepoImpl implements TitlesRepo {
 
-    private PdsDbHelper opener;
+	private PdsDbHelper opener;
 
-    public TitlesRepoImpl(PdsDbHelper opener) {
-        this.opener = opener;
-    }
+	public TitlesRepoImpl(PdsDbHelper opener) {
+		this.opener = opener;
+	}
 
-    @Override
-    public List<Titles> findRows() {
-        List<Titles> aList = new ArrayList<Titles>();
+	@Override
+	public List<Titles> findRows() {
+		List<Titles> aList = new ArrayList<Titles>();
 
-        try {
-            H2Database db = opener.getReadableDatabase();
-            ResultSet rset = db.rawQuery("SELECT * FROM " + DbConsts.TB_TITLES, null);
-            if (rset == null || !rset.first()) {
-                return aList;
-            }
+		try {
+			H2Database db = opener.getReadableDatabase();
+			ResultSet rset = db.rawQuery( // indent
+					/* indent -------- */ "SELECT id, used, title " + // indent
+					/* indent -------- */ "  FROM " + DbConsts.TB_TITLES, // indent
+					null);
+			if (rset == null || !rset.first()) {
+				return aList;
+			}
 
-            do {
-                Titles aRow = new Titles(
-                        /* id ------------- */rset.getLong(1),
-                        /* used ----------- */rset.getLong(2),
-                        /* title ---------- */rset.getString(3));
-                aList.add(aRow);
-            } while (rset.next());
+			do {
+				Titles aRow = new Titles( // indent
+						/* id ------------- */rset.getLong(1), // indent
+						/* used ----------- */rset.getLong(2), // indent
+						/* title ---------- */rset.getString(3)); // indent
+				aList.add(aRow);
+			} while (rset.next());
 
-            if (rset != null) {
-                rset.close();
-            }
-            db.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+			if (rset != null) {
+				rset.close();
+			}
+			db.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 
-        if (DbConsts.DB_DEBUG) {
-            opener.debugDump(DbConsts.TB_TITLES);
-        }
+		if (DbConsts.DB_DEBUG) {
+			opener.debugDump(DbConsts.TB_TITLES);
+		}
 
-        return aList;
-    }
+		return aList;
+	}
 
-    @Override
-    public List<Titles> findRows(String keyString) {
-        List<Titles> aList = new ArrayList<Titles>();
+	@Override
+	public List<Titles> findRows(String keyString) {
+		List<Titles> aList = new ArrayList<Titles>();
 
-        try {
-            H2Database db = opener.getReadableDatabase();
-            ResultSet rset = db.rawQuery(
-                    /* intent -------- */ "SELECT * " +
-                            /* intent -------- */ " FROM " + DbConsts.TB_TITLES + " " +
-                            /* intent -------- */ " WHERE (title LIKE ?)",
-                    new String[]{"%" + keyString + "%"});
-            if (rset == null || !rset.first()) {
-                return aList;
-            }
+		try {
+			H2Database db = opener.getReadableDatabase();
+			ResultSet rset = db.rawQuery( // indent
+					/* indent -------- */ "SELECT id, used, title " + // indent
+					/* indent -------- */ "  FROM " + DbConsts.TB_TITLES + // indent
+					/* indent -------- */ " WHERE (title LIKE ?)", // indent
+					new String[] { "%" + keyString + "%" });
+			if (rset == null || !rset.first()) {
+				return aList;
+			}
 
-            do {
-                Titles aRow = new Titles(
-                        /* id ------------- */rset.getLong(1),
-                        /* used ----------- */rset.getLong(2),
-                        /* title ---------- */rset.getString(3));
-                aList.add(aRow);
-            } while (rset.next());
+			do {
+				Titles aRow = new Titles( // indent
+						/* id ------------- */rset.getLong(1), // indent
+						/* used ----------- */rset.getLong(2), // indent
+						/* title ---------- */rset.getString(3)); // indent
+				aList.add(aRow);
+			} while (rset.next());
 
-            if (rset != null) {
-                rset.close();
-            }
-            db.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+			if (rset != null) {
+				rset.close();
+			}
+			db.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 
-        return aList;
-    }
+		return aList;
+	}
 
-    @Override
-    public Titles getRow(Long id) {
-        Titles aRow = null;
+	@Override
+	public Titles getRow(Long id) {
+		Titles aRow = null;
 
-        try {
-            H2Database db = opener.getReadableDatabase();
-            ResultSet rset = db.rawQuery("SELECT * FROM " + DbConsts.TB_TITLES + " WHERE id = " + id, null);
-            if (rset == null || !rset.first()) {
-                return null;
-            }
+		try {
+			H2Database db = opener.getReadableDatabase();
+			ResultSet rset = db.rawQuery( // indent
+					/* indent -------- */ "SELECT id, used, title " + // indent
+					/* indent -------- */ "  FROM " + DbConsts.TB_TITLES + // indent
+					/* indent -------- */ " WHERE id = " + id, // indent
+					null);
+			if (rset == null || !rset.first()) {
+				return null;
+			}
 
-            aRow = new Titles(
-                    /* id ------------- */rset.getLong(1),
-                    /* used ----------- */rset.getLong(2),
-                    /* title ---------- */rset.getString(3));
-            rset.close();
-            db.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+			aRow = new Titles( // indent
+					/* id ------------- */rset.getLong(1), // indent
+					/* used ----------- */rset.getLong(2), // indent
+					/* title ---------- */rset.getString(3)); // indent
+			rset.close();
+			db.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 
-        return aRow;
-    }
+		return aRow;
+	}
 
-    @Override
-    public Titles getRow(Titles aRow) {
-        return getRow(aRow.getId());
-    }
+	@Override
+	public Titles getRow(Titles aRow) {
+		return getRow(aRow.getId());
+	}
 
-    @Override
-    public boolean updateRow(Titles newRow) {
-        try {
-            H2Database db = opener.getWritableDatabase();
-            ResultSet rset = null;
+	@Override
+	public boolean updateRow(Titles newRow) {
+		try {
+			H2Database db = opener.getWritableDatabase();
+			ResultSet rset = null;
 
-            if (newRow.getId() != null) {
-                rset = db.rawQuery("SELECT * FROM " + DbConsts.TB_TITLES + " WHERE id = " + newRow.getId(), null);
-                if (rset != null && rset.first()) {
-                    rset.close();
+			if (newRow.getId() != null) {
+				rset = db.rawQuery( // indent
+						/* indent -------- */ "SELECT id, used, title " + // indent
+						/* indent -------- */ "  FROM " + DbConsts.TB_TITLES + // indent
+						/* indent -------- */ " WHERE id = " + newRow.getId(), // indent
+						null);
+				if (rset != null && rset.first()) {
+					rset.close();
 
-                    ContentValues cv = new ContentValues();
-                    cv.put("used", newRow.getUsed());
-                    cv.put("title", newRow.getTitle());
-                    db.update(DbConsts.TB_TITLES, cv, " id = ? ", new String[]{Long.toString(newRow.getId())});
-                } else {
-                    ContentValues cv = new ContentValues();
-                    // cv.put("id", newRow.getId());
-                    cv.put("used", newRow.getUsed());
-                    cv.put("title", newRow.getTitle());
-                    db.insert(DbConsts.TB_TITLES, null, cv);
-                }
-            } else {
-                ContentValues cv = new ContentValues();
-                cv.put("used", newRow.getUsed());
-                cv.put("title", newRow.getTitle());
-                db.insert(DbConsts.TB_TITLES, null, cv);
-            }
+					ContentValues cv = new ContentValues();
+					cv.put("used", newRow.getUsed());
+					cv.put("title", newRow.getTitle());
+					db.update(DbConsts.TB_TITLES, cv, " id = ? ", new String[] { Long.toString(newRow.getId()) });
+				} else {
+					ContentValues cv = new ContentValues();
+					// cv.put("id", newRow.getId());
+					cv.put("used", newRow.getUsed());
+					cv.put("title", newRow.getTitle());
+					db.insert(DbConsts.TB_TITLES, null, cv);
+				}
+			} else {
+				ContentValues cv = new ContentValues();
+				cv.put("used", newRow.getUsed());
+				cv.put("title", newRow.getTitle());
+				db.insert(DbConsts.TB_TITLES, null, cv);
+			}
 
-            db.close();
-        } catch (Exception e) {
+			db.close();
+		} catch (Exception e) {
 
-        }
+		}
 
-        return true;
-    }
+		return true;
+	}
 
-    @Override
-    public int deleteRow(Long id) {
-        H2Database db = opener.getWritableDatabase();
-        int result = db.delete(DbConsts.TB_TITLES, "id = " + id, null);
-        db.close();
+	@Override
+	public int deleteRow(Long id) {
+		H2Database db = opener.getWritableDatabase();
+		int result = db.delete(DbConsts.TB_TITLES, "id = " + id, null);
+		db.close();
 
-        return result;
-    }
+		return result;
+	}
 
-    @Override
-    public int deleteRow(Titles aRow) {
-        return deleteRow(aRow.getId());
-    }
+	@Override
+	public int deleteRow(Titles aRow) {
+		return deleteRow(aRow.getId());
+	}
 
 }

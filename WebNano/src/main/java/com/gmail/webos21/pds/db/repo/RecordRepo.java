@@ -10,6 +10,8 @@ public interface RecordRepo {
 
     List<Record> findRows(String keyString);
 
+    List<Record> findRows(int year, int month);
+
     Record getRow(Long id);
 
     Record getRow(Record aRow);

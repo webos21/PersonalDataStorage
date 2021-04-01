@@ -24,7 +24,10 @@ public class AccountClassRepoImpl implements AccountClassRepo {
 
 		try {
 			H2Database db = opener.getReadableDatabase();
-			ResultSet rset = db.rawQuery("SELECT id, title FROM " + DbConsts.TB_ACCOUNT_CLASS, null);
+			ResultSet rset = db.rawQuery( // indent
+					/* indent -------- */ "SELECT id, title " + // indent
+					/* indent -------- */ "  FROM " + DbConsts.TB_ACCOUNT_CLASS, // indent
+					null);
 			if (rset == null || !rset.first()) {
 				return aList;
 			}
@@ -59,7 +62,7 @@ public class AccountClassRepoImpl implements AccountClassRepo {
 			H2Database db = opener.getReadableDatabase();
 			ResultSet rset = db.rawQuery( // indent
 					/* indent -------- */ "SELECT id, title " + // indent
-					/* indent -------- */ " FROM " + DbConsts.TB_ACCOUNT_CLASS + " " + // indent
+					/* indent -------- */ "  FROM " + DbConsts.TB_ACCOUNT_CLASS + " " + // indent
 					/* indent -------- */ " WHERE (title LIKE ?)", // indent
 					new String[] { "%" + keyString + "%" });
 			if (rset == null || !rset.first()) {
@@ -90,8 +93,10 @@ public class AccountClassRepoImpl implements AccountClassRepo {
 
 		try {
 			H2Database db = opener.getReadableDatabase();
-			ResultSet rset = db.rawQuery("SELECT id, title FROM " + DbConsts.TB_ACCOUNT_CLASS + " WHERE id = " + id,
-					null);
+			ResultSet rset = db.rawQuery( // indent
+					/* indent -------- */ "SELECT id, title " + // indent
+					/* indent -------- */ "  FROM " + DbConsts.TB_ACCOUNT_CLASS + " " + // indent
+					/* indent -------- */ " WHERE id = " + id, null);
 			if (rset == null || !rset.first()) {
 				return null;
 			}
@@ -120,8 +125,11 @@ public class AccountClassRepoImpl implements AccountClassRepo {
 			ResultSet rset = null;
 
 			if (newRow.getId() != null) {
-				rset = db.rawQuery(
-						"SELECT id, title FROM " + DbConsts.TB_ACCOUNT_CLASS + " WHERE id = " + newRow.getId(), null);
+				rset = db.rawQuery( // indent
+						/* indent -------- */ "SELECT id, title " + // indent
+						/* indent -------- */ "  FROM " + DbConsts.TB_ACCOUNT_CLASS + " " + // indent
+						/* indent -------- */ " WHERE id = " + newRow.getId(), // indent
+						null);
 				if (rset != null && rset.first()) {
 					rset.close();
 

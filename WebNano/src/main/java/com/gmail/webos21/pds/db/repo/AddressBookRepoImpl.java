@@ -25,10 +25,10 @@ public class AddressBookRepoImpl implements AddressBookRepo {
 		try {
 			H2Database db = opener.getReadableDatabase();
 			ResultSet rset = db.rawQuery( // indent
-					/* intent -------- */ "SELECT id, full_name, mobile, category, " + // indent
-					/* intent -------- */ "       telephone, fax, email, homepage, " + // indent
-					/* intent -------- */ "       postcode, address, memo " + // indent
-					/* intent -------- */ "  FROM " + DbConsts.TB_ADDRESSBOOK, // indent
+					/* indent -------- */ "SELECT id, full_name, mobile, category, " + // indent
+					/* indent -------- */ "       telephone, fax, email, homepage, " + // indent
+					/* indent -------- */ "       postcode, address, memo " + // indent
+					/* indent -------- */ "  FROM " + DbConsts.TB_ADDRESSBOOK, // indent
 					null);
 			if (rset == null || !rset.first()) {
 				return aList;
@@ -72,17 +72,17 @@ public class AddressBookRepoImpl implements AddressBookRepo {
 		try {
 			H2Database db = opener.getReadableDatabase();
 			ResultSet rset = db.rawQuery( // indent
-					/* intent -------- */ "SELECT id, full_name, mobile, category, " + // indent
-					/* intent -------- */ "       telephone, fax, email, homepage, " + // indent
-					/* intent -------- */ "       postcode, address, memo " + // indent
-					/* intent -------- */ "  FROM " + DbConsts.TB_ADDRESSBOOK + " " + // indent
-					/* intent -------- */ " WHERE (full_name LIKE ?) OR " + // indent
-					/* intent -------- */ "       (category LIKE ?) OR " + // indent
-					/* intent -------- */ "       (mobile LIKE ?) OR " + // indent
-					/* intent -------- */ "       (email LIKE ?) OR " + // indent
-					/* intent -------- */ "       (homepage LIKE ?) OR " + // indent
-					/* intent -------- */ "       (address LIKE ?) OR " + // indent
-					/* intent -------- */ "       (memo LIKE ?)", // indent
+					/* indent -------- */ "SELECT id, full_name, mobile, category, " + // indent
+					/* indent -------- */ "       telephone, fax, email, homepage, " + // indent
+					/* indent -------- */ "       postcode, address, memo " + // indent
+					/* indent -------- */ "  FROM " + DbConsts.TB_ADDRESSBOOK + " " + // indent
+					/* indent -------- */ " WHERE (full_name LIKE ?) OR " + // indent
+					/* indent -------- */ "        (category LIKE ?) OR " + // indent
+					/* indent -------- */ "          (mobile LIKE ?) OR " + // indent
+					/* indent -------- */ "           (email LIKE ?) OR " + // indent
+					/* indent -------- */ "        (homepage LIKE ?) OR " + // indent
+					/* indent -------- */ "         (address LIKE ?) OR " + // indent
+					/* indent -------- */ "            (memo LIKE ?)", // indent
 					new String[] { "%" + keyString + "%", "%" + keyString + "%", "%" + keyString + "%",
 							"%" + keyString + "%", "%" + keyString + "%", "%" + keyString + "%",
 							"%" + keyString + "%" });
@@ -124,11 +124,11 @@ public class AddressBookRepoImpl implements AddressBookRepo {
 		try {
 			H2Database db = opener.getReadableDatabase();
 			ResultSet rset = db.rawQuery( // indent
-					/* intent -------- */ "SELECT id, full_name, mobile, category, " + // indent
-					/* intent -------- */ "       telephone, fax, email, homepage, " + // indent
-					/* intent -------- */ "       postcode, address, memo " + // indent
-					/* intent -------- */ " FROM " + DbConsts.TB_ADDRESSBOOK + // indent
-					/* intent -------- */ " WHERE id = " + id, null);
+					/* indent -------- */ "SELECT id, full_name, mobile, category, " + // indent
+					/* indent -------- */ "       telephone, fax, email, homepage, " + // indent
+					/* indent -------- */ "       postcode, address, memo " + // indent
+					/* indent -------- */ " FROM " + DbConsts.TB_ADDRESSBOOK + // indent
+					/* indent -------- */ " WHERE id = " + id, null);
 			if (rset == null || !rset.first()) {
 				return null;
 			}
@@ -167,11 +167,11 @@ public class AddressBookRepoImpl implements AddressBookRepo {
 
 			if (newRow.getId() != null) {
 				rset = db.rawQuery( // indent
-						/* intent -------- */ "SELECT id, full_name, mobile, category, " + // indent
-						/* intent -------- */ "       telephone, fax, email, homepage, " + // indent
-						/* intent -------- */ "       postcode, address, memo " + // indent
-						/* intent -------- */ "  FROM " + DbConsts.TB_ADDRESSBOOK + // indent
-						/* intent -------- */ " WHERE id = " + newRow.getId(), null); // indent
+						/* indent -------- */ "SELECT id, full_name, mobile, category, " + // indent
+						/* indent -------- */ "       telephone, fax, email, homepage, " + // indent
+						/* indent -------- */ "       postcode, address, memo " + // indent
+						/* indent -------- */ "  FROM " + DbConsts.TB_ADDRESSBOOK + // indent
+						/* indent -------- */ " WHERE id = " + newRow.getId(), null); // indent
 				if (rset != null && rset.first()) {
 					rset.close();
 

@@ -24,8 +24,10 @@ public class PasswordBookRepoImpl implements PasswordBookRepo {
 
 		try {
 			H2Database db = opener.getReadableDatabase();
-			ResultSet rset = db.rawQuery("SELECT id, surl, sname, stype, myid, mypw, reg_date, fix_date, memo FROM "
-					+ DbConsts.TB_PASSWORD_BOOK, null);
+			ResultSet rset = db.rawQuery( // indent
+					/* indent -------- */ "SELECT id, surl, sname, stype, myid, mypw, reg_date, fix_date, memo " + // indent
+					/* indent -------- */ "  FROM " + DbConsts.TB_PASSWORD_BOOK, // indent
+					null);
 			if (rset == null || !rset.first()) {
 				return aList;
 			}
@@ -67,10 +69,10 @@ public class PasswordBookRepoImpl implements PasswordBookRepo {
 			H2Database db = opener.getReadableDatabase();
 			ResultSet rset = db.rawQuery( // indent
 					/* indent -------- */ "SELECT id, surl, sname, stype, myid, mypw, reg_date, fix_date, memo " + // indent
-					/* indent -------- */ " FROM " + DbConsts.TB_PASSWORD_BOOK + " " + // indent
-					/* indent -------- */ " WHERE (surl LIKE ?) OR " + // indent
-					/* indent -------- */ "        (sname LIKE ?) OR " + // indent
-					/* indent -------- */ "        (stype LIKE ?)", // indent
+					/* indent -------- */ "  FROM " + DbConsts.TB_PASSWORD_BOOK + // indent
+					/* indent -------- */ " WHERE  (surl LIKE ?) OR " + // indent
+					/* indent -------- */ "       (sname LIKE ?) OR " + // indent
+					/* indent -------- */ "       (stype LIKE ?)", // indent
 					new String[] { "%" + keyString + "%", "%" + keyString + "%", "%" + keyString + "%" });
 			if (rset == null || !rset.first()) {
 				return aList;
@@ -107,8 +109,11 @@ public class PasswordBookRepoImpl implements PasswordBookRepo {
 
 		try {
 			H2Database db = opener.getReadableDatabase();
-			ResultSet rset = db.rawQuery("SELECT id, surl, sname, stype, myid, mypw, reg_date, fix_date, memo FROM "
-					+ DbConsts.TB_PASSWORD_BOOK + " WHERE id = " + id, null);
+			ResultSet rset = db.rawQuery( // indent
+					/* indent -------- */ "SELECT id, surl, sname, stype, myid, mypw, reg_date, fix_date, memo " + // indent
+					/* indent -------- */ "  FROM " + DbConsts.TB_PASSWORD_BOOK + // indent
+					/* indent -------- */ " WHERE id = " + id, // indent
+					null);
 			if (rset == null || !rset.first()) {
 				return null;
 			}
@@ -144,8 +149,11 @@ public class PasswordBookRepoImpl implements PasswordBookRepo {
 			ResultSet rset = null;
 
 			if (newRow.getId() != null) {
-				rset = db.rawQuery("SELECT id, surl, sname, stype, myid, mypw, reg_date, fix_date, memo FROM "
-						+ DbConsts.TB_PASSWORD_BOOK + " WHERE id = " + newRow.getId(), null);
+				rset = db.rawQuery( // indent
+						/* indent -------- */ "SELECT id, surl, sname, stype, myid, mypw, reg_date, fix_date, memo " + // indent
+						/* indent -------- */ "  FROM " + DbConsts.TB_PASSWORD_BOOK + // indent
+						/* indent -------- */ " WHERE id = " + newRow.getId(), // indent
+						null);
 				if (rset != null && rset.first()) {
 					rset.close();
 

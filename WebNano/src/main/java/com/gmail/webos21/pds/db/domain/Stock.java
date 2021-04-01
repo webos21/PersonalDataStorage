@@ -2,6 +2,8 @@ package com.gmail.webos21.pds.db.domain;
 
 import java.util.Date;
 
+import com.gmail.webos21.pds.db.JsonHelper;
+
 public class Stock {
 
     private Long id;
@@ -137,7 +139,7 @@ public class Stock {
         sb.append("  \"estimate\": ").append(estimate).append(",\n");
         sb.append("  \"estimateDate\": ").append(estimateDate.getTime()).append(",\n");
         sb.append("  \"arrange\": ").append(arrange).append(",\n");
-        sb.append("  \"memo\": \"").append(memo).append("\"\n");
+        sb.append("  \"memo\": \"").append(JsonHelper.escape(memo)).append("\"\n");
         sb.append('}').append('\n');
 
         return sb.toString();

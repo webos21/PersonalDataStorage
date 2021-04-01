@@ -12,201 +12,216 @@ import java.util.List;
 
 public class RealEstateRepoImpl implements RealEstateRepo {
 
-    private PdsDbHelper opener;
+	private PdsDbHelper opener;
 
-    public RealEstateRepoImpl(PdsDbHelper opener) {
-        this.opener = opener;
-    }
+	public RealEstateRepoImpl(PdsDbHelper opener) {
+		this.opener = opener;
+	}
 
-    @Override
-    public List<RealEstate> findRows() {
-        List<RealEstate> aList = new ArrayList<RealEstate>();
+	@Override
+	public List<RealEstate> findRows() {
+		List<RealEstate> aList = new ArrayList<RealEstate>();
 
-        try {
-            H2Database db = opener.getReadableDatabase();
-            ResultSet rset = db.rawQuery("SELECT * FROM " + DbConsts.TB_REALESTATE, null);
-            if (rset == null || !rset.first()) {
-                return aList;
-            }
+		try {
+			H2Database db = opener.getReadableDatabase();
+			ResultSet rset = db.rawQuery(// indent
+					/* indent -------- */ "SELECT id, estate_type, title, holder, estimate, loan, " + // indent
+					/* indent -------- */ "       acquisition_date, estimate_date, arrange, memo " + // indent
+					/* indent -------- */ "  FROM " + DbConsts.TB_REALESTATE, // indent
+					null);
+			if (rset == null || !rset.first()) {
+				return aList;
+			}
 
-            do {
-                RealEstate aRow = new RealEstate(
-                        /* id ------------- */rset.getLong(1),
-                        /* estate_type ---- */rset.getString(2),
-                        /* title ---------- */rset.getString(3),
-                        /* holder --------- */rset.getString(4),
-                        /* estimate ------- */rset.getLong(5),
-                        /* loan ----------- */rset.getLong(6),
-                        /* acquisition_date */rset.getLong(7),
-                        /* estimate_date -- */rset.getLong(8),
-                        /* arrange -------- */rset.getLong(9),
-                        /* memo ----------- */rset.getString(10));
-                aList.add(aRow);
-            } while (rset.next());
+			do {
+				RealEstate aRow = new RealEstate(// indent
+						/* id ------------- */rset.getLong(1), // indent
+						/* estate_type ---- */rset.getString(2), // indent
+						/* title ---------- */rset.getString(3), // indent
+						/* holder --------- */rset.getString(4), // indent
+						/* estimate ------- */rset.getLong(5), // indent
+						/* loan ----------- */rset.getLong(6), // indent
+						/* acquisition_date */rset.getLong(7), // indent
+						/* estimate_date -- */rset.getLong(8), // indent
+						/* arrange -------- */rset.getLong(9), // indent
+						/* memo ----------- */rset.getString(10));// indent
+				aList.add(aRow);
+			} while (rset.next());
 
-            if (rset != null) {
-                rset.close();
-            }
-            db.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+			if (rset != null) {
+				rset.close();
+			}
+			db.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 
-        if (DbConsts.DB_DEBUG) {
-            opener.debugDump(DbConsts.TB_REALESTATE);
-        }
+		if (DbConsts.DB_DEBUG) {
+			opener.debugDump(DbConsts.TB_REALESTATE);
+		}
 
-        return aList;
-    }
+		return aList;
+	}
 
-    @Override
-    public List<RealEstate> findRows(String keyString) {
-        List<RealEstate> aList = new ArrayList<RealEstate>();
+	@Override
+	public List<RealEstate> findRows(String keyString) {
+		List<RealEstate> aList = new ArrayList<RealEstate>();
 
-        try {
-            H2Database db = opener.getReadableDatabase();
-            ResultSet rset = db.rawQuery(
-                    /* intent -------- */ "SELECT * " +
-                            /* intent -------- */ " FROM " + DbConsts.TB_REALESTATE + " " +
-                            /* intent -------- */ " WHERE (title LIKE ?) OR " +
-                            /* intent -------- */ "        (memo LIKE ?)",
-                    new String[]{"%" + keyString + "%", "%" + keyString + "%"});
-            if (rset == null || !rset.first()) {
-                return aList;
-            }
+		try {
+			H2Database db = opener.getReadableDatabase();
+			ResultSet rset = db.rawQuery(// indent
+					/* indent -------- */ "SELECT id, estate_type, title, holder, estimate, loan, " + // indent
+					/* indent -------- */ "       acquisition_date, estimate_date, arrange, memo " + // indent
+					/* indent -------- */ "  FROM " + DbConsts.TB_REALESTATE + // indent
+					/* indent -------- */ " WHERE (title LIKE ?) OR " + // indent
+					/* indent -------- */ "        (memo LIKE ?)", // indent
+					new String[] { "%" + keyString + "%", "%" + keyString + "%" });
+			if (rset == null || !rset.first()) {
+				return aList;
+			}
 
-            do {
-                RealEstate aRow = new RealEstate(
-                        /* id ------------- */rset.getLong(1),
-                        /* estate_type ---- */rset.getString(2),
-                        /* title ---------- */rset.getString(3),
-                        /* holder --------- */rset.getString(4),
-                        /* estimate ------- */rset.getLong(5),
-                        /* loan ----------- */rset.getLong(6),
-                        /* acquisition_date */rset.getLong(7),
-                        /* estimate_date -- */rset.getLong(8),
-                        /* arrange -------- */rset.getLong(9),
-                        /* memo ----------- */rset.getString(10));
-                aList.add(aRow);
-            } while (rset.next());
+			do {
+				RealEstate aRow = new RealEstate(// indent
+						/* id ------------- */rset.getLong(1), // indent
+						/* estate_type ---- */rset.getString(2), // indent
+						/* title ---------- */rset.getString(3), // indent
+						/* holder --------- */rset.getString(4), // indent
+						/* estimate ------- */rset.getLong(5), // indent
+						/* loan ----------- */rset.getLong(6), // indent
+						/* acquisition_date */rset.getLong(7), // indent
+						/* estimate_date -- */rset.getLong(8), // indent
+						/* arrange -------- */rset.getLong(9), // indent
+						/* memo ----------- */rset.getString(10));// indent
+				aList.add(aRow);
+			} while (rset.next());
 
-            if (rset != null) {
-                rset.close();
-            }
-            db.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+			if (rset != null) {
+				rset.close();
+			}
+			db.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 
-        return aList;
-    }
+		return aList;
+	}
 
-    @Override
-    public RealEstate getRow(Long id) {
-        RealEstate aRow = null;
+	@Override
+	public RealEstate getRow(Long id) {
+		RealEstate aRow = null;
 
-        try {
-            H2Database db = opener.getReadableDatabase();
-            ResultSet rset = db.rawQuery("SELECT * FROM " + DbConsts.TB_REALESTATE + " WHERE id = " + id, null);
-            if (rset == null || !rset.first()) {
-                return null;
-            }
+		try {
+			H2Database db = opener.getReadableDatabase();
+			ResultSet rset = db.rawQuery(// indent
+					/* indent -------- */ "SELECT id, estate_type, title, holder, estimate, loan, " + // indent
+					/* indent -------- */ "       acquisition_date, estimate_date, arrange, memo " + // indent
+					/* indent -------- */ "  FROM " + DbConsts.TB_REALESTATE + // indent
+					/* indent -------- */ " WHERE id = " + id, // indent
+					null);
+			if (rset == null || !rset.first()) {
+				return null;
+			}
 
-            aRow = new RealEstate(
-                    /* id ------------- */rset.getLong(1),
-                    /* estate_type ---- */rset.getString(2),
-                    /* title ---------- */rset.getString(3),
-                    /* holder --------- */rset.getString(4),
-                    /* estimate ------- */rset.getLong(5),
-                    /* loan ----------- */rset.getLong(6),
-                    /* acquisition_date */rset.getLong(7),
-                    /* estimate_date -- */rset.getLong(8),
-                    /* arrange -------- */rset.getLong(9),
-                    /* memo ----------- */rset.getString(10));
-            rset.close();
-            db.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+			aRow = new RealEstate(// indent
+					/* id ------------- */rset.getLong(1), // indent
+					/* estate_type ---- */rset.getString(2), // indent
+					/* title ---------- */rset.getString(3), // indent
+					/* holder --------- */rset.getString(4), // indent
+					/* estimate ------- */rset.getLong(5), // indent
+					/* loan ----------- */rset.getLong(6), // indent
+					/* acquisition_date */rset.getLong(7), // indent
+					/* estimate_date -- */rset.getLong(8), // indent
+					/* arrange -------- */rset.getLong(9), // indent
+					/* memo ----------- */rset.getString(10));// indent
+			rset.close();
+			db.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 
-        return aRow;
-    }
+		return aRow;
+	}
 
-    @Override
-    public RealEstate getRow(RealEstate aRow) {
-        return getRow(aRow.getId());
-    }
+	@Override
+	public RealEstate getRow(RealEstate aRow) {
+		return getRow(aRow.getId());
+	}
 
-    @Override
-    public boolean updateRow(RealEstate newRow) {
-        try {
-            H2Database db = opener.getWritableDatabase();
-            ResultSet rset = null;
+	@Override
+	public boolean updateRow(RealEstate newRow) {
+		try {
+			H2Database db = opener.getWritableDatabase();
+			ResultSet rset = null;
 
-            if (newRow.getId() != null) {
-                rset = db.rawQuery("SELECT * FROM " + DbConsts.TB_REALESTATE + " WHERE id = " + newRow.getId(), null);
-                if (rset != null && rset.first()) {
-                    rset.close();
+			if (newRow.getId() != null) {
+				rset = db.rawQuery(// indent
+						/* indent -------- */ "SELECT id, estate_type, title, holder, estimate, loan, " + // indent
+						/* indent -------- */ "       acquisition_date, estimate_date, arrange, memo " + // indent
+						/* indent -------- */ "  FROM " + DbConsts.TB_REALESTATE + // indent
+						/* indent -------- */ " WHERE id = " + newRow.getId(), // indent
+						null);
+				if (rset != null && rset.first()) {
+					rset.close();
 
-                    ContentValues cv = new ContentValues();
-                    cv.put("estate_type", newRow.getEstateType());
-                    cv.put("title", newRow.getTitle());
-                    cv.put("holder", newRow.getHolder());
-                    cv.put("estimate", newRow.getEstimate());
-                    cv.put("loan", newRow.getLoan());
-                    cv.put("acquisition_date", newRow.getAcquisitionDate().getTime());
-                    cv.put("estimate_date", newRow.getEstimateDate().getTime());
-                    cv.put("arrange", newRow.getArrange());
-                    cv.put("memo", newRow.getMemo());
-                    db.update(DbConsts.TB_REALESTATE, cv, " id = ? ", new String[]{Long.toString(newRow.getId())});
-                } else {
-                    ContentValues cv = new ContentValues();
-                    // cv.put("id", newRow.getId());
-                    cv.put("estate_type", newRow.getEstateType());
-                    cv.put("title", newRow.getTitle());
-                    cv.put("holder", newRow.getHolder());
-                    cv.put("estimate", newRow.getEstimate());
-                    cv.put("loan", newRow.getLoan());
-                    cv.put("acquisition_date", newRow.getAcquisitionDate().getTime());
-                    cv.put("estimate_date", newRow.getEstimateDate().getTime());
-                    cv.put("arrange", newRow.getArrange());
-                    cv.put("memo", newRow.getMemo());
-                    db.insert(DbConsts.TB_REALESTATE, null, cv);
-                }
-            } else {
-                ContentValues cv = new ContentValues();
-                cv.put("estate_type", newRow.getEstateType());
-                cv.put("title", newRow.getTitle());
-                cv.put("holder", newRow.getHolder());
-                cv.put("estimate", newRow.getEstimate());
-                cv.put("loan", newRow.getLoan());
-                cv.put("acquisition_date", newRow.getAcquisitionDate().getTime());
-                cv.put("estimate_date", newRow.getEstimateDate().getTime());
-                cv.put("arrange", newRow.getArrange());
-                cv.put("memo", newRow.getMemo());
-                db.insert(DbConsts.TB_REALESTATE, null, cv);
-            }
+					ContentValues cv = new ContentValues();
+					cv.put("estate_type", newRow.getEstateType());
+					cv.put("title", newRow.getTitle());
+					cv.put("holder", newRow.getHolder());
+					cv.put("estimate", newRow.getEstimate());
+					cv.put("loan", newRow.getLoan());
+					cv.put("acquisition_date", newRow.getAcquisitionDate().getTime());
+					cv.put("estimate_date", newRow.getEstimateDate().getTime());
+					cv.put("arrange", newRow.getArrange());
+					cv.put("memo", newRow.getMemo());
+					db.update(DbConsts.TB_REALESTATE, cv, " id = ? ", new String[] { Long.toString(newRow.getId()) });
+				} else {
+					ContentValues cv = new ContentValues();
+					// cv.put("id", newRow.getId());
+					cv.put("estate_type", newRow.getEstateType());
+					cv.put("title", newRow.getTitle());
+					cv.put("holder", newRow.getHolder());
+					cv.put("estimate", newRow.getEstimate());
+					cv.put("loan", newRow.getLoan());
+					cv.put("acquisition_date", newRow.getAcquisitionDate().getTime());
+					cv.put("estimate_date", newRow.getEstimateDate().getTime());
+					cv.put("arrange", newRow.getArrange());
+					cv.put("memo", newRow.getMemo());
+					db.insert(DbConsts.TB_REALESTATE, null, cv);
+				}
+			} else {
+				ContentValues cv = new ContentValues();
+				cv.put("estate_type", newRow.getEstateType());
+				cv.put("title", newRow.getTitle());
+				cv.put("holder", newRow.getHolder());
+				cv.put("estimate", newRow.getEstimate());
+				cv.put("loan", newRow.getLoan());
+				cv.put("acquisition_date", newRow.getAcquisitionDate().getTime());
+				cv.put("estimate_date", newRow.getEstimateDate().getTime());
+				cv.put("arrange", newRow.getArrange());
+				cv.put("memo", newRow.getMemo());
+				db.insert(DbConsts.TB_REALESTATE, null, cv);
+			}
 
-            db.close();
-        } catch (Exception e) {
+			db.close();
+		} catch (Exception e) {
 
-        }
+		}
 
-        return true;
-    }
+		return true;
+	}
 
-    @Override
-    public int deleteRow(Long id) {
-        H2Database db = opener.getWritableDatabase();
-        int result = db.delete(DbConsts.TB_REALESTATE, "id = " + id, null);
-        db.close();
+	@Override
+	public int deleteRow(Long id) {
+		H2Database db = opener.getWritableDatabase();
+		int result = db.delete(DbConsts.TB_REALESTATE, "id = " + id, null);
+		db.close();
 
-        return result;
-    }
+		return result;
+	}
 
-    @Override
-    public int deleteRow(RealEstate aRow) {
-        return deleteRow(aRow.getId());
-    }
+	@Override
+	public int deleteRow(RealEstate aRow) {
+		return deleteRow(aRow.getId());
+	}
 
 }

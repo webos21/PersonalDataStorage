@@ -66,7 +66,7 @@ public class BankRecordRepoImpl implements BankRecordRepo {
 					/* indent -------- */ "SELECT id, account_id, transaction_date, title, deposit, withdrawal, memo " + // indent
 					/* indent -------- */ "  FROM " + DbConsts.TB_BANK_RECORD + " " + // indent
 					/* indent -------- */ " WHERE (title LIKE ?) OR " + // indent
-					/* indent -------- */ "       (memo LIKE ?)", // indent
+					/* indent -------- */ "        (memo LIKE ?)", // indent
 					new String[] { "%" + keyString + "%", "%" + keyString + "%" });
 			if (rset == null || !rset.first()) {
 				return aList;

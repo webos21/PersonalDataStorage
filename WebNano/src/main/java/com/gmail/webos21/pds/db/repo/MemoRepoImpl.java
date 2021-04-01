@@ -24,7 +24,10 @@ public class MemoRepoImpl implements MemoRepo {
 
 		try {
 			H2Database db = opener.getReadableDatabase();
-			ResultSet rset = db.rawQuery("SELECT id, wdate, title, content FROM " + DbConsts.TB_MEMO, null);
+			ResultSet rset = db.rawQuery( // indent
+					/* indent -------- */ "SELECT id, wdate, title, content " + // indent
+					/* indent -------- */ "  FROM " + DbConsts.TB_MEMO, // indent
+					null);
 			if (rset == null || !rset.first()) {
 				return aList;
 			}
@@ -61,8 +64,8 @@ public class MemoRepoImpl implements MemoRepo {
 			H2Database db = opener.getReadableDatabase();
 			ResultSet rset = db.rawQuery( // indent
 					/* indent -------- */ "SELECT id, wdate, title, content " + // indent
-					/* indent -------- */ " FROM " + DbConsts.TB_MEMO + " " + // indent
-					/* indent -------- */ " WHERE (title LIKE ?) OR " + // indent
+					/* indent -------- */ "  FROM " + DbConsts.TB_MEMO + // indent
+					/* indent -------- */ " WHERE   (title LIKE ?) OR " + // indent
 					/* indent -------- */ "       (content LIKE ?)", // indent
 					new String[] { "%" + keyString + "%", "%" + keyString + "%" });
 			if (rset == null || !rset.first()) {
@@ -95,8 +98,11 @@ public class MemoRepoImpl implements MemoRepo {
 
 		try {
 			H2Database db = opener.getReadableDatabase();
-			ResultSet rset = db
-					.rawQuery("SELECT id, wdate, title, content FROM " + DbConsts.TB_MEMO + " WHERE id = " + id, null);
+			ResultSet rset = db.rawQuery( // indent
+					/* indent -------- */ "SELECT id, wdate, title, content " + // indent
+					/* indent -------- */ "  FROM " + DbConsts.TB_MEMO + // indent
+					/* indent -------- */ " WHERE id = " + id, // indent
+					null);
 			if (rset == null || !rset.first()) {
 				return null;
 			}
@@ -127,8 +133,10 @@ public class MemoRepoImpl implements MemoRepo {
 			ResultSet rset = null;
 
 			if (newRow.getId() != null) {
-				rset = db.rawQuery(
-						"SELECT id, wdate, title, content FROM " + DbConsts.TB_MEMO + " WHERE id = " + newRow.getId(),
+				rset = db.rawQuery( // indent
+						/* indent -------- */ "SELECT id, wdate, title, content " + // indent
+						/* indent -------- */ "  FROM " + DbConsts.TB_MEMO + // indent
+						/* indent -------- */ " WHERE id = " + newRow.getId(), // indent
 						null);
 				if (rset != null && rset.first()) {
 					rset.close();

@@ -2,6 +2,8 @@ package com.gmail.webos21.pds.db.domain;
 
 import java.util.Date;
 
+import com.gmail.webos21.pds.db.JsonHelper;
+
 public class RegularPay {
 
     private Long id;
@@ -139,7 +141,7 @@ public class RegularPay {
         sb.append("  \"monthDay\": ").append(monthDay).append(",\n");
         sb.append("  \"sdate\": ").append(sdate.getTime()).append(",\n");
         sb.append("  \"edate\": ").append(edate.getTime()).append(",\n");
-        sb.append("  \"memo\": \"").append(memo).append("\"\n");
+        sb.append("  \"memo\": \"").append(JsonHelper.escape(memo)).append("\"\n");
         sb.append('}').append('\n');
 
         return sb.toString();

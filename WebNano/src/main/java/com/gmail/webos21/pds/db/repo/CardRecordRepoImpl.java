@@ -29,7 +29,7 @@ public class CardRecordRepoImpl implements CardRecordRepo {
 					/* indent -------- */ "       installment, installment_id, installment_turn,  " + // indent
 					/* indent -------- */ "       amount, remainder, settlement_date, paid, memo  " + // indent
 					/* indent -------- */ "  FROM " + DbConsts.TB_CARD_RECORD + // indent
-					/* intent -------- */ " WHERE paid = 0 ", // indent
+					/* indent -------- */ " WHERE paid = 0 ", // indent
 					null);
 			if (rset == null || !rset.first()) {
 				return aList;
@@ -80,8 +80,8 @@ public class CardRecordRepoImpl implements CardRecordRepo {
 					/* indent -------- */ "       installment, installment_id, installment_turn,  " + // indent
 					/* indent -------- */ "       amount, remainder, settlement_date, paid, memo  " + // indent
 					/* indent -------- */ "  FROM " + DbConsts.TB_CARD_RECORD + // indent
-					/* intent -------- */ " WHERE paid = 0 AND " + // indent
-					/* intent -------- */ "        ((title LIKE ?) OR (memo LIKE ?))", // indent
+					/* indent -------- */ " WHERE paid = 0 AND " + // indent
+					/* indent -------- */ "        ((title LIKE ?) OR (memo LIKE ?))", // indent
 					new String[] { "%" + keyString + "%", "%" + keyString + "%" });
 			if (rset == null || !rset.first()) {
 				return aList;

@@ -2,6 +2,8 @@ package com.gmail.webos21.pds.db.domain;
 
 import java.util.Date;
 
+import com.gmail.webos21.pds.db.JsonHelper;
+
 public class Record {
 
     private Long id;
@@ -101,7 +103,7 @@ public class Record {
         sb.append("  \"deposit\": ").append(deposit).append(",\n");
         sb.append("  \"withdrawal\": ").append(withdrawal).append(",\n");
         sb.append("  \"accountCode\": \"").append(accountCode).append("\",\n");
-        sb.append("  \"memo\": \"").append(memo).append("\"\n");
+        sb.append("  \"memo\": \"").append(JsonHelper.escape(memo)).append("\"\n");
         sb.append('}').append('\n');
 
         return sb.toString();

@@ -10,6 +10,8 @@ public interface ScheduleRepo {
 
     List<Schedule> findRows(String keyString);
 
+    List<Schedule> findRows(int year, int month);
+
     Schedule getRow(Long id);
 
     Schedule getRow(Schedule aRow);

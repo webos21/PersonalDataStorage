@@ -84,10 +84,10 @@ public class CardRepoImpl implements CardRepo {
 					/* indent -------- */ "       valid_year, valid_month, charge_date, cvc_number, " + // indent
 					/* indent -------- */ "       bank_id, credit_limit, cash_advance, card_loan, " + // indent
 					/* indent -------- */ "       issue_date, refresh_normal, refresh_short, arrange, memo " + // indent
-					/* intent -------- */ "  FROM " + DbConsts.TB_CARD + " " + // indent
-					/* intent -------- */ " WHERE (company LIKE ?) OR " + // indent
-					/* intent -------- */ "       (card_name LIKE ?) OR " + // indent
-					/* intent -------- */ "       (memo LIKE ?)", // indent
+					/* indent -------- */ "  FROM " + DbConsts.TB_CARD + " " + // indent
+					/* indent -------- */ " WHERE (company LIKE ?) OR " + // indent
+					/* indent -------- */ "       (card_name LIKE ?) OR " + // indent
+					/* indent -------- */ "       (memo LIKE ?)", // indent
 					new String[] { "%" + keyString + "%", "%" + keyString + "%", "%" + keyString + "%" });
 			if (rset == null || !rset.first()) {
 				return aList;
@@ -138,8 +138,8 @@ public class CardRepoImpl implements CardRepo {
 					/* indent -------- */ "       valid_year, valid_month, charge_date, cvc_number, " + // indent
 					/* indent -------- */ "       bank_id, credit_limit, cash_advance, card_loan, " + // indent
 					/* indent -------- */ "       issue_date, refresh_normal, refresh_short, arrange, memo " + // indent
-					/* intent -------- */ " FROM " + DbConsts.TB_CARD + // indent
-					/* intent -------- */ " WHERE id = " + id, // indent
+					/* indent -------- */ " FROM " + DbConsts.TB_CARD + // indent
+					/* indent -------- */ " WHERE id = " + id, // indent
 					null); // indent
 			if (rset == null || !rset.first()) {
 				return null;
@@ -190,8 +190,8 @@ public class CardRepoImpl implements CardRepo {
 						/* indent -------- */ "       valid_year, valid_month, charge_date, cvc_number, " + // indent
 						/* indent -------- */ "       bank_id, credit_limit, cash_advance, card_loan, " + // indent
 						/* indent -------- */ "       issue_date, refresh_normal, refresh_short, arrange, memo " + // indent
-						/* intent -------- */ " FROM " + DbConsts.TB_CARD + // indent
-						/* intent -------- */ " WHERE id = " + newRow.getId(), // indent
+						/* indent -------- */ " FROM " + DbConsts.TB_CARD + // indent
+						/* indent -------- */ " WHERE id = " + newRow.getId(), // indent
 						null);
 				if (rset != null && rset.first()) {
 					rset.close();

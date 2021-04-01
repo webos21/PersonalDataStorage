@@ -25,7 +25,10 @@ public class DiaryRepoImpl implements DiaryRepo {
 
 		try {
 			H2Database db = opener.getReadableDatabase();
-			ResultSet rset = db.rawQuery("SELECT id, wdate, weather, title, content FROM " + DbConsts.TB_DIARY, null);
+			ResultSet rset = db.rawQuery( // indent
+					/* indent -------- */ "SELECT id, wdate, weather, title, content " + // indent
+					/* indent -------- */ "  FROM " + DbConsts.TB_DIARY, // indent
+					null);
 			if (rset == null || !rset.first()) {
 				return aList;
 			}
@@ -63,9 +66,9 @@ public class DiaryRepoImpl implements DiaryRepo {
 			H2Database db = opener.getReadableDatabase();
 			ResultSet rset = db.rawQuery( // indent
 					/* indent -------- */ "SELECT id, wdate, weather, title, content " + // indent
-					/* indent -------- */ " FROM " + DbConsts.TB_DIARY + " " + // indent
-					/* indent -------- */ " WHERE (title LIKE ?) OR " + // indent
-					/* indent -------- */ "        (content LIKE ?)", // indent
+					/* indent -------- */ "  FROM " + DbConsts.TB_DIARY + " " + // indent
+					/* indent -------- */ " WHERE   (title LIKE ?) OR " + // indent
+					/* indent -------- */ "       (content LIKE ?)", // indent
 					new String[] { "%" + keyString + "%", "%" + keyString + "%" });
 			if (rset == null || !rset.first()) {
 				return aList;
@@ -103,7 +106,7 @@ public class DiaryRepoImpl implements DiaryRepo {
 			H2Database db = opener.getReadableDatabase();
 			ResultSet rset = db.rawQuery( // indent
 					/* indent -------- */ "SELECT id, wdate, weather, title, content " + // indent
-					/* indent -------- */ " FROM " + DbConsts.TB_DIARY + " " + // indent
+					/* indent -------- */ "  FROM " + DbConsts.TB_DIARY + // indent
 					/* indent -------- */ " WHERE wdate >= ? AND wdate < ?", // indent
 					new String[] { Long.toString(sdate.getTime()), Long.toString(edate.getTime()) });
 			if (rset == null || !rset.first()) {
@@ -137,8 +140,11 @@ public class DiaryRepoImpl implements DiaryRepo {
 
 		try {
 			H2Database db = opener.getReadableDatabase();
-			ResultSet rset = db.rawQuery(
-					"SELECT id, wdate, weather, title, content FROM " + DbConsts.TB_DIARY + " WHERE id = " + id, null);
+			ResultSet rset = db.rawQuery( // indent
+					/* indent -------- */ "SELECT id, wdate, weather, title, content " + // indent
+					/* indent -------- */ "  FROM " + DbConsts.TB_DIARY + // indent
+					/* indent -------- */ " WHERE id = " + id, // indent
+					null);
 			if (rset == null || !rset.first()) {
 				return null;
 			}
@@ -170,8 +176,11 @@ public class DiaryRepoImpl implements DiaryRepo {
 			ResultSet rset = null;
 
 			if (newRow.getId() != null) {
-				rset = db.rawQuery("SELECT id, wdate, weather, title, content FROM " + DbConsts.TB_DIARY
-						+ " WHERE id = " + newRow.getId(), null);
+				rset = db.rawQuery( // indent
+						/* indent -------- */ "SELECT id, wdate, weather, title, content " + // indent
+						/* indent -------- */ "  FROM " + DbConsts.TB_DIARY + // indent
+						/* indent -------- */ " WHERE id = " + newRow.getId(), // indent
+						null);
 				if (rset != null && rset.first()) {
 					rset.close();
 

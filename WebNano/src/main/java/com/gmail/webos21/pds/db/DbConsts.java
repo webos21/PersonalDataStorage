@@ -14,7 +14,7 @@ public class DbConsts {
 
     public static final SimpleDateFormat SDF_DATE = new SimpleDateFormat("yyyy-MM-dd");
 
-    public static final SimpleDateFormat SDF2_DATE = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    public static final SimpleDateFormat SDF_DATETIME = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
     public static final String TB_ACCOUNT_CLASS = "tb_account_class";
     public static final String TB_ACCOUNT_CODE = "tb_account_code";
