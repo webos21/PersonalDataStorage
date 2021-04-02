@@ -69,7 +69,7 @@ const restateFetch = () => {
     }
 }
 
-const getRealEstate = state => state.restate.restates;
+const getRealEstates = state => state.restate.restates;
 
 export {
     REALESTATE_CLEAR,
@@ -81,5 +81,5 @@ export {
     restateFetchOk,
     restateFetchFail,
     restateFetch,
-    getRealEstate,
+    getRealEstates,
 }

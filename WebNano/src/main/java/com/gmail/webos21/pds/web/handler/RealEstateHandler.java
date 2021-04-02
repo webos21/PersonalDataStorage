@@ -96,7 +96,7 @@ public class RealEstateHandler implements UriHandler {
 		String holder = params.get("holder");
 		String estimate = params.get("estimate");
 		String loan = params.get("loan");
-		String aquisitionDate = params.get("aquisitionDate");
+		String acquisitionDate = params.get("acquisitionDate");
 		String estimateDate = params.get("estimateDate");
 		String arrange = params.get("arrange");
 		String memo = params.get("memo");
@@ -104,7 +104,7 @@ public class RealEstateHandler implements UriHandler {
 		Date ad = null;
 		Date ed = null;
 		try {
-			ad = DbConsts.SDF_DATE.parse(aquisitionDate);
+			ad = DbConsts.SDF_DATE.parse(acquisitionDate);
 			ed = DbConsts.SDF_DATE.parse(estimateDate);
 		} catch (ParseException e) {
 			e.printStackTrace();
@@ -149,7 +149,7 @@ public class RealEstateHandler implements UriHandler {
 		String holder = params.get("holder");
 		String estimate = params.get("estimate");
 		String loan = params.get("loan");
-		String aquisitionDate = params.get("aquisitionDate");
+		String acquisitionDate = params.get("acquisitionDate");
 		String estimateDate = params.get("estimateDate");
 		String arrange = params.get("arrange");
 		String memo = params.get("memo");
@@ -157,7 +157,7 @@ public class RealEstateHandler implements UriHandler {
 		Date ad = null;
 		Date ed = null;
 		try {
-			ad = DbConsts.SDF_DATE.parse(aquisitionDate);
+			ad = DbConsts.SDF_DATE.parse(acquisitionDate);
 			ed = DbConsts.SDF_DATE.parse(estimateDate);
 		} catch (ParseException e) {
 			e.printStackTrace();

@@ -4,13 +4,14 @@ import update from 'immutability-helper';
 
 import {
   CButton, CCard, CCardBody, CCardHeader, CCol, CRow,
-  CForm, CInput, CInputGroup, CInputGroupPrepend, CInputGroupAppend, CInputGroupText,
+  CLink, CCollapse, CListGroup, CListGroupItem, CBadge,
 } from '@coreui/react';
 import CIcon from '@coreui/icons-react'
 import { freeSet } from '@coreui/icons'
 
 import StockAdd from './StockAdd.js';
 import StockEdit from './StockEdit.js';
+import StockDel from './StockDel.js';
 import AllActions from '../../actions'
 import Helper from '../../helpers'
 
@@ -24,41 +25,36 @@ class Stock extends Component {
 
     this.modalToggleAdd = this.modalToggleAdd.bind(this);
     this.modalToggleEdit = this.modalToggleEdit.bind(this);
+    this.modalToggleDel = this.modalToggleDel.bind(this);
 
     this.handleViewAll = this.handleViewAll.bind(this);
     this.handleSearchGo = this.handleSearchGo.bind(this);
 
     this.handleAdd = this.handleAdd.bind(this);
     this.handleEdit = this.handleEdit.bind(this);
+    this.handleDel = this.handleDel.bind(this);
 
     this.state = {
       emptyId: -1,
-      dataSet: props.storeCards,
+      dataSet: props.storeStocks,
       currentData: {
         id: -1,
         company: '',
-        cardName: '',
-        cardNumber: '',
-        cardPassword: '',
-        validYear: '',
-        validMonth: '',
-        chargeDate: '',
-        cvcNumber: '',
-        bankId: '',
-        creditLimit: '',
-        cashAdvance: '',
-        cardLoan: '',
-        issueDate: '',
-        refreshNormal: '',
-        refreshShort: '',
+        accountName: '',
+        accountNumber: '',
+        holder: '',
+        deposit: '',
+        estimate: '',
+        estimateDate: '',
         arrange: '',
         memo: '',
       },
-      totalCount: props.storeCards.length,
+      totalCount: props.storeStocks.length,
       keyword: "",
       keywordError: "",
       modalFlagAdd: false,
       modalFlagEdit: false,
+      modalFlagDel: false,
 
     };
   }
@@ -69,7 +65,7 @@ class Stock extends Component {
       for (var i = 0; i < this.state.dataSet.length; i++) {
         if (this.state.dataSet[i].id === modifiedData.id) {
           var newDataSet = update(this.state.dataSet, { $splice: [[i, 1, modifiedData]] });
-          this.props.cardFetchOk(newDataSet);
+          this.props.stockFetchOk(newDataSet);
           break;
         }
       }
@@ -80,7 +76,7 @@ class Stock extends Component {
 
   requestFetch() {
     const parentState = this;
-    const REQ_URI = (process.env.NODE_ENV !== 'production') ? 'http://' + window.location.hostname + ':28080/pds/v1/card' : '/pds/v1/card';
+    const REQ_URI = (process.env.NODE_ENV !== 'production') ? 'http://' + window.location.hostname + ':28080/pds/v1/stock' : '/pds/v1/stock';
 
     fetch(REQ_URI, {
       method: 'GET',
@@ -96,7 +92,7 @@ class Stock extends Component {
     }).then(function (resJson) {
       console.log("Stock::fetch => " + resJson.result);
 
-      parentState.props.cardFetchOk(resJson.data);
+      parentState.props.stockFetchOk(resJson.data);
       parentState.setState({
         keywordError: '',
       });
@@ -117,23 +113,15 @@ class Stock extends Component {
     let emptyObj = {
       id: newEmptyId,
       company: '',
-      cardName: '',
-      cardNumber: '',
-      cardPassword: '',
-      validYear: '',
-      validMonth: '',
-      chargeDate: '',
-      cvcNumber: '',
-      bankId: '',
-      creditLimit: '',
-      cashAdvance: '',
-      cardLoan: '',
-      issueDate: '',
-      refreshNormal: '',
-      refreshShort: '',
+      accountName: '',
+      accountNumber: '',
+      holder: '',
+      deposit: '',
+      estimate: '',
+      estimateDate: '',
       arrange: '',
       memo: '',
-  }
+    }
     this.setState({ emptyId: newEmptyId });
     return emptyObj;
   }
@@ -148,6 +136,12 @@ class Stock extends Component {
   modalToggleEdit() {
     this.setState({
       modalFlagEdit: !this.state.modalFlagEdit,
+    });
+  }
+
+  modalToggleDel() {
+    this.setState({
+      modalFlagDel: !this.state.modalFlagDel,
     });
   }
 
@@ -175,29 +169,68 @@ class Stock extends Component {
     this.modalToggleEdit();
   }
 
+  handleDel(data, e) {
+    e.preventDefault();
+    console.log("handleDel", e, data);
+    this.setState({ currentData: data });
+    this.modalToggleDel();
+  }
+
   renderTableList(dataArray) {
-    const filteredData = ((this.state.keyword && this.state.keyword.length > 0) ? dataArray.filter(
-      item => {
-        const lcKewword = this.state.keyword.toLowerCase();
-        return Object.keys(item).some(key => (item[key].includes ? item[key].includes(lcKewword) : false));
-      }
-    ) : dataArray);
-    if (filteredData.length === 0) {
+    if (dataArray.length === 0) {
       return (
-        <tr key="row-nodata">
-          <td colSpan="5" className="text-center align-middle" height="200">No Data</td>
-        </tr>
+        <CCol>
+          <CCard key={'realestate-none'} color="gradient-secondary">
+            <CCardBody className="text-center">
+              No Data
+            </CCardBody>
+          </CCard>
+        </CCol>
       )
     } else {
-      return filteredData.map((data, index) => {
+      return dataArray.map((data, index) => {
         return (
-          <tr key={'bankdata-' + data.id} onClick={this.handleEdit.bind(this, data)}>
-            <td>{data.id}</td>
-            <td>{data.company}</td>
-            <td>{data.cardName}</td>
-            <td>{data.cardNumber}</td>
-            <td>{'매월 ' + (data.chargeDate + 1) + '일'}</td>
-          </tr>
+          <CCol key={'realestate-' + data.id} sm="12" xl="6">
+            <CCard accentColor="info">
+              <CCardHeader>
+                <strong>[{data.company}] {data.accountName}</strong>
+                <div className="card-header-actions">
+                  <CLink className="card-header-action" onClick={this.handleEdit.bind(this, data)}>
+                    <CIcon name={'cil-pencil'} />
+                  </CLink>
+                  <CLink className="card-header-action" onClick={this.handleDel.bind(this, data)}>
+                    <CIcon content={freeSet.cilTrash} size="sm" /></CLink>
+                </div>
+              </CCardHeader>
+              <CCollapse show={true}>
+                <CCardBody className="p-2">
+                  <CRow>
+                    <CCol className="pr-2">
+                      <CListGroup>
+                        <CListGroupItem className="p-1"><CBadge>계좌번호</CBadge> {data.accountNumber}</CListGroupItem>
+                        <CListGroupItem className="p-1"><CBadge>소유자명</CBadge> {data.holder}</CListGroupItem>
+                        <CListGroupItem className="p-1"><CBadge>예탁금액</CBadge> {Helper.num.formatDecimal(data.deposit)} 원</CListGroupItem>
+                      </CListGroup>
+                    </CCol>
+                    <CCol className='pl-0'>
+                      <CListGroup>
+                        <CListGroupItem className="p-1"><CBadge>산정금액</CBadge> {Helper.num.formatDecimal(data.estimate)} 원</CListGroupItem>
+                        <CListGroupItem className="p-1"><CBadge>산정일자</CBadge> {Helper.date.dateFormat(new Date(data.estimateDate))}</CListGroupItem>
+                        <CListGroupItem className="p-1"><CBadge>정렬순서</CBadge> {data.arrange}</CListGroupItem>
+                      </CListGroup>
+                    </CCol>
+                  </CRow>
+                  <CRow className="mt-2">
+                    <CCol>
+                      <CListGroup>
+                        <CListGroupItem className="p-1"><CBadge>메모</CBadge> <pre className="mb-0">{data.memo}</pre></CListGroupItem>
+                      </CListGroup>
+                    </CCol>
+                  </CRow>
+                </CCardBody>
+              </CCollapse>
+            </CCard>
+          </CCol>
         )
       })
     }
@@ -209,72 +242,23 @@ class Stock extends Component {
         <CRow>
           <CCol>
             <CCard>
-              <CCardHeader>
-                <strong>Search</strong>
-                <small> Card</small>
-              </CCardHeader>
               <CCardBody>
-                <CRow>
-                  <CCol>
-                    <CForm onSubmit={this.handleSearchGo} id="frmRefSearch">
-                      <CInputGroup>
-                        <CInputGroupPrepend>
-                          <CInputGroupText>Keyword</CInputGroupText>
-                        </CInputGroupPrepend>
-                        <CInput type="text" name="keyword" placeholder="Enter the search keyword" />
-                        <CInputGroupAppend>
-                          <CButton type="submit" color="primary">Search</CButton>
-                        </CInputGroupAppend>
-                        {this.state.keyword !== "" &&
-                          <CInputGroupAppend>
-                            <CButton type="reset" color="success" onClick={this.handleViewAll}>전체보기</CButton>
-                          </CInputGroupAppend>
-                        }
-                      </CInputGroup>
-                      <small id="keywordError" className="text-danger">{this.state.keywordError}</small>
-                    </CForm>
-                  </CCol>
-                </CRow>
-              </CCardBody>
-            </CCard>
-          </CCol>
-        </CRow>
-
-        <CRow>
-          <CCol>
-            <CCard>
-              <CCardHeader>
-                <strong>Card List</strong>
-                <small>  (Total : {this.state.totalCount})</small>
+                <strong>Stock List</strong>
+                <small>  (Total : {this.props.storeStocks.length})</small>
                 <span className="float-right">
-                  <CButton color="danger" size="sm" variant="ghost">
-                    <CIcon content={freeSet.cilTrash} size="sm" />&nbsp;삭제</CButton>
-                    &nbsp;
                   <CButton color="success" size="sm" variant="ghost" onClick={this.handleAdd}>
                     <CIcon content={freeSet.cilPlus} size="sm" />&nbsp;추가</CButton>
                 </span>
-              </CCardHeader>
-              <CCardBody>
-                <table className="table table-sm table-striped table-hover">
-                  <thead>
-                    <tr>
-                      <th>ID</th>
-                      <th>카드사</th>
-                      <th>카드명</th>
-                      <th>카드번호</th>
-                      <th>결제일</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {this.renderTableList(this.props.storeCards)}
-                  </tbody>
-                </table>
               </CCardBody>
             </CCard>
           </CCol>
         </CRow>
+        <CRow>
+          {this.renderTableList(this.props.storeStocks)}
+        </CRow>
         <StockAdd modalFlag={this.state.modalFlagAdd} modalToggle={this.modalToggleAdd} dataFromParent={this.state.currentData} callbackFromParent={this.dataChangedCallback} />
         <StockEdit modalFlag={this.state.modalFlagEdit} modalToggle={this.modalToggleEdit} dataFromParent={this.state.currentData} callbackFromParent={this.dataChangedCallback} />
+        <StockDel modalFlag={this.state.modalFlagDel} modalToggle={this.modalToggleDel} dataFromParent={this.state.currentData} callbackFromParent={this.dataChangedCallback} />
 
       </>
 
@@ -283,12 +267,12 @@ class Stock extends Component {
 }
 
 const mapStateToProps = (state) => ({
-  storeDataSync: state.card.dataSync,
-  storeCards: state.card.cards,
+  storeDataSync: state.stock.dataSync,
+  storeStocks: AllActions.stock.getStocks(state),
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  cardFetchOk: (data) => dispatch(AllActions.card.cardFetchOk(data)),
+  stockFetchOk: (data) => dispatch(AllActions.stock.stockFetchOk(data)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Stock);

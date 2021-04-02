@@ -3,14 +3,15 @@ import { connect } from 'react-redux'
 import update from 'immutability-helper';
 
 import {
-  CCard, CCardBody, CCardHeader, CCol, CRow,
-  CLink, CCollapse, CListGroup, CListGroupItem, CBadge
+  CButton, CCard, CCardBody, CCardHeader, CCol, CRow,
+  CLink, CCollapse, CListGroup, CListGroupItem, CBadge,
 } from '@coreui/react';
 import CIcon from '@coreui/icons-react'
 import { freeSet } from '@coreui/icons'
 
 import InsuranceAdd from './InsuranceAdd.js';
 import InsuranceEdit from './InsuranceEdit.js';
+import InsuranceDel from './InsuranceDel.js';
 import AllActions from '../../actions'
 import Helper from '../../helpers'
 
@@ -24,12 +25,14 @@ class Insurance extends Component {
 
     this.modalToggleAdd = this.modalToggleAdd.bind(this);
     this.modalToggleEdit = this.modalToggleEdit.bind(this);
+    this.modalToggleDel = this.modalToggleDel.bind(this);
 
     this.handleViewAll = this.handleViewAll.bind(this);
     this.handleSearchGo = this.handleSearchGo.bind(this);
 
     this.handleAdd = this.handleAdd.bind(this);
     this.handleEdit = this.handleEdit.bind(this);
+    this.handleDel = this.handleDel.bind(this);
 
     this.state = {
       emptyId: -1,
@@ -58,6 +61,7 @@ class Insurance extends Component {
       keywordError: "",
       modalFlagAdd: false,
       modalFlagEdit: false,
+      modalFlagDel: false,
 
     };
   }
@@ -68,7 +72,7 @@ class Insurance extends Component {
       for (var i = 0; i < this.state.dataSet.length; i++) {
         if (this.state.dataSet[i].id === modifiedData.id) {
           var newDataSet = update(this.state.dataSet, { $splice: [[i, 1, modifiedData]] });
-          this.props.cardFetchOk(newDataSet);
+          this.props.insureFetchOk(newDataSet);
           break;
         }
       }
@@ -79,7 +83,7 @@ class Insurance extends Component {
 
   requestFetch() {
     const parentState = this;
-    const REQ_URI = (process.env.NODE_ENV !== 'production') ? 'http://' + window.location.hostname + ':28080/pds/v1/card' : '/pds/v1/card';
+    const REQ_URI = (process.env.NODE_ENV !== 'production') ? 'http://' + window.location.hostname + ':28080/pds/v1/insurance' : '/pds/v1/insurance';
 
     fetch(REQ_URI, {
       method: 'GET',
@@ -95,7 +99,7 @@ class Insurance extends Component {
     }).then(function (resJson) {
       console.log("Insurance::fetch => " + resJson.result);
 
-      parentState.props.cardFetchOk(resJson.data);
+      parentState.props.insureFetchOk(resJson.data);
       parentState.setState({
         keywordError: '',
       });
@@ -149,6 +153,12 @@ class Insurance extends Component {
     });
   }
 
+  modalToggleDel() {
+    this.setState({
+      modalFlagDel: !this.state.modalFlagDel,
+    });
+  }
+
   handleViewAll() {
     this.setState({ keyword: "" });
     document.getElementById("frmRefSearch").reset();
@@ -173,31 +183,21 @@ class Insurance extends Component {
     this.modalToggleEdit();
   }
 
+  handleDel(data, e) {
+    e.preventDefault();
+    console.log("handleDel", e, data);
+    this.setState({ currentData: data });
+    this.modalToggleDel();
+  }
+
   renderTableList(dataArray) {
     if (dataArray.length === 0) {
       return (
-        <CCol sm="12" xl="6">
-          <CCard key={'insurance-none'}>
-            <CCardHeader>
-              Card actions
-            <div className="card-header-actions">
-                <CLink className="card-header-action">
-                  <CIcon name="cil-settings" />
-                </CLink>
-                <CLink className="card-header-action">
-                  <CIcon name={'cil-chevron-bottom'} />
-                </CLink>
-                <CLink className="card-header-action">
-                  <CIcon content={freeSet.cilTrash} size="sm" />&nbsp;삭제</CLink>
-              </div>
-            </CCardHeader>
-            <CCollapse>
-              <CCardBody>
-                Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut
-                laoreet dolore magna aliquam erat volutpat. Ut wisi enim ad minim veniam, quis nostrud exerci tation
-                ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat.
-        </CCardBody>
-            </CCollapse>
+        <CCol>
+          <CCard key={'insurance-none'} color="gradient-secondary">
+            <CCardBody className="text-center">
+              No Data
+            </CCardBody>
           </CCard>
         </CCol>
       )
@@ -212,7 +212,7 @@ class Insurance extends Component {
                   <CLink className="card-header-action" onClick={this.handleEdit.bind(this, data)}>
                     <CIcon name={'cil-pencil'} />
                   </CLink>
-                  <CLink className="card-header-action" onClick={this.handleEdit.bind(this, data)}>
+                  <CLink className="card-header-action" onClick={this.handleDel.bind(this, data)}>
                     <CIcon content={freeSet.cilTrash} size="sm" /></CLink>
                 </div>
               </CCardHeader>
@@ -233,7 +233,7 @@ class Insurance extends Component {
                       <CListGroup>
                         <CListGroupItem className="p-1"><CBadge>납입회차</CBadge> {data.payCountDone}</CListGroupItem>
                         <CListGroupItem className="p-1"><CBadge>납입금액</CBadge> {Helper.num.formatDecimal(data.premiumVolume)} 원</CListGroupItem>
-                        <CListGroupItem className="p-1"><CBadge>납입주기</CBadge> {data.premiumMode}</CListGroupItem>
+                        <CListGroupItem className="p-1"><CBadge>납입방법</CBadge> {data.premiumMode}</CListGroupItem>
                         <CListGroupItem className="p-1"><CBadge>계약상태</CBadge> {(data.contractStatus === 1) ? '유지' : '해지'}</CListGroupItem>
                         <CListGroupItem className="p-1"><CBadge>계약일자</CBadge> {Helper.date.dateFormat(new Date(data.contractDate))}</CListGroupItem>
                         <CListGroupItem className="p-1"><CBadge>만료일자</CBadge> {Helper.date.dateFormat(new Date(data.maturityDate))}</CListGroupItem>
@@ -261,10 +261,25 @@ class Insurance extends Component {
     return (
       <>
         <CRow>
+          <CCol>
+            <CCard>
+              <CCardBody>
+                <strong>Insurance List</strong>
+                <small>  (Total : {this.props.storeInsures.length})</small>
+                <span className="float-right">
+                  <CButton color="success" size="sm" variant="ghost" onClick={this.handleAdd}>
+                    <CIcon content={freeSet.cilPlus} size="sm" />&nbsp;추가</CButton>
+                </span>
+              </CCardBody>
+            </CCard>
+          </CCol>
+        </CRow>
+        <CRow>
           {this.renderTableList(this.props.storeInsures)}
         </CRow>
         <InsuranceAdd modalFlag={this.state.modalFlagAdd} modalToggle={this.modalToggleAdd} dataFromParent={this.state.currentData} callbackFromParent={this.dataChangedCallback} />
         <InsuranceEdit modalFlag={this.state.modalFlagEdit} modalToggle={this.modalToggleEdit} dataFromParent={this.state.currentData} callbackFromParent={this.dataChangedCallback} />
+        <InsuranceDel modalFlag={this.state.modalFlagDel} modalToggle={this.modalToggleDel} dataFromParent={this.state.currentData} callbackFromParent={this.dataChangedCallback} />
 
       </>
 

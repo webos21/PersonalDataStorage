@@ -41,23 +41,16 @@ class StockRecord extends Component {
       dataSet: [],
       currentData: {
         id: -1,
-        cardId: -1,
+        stockId: -1,
         transactionDate: new Date(),
         title: '',
-        price: 0,
-        commission: 0,
-        installment: 0,
-        installmentId: 0,
-        installmentTurn: 0,
-        amount: 0,
-        remainder: 0,
-        settlementDate: new Date(),
-        paid: 0,
+        deposit: 0,
+        withdrawal: 0,
         memo: '',
       },
-      cardMap: [],
-      cardBalance: [],
-      selectedCard: null,
+      stockMap: [],
+      stockBalance: [],
+      selectedStock: null,
       totalCount: 0,
       keyword: "",
       keywordError: "",
@@ -85,7 +78,7 @@ class StockRecord extends Component {
 
   requestFetch(query, page) {
     const parentState = this;
-    const REQ_URI = (process.env.NODE_ENV !== 'production') ? 'http://' + window.location.hostname + ':28080/pds/v1/cardRecord' : '/pds/v1/cardRecord';
+    const REQ_URI = (process.env.NODE_ENV !== 'production') ? 'http://' + window.location.hostname + ':28080/pds/v1/stockRecord' : '/pds/v1/stockRecord';
 
     const reqUri = REQ_URI + ((query === null || query === undefined) ? '' : '?q=' + query);
 
@@ -106,18 +99,16 @@ class StockRecord extends Component {
       let sortedData = [].concat(resJson.data).sort((a, b) => a.transactionDate > b.transactionDate ? -1 : 1);
       let calcBalance = [];
       sortedData.filter(data => {
-        if (data.paid === 0) {
-          if (!calcBalance[data.cardId]) {
-            calcBalance[data.cardId] = 0;
-          }
-          calcBalance[data.cardId] += (data.price + data.commission);
+        if (!calcBalance[data.stockId]) {
+          calcBalance[data.stockId] = 0;
         }
+        calcBalance[data.stockId] += (data.deposit - data.withdrawal);
         return false;
       });
 
       parentState.setState({
         dataSet: sortedData,
-        cardBalance: calcBalance,
+        stockBalance: calcBalance,
         totalCount: sortedData.length,
         keywordError: '',
       });
@@ -129,14 +120,14 @@ class StockRecord extends Component {
 
   componentDidMount() {
     if (!this.props.storeDataSync) {
-      this.props.cardFetch();
+      this.props.stockFetch();
     } else {
-      let cmap = this.props.storeCards.reduce((map, obj) => {
+      let cmap = this.props.storeStocks.reduce((map, obj) => {
         map[obj.id] = obj;
         return map;
       }, {});
       this.setState({
-        cardMap: cmap
+        stockMap: cmap
       })
     }
     this.requestFetch();
@@ -146,20 +137,13 @@ class StockRecord extends Component {
     let newEmptyId = (this.state.emptyId ? (this.state.emptyId - 1) : -1);
     let emptyObj = {
       id: newEmptyId,
-      cardId: -1,
+      stockId: -1,
       transactionDate: new Date(),
       title: '',
-      price: 0,
-      commission: 0,
-      installment: 0,
-      installmentId: 0,
-      installmentTurn: 0,
-      amount: 0,
-      remainder: 0,
-      settlementDate: new Date(),
-      paid: 0,
+      deposit: 0,
+      withdrawal: 0,
       memo: '',
-  }
+    }
     this.setState({ emptyId: newEmptyId });
     return emptyObj;
   }
@@ -179,7 +163,7 @@ class StockRecord extends Component {
 
   handleCardSelect(dataId) {
     this.setState({
-      selectedCard: dataId
+      selectedStock: dataId
     })
   }
 
@@ -216,16 +200,16 @@ class StockRecord extends Component {
     return dataArray.map((data, index) => {
       return (data.notUsed === 1) ? '' : (
         <CCard
-          key={"card-" + data.id}
-          color={this.state.selectedCard === data.id ? 'info' : 'default'}>
+          key={"stock-" + data.id}
+          color={this.state.selectedStock === data.id ? 'info' : 'default'}>
           <CCardHeader align="center" className="p-1 small">
             <CLink
-              className={this.state.selectedCard === data.id ? 'text-white' : 'text-muted'}
-              onClick={this.handleCardSelect.bind(this, data.id)}>{data.company}<br />{data.cardName}</CLink>
+              className={this.state.selectedStock === data.id ? 'text-white' : 'text-muted'}
+              onClick={this.handleCardSelect.bind(this, data.id)}>{data.company}<br />{data.accountName}</CLink>
           </CCardHeader>
-          <CCardBody align="right" className="p-2" style={{ color: this.state.cardBalance[data.id] < 0 ? 'blue' : 'black' }}>
-            {this.state.cardBalance[data.id] ?
-              Helper.num.formatDecimal(this.state.cardBalance[data.id])
+          <CCardBody align="right" className="p-2" style={{ color: this.state.stockBalance[data.id] < 0 ? 'blue' : 'black' }}>
+            {this.state.stockBalance[data.id] ?
+              Helper.num.formatDecimal(this.state.stockBalance[data.id])
               : '0'}
           </CCardBody>
         </CCard>
@@ -243,18 +227,18 @@ class StockRecord extends Component {
       )
     } else {
       let filteredData = dataArray.filter(data => {
-        if (!this.state.selectedCard) return true;
-        return (data.cardId === this.state.selectedCard);
+        if (!this.state.selectedStock) return true;
+        return (data.stockId === this.state.selectedStock);
       })
       return filteredData.map((data, index) => {
         return (
-          <tr key={'cardRecordData-' + data.id} onClick={this.handleEdit.bind(this, data)}>
+          <tr key={'stockRecordData-' + data.id} onClick={this.handleEdit.bind(this, data)}>
             <td>{data.id}</td>
-            <td>{this.state.cardMap[data.cardId].cardName}</td>
+            <td>[{this.state.stockMap[data.stockId].company}] {this.state.stockMap[data.stockId].accountName}</td>
             <td>{Helper.date.dateFormat(new Date(data.transactionDate))}</td>
-            <td>{Helper.date.dateFormat(new Date(data.settlementDate))}</td>
             <td>{data.title}</td>
-            <td align="right">{Helper.num.formatDecimal(data.price)}</td>
+            <td align="right"><span style={{ color: 'black' }}>{Helper.num.formatDecimal(data.deposit)}</span></td>
+            <td align="right"><span style={{ color: 'blue' }}>{Helper.num.formatDecimal(data.withdrawal)}</span></td>
             <td><div style={{
               width: '140px',
               overflow: 'hidden',
@@ -273,17 +257,17 @@ class StockRecord extends Component {
         <CRow>
           <CCol>
             <CCardGroup className="mb-4">
-              {this.state.selectedCard ?
+              {this.state.selectedStock ?
                 <CCard
                   color='default'>
                   <CCardHeader align="center" className="p-1 small">
                     <CLink
-                      className='text-muted' onClick={this.handleCardSelect.bind(this, null)}>모든 은행<br />모든 계좌 보기</CLink>
+                      className='text-muted' onClick={this.handleCardSelect.bind(this, null)}>모든 증권사<br />모든 계좌 보기</CLink>
                   </CCardHeader>
                 </CCard>
                 : ''
               }
-              {this.renderCardList(this.props.storeCards)}
+              {this.renderCardList(this.props.storeStocks)}
             </CCardGroup>
           </CCol>
         </CRow>
@@ -293,7 +277,7 @@ class StockRecord extends Component {
             <CCard>
               <CCardHeader>
                 <strong>Search</strong>
-                <small> Card Record</small>
+                <small> Stock Record</small>
               </CCardHeader>
               <CCardBody>
                 <CRow>
@@ -326,7 +310,7 @@ class StockRecord extends Component {
           <CCol>
             <CCard>
               <CCardHeader>
-                <strong>Card Record List</strong>
+                <strong>Stock Record List</strong>
                 <small>  (Total : {this.state.totalCount})</small>
                 <span className="float-right">
                   <CButton color="danger" size="sm" variant="ghost">
@@ -341,11 +325,11 @@ class StockRecord extends Component {
                   <thead>
                     <tr>
                       <th>ID</th>
-                      <th>카드명</th>
+                      <th>주식명</th>
                       <th>거래일</th>
-                      <th>결제일</th>
                       <th>적요</th>
-                      <th>결제금액</th>
+                      <th>입금액</th>
+                      <th>출금액</th>
                       <th width="150">메모</th>
                     </tr>
                   </thead>
@@ -367,12 +351,12 @@ class StockRecord extends Component {
 }
 
 const mapStateToProps = (state) => ({
-  storeDataSync: state.card.dataSync,
-  storeCards: state.card.cards,
+  storeDataSync: state.stock.dataSync,
+  storeStocks: AllActions.stock.getStocks(state),
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  cardFetch: () => dispatch(AllActions.card.cardFetch()),
+  stockFetch: () => dispatch(AllActions.stock.stockFetch()),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(StockRecord);

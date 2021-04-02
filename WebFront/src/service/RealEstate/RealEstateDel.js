@@ -8,9 +8,9 @@ import {
 
 import Helper from '../../helpers'
 
-const InsuranceDel = props => {
+const RealEstateDel = props => {
 
-    const REQ_URI = (process.env.NODE_ENV !== 'production') ? 'http://' + window.location.hostname + ':28080/pds/v1/insurance' : '/pds/v1/insurance';
+    const REQ_URI = (process.env.NODE_ENV !== 'production') ? 'http://' + window.location.hostname + ':28080/pds/v1/realestate' : '/pds/v1/realestate';
 
     const { handleSubmit, errors, setError, control } = useForm({
         submitFocusError: true,
@@ -18,7 +18,7 @@ const InsuranceDel = props => {
     });
 
     const onSubmit = (data, e) => {
-        fetch(REQ_URI + '?insureId=' + props.dataFromParent.id, {
+        fetch(REQ_URI + '?reId=' + props.dataFromParent.id, {
             method: 'DELETE',
             headers: Helper.auth.makeAuthHeader(),
         }).then(function (res) {
@@ -30,47 +30,46 @@ const InsuranceDel = props => {
             }
             return res.json();
         }).then(function (resJson) {
-            console.log("InsuranceDel::fetch => " + resJson.result);
+            console.log("RealEstateDel::fetch => " + resJson.result);
             if (resJson.result === "OK") {
                 props.modalToggle();
                 props.callbackFromParent();
             }
         }).catch(function (error) {
-            console.log("InsuranceDel::fetch => " + error);
-            setError("insureId", "serverResponse", error.message);
+            console.log("RealEstateDel::fetch => " + error);
+            setError("reId", "serverResponse", error.message);
         });
     };
 
     return (
         <CModal show={props.modalFlag} onClose={props.modalToggle}
             className={'modal-danger ' + props.className}>
-            <CModalHeader closeButton>보험 삭제</CModalHeader>
+            <CModalHeader closeButton>부동산 삭제</CModalHeader>
             <CForm onSubmit={handleSubmit(onSubmit)}>
                 <CModalBody>
                     <p>다음 항목을 삭제할까요?</p>
                     <ul>
-                        <li>보험ID : {props.dataFromParent.id}</li>
-                        <li>보험상품 : <strong>{props.dataFromParent.company + '-' + props.dataFromParent.product}</strong></li>
-                        <li>보험형태 : {props.dataFromParent.insuranceType} / {props.dataFromParent.policyType}</li>
-                        <li>보험납입 : {props.dataFromParent.payCountDone} / {props.dataFromParent.payCountTotal}</li>
-                        <li>납입금액 : {Helper.num.formatDecimal(props.dataFromParent.premiumVolume)}</li>
-                        <li>보험기간 : {Helper.date.dateFormat(new Date(props.dataFromParent.contractDate))} ~ {Helper.date.dateFormat(new Date(props.dataFromParent.maturityDate))}</li>
+                        <li>부동산ID : {props.dataFromParent.id}</li>
+                        <li>물건명칭 : <strong>[{props.dataFromParent.estateType}] {props.dataFromParent.title}</strong></li>
+                        <li>취득일자 : {Helper.date.dateFormat(new Date(props.dataFromParent.acquisitionDate))}</li>
+                        <li>예상가격 : {Helper.num.formatDecimal(props.dataFromParent.estimate)} (산정일 : {Helper.date.dateFormat(new Date(props.dataFromParent.estimateDate))})</li>
+                        <li>담보대출 : {Helper.num.formatDecimal(props.dataFromParent.loan)}</li>
                     </ul>
                     <CFormGroup>
                         <Controller
-                            name="insureId"
+                            name="reId"
                             control={control}
                             defaultValue={props.dataFromParent.id}
                             render={(ctrlProps) => (
                                 <CInput
                                     type="hidden"
-                                    name="insureId"
+                                    name="reId"
                                     value={ctrlProps.value}
                                     onChange={ctrlProps.onChange}
                                 />
                             )}
                             rules={{ required: true }} />
-                        {errors.insureId && <CInvalidFeedback>{errors.insureId.message}</CInvalidFeedback>}
+                        {errors.reId && <CInvalidFeedback>{errors.reId.message}</CInvalidFeedback>}
                     </CFormGroup>
                 </CModalBody>
                 <CModalFooter>
@@ -82,4 +81,4 @@ const InsuranceDel = props => {
     );
 };
 
-export default InsuranceDel;
+export default RealEstateDel;

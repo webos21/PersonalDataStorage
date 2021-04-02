@@ -8,9 +8,9 @@ import {
 
 import Helper from '../../helpers'
 
-const InsuranceDel = props => {
+const StockDel = props => {
 
-    const REQ_URI = (process.env.NODE_ENV !== 'production') ? 'http://' + window.location.hostname + ':28080/pds/v1/insurance' : '/pds/v1/insurance';
+    const REQ_URI = (process.env.NODE_ENV !== 'production') ? 'http://' + window.location.hostname + ':28080/pds/v1/stock' : '/pds/v1/stock';
 
     const { handleSubmit, errors, setError, control } = useForm({
         submitFocusError: true,
@@ -18,7 +18,7 @@ const InsuranceDel = props => {
     });
 
     const onSubmit = (data, e) => {
-        fetch(REQ_URI + '?insureId=' + props.dataFromParent.id, {
+        fetch(REQ_URI + '?stockId=' + props.dataFromParent.id, {
             method: 'DELETE',
             headers: Helper.auth.makeAuthHeader(),
         }).then(function (res) {
@@ -30,47 +30,46 @@ const InsuranceDel = props => {
             }
             return res.json();
         }).then(function (resJson) {
-            console.log("InsuranceDel::fetch => " + resJson.result);
+            console.log("StockDel::fetch => " + resJson.result);
             if (resJson.result === "OK") {
                 props.modalToggle();
                 props.callbackFromParent();
             }
         }).catch(function (error) {
-            console.log("InsuranceDel::fetch => " + error);
-            setError("insureId", "serverResponse", error.message);
+            console.log("StockDel::fetch => " + error);
+            setError("stockId", "serverResponse", error.message);
         });
     };
 
     return (
         <CModal show={props.modalFlag} onClose={props.modalToggle}
             className={'modal-danger ' + props.className}>
-            <CModalHeader closeButton>보험 삭제</CModalHeader>
+            <CModalHeader closeButton>주식계좌 삭제</CModalHeader>
             <CForm onSubmit={handleSubmit(onSubmit)}>
                 <CModalBody>
                     <p>다음 항목을 삭제할까요?</p>
                     <ul>
-                        <li>보험ID : {props.dataFromParent.id}</li>
-                        <li>보험상품 : <strong>{props.dataFromParent.company + '-' + props.dataFromParent.product}</strong></li>
-                        <li>보험형태 : {props.dataFromParent.insuranceType} / {props.dataFromParent.policyType}</li>
-                        <li>보험납입 : {props.dataFromParent.payCountDone} / {props.dataFromParent.payCountTotal}</li>
-                        <li>납입금액 : {Helper.num.formatDecimal(props.dataFromParent.premiumVolume)}</li>
-                        <li>보험기간 : {Helper.date.dateFormat(new Date(props.dataFromParent.contractDate))} ~ {Helper.date.dateFormat(new Date(props.dataFromParent.maturityDate))}</li>
+                        <li>주식ID : {props.dataFromParent.id}</li>
+                        <li>계좌명칭 : <strong>[{props.dataFromParent.company}] {props.dataFromParent.accountName}</strong></li>
+                        <li>계좌번호 : {props.dataFromParent.accountNumber}</li>
+                        <li>예탁금액 : {Helper.num.formatDecimal(props.dataFromParent.deposit)}</li>
+                        <li>산정금액 : {Helper.num.formatDecimal(props.dataFromParent.estimate)} (산정일 : {Helper.date.dateFormat(new Date(props.dataFromParent.estimateDate))})</li>
                     </ul>
                     <CFormGroup>
                         <Controller
-                            name="insureId"
+                            name="stockId"
                             control={control}
                             defaultValue={props.dataFromParent.id}
                             render={(ctrlProps) => (
                                 <CInput
                                     type="hidden"
-                                    name="insureId"
+                                    name="stockId"
                                     value={ctrlProps.value}
                                     onChange={ctrlProps.onChange}
                                 />
                             )}
                             rules={{ required: true }} />
-                        {errors.insureId && <CInvalidFeedback>{errors.insureId.message}</CInvalidFeedback>}
+                        {errors.stockId && <CInvalidFeedback>{errors.stockId.message}</CInvalidFeedback>}
                     </CFormGroup>
                 </CModalBody>
                 <CModalFooter>
@@ -82,4 +81,4 @@ const InsuranceDel = props => {
     );
 };
 
-export default InsuranceDel;
+export default StockDel;

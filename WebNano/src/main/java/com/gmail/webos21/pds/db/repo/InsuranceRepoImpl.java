@@ -202,7 +202,7 @@ public class InsuranceRepoImpl implements InsuranceRepo {
 					cv.put("policy_holder", newRow.getPolicyHolder());
 					cv.put("insured", newRow.getInsured());
 					cv.put("pay_count_total", newRow.getPayCountTotal());
-					cv.put("pay_count_done", newRow.getPayCountTotal());
+					cv.put("pay_count_done", newRow.getPayCountDone());
 					cv.put("premium_volume", newRow.getPremiumVolume());
 					cv.put("premium_mode", newRow.getPremiumMode());
 					cv.put("arranger", newRow.getArranger());
@@ -222,7 +222,7 @@ public class InsuranceRepoImpl implements InsuranceRepo {
 					cv.put("policy_holder", newRow.getPolicyHolder());
 					cv.put("insured", newRow.getInsured());
 					cv.put("pay_count_total", newRow.getPayCountTotal());
-					cv.put("pay_count_done", newRow.getPayCountTotal());
+					cv.put("pay_count_done", newRow.getPayCountDone());
 					cv.put("premium_volume", newRow.getPremiumVolume());
 					cv.put("premium_mode", newRow.getPremiumMode());
 					cv.put("arranger", newRow.getArranger());
@@ -242,7 +242,7 @@ public class InsuranceRepoImpl implements InsuranceRepo {
 				cv.put("policy_holder", newRow.getPolicyHolder());
 				cv.put("insured", newRow.getInsured());
 				cv.put("pay_count_total", newRow.getPayCountTotal());
-				cv.put("pay_count_done", newRow.getPayCountTotal());
+				cv.put("pay_count_done", newRow.getPayCountDone());
 				cv.put("premium_volume", newRow.getPremiumVolume());
 				cv.put("premium_mode", newRow.getPremiumMode());
 				cv.put("arranger", newRow.getArranger());
