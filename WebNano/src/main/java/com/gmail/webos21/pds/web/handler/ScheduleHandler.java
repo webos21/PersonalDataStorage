@@ -98,7 +98,7 @@ public class ScheduleHandler implements UriHandler {
 
 		Date pd = null;
 		try {
-			pd = DbConsts.SDF_DATE.parse(pdate);
+			pd = DbConsts.SDF_DATETIME.parse(pdate);
 		} catch (ParseException e) {
 			e.printStackTrace();
 		}

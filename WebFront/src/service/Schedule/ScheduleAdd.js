@@ -4,14 +4,14 @@ import { useForm, Controller } from "react-hook-form";
 import {
     CModal, CModalHeader, CModalBody, CModalFooter, CButton, CCol,
     CForm, CFormGroup, CInvalidFeedback,
-    CInputGroup, CInputGroupPrepend, CInputGroupText, CInput, CSelect, CTextarea
+    CInputGroup, CInputGroupPrepend, CInputGroupText, CInput, CInputRadio, CLabel, CTextarea
 } from '@coreui/react';
 
 import Helper from '../../helpers'
 
-const DiaryAdd = props => {
+const ScheduleAdd = props => {
 
-    const REQ_URI = (process.env.NODE_ENV !== 'production') ? 'http://' + window.location.hostname + ':28080/pds/v1/diary' : '/pds/v1/diary';
+    const REQ_URI = (process.env.NODE_ENV !== 'production') ? 'http://' + window.location.hostname + ':28080/pds/v1/schedule' : '/pds/v1/schedule';
 
     const { handleSubmit, errors, setError, control } = useForm({
         submitFocusError: true,
@@ -34,35 +34,34 @@ const DiaryAdd = props => {
             }
             return res.json();
         }).then(function (resJson) {
-            console.log("DiaryAdd::fetch => " + resJson.result);
+            console.log("ScheduleAdd::fetch => " + resJson.result);
             if (resJson.result === "OK") {
                 props.modalToggle();
                 props.callbackFromParent();
             }
         }).catch(function (error) {
-            console.log("DiaryAdd::fetch => " + error);
-            setError("siteUrl", "serverResponse", error.message);
-            //e.target.reset();
+            console.log("ScheduleAdd::fetch => " + error);
+            setError("title", "serverResponse", error.message);
         });
     };
 
     return (
         <CModal show={props.modalFlag} onClose={props.modalToggle}
             className={'modal-success ' + props.className}>
-            <CModalHeader closeButton>일기 추가</CModalHeader>
+            <CModalHeader closeButton>일정 추가</CModalHeader>
             <CForm onSubmit={handleSubmit(onSubmit)}>
                 <CModalBody>
                     <CFormGroup row>
                         <CCol xs="12" md="12">
                             <CInputGroup>
                                 <CInputGroupPrepend>
-                                    <CInputGroupText style={{ minWidth: 70 }}>제목</CInputGroupText>
+                                    <CInputGroupText style={{ minWidth: 80 }}>제목</CInputGroupText>
                                 </CInputGroupPrepend>
                                 <Controller
                                     name="title"
                                     key={"title" + props.dataFromParent.id}
                                     control={control}
-                                    defaultValue={''}
+                                    defaultValue={props.dataFromParent.title}
                                     render={(ctrlProps) => (
                                         <CInput
                                             type="text"
@@ -96,19 +95,19 @@ const DiaryAdd = props => {
                         <CCol xs="12" md="12">
                             <CInputGroup>
                                 <CInputGroupPrepend>
-                                    <CInputGroupText style={{ minWidth: 70 }}>작성일</CInputGroupText>
+                                    <CInputGroupText style={{ minWidth: 70 }}>계획일시</CInputGroupText>
                                 </CInputGroupPrepend>
                                 <Controller
-                                    name="wdate"
-                                    key={"wdate" + props.dataFromParent.id}
+                                    name="pdate"
+                                    key={"pdate" + props.dataFromParent.id}
                                     control={control}
-                                    defaultValue={Helper.date.dateFormat(new Date(props.dataFromParent))}
+                                    defaultValue={Helper.date.datetimeFormat(new Date(props.dataFromParent.pdate))}
                                     render={(ctrlProps) => (
                                         <CInput
-                                            type="date"
-                                            name="wdate"
-                                            placeholder="작성일을 선택해 주세요."
-                                            className={"form-control" + (errors.wdate ? " is-invalid" : " is-valid")}
+                                            type="datetime-local"
+                                            name="pdate"
+                                            placeholder="계획일시를 선택해 주세요."
+                                            className={"form-control" + (errors.pdate ? " is-invalid" : " is-valid")}
                                             value={ctrlProps.value}
                                             onChange={ctrlProps.onChange}
                                         />
@@ -116,11 +115,11 @@ const DiaryAdd = props => {
                                     rules={{
                                         required: {
                                             value: true,
-                                            message: "작성일을 선택해 주세요."
+                                            message: "계획일시를 선택해 주세요."
                                         }
                                     }}
                                 />
-                                {errors.wdate && <CInvalidFeedback>{errors.wdate.message}</CInvalidFeedback>}
+                                {errors.pdate && <CInvalidFeedback>{errors.pdate.message}</CInvalidFeedback>}
                             </CInputGroup>
                         </CCol>
                     </CFormGroup>
@@ -128,38 +127,44 @@ const DiaryAdd = props => {
                         <CCol xs="12" md="12">
                             <CInputGroup>
                                 <CInputGroupPrepend>
-                                    <CInputGroupText style={{ minWidth: 70 }}>날씨</CInputGroupText>
+                                    <CInputGroupText style={{ minWidth: 80 }}>확인여부</CInputGroupText>
                                 </CInputGroupPrepend>
                                 <Controller
-                                    name="weather"
-                                    key={"weather" + props.dataFromParent.id}
+                                    name="readOk"
+                                    key={"readOk" + props.dataFromParent.id}
                                     control={control}
-                                    defaultValue={1}
+                                    defaultValue={"" + props.dataFromParent.readOk}
                                     render={(ctrlProps) => (
-                                        <CSelect
-                                            type="select"
-                                            name="weather"
-                                            placeholder="날씨를 선택해 주세요."
-                                            className={"form-control" + (errors.weather ? " is-invalid" : " is-valid")}
-                                            value={ctrlProps.value}
-                                            onChange={ctrlProps.onChange}
-                                        >
-                                            <option value={0}>눈</option>
-                                            <option value={1}>맑음</option>
-                                            <option value={2}>구름조금</option>
-                                            <option value={3}>흐림</option>
-                                            <option value={4}>비온뒤갬</option>
-                                            <option value={5}>비</option>
-                                        </CSelect>
+                                        <CFormGroup className={"form-control" + (errors.readOk ? " is-invalid" : " is-valid")}>
+                                            <CFormGroup variant="custom-radio" inline>
+                                                <CInputRadio
+                                                    custom
+                                                    name="readOk"
+                                                    value="0"
+                                                    id="readOk-edit-radio1"
+                                                    checked={ctrlProps.value === '0'}
+                                                    onChange={ctrlProps.onChange}
+                                                /><CLabel variant="custom-checkbox" htmlFor="readOk-edit-radio1">미확인</CLabel>
+                                            </CFormGroup>
+                                            <CFormGroup variant="custom-radio" inline>
+                                                <CInputRadio
+                                                    custom
+                                                    name="readOk"
+                                                    value="1"
+                                                    id="readOk-edit-radio2"
+                                                    checked={ctrlProps.value === '1'}
+                                                    onChange={ctrlProps.onChange}
+                                                /><CLabel variant="custom-checkbox" htmlFor="readOk-edit-radio2">확인완료</CLabel>
+                                            </CFormGroup>
+                                        </CFormGroup>
                                     )}
                                     rules={{
                                         required: {
                                             value: true,
-                                            message: "날씨를 선택해 주세요."
                                         }
                                     }}
                                 />
-                                {errors.weather && <CInvalidFeedback>{errors.weather.message}</CInvalidFeedback>}
+                                {errors.readOk && <CInvalidFeedback>{errors.readOk.message}</CInvalidFeedback>}
                             </CInputGroup>
                         </CCol>
                     </CFormGroup>
@@ -167,17 +172,18 @@ const DiaryAdd = props => {
                         <CCol xs="12" md="12">
                             <CInputGroup>
                                 <CInputGroupPrepend>
-                                    <CInputGroupText style={{ minWidth: 70 }}>내용</CInputGroupText>
+                                    <CInputGroupText style={{ minWidth: 80 }}>메모</CInputGroupText>
                                 </CInputGroupPrepend>
                                 <Controller
-                                    name="content"
-                                    key={"content" + props.dataFromParent.id}
+                                    name="memo"
+                                    key={"memo" + props.dataFromParent.id}
                                     control={control}
-                                    defaultValue={''}
+                                    defaultValue={props.dataFromParent.memo}
                                     render={(ctrlProps) => (
                                         <CTextarea
-                                            name="content"
-                                            placeholder="내용을 입력해 주세요."
+                                            type="text"
+                                            name="memo"
+                                            placeholder="메모를 입력해 주세요."
                                             className={"form-control" + (errors.memo ? " is-invalid" : " is-valid")}
                                             style={{ minHeight: 120 }}
                                             value={ctrlProps.value}
@@ -186,12 +192,11 @@ const DiaryAdd = props => {
                                     )}
                                     rules={{
                                         required: {
-                                            value: true,
-                                            message: "내용을 입력해 주세요."
+                                            value: false,
                                         }
                                     }}
                                 />
-                                {errors.content && <CInvalidFeedback>{errors.content.message}</CInvalidFeedback>}
+                                {errors.memo && <CInvalidFeedback>{errors.memo.message}</CInvalidFeedback>}
                             </CInputGroup>
                         </CCol>
                     </CFormGroup>
@@ -206,4 +211,4 @@ const DiaryAdd = props => {
     );
 };
 
-export default DiaryAdd;
+export default ScheduleAdd;

@@ -278,7 +278,7 @@ class CardRecord extends Component {
                   color='default'>
                   <CCardHeader align="center" className="p-1 small">
                     <CLink
-                      className='text-muted' onClick={this.handleCardSelect.bind(this, null)}>모든 은행<br />모든 계좌 보기</CLink>
+                      className='text-muted' onClick={this.handleCardSelect.bind(this, null)}>모든 카드사<br />모든 카드 보기</CLink>
                   </CCardHeader>
                 </CCard>
                 : ''

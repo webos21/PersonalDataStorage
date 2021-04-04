@@ -60,6 +60,7 @@ const DiaryBoard = React.lazy(() => import('./service/DiaryBoard'));
 const DiaryCalendar = React.lazy(() => import('./service/DiaryCalendar'));
 const Memo = React.lazy(() => import('./service/Memo'));
 const PasswordBook = React.lazy(() => import('./service/PasswordBook'));
+const Schedule = React.lazy(() => import('./service/Schedule'));
 const Logout = React.lazy(() => import('./service/Logout'));
 
 // https://github.com/ReactTraining/react-router/tree/master/packages/react-router-config
@@ -127,6 +128,7 @@ const routes = [
   { path: '/diary-calendar', name: 'DiaryCalendar', component: DiaryCalendar },
   { path: '/memo', name: 'Memo', component: Memo },
   { path: '/passwordbook', name: 'PasswordBook', component: PasswordBook },
+  { path: '/schedule', name: 'Schedule', component: Schedule },
   { path: '/logout', name: 'Logout', component: Logout },
 ];
 

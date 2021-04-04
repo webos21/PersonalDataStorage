@@ -1,6 +1,6 @@
 {
-  "name": "DiaryCalendar",
+  "name": "Schedule",
   "version": "1.0.0",
   "private": true,
-  "main": "./DiaryCalendar.js"
+  "main": "./Schedule.js"
 }

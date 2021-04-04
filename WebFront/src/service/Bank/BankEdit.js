@@ -433,7 +433,7 @@ const BankEdit = props => {
                                     control={control}
                                     defaultValue={"" + props.dataFromParent.notUsed}
                                     render={(ctrlProps) => (
-                                        <CFormGroup className={"form-control" + (errors.holiday ? " is-invalid" : " is-valid")}>
+                                        <CFormGroup className={"form-control" + (errors.notUsed ? " is-invalid" : " is-valid")}>
                                             <CFormGroup variant="custom-radio" inline>
                                                 <CInputRadio
                                                     custom

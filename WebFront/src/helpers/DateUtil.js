@@ -193,7 +193,7 @@ function datetimeFormat(dateObj) {
         sec = '0' + sec;
     }
 
-    return year + "-" + month + "-" + date + "T" + hour + ":" + min + ":" + sec;
+    return year + "-" + month + "-" + date + "T" + hour + ":" + min;
 }
 
 export {

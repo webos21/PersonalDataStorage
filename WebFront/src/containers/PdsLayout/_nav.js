@@ -133,6 +133,12 @@ const navItems = [
     to: '/passwordbook',
     icon: 'cil-puzzle',
   },
+  {
+    _tag: 'CSidebarNavItem',
+    name: 'Schedule',
+    to: '/Schedule',
+    icon: 'cil-calendar',
+  },
 
   // 
   // CoreUI Views : Begin
