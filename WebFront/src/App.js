@@ -44,7 +44,7 @@ class App extends Component {
       <HashRouter>
         <React.Suspense fallback={loading()}>
           <Switch>
-          <Route path="/404" component={Page404} />
+            <Route path="/404" component={Page404} />
             <Route path="/500" component={Page500} />
             <Route path="/logout" component={Logout} />
             <LoginRoute path="/login" component={Login} />

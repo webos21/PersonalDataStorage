@@ -18,6 +18,7 @@ import com.gmail.webos21.pds.app.web.DroidUiLog;
 import com.gmail.webos21.pds.app.web.StaticResourceExtractor;
 import com.gmail.webos21.pds.web.DirWebServer;
 import com.gmail.webos21.pds.web.HttpNewClientListener;
+import com.gmail.webos21.pds.web.OnetimePass;
 import com.gmail.webos21.pds.web.PdsWebServer;
 
 import java.io.File;
@@ -79,7 +80,7 @@ public class NanoActivity extends AppCompatActivity {
             dws.setUiLog(logger);
             dws.setClientListener(nhcl);
 
-            pws = new PdsWebServer(WEB_ADDR_ANY, WEB_PORT, pwdir, exdir);
+            pws = new PdsWebServer(WEB_ADDR_ANY, WEB_PORT, OnetimePass.genOtp(), pwdir, exdir);
             pws.setUiLog(logger);
             pws.setClientListener(nhcl);
 

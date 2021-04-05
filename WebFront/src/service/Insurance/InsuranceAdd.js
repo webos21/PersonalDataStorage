@@ -512,20 +512,20 @@ const InsuranceAdd = props => {
                                                     custom
                                                     name="contractStatus"
                                                     value="0"
-                                                    id="contractStatus-edit-radio1"
+                                                    id="contractStatus-add-radio1"
                                                     checked={ctrlProps.value === '0'}
                                                     onChange={ctrlProps.onChange}
-                                                /><CLabel variant="custom-checkbox" htmlFor="contractStatus-edit-radio1">정지</CLabel>
+                                                /><CLabel variant="custom-checkbox" htmlFor="contractStatus-add-radio1">정지</CLabel>
                                             </CFormGroup>
                                             <CFormGroup variant="custom-radio" inline>
                                                 <CInputRadio
                                                     custom
                                                     name="contractStatus"
                                                     value="1"
-                                                    id="contractStatus-edit-radio2"
+                                                    id="contractStatus-add-radio2"
                                                     checked={ctrlProps.value === '1'}
                                                     onChange={ctrlProps.onChange}
-                                                /><CLabel variant="custom-checkbox" htmlFor="contractStatus-edit-radio2">유지</CLabel>
+                                                /><CLabel variant="custom-checkbox" htmlFor="contractStatus-add-radio2">유지</CLabel>
                                             </CFormGroup>
                                         </CFormGroup>
                                     )}

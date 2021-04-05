@@ -7,13 +7,13 @@ import {
     CInputGroup, CInputGroupPrepend, CInputGroupText, CInput, CTextarea,
 } from '@coreui/react';
 
-import ASelector from '../../components/AcodeSelector'
+import ASelector from '../../components/AcodeSelector/AcodeSelector'
 import Helper from '../../helpers'
 
 
-const RegularPayAdd = props => {
+const RecordAdd = props => {
 
-    const REQ_URI = (process.env.NODE_ENV !== 'production') ? 'http://' + window.location.hostname + ':28080/pds/v1/regularPay' : '/pds/v1/regularPay';
+    const REQ_URI = (process.env.NODE_ENV !== 'production') ? 'http://' + window.location.hostname + ':28080/pds/v1/record' : '/pds/v1/record';
 
     const { handleSubmit, errors, setError, setValue, control } = useForm({
         submitFocusError: true,
@@ -41,81 +41,40 @@ const RegularPayAdd = props => {
             }
             return res.json();
         }).then(function (resJson) {
-            console.log("RegularPayAdd::fetch => " + resJson.result);
+            console.log("RecordAdd::fetch => " + resJson.result);
             if (resJson.result === "OK") {
                 props.modalToggle();
                 props.callbackFromParent();
             }
         }).catch(function (error) {
-            console.log("RegularPayAdd::fetch => " + error);
-            setError("title", "serverResponse", error.message);
+            console.log("RecordAdd::fetch => " + error);
+            setError("wdate", "serverResponse", error.message);
+            //e.target.reset();
         });
     };
 
     return (
         <CModal show={props.modalFlag} onClose={props.modalToggle}
             className={'modal-success ' + props.className}>
-            <CModalHeader closeButton>정기납입 추가</CModalHeader>
-
+            <CModalHeader closeButton>정기납입기록 추가</CModalHeader>
             <CForm onSubmit={handleSubmit(onSubmit)}>
                 <CModalBody>
                     <CFormGroup row>
                         <CCol xs="12" md="12">
                             <CInputGroup>
                                 <CInputGroupPrepend>
-                                    <CInputGroupText style={{ minWidth: 80 }}>정기납명</CInputGroupText>
-                                </CInputGroupPrepend>
-                                <Controller
-                                    name="title"
-                                    key={"title" + props.dataFromParent.id}
-                                    control={control}
-                                    defaultValue={props.dataFromParent.title}
-                                    render={(ctrlProps) => (
-                                        <CInput
-                                            type="text"
-                                            name="title"
-                                            placeholder="정기납명을 입력해 주세요."
-                                            className={"form-control" + (errors.title ? " is-invalid" : " is-valid")}
-                                            value={ctrlProps.value}
-                                            onChange={ctrlProps.onChange}
-                                        />
-                                    )}
-                                    rules={{
-                                        required: {
-                                            value: true,
-                                            message: "(Req) 정기납명을 입력해 주세요."
-                                        },
-                                        minLength: {
-                                            value: 1,
-                                            message: "(Min) 정기납명은 1자 이상 입니다."
-                                        },
-                                        maxLength: {
-                                            value: 60,
-                                            message: "(Max) 정기납명은 60자 이내 입니다."
-                                        }
-                                    }}
-                                />
-                                {errors.rpId && <CInvalidFeedback>{errors.rpId.message}</CInvalidFeedback>}
-                                {errors.title && <CInvalidFeedback>{errors.title.message}</CInvalidFeedback>}
-                            </CInputGroup>
-                        </CCol>
-                    </CFormGroup>
-                    <CFormGroup row>
-                        <CCol xs="12" md="12">
-                            <CInputGroup>
-                                <CInputGroupPrepend>
-                                    <CInputGroupText style={{ minWidth: 80 }}>수정일자</CInputGroupText>
+                                    <CInputGroupText style={{ minWidth: 80 }}>등록일</CInputGroupText>
                                 </CInputGroupPrepend>
                                 <Controller
                                     name="wdate"
                                     key={"wdate" + props.dataFromParent.id}
                                     control={control}
-                                    defaultValue={Helper.date.dateFormat(new Date(props.dataFromParent.wdate))}
+                                    defaultValue={Helper.date.datetimeFormat(new Date(props.dataFromParent.wdate))}
                                     render={(ctrlProps) => (
                                         <CInput
-                                            type="date"
+                                            type="datetime-local"
                                             name="wdate"
-                                            placeholder="수정일자을 선택해 주세요."
+                                            placeholder="등록일을 입력해 주세요."
                                             className={"form-control" + (errors.wdate ? " is-invalid" : " is-valid")}
                                             value={ctrlProps.value}
                                             onChange={ctrlProps.onChange}
@@ -124,6 +83,15 @@ const RegularPayAdd = props => {
                                     rules={{
                                         required: {
                                             value: true,
+                                            message: "(Req) 등록일을 입력해 주세요."
+                                        },
+                                        minLength: {
+                                            value: 1,
+                                            message: "(Min) 등록일을 1자 이상 입니다."
+                                        },
+                                        maxLength: {
+                                            value: 25,
+                                            message: "(Max) 등록일을 25자 이내 입니다."
                                         }
                                     }}
                                 />
@@ -135,32 +103,40 @@ const RegularPayAdd = props => {
                         <CCol xs="12" md="12">
                             <CInputGroup>
                                 <CInputGroupPrepend>
-                                    <CInputGroupText style={{ minWidth: 80 }}>계정분류</CInputGroupText>
+                                    <CInputGroupText style={{ minWidth: 80 }}>적요</CInputGroupText>
                                 </CInputGroupPrepend>
                                 <Controller
-                                    name="accountCode"
-                                    key={"accountCode" + props.dataFromParent.id}
+                                    name="title"
+                                    key={"title" + props.dataFromParent.id}
                                     control={control}
-                                    defaultValue={props.dataFromParent.accountCode}
+                                    defaultValue={props.dataFromParent.title}
                                     render={(ctrlProps) => (
                                         <CInput
                                             type="text"
-                                            name="accountCode"
-                                            placeholder="계정분류를 선택해 주세요."
-                                            className={"form-control" + (errors.accountCode ? " is-invalid" : " is-valid")}
+                                            name="title"
+                                            placeholder="적요를 입력해 주세요."
+                                            className={"form-control" + (errors.title ? " is-invalid" : " is-valid")}
                                             value={ctrlProps.value}
                                             onChange={ctrlProps.onChange}
+
                                         />
                                     )}
                                     rules={{
                                         required: {
                                             value: true,
-                                            message: "계정분류를 선택해 주세요."
+                                            message: "(Req) 적요를 입력해 주세요."
+                                        },
+                                        minLength: {
+                                            value: 1,
+                                            message: "(Min) 적요는 1자 이상 입니다."
+                                        },
+                                        maxLength: {
+                                            value: 60,
+                                            message: "(Max) 적요는 60자 이내 입니다."
                                         }
                                     }}
                                 />
-                                <ASelector initVal={props.dataFromParent.accountCode} accountCodeSelected={acodeSelected} />
-                                {errors.accountCode && <CInvalidFeedback>{errors.accountCode.message}</CInvalidFeedback>}
+                                {errors.title && <CInvalidFeedback>{errors.title.message}</CInvalidFeedback>}
                             </CInputGroup>
                         </CCol>
                     </CFormGroup>
@@ -194,8 +170,8 @@ const RegularPayAdd = props => {
                                             message: "(Min) 입금액은 1자 이상 입니다."
                                         },
                                         maxLength: {
-                                            value: 60,
-                                            message: "(Max) 입금액은 60자 이내 입니다."
+                                            value: 20,
+                                            message: "(Max) 입금액은 20자 이내 입니다."
                                         }
                                     }}
                                 />
@@ -234,8 +210,8 @@ const RegularPayAdd = props => {
                                             message: "(Min) 출금액은 1자 이상 입니다."
                                         },
                                         maxLength: {
-                                            value: 60,
-                                            message: "(Max) 출금액은 60자 이내 입니다."
+                                            value: 20,
+                                            message: "(Max) 출금액은 20자 이내 입니다."
                                         }
                                     }}
                                 />
@@ -247,19 +223,19 @@ const RegularPayAdd = props => {
                         <CCol xs="12" md="12">
                             <CInputGroup>
                                 <CInputGroupPrepend>
-                                    <CInputGroupText style={{ minWidth: 80 }}>정기납일</CInputGroupText>
+                                    <CInputGroupText style={{ minWidth: 80 }}>계정분류</CInputGroupText>
                                 </CInputGroupPrepend>
                                 <Controller
-                                    name="monthDay"
-                                    key={"monthDay" + props.dataFromParent.id}
+                                    name="accountCode"
+                                    key={"accountCode" + props.dataFromParent.id}
                                     control={control}
-                                    defaultValue={props.dataFromParent.monthDay}
+                                    defaultValue={props.dataFromParent.accountCode}
                                     render={(ctrlProps) => (
                                         <CInput
-                                            type="number"
-                                            name="monthDay"
-                                            placeholder="정기납일을 입력해 주세요."
-                                            className={"form-control" + (errors.monthDay ? " is-invalid" : " is-valid")}
+                                            type="text"
+                                            name="accountCode"
+                                            placeholder="계정분류를 선택해 주세요."
+                                            className={"form-control" + (errors.accountCode ? " is-invalid" : " is-valid")}
                                             value={ctrlProps.value}
                                             onChange={ctrlProps.onChange}
                                         />
@@ -267,82 +243,12 @@ const RegularPayAdd = props => {
                                     rules={{
                                         required: {
                                             value: true,
-                                            message: "(Req) 정기납일을 입력해 주세요."
-                                        },
-                                        minLength: {
-                                            value: 1,
-                                            message: "(Min) 정기납일은 1자 이상 입니다."
-                                        },
-                                        maxLength: {
-                                            value: 2,
-                                            message: "(Max) 정기납일은 2자 이내 입니다."
+                                            message: "계정분류를 선택해 주세요."
                                         }
                                     }}
                                 />
-                                {errors.monthDay && <CInvalidFeedback>{errors.monthDay.message}</CInvalidFeedback>}
-                            </CInputGroup>
-                        </CCol>
-                    </CFormGroup>
-
-                    <CFormGroup row>
-                        <CCol xs="12" md="12">
-                            <CInputGroup>
-                                <CInputGroupPrepend>
-                                    <CInputGroupText style={{ minWidth: 80 }}>납입시작</CInputGroupText>
-                                </CInputGroupPrepend>
-                                <Controller
-                                    name="sdate"
-                                    key={"sdate" + props.dataFromParent.id}
-                                    control={control}
-                                    defaultValue={Helper.date.dateFormat(new Date(props.dataFromParent.sdate))}
-                                    render={(ctrlProps) => (
-                                        <CInput
-                                            type="date"
-                                            name="sdate"
-                                            placeholder="납입 시작일을 선택해 주세요."
-                                            className={"form-control" + (errors.sdate ? " is-invalid" : " is-valid")}
-                                            value={ctrlProps.value}
-                                            onChange={ctrlProps.onChange}
-                                        />
-                                    )}
-                                    rules={{
-                                        required: {
-                                            value: true,
-                                        }
-                                    }}
-                                />
-                                {errors.sdate && <CInvalidFeedback>{errors.sdate.message}</CInvalidFeedback>}
-                            </CInputGroup>
-                        </CCol>
-                    </CFormGroup>
-                    <CFormGroup row>
-                        <CCol xs="12" md="12">
-                            <CInputGroup>
-                                <CInputGroupPrepend>
-                                    <CInputGroupText style={{ minWidth: 80 }}>납입종료</CInputGroupText>
-                                </CInputGroupPrepend>
-                                <Controller
-                                    name="edate"
-                                    key={"edate" + props.dataFromParent.id}
-                                    control={control}
-                                    defaultValue={Helper.date.dateFormat(new Date(props.dataFromParent.edate))}
-                                    render={(ctrlProps) => (
-                                        <CInput
-                                            type="date"
-                                            name="edate"
-                                            placeholder="납입 종료일을 선택해 주세요."
-                                            className={"form-control" + (errors.edate ? " is-invalid" : " is-valid")}
-                                            value={ctrlProps.value}
-                                            onChange={ctrlProps.onChange}
-                                        />
-                                    )}
-                                    rules={{
-                                        required: {
-                                            value: true,
-                                        }
-                                    }}
-                                />
-                                {errors.edate && <CInvalidFeedback>{errors.edate.message}</CInvalidFeedback>}
+                                <ASelector initVal={props.dataFromParent.accountCode} accountCodeSelected={acodeSelected} />
+                                {errors.accountCode && <CInvalidFeedback>{errors.accountCode.message}</CInvalidFeedback>}
                             </CInputGroup>
                         </CCol>
                     </CFormGroup>
@@ -389,4 +295,4 @@ const RegularPayAdd = props => {
     );
 };
 
-export default RegularPayAdd;
+export default RecordAdd;

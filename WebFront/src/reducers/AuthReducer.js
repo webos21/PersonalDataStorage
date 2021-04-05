@@ -30,6 +30,7 @@ const AuthReducer = (state = initialState, { type, ...rest }) => {
             return {
                 logOn: true,
                 status: AllActions.auth.AUTH_LOGIN_OK,
+                error: null,
                 authKey: rest.authKey,
                 authVal: rest.authVal,
             };
@@ -39,9 +40,9 @@ const AuthReducer = (state = initialState, { type, ...rest }) => {
             return {
                 logOn: false,
                 status: AllActions.auth.AUTH_LOGIN_FAIL,
+                error: rest.error,
                 authKey: localStorage.getItem('authKey'),
                 authVal: localStorage.getItem('authVal'),
-                error: rest.error
             };
         case AllActions.auth.AUTH_HOME:
             window.location.href = '/#/dashboard';

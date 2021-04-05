@@ -64,20 +64,6 @@ const RegularRecordAdd = props => {
                 <CModalBody>
                     <CFormGroup row>
                         <CCol xs="12" md="12">
-                            <Controller
-                                name="rrId"
-                                key={"rrId" + props.dataFromParent.id}
-                                control={control}
-                                defaultValue={props.dataFromParent.id}
-                                render={(ctrlProps) => (
-                                    <CInput
-                                        type="hidden"
-                                        name="rrId"
-                                        value={ctrlProps.value}
-                                        onChange={ctrlProps.onChange}
-                                    />
-                                )}
-                                rules={{ required: true }} />
                             <CInputGroup>
                                 <CInputGroupPrepend>
                                     <CInputGroupText style={{ minWidth: 80 }}>납입선택</CInputGroupText>

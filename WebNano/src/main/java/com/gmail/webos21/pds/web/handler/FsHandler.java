@@ -7,6 +7,7 @@ import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -71,7 +72,22 @@ public class FsHandler implements UriHandler {
 
 	private RouteResult processPost(Map<String, String> headers, NanoHTTPD.IHTTPSession session, String uri,
 			Map<String, String> files) {
-		return WebHelper.processSimple(headers.get("origin"), Status.OK);
+
+		if (session.getParameters().get("ufile") != null && session.getParameters().get("upath") != null) {
+			String fileName = session.getParameters().get("ufile").get(0);
+			String path = session.getParameters().get("upath").get(0);
+
+			File srcFile = new File(files.get("ufile"));
+			File dstFile = new File(path, fileName);
+
+			try {
+				Files.copy(srcFile.toPath(), dstFile.toPath());
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+
+		return processGet(headers, session, uri, null);
 	}
 
 	private RouteResult processGet(Map<String, String> headers, IHTTPSession session, String uri,

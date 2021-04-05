@@ -134,7 +134,7 @@ const ScheduleEdit = props => {
                         <CCol xs="12" md="12">
                             <CInputGroup>
                                 <CInputGroupPrepend>
-                                    <CInputGroupText style={{ minWidth: 70 }}>계획일시</CInputGroupText>
+                                    <CInputGroupText style={{ minWidth: 80 }}>계획일시</CInputGroupText>
                                 </CInputGroupPrepend>
                                 <Controller
                                     name="pdate"

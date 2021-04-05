@@ -20,7 +20,7 @@ public class DynamicRouter {
 
 		Set<String> keys = dynamicMap.keySet();
 		for (String uriKey : keys) {
-			if (uriKey.equals(uri)) {
+			if (uriKey.equals(uri) || (uriKey.equals("/pds/v1/fs") && uri.startsWith("/pds/v1/fs"))) {
 
 				DynamicParameter dp = dynamicMap.get(uriKey);
 				if (dp != null) {

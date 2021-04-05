@@ -100,7 +100,7 @@ public class RecordHandler implements UriHandler {
 
 		Date wd = null;
 		try {
-			wd = DbConsts.SDF_DATE.parse(wdate);
+			wd = DbConsts.SDF_DATETIME.parse(wdate);
 		} catch (ParseException e) {
 			e.printStackTrace();
 		}
@@ -147,7 +147,7 @@ public class RecordHandler implements UriHandler {
 
 		Date wd = null;
 		try {
-			wd = DbConsts.SDF_DATE.parse(wdate);
+			wd = DbConsts.SDF_DATETIME.parse(wdate);
 		} catch (ParseException e) {
 			e.printStackTrace();
 		}

@@ -135,6 +135,12 @@ const navItems = [
   },
   {
     _tag: 'CSidebarNavItem',
+    name: 'Record',
+    to: '/record',
+    icon: 'cil-calculator',
+  },
+  {
+    _tag: 'CSidebarNavItem',
     name: 'Schedule',
     to: '/Schedule',
     icon: 'cil-calendar',
@@ -445,7 +451,13 @@ const navItems = [
   // 
   // CoreUI Views : End
   // 
-
+  {
+    _tag: 'CSidebarNavItem',
+    name: 'FileSystem',
+    to: '/fs',
+    icon: <CIcon content={freeSet.cilFolderOpen} customClasses="c-sidebar-nav-icon" />,
+    className: 'mt-auto',
+  },
   {
     _tag: 'CSidebarNavItem',
     name: 'Download App',
@@ -453,7 +465,6 @@ const navItems = [
     target: '_blank',
     rel: 'noreferrer noopener',
     icon: 'cil-cloud-download',
-    className: 'mt-auto',
   },
   {
     _tag: 'CSidebarNavItem',

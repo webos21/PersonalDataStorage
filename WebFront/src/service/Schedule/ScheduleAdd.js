@@ -95,7 +95,7 @@ const ScheduleAdd = props => {
                         <CCol xs="12" md="12">
                             <CInputGroup>
                                 <CInputGroupPrepend>
-                                    <CInputGroupText style={{ minWidth: 70 }}>계획일시</CInputGroupText>
+                                    <CInputGroupText style={{ minWidth: 80 }}>계획일시</CInputGroupText>
                                 </CInputGroupPrepend>
                                 <Controller
                                     name="pdate"
@@ -141,20 +141,20 @@ const ScheduleAdd = props => {
                                                     custom
                                                     name="readOk"
                                                     value="0"
-                                                    id="readOk-edit-radio1"
+                                                    id="readOk-add-radio1"
                                                     checked={ctrlProps.value === '0'}
                                                     onChange={ctrlProps.onChange}
-                                                /><CLabel variant="custom-checkbox" htmlFor="readOk-edit-radio1">미확인</CLabel>
+                                                /><CLabel variant="custom-checkbox" htmlFor="readOk-add-radio1">미확인</CLabel>
                                             </CFormGroup>
                                             <CFormGroup variant="custom-radio" inline>
                                                 <CInputRadio
                                                     custom
                                                     name="readOk"
                                                     value="1"
-                                                    id="readOk-edit-radio2"
+                                                    id="readOk-add-radio2"
                                                     checked={ctrlProps.value === '1'}
                                                     onChange={ctrlProps.onChange}
-                                                /><CLabel variant="custom-checkbox" htmlFor="readOk-edit-radio2">확인완료</CLabel>
+                                                /><CLabel variant="custom-checkbox" htmlFor="readOk-add-radio2">확인완료</CLabel>
                                             </CFormGroup>
                                         </CFormGroup>
                                     )}

@@ -706,20 +706,20 @@ const CardAdd = props => {
                                                     custom
                                                     name="notUsed"
                                                     value="0"
-                                                    id="notUsed-edit-radio1"
+                                                    id="notUsed-add-radio1"
                                                     checked={ctrlProps.value === '0'}
                                                     onChange={ctrlProps.onChange}
-                                                /><CLabel variant="custom-checkbox" htmlFor="notUsed-edit-radio1">사용중</CLabel>
+                                                /><CLabel variant="custom-checkbox" htmlFor="notUsed-add-radio1">사용중</CLabel>
                                             </CFormGroup>
                                             <CFormGroup variant="custom-radio" inline>
                                                 <CInputRadio
                                                     custom
                                                     name="notUsed"
                                                     value="1"
-                                                    id="notUsed-edit-radio2"
+                                                    id="notUsed-add-radio2"
                                                     checked={ctrlProps.value === '1'}
                                                     onChange={ctrlProps.onChange}
-                                                /><CLabel variant="custom-checkbox" htmlFor="notUsed-edit-radio2">미사용</CLabel>
+                                                /><CLabel variant="custom-checkbox" htmlFor="notUsed-add-radio2">미사용</CLabel>
                                             </CFormGroup>
                                         </CFormGroup>
                                     )}

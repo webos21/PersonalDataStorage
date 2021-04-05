@@ -141,8 +141,8 @@ const authLogout = () => {
     }
 }
 
-const getAuthStatus = state => state.auth.authStatus;
-const getAuthError = state => state.auth.authError;
+const getAuthStatus = state => state.auth.status;
+const getAuthError = state => state.auth.error;
 
 export {
     AUTH_RESET,
