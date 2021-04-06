@@ -9,6 +9,7 @@ import {
 } from '@coreui/react';
 
 import AllActions from '../../actions'
+import ASelector from '../../components/AcodeSelector'
 import Helper from '../../helpers'
 
 
@@ -16,12 +17,17 @@ const CardRecordAdd = props => {
 
     const REQ_URI = (process.env.NODE_ENV !== 'production') ? 'http://' + window.location.hostname + ':28080/pds/v1/cardRecord' : '/pds/v1/cardRecord';
 
-    const { handleSubmit, errors, setError, control } = useForm({
+    const { handleSubmit, errors, setError, setValue, control } = useForm({
         submitFocusError: true,
         nativeValidation: false,
     });
 
     const cardList = useSelector(state => AllActions.card.getCards(state));
+
+    const acodeSelected = (retVal) => {
+        console.log("accountCodeSelected", retVal);
+        setValue("accountCode", retVal.codeNo);
+    }
 
     const onSubmit = (data, e) => {
         const formData = new FormData(e.target);
@@ -57,7 +63,7 @@ const CardRecordAdd = props => {
             <CModalHeader closeButton>카드거래내역 추가</CModalHeader>
             <CForm onSubmit={handleSubmit(onSubmit)}>
                 <CModalBody>
-                <CFormGroup row>
+                    <CFormGroup row>
                         <CCol xs="12" md="12">
                             <Controller
                                 name="crId"
@@ -127,10 +133,10 @@ const CardRecordAdd = props => {
                                     name="transactionDate"
                                     key={"transactionDate" + props.dataFromParent.id}
                                     control={control}
-                                    defaultValue={Helper.date.dateFormat(new Date(props.dataFromParent.transactionDate))}
+                                    defaultValue={Helper.date.datetimeFormat(new Date(props.dataFromParent.transactionDate))}
                                     render={(ctrlProps) => (
                                         <CInput
-                                            type="date"
+                                            type="datetime-local"
                                             name="transactionDate"
                                             placeholder="거래일을 입력해 주세요."
                                             className={"form-control" + (errors.transactionDate ? " is-invalid" : " is-valid")}
@@ -360,6 +366,39 @@ const CardRecordAdd = props => {
                                     }}
                                 />
                                 {errors.settlementDate && <CInvalidFeedback>{errors.settlementDate.message}</CInvalidFeedback>}
+                            </CInputGroup>
+                        </CCol>
+                    </CFormGroup>
+                    <CFormGroup row>
+                        <CCol xs="12" md="12">
+                            <CInputGroup>
+                                <CInputGroupPrepend>
+                                    <CInputGroupText style={{ minWidth: 80 }}>계정분류</CInputGroupText>
+                                </CInputGroupPrepend>
+                                <Controller
+                                    name="accountCode"
+                                    key={"accountCode" + props.dataFromParent.id}
+                                    control={control}
+                                    defaultValue={props.dataFromParent.accountCode}
+                                    render={(ctrlProps) => (
+                                        <CInput
+                                            type="text"
+                                            name="accountCode"
+                                            placeholder="계정분류를 선택해 주세요."
+                                            className={"form-control" + (errors.accountCode ? " is-invalid" : " is-valid")}
+                                            value={ctrlProps.value}
+                                            onChange={ctrlProps.onChange}
+                                        />
+                                    )}
+                                    rules={{
+                                        required: {
+                                            value: true,
+                                            message: "계정분류를 선택해 주세요."
+                                        }
+                                    }}
+                                />
+                                <ASelector initVal={props.dataFromParent.accountCode} accountCodeSelected={acodeSelected} />
+                                {errors.accountCode && <CInvalidFeedback>{errors.accountCode.message}</CInvalidFeedback>}
                             </CInputGroup>
                         </CCol>
                     </CFormGroup>

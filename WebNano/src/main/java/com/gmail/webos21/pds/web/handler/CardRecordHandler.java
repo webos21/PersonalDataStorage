@@ -102,6 +102,7 @@ public class CardRecordHandler implements UriHandler {
 		String amount = params.get("amount");
 		String remainder = params.get("remainder");
 		String settlementDate = params.get("settlementDate");
+		String accountCode = params.get("accountCode");
 		String paid = params.get("paid");
 		String memo = params.get("memo");
 
@@ -116,7 +117,7 @@ public class CardRecordHandler implements UriHandler {
 
 		CardRecord aRow = new CardRecord(Long.parseLong(crId), Long.parseLong(cardId), td, title, Long.parseLong(price),
 				Long.parseLong(commission), Integer.parseInt(installment), Long.parseLong(installmentId),
-				Integer.parseInt(installmentTurn), Long.parseLong(amount), Long.parseLong(remainder), sd,
+				Integer.parseInt(installmentTurn), Long.parseLong(amount), Long.parseLong(remainder), sd, accountCode,
 				Integer.parseInt(paid), memo);
 		crRepo.updateRow(aRow);
 
@@ -160,6 +161,7 @@ public class CardRecordHandler implements UriHandler {
 		String amount = params.get("amount");
 		String remainder = params.get("remainder");
 		String settlementDate = params.get("settlementDate");
+		String accountCode = params.get("accountCode");
 		String paid = params.get("paid");
 		String memo = params.get("memo");
 
@@ -174,7 +176,7 @@ public class CardRecordHandler implements UriHandler {
 
 		CardRecord aRow = new CardRecord(null, Long.parseLong(cardId), td, title, Long.parseLong(price),
 				Long.parseLong(commission), Integer.parseInt(installment), Long.parseLong(installmentId),
-				Integer.parseInt(installmentTurn), Long.parseLong(amount), Long.parseLong(remainder), sd,
+				Integer.parseInt(installmentTurn), Long.parseLong(amount), Long.parseLong(remainder), sd, accountCode,
 				Integer.parseInt(paid), memo);
 		crRepo.updateRow(aRow);
 

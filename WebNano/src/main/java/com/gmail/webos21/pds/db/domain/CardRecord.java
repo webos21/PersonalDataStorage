@@ -18,12 +18,13 @@ public class CardRecord {
 	private Long amount;
 	private Long remainder;
 	private Date settlementDate;
+	private String accountCode;
 	private Integer paid;
 	private String memo;
 
 	public CardRecord(Long id, Long cardId, Date transactionDate, String title, Long price, Long commission,
 			Integer installment, Long installmentId, Integer installmentTurn, Long amount, Long remainder,
-			Date settlementDate, Integer paid, String memo) {
+			Date settlementDate, String accountCode, Integer paid, String memo) {
 		this.id = id;
 		this.cardId = cardId;
 		this.transactionDate = transactionDate;
@@ -36,13 +37,14 @@ public class CardRecord {
 		this.amount = amount;
 		this.remainder = remainder;
 		this.settlementDate = settlementDate;
+		this.accountCode = accountCode;
 		this.paid = paid;
 		this.memo = memo;
 	}
 
 	public CardRecord(Long id, Long cardId, Long transactionDate, String title, Long price, Long commission,
 			Integer installment, Long installmentId, Integer installmentTurn, Long amount, Long remainder,
-			Long settlementDate, Integer paid, String memo) {
+			Long settlementDate, String accountCode, Integer paid, String memo) {
 		this.id = id;
 		this.cardId = cardId;
 		this.transactionDate = new Date(transactionDate);
@@ -55,6 +57,7 @@ public class CardRecord {
 		this.amount = amount;
 		this.remainder = remainder;
 		this.settlementDate = new Date(settlementDate);
+		this.accountCode = accountCode;
 		this.paid = paid;
 		this.memo = memo;
 	}
@@ -154,6 +157,14 @@ public class CardRecord {
 	public void setSettlementDate(Date settlementDate) {
 		this.settlementDate = settlementDate;
 	}
+	
+	public String getAccountCode() {
+		return accountCode;
+	}
+	
+	public void setAccountCode(String accountCode) {
+		this.accountCode = accountCode;
+	}
 
 	public Integer getPaid() {
 		return paid;
@@ -187,6 +198,7 @@ public class CardRecord {
 		sb.append("  \"amount\": ").append(amount).append(",\n");
 		sb.append("  \"remainder\": ").append(remainder).append(",\n");
 		sb.append("  \"settlementDate\": ").append(settlementDate.getTime()).append(",\n");
+		sb.append("  \"accountCode\": \"").append(accountCode).append("\",\n");
 		sb.append("  \"paid\": ").append(paid).append(",\n");
 		sb.append("  \"memo\": \"").append(JsonHelper.escape(memo)).append("\"\n");
 		sb.append('}').append('\n');

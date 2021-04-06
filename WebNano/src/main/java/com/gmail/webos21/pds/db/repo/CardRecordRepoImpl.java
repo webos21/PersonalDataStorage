@@ -27,7 +27,7 @@ public class CardRecordRepoImpl implements CardRecordRepo {
 			ResultSet rset = db.rawQuery( // indent
 					/* indent -------- */ "SELECT id, card_id, transaction_date, title, price, commission," + // indent
 					/* indent -------- */ "       installment, installment_id, installment_turn,  " + // indent
-					/* indent -------- */ "       amount, remainder, settlement_date, paid, memo  " + // indent
+					/* indent -------- */ "       amount, remainder, settlement_date, account_code, paid, memo  " + // indent
 					/* indent -------- */ "  FROM " + DbConsts.TB_CARD_RECORD + // indent
 					/* indent -------- */ " WHERE paid = 0 ", // indent
 					null);
@@ -49,8 +49,9 @@ public class CardRecordRepoImpl implements CardRecordRepo {
 						/* amount --------- */rset.getLong(10), // indent
 						/* remainder ------ */rset.getLong(11), // indent
 						/* settlement_date- */rset.getLong(12), // indent
-						/* paid ----------- */rset.getInt(13), // indent
-						/* memo ----------- */rset.getString(14)); // indent
+						/* account_code --- */rset.getString(13), // indent
+						/* paid ----------- */rset.getInt(14), // indent
+						/* memo ----------- */rset.getString(15)); // indent
 				aList.add(aRow);
 			} while (rset.next());
 
@@ -78,7 +79,7 @@ public class CardRecordRepoImpl implements CardRecordRepo {
 			ResultSet rset = db.rawQuery( // indent
 					/* indent -------- */ "SELECT id, card_id, transaction_date, title, price, commission," + // indent
 					/* indent -------- */ "       installment, installment_id, installment_turn,  " + // indent
-					/* indent -------- */ "       amount, remainder, settlement_date, paid, memo  " + // indent
+					/* indent -------- */ "       amount, remainder, settlement_date, account_code, paid, memo  " + // indent
 					/* indent -------- */ "  FROM " + DbConsts.TB_CARD_RECORD + // indent
 					/* indent -------- */ " WHERE paid = 0 AND " + // indent
 					/* indent -------- */ "        ((title LIKE ?) OR (memo LIKE ?))", // indent
@@ -101,8 +102,9 @@ public class CardRecordRepoImpl implements CardRecordRepo {
 						/* amount --------- */rset.getLong(10), // indent
 						/* remainder ------ */rset.getLong(11), // indent
 						/* settlement_date- */rset.getLong(12), // indent
-						/* paid ----------- */rset.getInt(13), // indent
-						/* memo ----------- */rset.getString(14)); // indent
+						/* account_code --- */rset.getString(13), // indent
+						/* paid ----------- */rset.getInt(14), // indent
+						/* memo ----------- */rset.getString(15)); // indent
 				aList.add(aRow);
 			} while (rset.next());
 
@@ -126,7 +128,7 @@ public class CardRecordRepoImpl implements CardRecordRepo {
 			ResultSet rset = db.rawQuery( // indent
 					/* indent -------- */ "SELECT id, card_id, transaction_date, title, price, commission," + // indent
 					/* indent -------- */ "       installment, installment_id, installment_turn,  " + // indent
-					/* indent -------- */ "       amount, remainder, settlement_date, paid, memo  " + // indent
+					/* indent -------- */ "       amount, remainder, settlement_date, account_code, paid, memo  " + // indent
 					/* indent -------- */ "  FROM " + DbConsts.TB_CARD_RECORD + // indent
 					/* indent -------- */ " WHERE id = " + id, // indent
 					null);
@@ -147,8 +149,9 @@ public class CardRecordRepoImpl implements CardRecordRepo {
 					/* amount --------- */rset.getLong(10), // indent
 					/* remainder ------ */rset.getLong(11), // indent
 					/* settlement_date- */rset.getLong(12), // indent
-					/* paid ----------- */rset.getInt(13), // indent
-					/* memo ----------- */rset.getString(14)); // indent
+					/* account_code --- */rset.getString(13), // indent
+					/* paid ----------- */rset.getInt(14), // indent
+					/* memo ----------- */rset.getString(15)); // indent
 			rset.close();
 			db.close();
 		} catch (Exception e) {
@@ -173,7 +176,7 @@ public class CardRecordRepoImpl implements CardRecordRepo {
 				rset = db.rawQuery( // indent
 						/* indent -------- */ "SELECT id, card_id, transaction_date, title, price, commission," + // indent
 						/* indent -------- */ "       installment, installment_id, installment_turn,  " + // indent
-						/* indent -------- */ "       amount, remainder, settlement_date, paid, memo  " + // indent
+						/* indent -------- */ "       amount, remainder, settlement_date, account_code, paid, memo  " + // indent
 						/* indent -------- */ "  FROM " + DbConsts.TB_CARD_RECORD + // indent
 						/* indent -------- */ " WHERE id = " + newRow.getId(), // indent
 						null);
@@ -192,6 +195,7 @@ public class CardRecordRepoImpl implements CardRecordRepo {
 					cv.put("amount", newRow.getAmount());
 					cv.put("remainder", newRow.getRemainder());
 					cv.put("settlement_date", newRow.getSettlementDate().getTime());
+					cv.put("account_code", newRow.getAccountCode());
 					cv.put("paid", newRow.getPaid());
 					cv.put("memo", newRow.getMemo());
 					db.update(DbConsts.TB_CARD_RECORD, cv, " id = ? ", new String[] { Long.toString(newRow.getId()) });
@@ -209,6 +213,7 @@ public class CardRecordRepoImpl implements CardRecordRepo {
 					cv.put("amount", newRow.getAmount());
 					cv.put("remainder", newRow.getRemainder());
 					cv.put("settlement_date", newRow.getSettlementDate().getTime());
+					cv.put("account_code", newRow.getAccountCode());
 					cv.put("paid", newRow.getPaid());
 					cv.put("memo", newRow.getMemo());
 					db.insert(DbConsts.TB_CARD_RECORD, null, cv);
@@ -226,6 +231,7 @@ public class CardRecordRepoImpl implements CardRecordRepo {
 				cv.put("amount", newRow.getAmount());
 				cv.put("remainder", newRow.getRemainder());
 				cv.put("settlement_date", newRow.getSettlementDate().getTime());
+				cv.put("account_code", newRow.getAccountCode());
 				cv.put("paid", newRow.getPaid());
 				cv.put("memo", newRow.getMemo());
 				db.insert(DbConsts.TB_CARD_RECORD, null, cv);

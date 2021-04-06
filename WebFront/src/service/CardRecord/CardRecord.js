@@ -52,6 +52,7 @@ class CardRecord extends Component {
         amount: 0,
         remainder: 0,
         settlementDate: new Date(),
+        accountCode: '',
         paid: 0,
         memo: '',
       },
@@ -157,6 +158,7 @@ class CardRecord extends Component {
       amount: 0,
       remainder: 0,
       settlementDate: new Date(),
+      accountCode: '',
       paid: 0,
       memo: '',
   }
@@ -238,7 +240,7 @@ class CardRecord extends Component {
     if (dataArray.length === 0) {
       return (
         <tr key="row-nodata">
-          <td colSpan="7" className="text-center align-middle" height="200">No Data</td>
+          <td colSpan="8" className="text-center align-middle" height="200">No Data</td>
         </tr>
       )
     } else {
@@ -254,6 +256,7 @@ class CardRecord extends Component {
             <td>{Helper.date.dateFormat(new Date(data.transactionDate))}</td>
             <td>{Helper.date.dateFormat(new Date(data.settlementDate))}</td>
             <td>{data.title}</td>
+            <td>{data.accountCode}</td>
             <td align="right">{Helper.num.formatDecimal(data.price)}</td>
             <td><div style={{
               width: '140px',
@@ -345,6 +348,7 @@ class CardRecord extends Component {
                       <th>거래일</th>
                       <th>결제일</th>
                       <th>적요</th>
+                      <th>계정코드</th>
                       <th>결제금액</th>
                       <th width="150">메모</th>
                     </tr>

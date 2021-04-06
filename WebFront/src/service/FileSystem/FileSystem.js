@@ -8,7 +8,7 @@ const FileSystem = props => {
     if (process.env.NODE_ENV === 'production') {
       window.location.href = '/pds/v1/fs/';
     } else {
-      
+
     }
   }, []);
 
@@ -18,9 +18,9 @@ const FileSystem = props => {
         <CRow className="justify-content-center">
           <CCol md="6">
             <span className="clearfix">
-              <h1 className="float-left display-3 mr-4">Logout...</h1>
-              <h4 className="pt-3">Remove the login information...</h4>
-              <p className="text-muted float-left">The page you are looking for is temporarily unavailable.</p>
+              <h1 className="float-left display-3 mr-4">File Man.</h1>
+              <h4 className="pt-3">Working on wrapping the file system...</h4>
+              <p className="text-muted float-left">The page you are looking for is shown at 28080.</p>
             </span>
           </CCol>
         </CRow>
