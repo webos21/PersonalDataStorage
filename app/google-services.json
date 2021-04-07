@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "292782918209",
+    "project_id": "personaldatastorage-42789",
+    "storage_bucket": "personaldatastorage-42789.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:292782918209:android:6069544eb43850b1ed14c0",
+        "android_client_info": {
+          "package_name": "com.gmail.webos21.pds.app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "292782918209-1h6b46pgdcu90nved3srebc5puenton4.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC2Qiz4-45TsBjhrTzT-xRVPUkxDB512-0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "292782918209-1h6b46pgdcu90nved3srebc5puenton4.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

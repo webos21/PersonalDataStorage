@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import { HashRouter, Route, Switch, Redirect } from 'react-router-dom';
+import firebase from './firebase';
+import routes from './routes';
 
 import './scss/style.scss';
 
@@ -19,21 +21,35 @@ const isAuthenticated = () => {
   return (akey !== undefined && akey !== null && aval !== undefined && aval !== null);
 }
 
-const AuthenticatedRoute = ({ component: Component, ...rest }) => (
-  <Route {...rest} render={(props) => (
-    isAuthenticated()
-      ? <Component {...props} />
-      : <Redirect to="/login" />
-  )} />
-);
+const AuthenticatedRoute = ({ component: Component, ...rest }) => {
+  if (isAuthenticated()) {
+    let routeObj = routes.find((r) => { return r.path === rest.location.pathname });
+    if (routeObj) {
+      let className = routeObj.name;
+      firebase.analytics().logEvent("screen_view", { screen_class: className, screen_name: rest.location.pathname });
+    }
+  }
+  return (
+    <Route {...rest} render={(props) => (
+      isAuthenticated()
+        ? <Component {...props} />
+        : <Redirect to="/login" />
+    )} />
+  );
+}
 
-const LoginRoute = ({ component: Component, ...rest }) => (
-  <Route {...rest} render={(props) => (
-    !isAuthenticated()
-      ? <Component {...props} />
-      : <Redirect to="/" />
-  )} />
-);
+const LoginRoute = ({ component: Component, ...rest }) => {
+  if (!isAuthenticated()) {
+    firebase.analytics().logEvent("screen_view", { screen_class: 'Login', screen_name: rest.location.pathname });
+  }
+  return (
+    <Route {...rest} render={(props) => (
+      !isAuthenticated()
+        ? <Component {...props} />
+        : <Redirect to="/" />
+    )} />
+  );
+}
 
 const loading = () => <div className="animated fadeIn pt-3 text-center">Loading...</div>;
 

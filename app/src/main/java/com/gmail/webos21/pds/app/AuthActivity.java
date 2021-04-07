@@ -91,7 +91,7 @@ public class AuthActivity extends AppCompatActivity {
         pkBytes = PbCryptHelper.restorePkBytes(passkey);
 
         BiometricManager biometricManager = BiometricManager.from(this);
-        if (biometricManager != null && biometricManager.canAuthenticate() == BiometricManager.BIOMETRIC_SUCCESS) {
+        if (biometricManager != null && biometricManager.canAuthenticate(BiometricManager.Authenticators.BIOMETRIC_STRONG) == BiometricManager.BIOMETRIC_SUCCESS) {
             swFinger.setVisibility(View.VISIBLE);
         } else {
             swFinger.setVisibility(View.GONE);

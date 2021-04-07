@@ -2,6 +2,7 @@ package com.gmail.webos21.pds.app;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.os.Environment;
@@ -80,7 +81,10 @@ public class NanoActivity extends AppCompatActivity {
             dws.setUiLog(logger);
             dws.setClientListener(nhcl);
 
-            pws = new PdsWebServer(WEB_ADDR_ANY, WEB_PORT, OnetimePass.genOtp(), pwdir, exdir);
+            SharedPreferences shpref = getSharedPreferences(Consts.PREF_FILE, MODE_PRIVATE);
+            String passkey = shpref.getString(Consts.PREF_PASSKEY, "");
+
+            pws = new PdsWebServer(WEB_ADDR_ANY, WEB_PORT, passkey, pwdir, exdir);
             pws.setUiLog(logger);
             pws.setClientListener(nhcl);
 

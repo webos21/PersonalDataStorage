@@ -1,15 +1,20 @@
 apply plugin: 'com.android.application'
+apply plugin: 'com.google.gms.google-services'
+apply plugin: 'com.google.firebase.crashlytics'
 
 android {
     compileSdkVersion 29
+
     defaultConfig {
         applicationId "com.gmail.webos21.pds.app"
 
-        minSdkVersion 14
+        minSdkVersion 16
         targetSdkVersion 29
 
-        versionCode 1
-        versionName "1.0.1"
+        versionCode 2
+        versionName "1.0.2"
+
+        multiDexEnabled true
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
@@ -17,8 +22,8 @@ android {
         // "pm clear" command after each test invocation. This command ensures
         // that the app's state is completely cleared between tests.
         testInstrumentationRunnerArguments clearPackageData: 'true'
-
     }
+
     buildTypes {
         release {
             minifyEnabled false
@@ -33,6 +38,10 @@ dependencies {
     implementation project(':webos21-android');
     implementation project(':WebNano');
     implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation platform('com.google.firebase:firebase-bom:26.8.0')
+    implementation 'com.google.firebase:firebase-crashlytics'
+    implementation 'com.google.firebase:firebase-analytics'
+    implementation 'com.google.firebase:firebase-perf'
     implementation "androidx.appcompat:appcompat:1.2.0"                        // from com.android.support:appcompat-v7
     implementation "androidx.preference:preference:1.1.1"                      // from com.android.support:preference-v7
     implementation 'com.google.android.material:material:1.4.0-alpha02'         // from com.android.support:design
