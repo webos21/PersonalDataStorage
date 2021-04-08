@@ -64,7 +64,7 @@ public class Main {
             System.out.println("Access with web-browser) http://" + ip.getHostAddress() + ":28080/");
             System.out.println("            Access Code) " + accessCode);
 
-            PdsWebServer ws = new PdsWebServer("0.0.0.0", 28080, accessCode, htdoc, fs);
+            PdsWebServer ws = new PdsWebServer("0.0.0.0", 28080, OnetimePass.encryptOtp(accessCode), htdoc, fs);
             ws.setUiLog(new ConsoleLog());
             ws.start(NanoHTTPD.SOCKET_READ_TIMEOUT, false);
 

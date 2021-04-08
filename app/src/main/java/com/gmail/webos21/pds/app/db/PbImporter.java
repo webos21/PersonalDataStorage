@@ -4,7 +4,8 @@ import android.os.AsyncTask;
 import android.util.Log;
 
 import com.gmail.webos21.pds.app.Consts;
-import com.gmail.webos21.pds.app.crypt.PbCryptHelper;
+import com.gmail.webos21.pds.db.PdsDbHelper;
+import com.gmail.webos21.pds.db.PdsDbManager;
 import com.gmail.webos21.pds.db.domain.PasswordBook;
 import com.gmail.webos21.pds.db.repo.PasswordBookRepo;
 
@@ -22,14 +23,12 @@ public class PbImporter extends AsyncTask<Void, Void, Void> {
 
     private PasswordBookRepo pbRepo;
     private File csvFile;
-    private byte[] pkBytes;
 
     private Runnable postRun;
 
-    public PbImporter(PasswordBookRepo pbRepo, File csvFile, byte[] pkBytes, Runnable postRun) {
+    public PbImporter(PasswordBookRepo pbRepo, File csvFile, Runnable postRun) {
         this.pbRepo = pbRepo;
         this.csvFile = csvFile;
-        this.pkBytes = pkBytes;
         this.postRun = postRun;
     }
 
@@ -44,7 +43,7 @@ public class PbImporter extends AsyncTask<Void, Void, Void> {
                 if (Consts.DEBUG) {
                     Log.i(TAG, "[FileRead] " + s);
                 }
-                processLine(pbRepo, s, pkBytes);
+                processLine(pbRepo, s);
             }
 
             bri.close();
@@ -74,7 +73,7 @@ public class PbImporter extends AsyncTask<Void, Void, Void> {
         postRun.run();
     }
 
-    private void processLine(PasswordBookRepo pbRepo, String s, byte[] encKey) {
+    private void processLine(PasswordBookRepo pbRepo, String s) {
         String[] strArr = s.split(",");
 
         Long id = null;
@@ -100,8 +99,8 @@ public class PbImporter extends AsyncTask<Void, Void, Void> {
             }
             fixdate = new Date();
             stype = strArr[2];
-            myid = PbCryptHelper.encData(strArr[3], encKey);
-            mypw = PbCryptHelper.encData(strArr[4], encKey);
+            myid = strArr[3];
+            mypw = strArr[4];
             sname = strArr[5];
             memo = ("null".equals(strArr[6]) ? "" : strArr[6]);
         } else if (strArr.length == 8) {
@@ -109,8 +108,8 @@ public class PbImporter extends AsyncTask<Void, Void, Void> {
             surl = strArr[1];
             sname = strArr[2];
             stype = strArr[3];
-            myid = PbCryptHelper.encData(strArr[4], encKey);
-            mypw = PbCryptHelper.encData(strArr[5], encKey);
+            myid = strArr[4];
+            mypw = strArr[5];
             if ("null".equals(strArr[6])) {
                 regdate = new Date(0);
             } else {
@@ -127,8 +126,8 @@ public class PbImporter extends AsyncTask<Void, Void, Void> {
             surl = strArr[1];
             sname = strArr[2];
             stype = strArr[3];
-            myid = PbCryptHelper.encData(strArr[4], encKey);
-            mypw = PbCryptHelper.encData(strArr[5], encKey);
+            myid = strArr[4];
+            mypw = strArr[5];
             if ("null".equals(strArr[6])) {
                 regdate = new Date(0);
             } else {

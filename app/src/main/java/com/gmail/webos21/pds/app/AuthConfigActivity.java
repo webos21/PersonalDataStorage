@@ -16,10 +16,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
-import com.gmail.webos21.pds.app.crypt.PbCryptHelper;
-import com.gmail.webos21.pds.app.db.PbKeyChanger;
-import com.gmail.webos21.pds.db.PdsDbManager;
-import com.gmail.webos21.pds.db.repo.PasswordBookRepo;
+import com.gmail.webos21.pds.web.OnetimePass;
 
 public class AuthConfigActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -115,24 +112,10 @@ public class AuthConfigActivity extends AppCompatActivity implements View.OnClic
         SharedPreferences pref = getSharedPreferences(Consts.PREF_FILE, MODE_PRIVATE);
         SharedPreferences.Editor prefEdit = pref.edit();
 
-        String newPasskey = PbCryptHelper.makeSha256Base64(p1);
+        String newPasskey = OnetimePass.encryptOtp(p1);
 
         prefEdit.putString(Consts.PREF_PASSKEY, newPasskey);
         prefEdit.commit();
-
-        PdsApp app = (PdsApp) tvMessage.getContext().getApplicationContext();
-
-        byte[] oldKey = app.getPkBytes();
-        byte[] newKey = PbCryptHelper.restorePkBytes(newPasskey);
-        if (oldKey != null) {
-            PasswordBookRepo pbRepo = PdsDbManager.getInstance().getRepository(PasswordBookRepo.class);
-            new PbKeyChanger(pbRepo, oldKey, newKey, new Runnable() {
-                @Override
-                public void run() {
-                    Toast.makeText(tvMessage.getContext(), "New key is applyed!!!", Toast.LENGTH_LONG);
-                }
-            }).execute();
-        }
 
         Intent i = new Intent();
         setResult(Activity.RESULT_OK, i);

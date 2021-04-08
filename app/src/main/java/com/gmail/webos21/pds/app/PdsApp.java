@@ -18,7 +18,8 @@ public class PdsApp extends Application {
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
     }
 
-    private byte[] pkBytes;
+    private PdsWebHelper pwh;
+    private boolean loginRequired = true;
 
     @Override
     public void onCreate() {
@@ -27,9 +28,8 @@ public class PdsApp extends Application {
             Log.i(TAG, "onCreate!!!!!!");
         }
 
-        PdsDbManager dbMan = PdsDbManager.getInstance();
-        File dataDir = new File(getFilesDir(), "pds");
-        dbMan.open(dataDir.getAbsolutePath(), DbConsts.DB_USER, DbConsts.DB_PASS, DbConsts.DB_OPTS, DbConsts.DB_VERSION);
+        pwh = new PdsWebHelper(getApplicationContext());
+        dbOpen();
     }
 
     @Override
@@ -38,15 +38,34 @@ public class PdsApp extends Application {
         if (Consts.DEBUG) {
             Log.i(TAG, "onTerminate!!!!!!");
         }
-        pkBytes = null;
+        loginRequired = true;
     }
 
-    public byte[] getPkBytes() {
-        return pkBytes;
+    public boolean isLoginRequired() {
+        return loginRequired;
     }
 
-    public void setPkBytes(byte[] pkBytes) {
-        this.pkBytes = pkBytes;
+    public void setLoginRequired(boolean flag) {
+        this.loginRequired = flag;
     }
 
+    public PdsWebHelper getPdsWebHelper() {
+        return pwh;
+    }
+
+    public boolean isDbOpen() {
+        PdsDbManager dbMan = PdsDbManager.getInstance();
+        return dbMan.isOpen();
+    }
+
+    public void dbOpen() {
+        PdsDbManager dbMan = PdsDbManager.getInstance();
+        File dataDir = new File(getFilesDir(), "pds");
+        dbMan.open(dataDir.getAbsolutePath(), DbConsts.DB_USER, DbConsts.DB_PASS, DbConsts.DB_OPTS, DbConsts.DB_VERSION);
+    }
+
+    public void dbClose() {
+        PdsDbManager dbMan = PdsDbManager.getInstance();
+        dbMan.close();
+    }
 }

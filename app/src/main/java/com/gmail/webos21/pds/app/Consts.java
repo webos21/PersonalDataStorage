@@ -5,15 +5,6 @@ import java.text.SimpleDateFormat;
 public class Consts {
 
     public static final boolean DEBUG = true;
-    public static final boolean DB_DEBUG = false;
-
-    public static final int DB_VERSION = 1;
-
-    public static final int ACTION_PASS_CFG = 1;
-    public static final int ACTION_LOGIN = 2;
-    public static final int ACTION_ADD = 3;
-    public static final int ACTION_MODIFY = 4;
-
 
     public static final int PERM_REQ_EXTERNAL_STORAGE = 101;
 
@@ -23,6 +14,14 @@ public class Consts {
     public static final String PREF_PASSKEY = "pref_passkey";
     public static final String PREF_SHOW_ICON = "pref_show_icon";
     public static final String PREF_FINGER = "pref_finger";
+
+    public static final int NOTI_PLAYER_ID = 0x342;
+    public static final String NOTI_CHANNEL = "com.gmail.webos21.pds.app.web.channel";
+    public static final String NOTI_CHANNEL_NAME = "PDS Web Notification Channel";
+
+    public static final String NOTI_ACT_PLAY = "com.gmail.webos21.pds.app.action.PLAY";
+    public static final String NOTI_ACT_CLOSE = "com.gmail.webos21.pds.app.action.CLOSE";
+    public static final String NOTI_ACT_STATE_CHANGED = "com.gmail.webos21.pds.app.action.STATE_CHANGED";
 
     public static final SimpleDateFormat SDF_DATE = new SimpleDateFormat("yyyy-MM-dd");
     public static final SimpleDateFormat SDF_TIME = new SimpleDateFormat("HH:mm:ss");

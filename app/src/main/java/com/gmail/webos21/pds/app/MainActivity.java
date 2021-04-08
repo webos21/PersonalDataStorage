@@ -19,6 +19,10 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
@@ -30,7 +34,6 @@ import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.gmail.webos21.android.patch.PRNGFixes;
 import com.gmail.webos21.android.widget.ChooseFileDialog;
-import com.gmail.webos21.pds.app.crypt.PbCryptHelper;
 import com.gmail.webos21.pds.app.db.PbExporter;
 import com.gmail.webos21.pds.app.db.PbImporter;
 import com.gmail.webos21.pds.app.db.PbRowAdapter;
@@ -46,15 +49,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private static final String TAG = "MainActivity";
 
-    private boolean loginFlag;
-
     private NavigationView navigationView;
-
     private CheckBox cbIcon;
     private TextView tvTotalSite;
-
     private ListView pblist;
     private PbRowAdapter pbAdapter;
+
+    private ActivityResultLauncher<Intent> authCfgLauncher;
+    private ActivityResultLauncher<Intent> loginLauncher;
+    private ActivityResultLauncher<Intent> addLauncher;
+    private ActivityResultLauncher<Intent> editLauncher;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -116,6 +120,55 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         // Set Views
         tvTotalSite.setText(getResources().getString(R.string.cfg_total_item) + pbAdapter.getCount());
+
+        authCfgLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
+                new ActivityResultCallback<ActivityResult>() {
+                    @Override
+                    public void onActivityResult(ActivityResult result) {
+                        if (result.getResultCode() == RESULT_OK) {
+                            // nothing to do
+                        } else {
+                            finish();
+                        }
+                    }
+                });
+
+        loginLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
+                new ActivityResultCallback<ActivityResult>() {
+                    @Override
+                    public void onActivityResult(ActivityResult result) {
+                        Log.i(TAG, "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+                        Log.i(TAG, "result.getResultCode() = " + result.getResultCode());
+
+                        if (result.getResultCode() == RESULT_OK) {
+                            PdsApp app = (PdsApp) getApplicationContext();
+                            app.setLoginRequired(false);
+                        } else {
+                            MainActivity.this.finish();
+                        }
+                    }
+                });
+
+        addLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
+                new ActivityResultCallback<ActivityResult>() {
+                    @Override
+                    public void onActivityResult(ActivityResult result) {
+                        if (result.getResultCode() == RESULT_OK) {
+                            MainActivity.this.pbAdapter.refresh();
+                        }
+                    }
+                });
+
+        editLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
+                new ActivityResultCallback<ActivityResult>() {
+                    @Override
+                    public void onActivityResult(ActivityResult result) {
+                        if (result.getResultCode() == RESULT_OK) {
+                            MainActivity.this.pbAdapter.refresh();
+                        }
+                    }
+                });
+
     }
 
     @Override
@@ -149,32 +202,37 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected void onStart() {
         super.onStart();
 
+        PdsApp app = (PdsApp) getApplicationContext();
+
         if (Consts.DEBUG) {
-            Log.i(TAG, "onStart!!!!!!!!!!!!!");
+            Log.i(TAG, "onStart!!!!!!!!!!!!!" + app.isLoginRequired());
         }
 
+        if (Consts.DEBUG) {
+            Log.i(TAG, "onStart::CheckPassKey");
+        }
         // Check the Passkey
         SharedPreferences pref = getSharedPreferences(Consts.PREF_FILE, MODE_PRIVATE);
         String passkey = pref.getString(Consts.PREF_PASSKEY, "");
         if (passkey == null || passkey.length() == 0) {
             Intent i = new Intent(this, AuthConfigActivity.class);
-            startActivityForResult(i, Consts.ACTION_PASS_CFG);
+            authCfgLauncher.launch(i);
             return;
-        } else {
-            PdsApp app = (PdsApp) getApplicationContext();
-            if (app.getPkBytes() == null) {
-                byte[] pkBytes = PbCryptHelper.restorePkBytes(passkey);
-                app.setPkBytes(pkBytes);
-            }
         }
 
+        if (Consts.DEBUG) {
+            Log.i(TAG, "onStart::CheckLogin");
+        }
         // Check the flag of LOGIN
-        if (!loginFlag) {
+        if (app.isLoginRequired()) {
             Intent i = new Intent(this, AuthActivity.class);
-            startActivityForResult(i, Consts.ACTION_LOGIN);
+            loginLauncher.launch(i);
             return;
         }
 
+        if (Consts.DEBUG) {
+            Log.i(TAG, "onStart::RequestPermission");
+        }
         // Request Permission
         if (ContextCompat.checkSelfPermission(this,
                 Manifest.permission.WRITE_EXTERNAL_STORAGE)
@@ -184,6 +242,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     Consts.PERM_REQ_EXTERNAL_STORAGE);
             return;
         }
+
     }
 
     @Override
@@ -193,7 +252,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if (Consts.DEBUG) {
             Log.i(TAG, "onStop!!!!!!!!!!!!!");
         }
-        loginFlag = false;
     }
 
     @Override
@@ -203,7 +261,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if (Consts.DEBUG) {
             Log.i(TAG, "onDestroy!!!!!!!!!!!!!");
         }
-        loginFlag = false;
     }
 
     @Override
@@ -212,7 +269,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         switch (vId) {
             case R.id.fab_input_one: {
                 Intent i = new Intent(this, PbAddActivity.class);
-                startActivityForResult(i, Consts.ACTION_ADD);
+                addLauncher.launch(i);
                 break;
             }
             case R.id.fab_import_csv:
@@ -241,41 +298,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
         }
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (Consts.DEBUG) {
-            Log.i(TAG, "onActivityResult!!!!!!!!!!!!!");
-        }
-        if (requestCode == Consts.ACTION_PASS_CFG) {
-            if (resultCode == RESULT_OK) {
-                // Nothing to do
-            } else {
-                finish();
-            }
-        }
-        if (requestCode == Consts.ACTION_LOGIN) {
-            if (resultCode == RESULT_OK) {
-                loginFlag = true;
-            } else {
-                finish();
-            }
-        }
-        if (requestCode == Consts.ACTION_ADD) {
-            if (resultCode == RESULT_OK) {
-                this.pbAdapter.refresh();
-                loginFlag = true;
-            }
-        }
-        if (requestCode == Consts.ACTION_MODIFY) {
-            if (resultCode == RESULT_OK) {
-                this.pbAdapter.refresh();
-                loginFlag = true;
-            }
-        }
-
-        super.onActivityResult(requestCode, resultCode, data);
     }
 
     private void refreshListView() {
@@ -315,14 +337,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             return;
         }
 
-        PdsApp app = (PdsApp) getApplicationContext();
-        byte[] pkBytes = app.getPkBytes();
-
         String mountPoint = Environment.getExternalStorageDirectory().toString();
         File csvFile = new File(mountPoint + "/Download", "exp.csv");
         PasswordBookRepo pbRepo = PdsDbManager.getInstance().getRepository(PasswordBookRepo.class);
 
-        new PbExporter(pbRepo, csvFile, pkBytes, new Runnable() {
+        new PbExporter(pbRepo, csvFile, new Runnable() {
             @Override
             public void run() {
                 Toast.makeText(MainActivity.this, "File is exported!!", Toast.LENGTH_SHORT).show();
@@ -345,7 +364,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 }
                 case R.id.nav_settings: {
                     Intent i = new Intent(MainActivity.this, AuthConfigActivity.class);
-                    MainActivity.this.startActivityForResult(i, Consts.ACTION_PASS_CFG);
+                    authCfgLauncher.launch(i);
                     break;
                 }
                 default:
@@ -389,9 +408,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     Log.i(TAG, "name = " + pbrow.getSiteName());
                     Log.i(TAG, "url = " + pbrow.getSiteUrl());
                 }
+
                 Intent i = new Intent(MainActivity.this, PbEditActivity.class);
                 i.putExtra(Consts.EXTRA_ARG_ID, pbrow.getId());
-                MainActivity.this.startActivityForResult(i, Consts.ACTION_MODIFY);
+                editLauncher.launch(i);
             } else {
                 if (Consts.DEBUG) {
                     Log.i(TAG, "o is not PbRow!!!!!!");
@@ -480,10 +500,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private class CsvFileSelectedListener implements ChooseFileDialog.FileChosenListener {
         @Override
         public void onFileChosen(File chosenFile) {
-            PdsApp app = (PdsApp) MainActivity.this.getApplicationContext();
-            byte[] pkBytes = app.getPkBytes();
             PasswordBookRepo pbRepo = PdsDbManager.getInstance().getRepository(PasswordBookRepo.class);
-            new PbImporter(pbRepo, chosenFile, pkBytes, new Runnable() {
+            new PbImporter(pbRepo, chosenFile, new Runnable() {
                 @Override
                 public void run() {
                     Toast.makeText(MainActivity.this, "File is imported!!", Toast.LENGTH_SHORT).show();

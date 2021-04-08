@@ -14,7 +14,6 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.gmail.webos21.pds.app.crypt.PbCryptHelper;
 import com.gmail.webos21.pds.db.DbConsts;
 import com.gmail.webos21.pds.db.PdsDbManager;
 import com.gmail.webos21.pds.db.domain.PasswordBook;
@@ -161,13 +160,7 @@ public class PbAddActivity extends AppCompatActivity implements View.OnClickList
             e.printStackTrace();
         }
 
-        PdsApp app = (PdsApp) edMyPw.getContext().getApplicationContext();
-        byte[] pkBytes = app.getPkBytes();
-
-        String encId = PbCryptHelper.encData(myid, pkBytes);
-        String encPw = PbCryptHelper.encData(mypw, pkBytes);
-
-        PasswordBook pbr = new PasswordBook(null, surl, sname, stype, encId, encPw, rd.getTime(), System.currentTimeMillis(), memo);
+        PasswordBook pbr = new PasswordBook(null, surl, sname, stype, myid, mypw, rd.getTime(), System.currentTimeMillis(), memo);
         PasswordBookRepo pbRepo = PdsDbManager.getInstance().getRepository(PasswordBookRepo.class);
         pbRepo.updateRow(pbr);
 

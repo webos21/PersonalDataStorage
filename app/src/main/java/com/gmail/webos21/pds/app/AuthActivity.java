@@ -2,7 +2,6 @@ package com.gmail.webos21.pds.app;
 
 import android.Manifest;
 import android.app.Activity;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
@@ -24,15 +23,17 @@ import androidx.biometric.BiometricPrompt;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
-import com.gmail.webos21.pds.app.crypt.PbCryptHelper;
 import com.gmail.webos21.pds.app.keypad.KeypadAdapter;
 import com.gmail.webos21.pds.app.keypad.KeypadButton;
+import com.gmail.webos21.pds.web.OnetimePass;
 
 import java.util.concurrent.Executor;
 
 public class AuthActivity extends AppCompatActivity {
 
-    private byte[] pkBytes;
+    private static final String TAG = "AuthActivity";
+
+    private String passkey;
 
     private View layoutView;
 
@@ -56,6 +57,10 @@ public class AuthActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_auth);
+
+        if (Consts.DEBUG) {
+            Log.i(TAG, "onCreate!!!!!!!!!!!!!");
+        }
 
         layoutView = findViewById(R.id.activity_auth);
 
@@ -87,8 +92,7 @@ public class AuthActivity extends AppCompatActivity {
         gvInputPad.setAdapter(mKeypadAdapter);
 
         SharedPreferences shpref = getSharedPreferences(Consts.PREF_FILE, MODE_PRIVATE);
-        String passkey = shpref.getString(Consts.PREF_PASSKEY, "000000");
-        pkBytes = PbCryptHelper.restorePkBytes(passkey);
+        passkey = shpref.getString(Consts.PREF_PASSKEY, "000000");
 
         BiometricManager biometricManager = BiometricManager.from(this);
         if (biometricManager != null && biometricManager.canAuthenticate(BiometricManager.Authenticators.BIOMETRIC_STRONG) == BiometricManager.BIOMETRIC_SUCCESS) {
@@ -102,6 +106,11 @@ public class AuthActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
+
+        if (Consts.DEBUG) {
+            Log.i(TAG, "onStart!!!!!!!!!!!!!");
+        }
+
         inputPass = "";
 
         // Request Permission
@@ -124,10 +133,15 @@ public class AuthActivity extends AppCompatActivity {
 
     @Override
     protected void onStop() {
+        super.onStop();
+
+        if (Consts.DEBUG) {
+            Log.i(TAG, "onStop!!!!!!!!!!!!!");
+        }
+
         inputPass = "";
         showInputView();
 
-        super.onStop();
     }
 
     @Override
@@ -138,7 +152,7 @@ public class AuthActivity extends AppCompatActivity {
                 // OK, nothing to do
             } else {
                 Toast.makeText(this, getResources().getString(R.string.err_perm_exflah), Toast.LENGTH_LONG).show();
-                finish();
+                AuthActivity.this.finish();
             }
         }
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
@@ -162,9 +176,12 @@ public class AuthActivity extends AppCompatActivity {
             public void onAuthenticationSucceeded(
                     @NonNull BiometricPrompt.AuthenticationResult result) {
                 super.onAuthenticationSucceeded(result);
-                Intent i = new Intent();
-                setResult(Activity.RESULT_OK, i);
-                finish();
+
+                PdsApp app = (PdsApp) getApplicationContext();
+                app.setLoginRequired(false);
+
+                AuthActivity.this.setResult(Activity.RESULT_OK, getIntent());
+                AuthActivity.this.finish();
             }
 
             @Override
@@ -298,10 +315,13 @@ public class AuthActivity extends AppCompatActivity {
 
         @Override
         public void run() {
-            if (PbCryptHelper.checkPasskey(inputPass, pkBytes)) {
-                Intent i = new Intent();
-                setResult(Activity.RESULT_OK, i);
-                finish();
+            String cmpKey = OnetimePass.encryptOtp(inputPass);
+            if (passkey.equals(cmpKey)) {
+                PdsApp app = (PdsApp) getApplicationContext();
+                app.setLoginRequired(false);
+
+                setResult(Activity.RESULT_OK, getIntent());
+                AuthActivity.this.finish();
             } else {
                 Animation shake = AnimationUtils.loadAnimation(targetView.getContext(), R.anim.shake);
                 targetView.startAnimation(shake);

@@ -15,7 +15,6 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.gmail.webos21.pds.app.crypt.PbCryptHelper;
 import com.gmail.webos21.pds.db.DbConsts;
 import com.gmail.webos21.pds.db.PdsDbManager;
 import com.gmail.webos21.pds.db.domain.PasswordBook;
@@ -117,15 +116,12 @@ public class PbEditActivity extends AppCompatActivity implements View.OnClickLis
     }
 
     private void setValues(PasswordBook pb) {
-        PdsApp app = (PdsApp) getApplicationContext();
-        byte[] pkBytes = app.getPkBytes();
-
         tvId.setText(pb.getId().toString());
         edUrl.setText(pb.getSiteUrl());
         edName.setText(pb.getSiteName());
         edType.setText(pb.getSiteType());
-        edMyId.setText(PbCryptHelper.decData(pb.getMyId(), pkBytes));
-        edMyPw.setText(PbCryptHelper.decData(pb.getMyPw(), pkBytes));
+        edMyId.setText(pb.getMyId());
+        edMyPw.setText(pb.getMyPw());
         tvRegDate.setText(Consts.SDF_DATE.format(pb.getRegDate()));
         tvFixgDate.setText(Consts.SDF_DATETIME.format(pb.getFixDate()));
         edMemo.setText(pb.getMemo());
@@ -202,13 +198,7 @@ public class PbEditActivity extends AppCompatActivity implements View.OnClickLis
             e.printStackTrace();
         }
 
-        PdsApp app = (PdsApp) getApplicationContext();
-        byte[] pkBytes = app.getPkBytes();
-
-        String encId = PbCryptHelper.encData(myid, pkBytes);
-        String encPw = PbCryptHelper.encData(mypw, pkBytes);
-
-        PasswordBook pbr = new PasswordBook(Long.parseLong(id), surl, sname, stype, encId, encPw, rd.getTime(), System.currentTimeMillis(), memo);
+        PasswordBook pbr = new PasswordBook(Long.parseLong(id), surl, sname, stype, myid, mypw, rd.getTime(), System.currentTimeMillis(), memo);
         PasswordBookRepo pbRepo = PdsDbManager.getInstance().getRepository(PasswordBookRepo.class);
         pbRepo.updateRow(pbr);
 

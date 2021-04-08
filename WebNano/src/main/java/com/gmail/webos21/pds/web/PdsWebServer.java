@@ -54,10 +54,10 @@ public class PdsWebServer extends NanoHTTPD {
 
 	private String accessCode;
 
-	public PdsWebServer(String ipaddr, int port, String otp, File wwwroot, File fsroot) throws IOException {
+	public PdsWebServer(String ipaddr, int port, String encOtp, File wwwroot, File fsroot) throws IOException {
 		super(ipaddr, port);
 
-		this.accessCode = OnetimePass.encryptOtp(otp);
+		this.accessCode = encOtp;
 
 		staticRouter = new StaticRouter(wwwroot);
 		dynamicRouter = new DynamicRouter();

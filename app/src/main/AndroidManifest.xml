@@ -16,14 +16,20 @@
     <!-- For Accessing to Finger-Print -->
     <uses-permission android:name="android.permission.USE_BIOMETRIC" />
 
+    <!-- For Notification Player -->
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+
+
     <application
         android:name=".PdsApp"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:supportsRtl="true"
         android:requestLegacyExternalStorage="true"
-        android:theme="@style/AppTheme.NoActionBar">
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme.NoActionBar"
+        android:usesCleartextTraffic="true">
 
         <activity
             android:name=".MainActivity"
@@ -72,6 +78,17 @@
             android:launchMode="singleInstance"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
+
+        <service
+            android:name=".PdsWebService"
+            android:enabled="true"
+            android:exported="true"
+            android:label="PdsWebService">
+            <intent-filter>
+                <action android:name="com.gmail.webos21.pds.app.action.PLAY" />
+                <action android:name="com.gmail.webos21.pds.app.action.CLOSE" />
+            </intent-filter>
+        </service>
 
     </application>
 
