@@ -2145,7 +2145,7 @@ public abstract class NanoHTTPD {
 	}
 
 	public final boolean isAlive() {
-		return wasStarted() && !this.myServerSocket.isClosed() && this.myThread.isAlive();
+		return isRunning() && !this.myServerSocket.isClosed() && this.myThread.isAlive();
 	}
 
 	public ServerSocketFactory getServerSocketFactory() {
@@ -2348,12 +2348,14 @@ public abstract class NanoHTTPD {
 			if (this.myThread != null) {
 				this.myThread.join();
 			}
+			this.myThread = null;
+			this.myServerSocket = null;
 		} catch (Exception e) {
 			NanoHTTPD.LOG.log(Level.SEVERE, "Could not stop all connections", e);
 		}
 	}
 
-	public final boolean wasStarted() {
+	public final boolean isRunning() {
 		return this.myServerSocket != null && this.myThread != null;
 	}
 }

@@ -8,6 +8,7 @@ import android.os.Binder;
 import android.os.Environment;
 import android.os.IBinder;
 import android.text.format.Formatter;
+import android.util.Log;
 
 import com.gmail.webos21.nano.NanoHTTPD;
 import com.gmail.webos21.pds.web.PdsWebServer;
@@ -17,7 +18,9 @@ import java.io.IOException;
 
 public class PdsWebService extends Service {
 
-    private final static String WEB_ADDR_ANY = "0.0.0.0";
+    private static final String TAG = "PdsWebService";
+
+    private static final String WEB_ADDR_ANY = "0.0.0.0";
 
     private final IBinder mBinder = new PdsWebServiceBinder();
 
@@ -30,6 +33,8 @@ public class PdsWebService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
+
+        Log.i(TAG, "[PdsWebService::onCreate]");
 
         File exdir = Environment.getExternalStorageDirectory();
         File pwdir = getFilesDir();
@@ -56,6 +61,12 @@ public class PdsWebService extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
         if (intent != null) {
             String action = intent.getAction();
+
+            Log.i(TAG, "[PdsWebService::onStartCommand] action = " + action);
+            if (mNotificationPlayer == null) {
+                mNotificationPlayer = new NotificationPlayer(this);
+            }
+
             if (Consts.NOTI_ACT_PLAY.equals(action)) {
                 if (isPlaying()) {
                     pause();
@@ -73,11 +84,20 @@ public class PdsWebService extends Service {
     @Override
     public void onDestroy() {
         super.onDestroy();
+
+        Log.i(TAG, "[PdsWebService::onDestroy]");
+
         if (webServer != null) {
             webServer.stop();
             webServer = null;
         }
         removeNotificationPlayer();
+    }
+
+    private void stop() {
+        if (webServer != null) {
+            webServer.stop();
+        }
     }
 
     private void updateNotificationPlayer() {
@@ -93,10 +113,6 @@ public class PdsWebService extends Service {
         }
     }
 
-    private void stop() {
-        webServer.stop();
-    }
-
     @SuppressWarnings("deprecation")
     public String getUri() {
         WifiManager wm = (WifiManager) getApplicationContext().getSystemService(WIFI_SERVICE);
@@ -106,11 +122,16 @@ public class PdsWebService extends Service {
     }
 
     public boolean isPlaying() {
-        return webServer.wasStarted();
+        return webServer.isRunning();
     }
 
     public void play() {
-        if (!webServer.wasStarted()) {
+        if (mNotificationPlayer == null) {
+            mNotificationPlayer = new NotificationPlayer(this);
+            updateNotificationPlayer();
+        }
+
+        if (!isPlaying()) {
             try {
                 webServer.start(NanoHTTPD.SOCKET_READ_TIMEOUT, false);
             } catch (IOException e) {
@@ -122,11 +143,21 @@ public class PdsWebService extends Service {
     }
 
     public void pause() {
-        if (webServer.wasStarted()) {
+        if (mNotificationPlayer == null) {
+            mNotificationPlayer = new NotificationPlayer(this);
+            updateNotificationPlayer();
+        }
+
+        if (isPlaying()) {
             webServer.stop();
             sendBroadcast(new Intent(Consts.NOTI_ACT_STATE_CHANGED)); // 서비스 상태 변경 전송
             updateNotificationPlayer();
         }
+    }
+
+    public void close() {
+        stop();
+        removeNotificationPlayer();
     }
 
     public class PdsWebServiceBinder extends Binder {

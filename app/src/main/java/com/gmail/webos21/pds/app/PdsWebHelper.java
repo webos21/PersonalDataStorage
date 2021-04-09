@@ -5,8 +5,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.IBinder;
+import android.util.Log;
 
 public class PdsWebHelper {
+
+    private static final String TAG = "PdsWebHelper";
+
     private ServiceConnection mServiceConnection;
     private PdsWebService mService;
 
@@ -14,11 +18,13 @@ public class PdsWebHelper {
         mServiceConnection = new ServiceConnection() {
             @Override
             public void onServiceConnected(ComponentName name, IBinder service) {
+                Log.i(TAG, "[PdsWebHelper::ServiceConnection] onServiceConnected - " + name);
                 mService = ((PdsWebService.PdsWebServiceBinder) service).getService();
             }
 
             @Override
             public void onServiceDisconnected(ComponentName name) {
+                Log.i(TAG, "[PdsWebHelper::ServiceConnection] onServiceDisconnected - " + name);
                 mServiceConnection = null;
                 mService = null;
             }
@@ -27,20 +33,14 @@ public class PdsWebHelper {
     }
 
     public void play() {
+        Log.i(TAG, "[PdsWebHelper::play] mService = " + mService);
         if (mService != null) {
             mService.play();
         }
     }
 
-    public void togglePlay() {
-        if (isPlaying()) {
-            mService.pause();
-        } else {
-            mService.play();
-        }
-    }
-
     public boolean isPlaying() {
+        Log.i(TAG, "[PdsWebHelper::isPlaying] mService = " + mService);
         if (mService != null) {
             return mService.isPlaying();
         }
@@ -48,12 +48,21 @@ public class PdsWebHelper {
     }
 
     public void pause() {
+        Log.i(TAG, "[PdsWebHelper::pause] mService = " + mService);
         if (mService != null) {
             mService.pause();
         }
     }
 
+    public void close() {
+        Log.i(TAG, "[PdsWebHelper::close] mService = " + mService);
+        if (mService != null) {
+            mService.close();
+        }
+    }
+
     public String getUri() {
+        Log.i(TAG, "[PdsWebHelper::getUri] mService = " + mService);
         if (mService != null) {
             return mService.getUri();
         } else {

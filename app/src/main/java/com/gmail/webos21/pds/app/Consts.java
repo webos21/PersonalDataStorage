@@ -15,7 +15,7 @@ public class Consts {
     public static final String PREF_SHOW_ICON = "pref_show_icon";
     public static final String PREF_FINGER = "pref_finger";
 
-    public static final int NOTI_PLAYER_ID = 0x342;
+    public static final int NOTI_PLAYER_ID = 0x4e534450;
     public static final String NOTI_CHANNEL = "com.gmail.webos21.pds.app.web.channel";
     public static final String NOTI_CHANNEL_NAME = "PDS Web Notification Channel";
 

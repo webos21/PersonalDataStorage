@@ -115,7 +115,7 @@ public class NanoActivity extends AppCompatActivity {
                 pwh.play();
             } else {
                 NanoActivity.this.tvIpAddr.setText(NanoActivity.NO_SERVICE);
-                pwh.pause();
+                pwh.close();
             }
         }
     }
