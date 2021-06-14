@@ -98,6 +98,9 @@ public class FsHandler implements UriHandler {
 
                 ofc.close();
                 ifc.close();
+                
+                fos.close();
+                fis.close();
             } catch (IOException e) {
                 e.printStackTrace();
             }

@@ -35,7 +35,7 @@ public class ImageLoader {
     // handler to display images in UI thread
     Handler handler = new Handler();
     // Create Map (collection) to store image and image url in key value pair
-    private Map<ImageView, String> imageViews = Collections
+    private final Map<ImageView, String> imageViews = Collections
             .synchronizedMap(new WeakHashMap<ImageView, String>());
     private ImageLoadCompleteListener imageLdCL;
     // default image show in list (Before online image download)
@@ -48,7 +48,6 @@ public class ImageLoader {
         // Creates a thread pool that reuses a fixed number of
         // threads operating off a shared unbounded queue.
         executorService = Executors.newFixedThreadPool(5);
-
     }
 
     public void setImageLoadCompleteListener(ImageLoadCompleteListener l) {

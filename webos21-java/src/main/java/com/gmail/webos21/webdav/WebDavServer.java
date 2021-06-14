@@ -7,8 +7,6 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.text.DateFormat;
@@ -27,13 +25,11 @@ import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.Unmarshaller;
-import javax.xml.parsers.SAXParser;
+import org.kxml2.io.KXmlParser;
+import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
 
 import com.gmail.webos21.nano.NanoHTTPD;
-import com.gmail.webos21.webdav.model.Lockinfo;
-import com.gmail.webos21.webdav.model.WebDavModelHelper;
 
 public class WebDavServer extends NanoHTTPD {
 
@@ -711,13 +707,6 @@ public class WebDavServer extends NanoHTTPD {
 		InputStream sessionInputStream = session.getInputStream();
 		InputStream byteInputStream = null;
 		try {
-			Reader r = new InputStreamReader(sessionInputStream);
-			Unmarshaller u = WebDavModelHelper.createUnmarshaller();
-			
-			Lockinfo li = WebDavModelHelper.unmarshal(u, r, Lockinfo.class, "lockinfo");
-			
-			scope = li.getLockscope().
-
 			// convert PullInputStream to ByteArrayInputStream
 			byte[] data = new byte[contentLength];
 			sessionInputStream.read(data);
