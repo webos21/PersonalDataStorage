@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.widget.ImageView;
 
@@ -33,7 +34,7 @@ public class ImageLoader {
     FileCache fileCache;
     ExecutorService executorService;
     // handler to display images in UI thread
-    Handler handler = new Handler();
+    Handler handler = new Handler(Looper.getMainLooper());
     // Create Map (collection) to store image and image url in key value pair
     private final Map<ImageView, String> imageViews = Collections
             .synchronizedMap(new WeakHashMap<ImageView, String>());
