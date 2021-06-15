@@ -3,7 +3,6 @@ package com.gmail.webos21.pds.app.async;
 import android.app.Notification;
 import android.app.PendingIntent;
 import android.content.Intent;
-import android.os.AsyncTask;
 
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
@@ -13,7 +12,9 @@ import com.gmail.webos21.pds.app.MainActivity;
 import com.gmail.webos21.pds.app.PdsWebService;
 import com.gmail.webos21.pds.app.R;
 
-public class NotificationUpdater extends AsyncTask<Void, Void, Void> {
+import java.util.concurrent.Callable;
+
+public class NotificationUpdater implements Callable<Void> {
 
     private PdsWebService service;
     private String channelId;
@@ -26,7 +27,7 @@ public class NotificationUpdater extends AsyncTask<Void, Void, Void> {
     }
 
     @Override
-    protected Void doInBackground(Void... params) {
+    public Void call() {
         Intent actionPlay = new Intent(Consts.NOTI_ACT_PLAY);
         Intent actionClose = new Intent(Consts.NOTI_ACT_CLOSE);
         PendingIntent togglePlay = PendingIntent.getService(service, 0, actionPlay, 0);

@@ -1,7 +1,6 @@
 package com.gmail.webos21.pds.app.web;
 
 import android.content.Context;
-import android.os.AsyncTask;
 import android.util.Log;
 
 import java.io.File;
@@ -9,14 +8,15 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.concurrent.Callable;
 
-public class StaticResourceExtractor extends AsyncTask<Void, Void, Void> {
+public class StaticResourceExtractor implements Callable<Void> {
 
     private static final String TAG = "SRE";
 
-    private Context context;
-    private String fromDir;
-    private String toDir;
+    private final Context context;
+    private final String fromDir;
+    private final String toDir;
 
     public StaticResourceExtractor(Context context, String fromDir, String toDir) {
         this.context = context;
@@ -28,8 +28,8 @@ public class StaticResourceExtractor extends AsyncTask<Void, Void, Void> {
         try {
             Log.d(TAG, "COPY-DIR  : " + srcName + " => " + dstName);
 
-            boolean result = true;
-            String fileList[] = context.getAssets().list(srcName);
+            boolean result;
+            String[] fileList = context.getAssets().list(srcName);
             if (fileList == null) {
                 return false;
             }
@@ -71,14 +71,12 @@ public class StaticResourceExtractor extends AsyncTask<Void, Void, Void> {
     }
 
     @Override
-    protected Void doInBackground(Void... voids) {
+    public Void call() {
         try {
             copyAssetFolder(context, fromDir, toDir);
         } catch (Exception e) {
             e.printStackTrace();
         }
-
         return null;
     }
-
 }

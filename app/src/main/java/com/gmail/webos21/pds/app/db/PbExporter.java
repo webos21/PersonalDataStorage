@@ -1,6 +1,5 @@
 package com.gmail.webos21.pds.app.db;
 
-import android.os.AsyncTask;
 import android.util.Log;
 
 import com.gmail.webos21.pds.app.Consts;
@@ -13,8 +12,9 @@ import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.List;
+import java.util.concurrent.Callable;
 
-public class PbExporter extends AsyncTask<Void, Void, Void> {
+public class PbExporter implements Callable<Runnable> {
 
     private static final String TAG = "PbExporter";
 
@@ -30,7 +30,7 @@ public class PbExporter extends AsyncTask<Void, Void, Void> {
     }
 
     @Override
-    protected Void doInBackground(Void... voids) {
+    public Runnable call() throws Exception {
         BufferedWriter bwo = null;
         List<PasswordBook> pblist = pbRepo.findRows();
         StringBuffer sb = new StringBuffer();
@@ -64,13 +64,7 @@ public class PbExporter extends AsyncTask<Void, Void, Void> {
         sb = null;
         pbRepo = null;
 
-        return null;
-    }
-
-    @Override
-    protected void onPostExecute(Void aVoid) {
-        super.onPostExecute(aVoid);
-        postRun.run();
+        return postRun;
     }
 
     private String makeLine(PasswordBook passwordBook, StringBuffer sb) {
@@ -90,4 +84,5 @@ public class PbExporter extends AsyncTask<Void, Void, Void> {
 
         return sb.toString();
     }
+
 }

@@ -1,11 +1,8 @@
 package com.gmail.webos21.pds.app.db;
 
-import android.os.AsyncTask;
 import android.util.Log;
 
 import com.gmail.webos21.pds.app.Consts;
-import com.gmail.webos21.pds.db.PdsDbHelper;
-import com.gmail.webos21.pds.db.PdsDbManager;
 import com.gmail.webos21.pds.db.domain.PasswordBook;
 import com.gmail.webos21.pds.db.repo.PasswordBookRepo;
 
@@ -16,14 +13,14 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.Date;
+import java.util.concurrent.Callable;
 
-public class PbImporter extends AsyncTask<Void, Void, Void> {
+public class PbImporter implements Callable<Runnable> {
 
     private static final String TAG = "PbImporter";
 
     private PasswordBookRepo pbRepo;
     private File csvFile;
-
     private Runnable postRun;
 
     public PbImporter(PasswordBookRepo pbRepo, File csvFile, Runnable postRun) {
@@ -33,7 +30,7 @@ public class PbImporter extends AsyncTask<Void, Void, Void> {
     }
 
     @Override
-    protected Void doInBackground(Void... voids) {
+    public Runnable call() {
         BufferedReader bri = null;
         try {
             bri = new BufferedReader(new FileReader(csvFile));
@@ -64,13 +61,7 @@ public class PbImporter extends AsyncTask<Void, Void, Void> {
         }
         pbRepo = null;
 
-        return null;
-    }
-
-    @Override
-    protected void onPostExecute(Void aVoid) {
-        super.onPostExecute(aVoid);
-        postRun.run();
+        return this.postRun;
     }
 
     private void processLine(PasswordBookRepo pbRepo, String s) {
@@ -154,4 +145,5 @@ public class PbImporter extends AsyncTask<Void, Void, Void> {
         PasswordBook pbrow = new PasswordBook(id, surl, sname, stype, myid, mypw, regdate.getTime(), fixdate.getTime(), memo);
         pbRepo.updateRow(pbrow);
     }
+
 }

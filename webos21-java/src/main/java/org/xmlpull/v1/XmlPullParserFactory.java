@@ -3,6 +3,7 @@
 
 package org.xmlpull.v1;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -155,13 +156,15 @@ public class XmlPullParserFactory {
 				try {
 					if (o != null) {
 						Class<?> parserClass = (Class<?>) o;
-						return (XmlPullParser) parserClass.newInstance();
+						return (XmlPullParser) parserClass.getConstructor().newInstance();
 					}
 				} catch (InstantiationException e) {
 					exceptions.add(e);
+				} catch (NoSuchMethodException e) {
+					exceptions.add(e);
 				} catch (IllegalAccessException e) {
 					exceptions.add(e);
-				} catch (ClassCastException e) {
+				} catch (InvocationTargetException e) {
 					exceptions.add(e);
 				}
 			}
@@ -179,13 +182,17 @@ public class XmlPullParserFactory {
 				try {
 					if (o != null) {
 						Class<?> serializerClass = (Class<?>) o;
-						return (XmlSerializer) serializerClass.newInstance();
+						return (XmlSerializer) serializerClass.getConstructor().newInstance();
 					}
 				} catch (InstantiationException e) {
 					exceptions.add(e);
 				} catch (IllegalAccessException e) {
 					exceptions.add(e);
 				} catch (ClassCastException e) {
+					exceptions.add(e);
+				} catch (NoSuchMethodException e) {
+					exceptions.add(e);
+				} catch (InvocationTargetException e) {
 					exceptions.add(e);
 				}
 			}

@@ -9,10 +9,10 @@ import com.gmail.webos21.nano.NanoHTTPD.IHTTPSession;
 
 public class DynamicRouter {
 
-	private HashMap<String, DynamicParameter> dynamicMap;
+	private final HashMap<String, DynamicParameter> dynamicMap;
 
 	public DynamicRouter() {
-		dynamicMap = new HashMap<String, DynamicParameter>();
+		dynamicMap = new HashMap<>();
 	}
 
 	public RouteResult route(Map<String, String> headers, IHTTPSession session, String uri, Map<String, String> files) {
@@ -25,12 +25,12 @@ public class DynamicRouter {
 				DynamicParameter dp = dynamicMap.get(uriKey);
 				if (dp != null) {
 					try {
-						UriHandler h = null;
+						UriHandler h;
 						Class<? extends UriHandler> instanceClass = dp.getInstanceClass();
 						Class<?>[] classes = dp.getClasses();
 						Object[] values = dp.getValues();
 						if (classes == null) {
-							h = instanceClass.newInstance();
+							h = instanceClass.getConstructor().newInstance();
 						} else {
 							for (int i = 0; i < classes.length; i++) {
 								System.out.println("Class[" + i + "] " + classes[i].getName());
@@ -41,17 +41,7 @@ public class DynamicRouter {
 							h = instanceClass.getConstructor(classes).newInstance(values);
 						}
 						res = h.process(headers, session, uri, files);
-					} catch (InstantiationException e) {
-						e.printStackTrace();
-					} catch (IllegalAccessException e) {
-						e.printStackTrace();
-					} catch (IllegalArgumentException e) {
-						e.printStackTrace();
-					} catch (InvocationTargetException e) {
-						e.printStackTrace();
-					} catch (NoSuchMethodException e) {
-						e.printStackTrace();
-					} catch (SecurityException e) {
+					} catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException e) {
 						e.printStackTrace();
 					}
 				}

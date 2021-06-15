@@ -19,8 +19,6 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.activity.result.ActivityResult;
-import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.ActionBarDrawerToggle;
@@ -32,6 +30,7 @@ import androidx.core.content.ContextCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
+import com.gmail.webos21.android.async.TaskRunner;
 import com.gmail.webos21.android.patch.PRNGFixes;
 import com.gmail.webos21.android.widget.ChooseFileDialog;
 import com.gmail.webos21.pds.app.db.PbExporter;
@@ -44,16 +43,16 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 
 import java.io.File;
+import java.util.concurrent.Executors;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
     private static final String TAG = "MainActivity";
 
     private NavigationView navigationView;
-    private CheckBox cbIcon;
     private TextView tvTotalSite;
-    private ListView pblist;
     private PbRowAdapter pbAdapter;
+    private TaskRunner tr;
 
     private ActivityResultLauncher<Intent> authCfgLauncher;
     private ActivityResultLauncher<Intent> loginLauncher;
@@ -73,31 +72,30 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         PRNGFixes.apply();
 
         // Set Tool-Bar
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         // Set Drawer-Layout
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         if (drawer != null) {
             ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                     this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-            //noinspection deprecation
-            drawer.setDrawerListener(toggle);
+            drawer.addDrawerListener(toggle);
             toggle.syncState();
         }
 
         // Set Navigation-View
-        navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView = findViewById(R.id.nav_view);
         if (navigationView != null) {
             navigationView.setNavigationItemSelectedListener(new NavItemSelected());
         }
 
         // Set FloatingActionButton
-        FloatingActionButton fabInputOne = (FloatingActionButton) findViewById(R.id.fab_input_one);
+        FloatingActionButton fabInputOne = findViewById(R.id.fab_input_one);
         fabInputOne.setOnClickListener(this);
-        FloatingActionButton fabImportCsv = (FloatingActionButton) findViewById(R.id.fab_import_csv);
+        FloatingActionButton fabImportCsv = findViewById(R.id.fab_import_csv);
         fabImportCsv.setOnClickListener(this);
-        FloatingActionButton fabExportCsv = (FloatingActionButton) findViewById(R.id.fab_export_csv);
+        FloatingActionButton fabExportCsv = findViewById(R.id.fab_export_csv);
         fabExportCsv.setOnClickListener(this);
 
         // Get Shared Preferences
@@ -105,70 +103,58 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         // Set Views
         boolean bIconShow = pref.getBoolean(Consts.PREF_SHOW_ICON, false);
-        cbIcon = (CheckBox) findViewById(R.id.chk_icon_show);
+        CheckBox cbIcon = findViewById(R.id.chk_icon_show);
         cbIcon.setChecked(bIconShow);
         cbIcon.setOnCheckedChangeListener(new ShowConfigListener());
 
-        tvTotalSite = (TextView) findViewById(R.id.tv_total_site);
+        tvTotalSite = findViewById(R.id.tv_total_site);
 
         // Set Main-ListView
         pbAdapter = new PbRowAdapter(this, pref.getBoolean(Consts.PREF_SHOW_ICON, false));
-        pblist = (ListView) findViewById(R.id.lv_container);
-        pblist.setAdapter(pbAdapter);
-        pblist.setOnItemClickListener(new PbRowClickedListener());
-        pblist.setOnItemLongClickListener(new PbRowLongClickedListener());
+        ListView pbList = findViewById(R.id.lv_container);
+        pbList.setAdapter(pbAdapter);
+        pbList.setOnItemClickListener(new PbRowClickedListener());
+        pbList.setOnItemLongClickListener(new PbRowLongClickedListener());
 
         // Set Views
         tvTotalSite.setText(getResources().getString(R.string.cfg_total_item) + pbAdapter.getCount());
 
         authCfgLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
-                new ActivityResultCallback<ActivityResult>() {
-                    @Override
-                    public void onActivityResult(ActivityResult result) {
-                        if (result.getResultCode() == RESULT_OK) {
-                            // nothing to do
-                        } else {
-                            finish();
-                        }
+                (result) -> {
+                    if (result.getResultCode() != RESULT_OK) {
+                        finish();
                     }
-                });
+                }
+        );
 
         loginLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
-                new ActivityResultCallback<ActivityResult>() {
-                    @Override
-                    public void onActivityResult(ActivityResult result) {
-                        Log.i(TAG, "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-                        Log.i(TAG, "result.getResultCode() = " + result.getResultCode());
+                (result) -> {
+                    Log.i(TAG, "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+                    Log.i(TAG, "result.getResultCode() = " + result.getResultCode());
 
-                        if (result.getResultCode() == RESULT_OK) {
-                            PdsApp app = (PdsApp) getApplicationContext();
-                            app.setLoginRequired(false);
-                        } else {
-                            MainActivity.this.finish();
-                        }
+                    if (result.getResultCode() == RESULT_OK) {
+                        PdsApp app = (PdsApp) getApplicationContext();
+                        app.setLoginRequired(false);
+                    } else {
+                        MainActivity.this.finish();
                     }
                 });
 
         addLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
-                new ActivityResultCallback<ActivityResult>() {
-                    @Override
-                    public void onActivityResult(ActivityResult result) {
-                        if (result.getResultCode() == RESULT_OK) {
-                            MainActivity.this.pbAdapter.refresh();
-                        }
+                (result) -> {
+                    if (result.getResultCode() == RESULT_OK) {
+                        MainActivity.this.pbAdapter.refresh();
                     }
                 });
 
         editLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
-                new ActivityResultCallback<ActivityResult>() {
-                    @Override
-                    public void onActivityResult(ActivityResult result) {
-                        if (result.getResultCode() == RESULT_OK) {
-                            MainActivity.this.pbAdapter.refresh();
-                        }
+                (result) -> {
+                    if (result.getResultCode() == RESULT_OK) {
+                        MainActivity.this.pbAdapter.refresh();
                     }
                 });
 
+        tr = new TaskRunner(Executors.newSingleThreadExecutor());
     }
 
     @Override
@@ -284,7 +270,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         if (Consts.DEBUG) {
             Log.i(TAG, "onRequestPermissionsResult!!!!!!!!!!!!!");
         }
@@ -301,13 +287,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void refreshListView() {
-        MainActivity.this.runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                String totalSite = MainActivity.this.getResources().getString(R.string.cfg_total_item) + MainActivity.this.pbAdapter.getCount();
-                MainActivity.this.tvTotalSite.setText(totalSite);
-                MainActivity.this.pbAdapter.notifyDataSetChanged();
-            }
+        MainActivity.this.runOnUiThread(() -> {
+            String totalSite = MainActivity.this.getResources().getString(R.string.cfg_total_item) + MainActivity.this.pbAdapter.getCount();
+            MainActivity.this.tvTotalSite.setText(totalSite);
+            MainActivity.this.pbAdapter.notifyDataSetChanged();
         });
     }
 
@@ -341,12 +324,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         File csvFile = new File(mountPoint + "/Download", "exp.csv");
         PasswordBookRepo pbRepo = PdsDbManager.getInstance().getRepository(PasswordBookRepo.class);
 
-        new PbExporter(pbRepo, csvFile, new Runnable() {
-            @Override
-            public void run() {
-                Toast.makeText(MainActivity.this, "File is exported!!", Toast.LENGTH_SHORT).show();
-            }
-        }).execute();
+        tr.executeAsync(new PbExporter(pbRepo, csvFile, () -> {
+            Toast.makeText(MainActivity.this, "File is exported!!", Toast.LENGTH_SHORT).show();
+        }), Runnable::run);
     }
 
     private class NavItemSelected implements NavigationView.OnNavigationItemSelectedListener {
@@ -371,7 +351,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     break;
             }
 
-            DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+            DrawerLayout drawer = findViewById(R.id.drawer_layout);
             drawer.closeDrawer(GravityCompat.START);
             navigationView.getMenu().getItem(0).setChecked(true);
 
@@ -386,7 +366,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             switch (vId) {
                 case R.id.chk_icon_show: {
                     SharedPreferences pref = getSharedPreferences(Consts.PREF_FILE, MODE_PRIVATE);
-                    pref.edit().putBoolean(Consts.PREF_SHOW_ICON, isChecked).commit();
+                    pref.edit().putBoolean(Consts.PREF_SHOW_ICON, isChecked).apply();
                     MainActivity.this.pbAdapter.setShowIcon(isChecked);
                     break;
                 }
@@ -401,16 +381,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
             Object o = parent.getItemAtPosition(position);
             if (o instanceof PasswordBook) {
-                final PasswordBook pbrow = (PasswordBook) o;
+                final PasswordBook pbRow = (PasswordBook) o;
                 if (Consts.DEBUG) {
                     Log.i(TAG, "o is PbRow!!!!!!");
-                    Log.i(TAG, "id = " + pbrow.getId());
-                    Log.i(TAG, "name = " + pbrow.getSiteName());
-                    Log.i(TAG, "url = " + pbrow.getSiteUrl());
+                    Log.i(TAG, "id = " + pbRow.getId());
+                    Log.i(TAG, "name = " + pbRow.getSiteName());
+                    Log.i(TAG, "url = " + pbRow.getSiteUrl());
                 }
 
                 Intent i = new Intent(MainActivity.this, PbEditActivity.class);
-                i.putExtra(Consts.EXTRA_ARG_ID, pbrow.getId());
+                i.putExtra(Consts.EXTRA_ARG_ID, pbRow.getId());
                 editLauncher.launch(i);
             } else {
                 if (Consts.DEBUG) {
@@ -425,17 +405,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
             Object o = parent.getItemAtPosition(position);
             if (o instanceof PasswordBook) {
-                final PasswordBook pbrow = (PasswordBook) o;
+                final PasswordBook pbRow = (PasswordBook) o;
                 if (Consts.DEBUG) {
                     Log.i(TAG, "o is PbRow!!!!!!");
-                    Log.i(TAG, "id = " + pbrow.getId());
-                    Log.i(TAG, "name = " + pbrow.getSiteName());
-                    Log.i(TAG, "url = " + pbrow.getSiteUrl());
+                    Log.i(TAG, "id = " + pbRow.getId());
+                    Log.i(TAG, "name = " + pbRow.getSiteName());
+                    Log.i(TAG, "url = " + pbRow.getSiteUrl());
                 }
 
                 String popupTitle = MainActivity.this.getResources().getString(R.string.pbp_delete);
                 String popupMessage = MainActivity.this.getResources().getString(R.string.pbp_delete_msg);
-                popupMessage += "\n [" + pbrow.getSiteType() + "] " + pbrow.getSiteName();
+                popupMessage += "\n [" + pbRow.getSiteType() + "] " + pbRow.getSiteName();
 
                 String txtDelete = MainActivity.this.getResources().getString(R.string.delete);
                 String txtCancel = MainActivity.this.getResources().getString(R.string.cancel);
@@ -448,7 +428,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                             public void onClick(
                                     DialogInterface dialog, int id) {
                                 PasswordBookRepo pbRepo = PdsDbManager.getInstance().getRepository(PasswordBookRepo.class);
-                                pbRepo.deleteRow(pbrow);
+                                pbRepo.deleteRow(pbRow);
                                 MainActivity.this.refreshListView();
                             }
                         });
@@ -472,7 +452,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private class SearchAdapter implements SearchView.OnQueryTextListener {
 
-        private PbRowAdapter myAdapter;
+        private final PbRowAdapter myAdapter;
 
         public SearchAdapter(PbRowAdapter pbAdapter) {
             this.myAdapter = pbAdapter;
@@ -501,14 +481,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         @Override
         public void onFileChosen(File chosenFile) {
             PasswordBookRepo pbRepo = PdsDbManager.getInstance().getRepository(PasswordBookRepo.class);
-            new PbImporter(pbRepo, chosenFile, new Runnable() {
-                @Override
-                public void run() {
-                    Toast.makeText(MainActivity.this, "File is imported!!", Toast.LENGTH_SHORT).show();
-                    MainActivity.this.refreshListView();
-                }
-            }).execute();
+            MainActivity.this.tr.executeAsync(new PbImporter(pbRepo, chosenFile, () -> {
+                Toast.makeText(MainActivity.this, "File is imported!!", Toast.LENGTH_SHORT).show();
+                MainActivity.this.refreshListView();
+            }), Runnable::run);
         }
     }
-
 }

@@ -1,21 +1,22 @@
 package com.gmail.webos21.pds.app.keypad;
 
 import android.content.Context;
-import android.os.Build;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 
+import androidx.core.widget.TextViewCompat;
+
 public class KeypadAdapter extends BaseAdapter {
-    private Context mContext;
+    private final Context mContext;
 
     // Declare button click listener variable
     private OnClickListener mOnButtonClick;
 
     // Create and populate keypad buttons array with CalculatorButton enum values
-    private KeypadButton[] mButtons = {
+    private final KeypadButton[] mButtons = {
             KeypadButton.ONE, KeypadButton.TWO, KeypadButton.THREE,
             KeypadButton.FOUR, KeypadButton.FIVE, KeypadButton.SIX,
             KeypadButton.SEVEN, KeypadButton.EIGHT, KeypadButton.NINE,
@@ -48,25 +49,17 @@ public class KeypadAdapter extends BaseAdapter {
 
         if (convertView == null) { // if it's not recycled, initialize some attributes
             btn = new Button(mContext);
-            if (Build.VERSION.SDK_INT < 23) {
-                btn.setTextAppearance(mContext, android.R.style.TextAppearance_Large);
-            } else {
-                btn.setTextAppearance(android.R.style.TextAppearance_Large);
-            }
+            TextViewCompat.setTextAppearance(btn, android.R.style.TextAppearance_Large);
 
             KeypadButton keypadButton = mButtons[position];
 
             switch (keypadButton.mCategory) {
-                case NUMBER:
-                    btn.setBackgroundResource(android.R.drawable.btn_default);
-                    break;
-                case OPERATOR:
-                    btn.setBackgroundResource(android.R.drawable.btn_default);
-                    break;
                 case DUMMY:
                     btn.setBackgroundResource(android.R.drawable.btn_default);
                     btn.setEnabled(false);
                     break;
+                case OPERATOR:
+                case NUMBER:
                 default:
                     btn.setBackgroundResource(android.R.drawable.btn_default);
                     break;
