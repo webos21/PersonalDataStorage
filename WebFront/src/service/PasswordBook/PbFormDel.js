@@ -13,7 +13,7 @@ const PbFormDel = props => {
 
     const REQ_URI = (process.env.NODE_ENV !== 'production') ? 'http://localhost:28080/pds/v1/pwbook' : '/pds/v1/pwbook';
 
-    const { handleSubmit, errors, setError, control } = useForm({
+    const { handleSubmit, formState: { errors }, setError, control } = useForm({
         submitFocusError: true,
         nativeValidation: false,
     });
@@ -68,11 +68,17 @@ const PbFormDel = props => {
                         </ul>
                         <CFormGroup>
                             <Controller
-                                as={<CInput />}
-                                type="hidden"
+                                name="siteId"
                                 control={control}
                                 defaultValue={props.dataFromParent.id}
-                                name="siteId"
+                                render={({field}) => (
+                                    <CInput
+                                        type="hidden"
+                                        name="siteId"
+                                        value={field.value}
+                                        onChange={field.onChange}
+                                    />
+                                )}
                                 rules={{ required: true }} />
                             {errors.siteId && <CInvalidFeedback>{errors.siteId.message}</CInvalidFeedback>}
                         </CFormGroup>

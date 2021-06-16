@@ -53,7 +53,7 @@ const authHome = () => {
     }
 }
 
-const authLogin = pbpwd => {
+const authLogin = pwdValue => {
     return dispatch => {
         const REQ_URI = (process.env.NODE_ENV !== 'production') ? 'http://' + window.location.hostname + ':28080/pds/v1/auth' : '/pds/v1/auth';
         const crypto = require('crypto');
@@ -63,7 +63,7 @@ const authLogin = pbpwd => {
         sha256.update('PasswordBook');
 
         let aesCipher = crypto.createCipheriv('aes-256-cbc', sha256.digest(), iv);
-        aesCipher.update(pbpwd);
+        aesCipher.update(pwdValue);
         let cryptBytes = aesCipher.final();
         let base64Result = cryptBytes.toString('base64');
 

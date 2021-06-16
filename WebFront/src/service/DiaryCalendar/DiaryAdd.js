@@ -13,7 +13,7 @@ const DiaryAdd = props => {
 
     const REQ_URI = (process.env.NODE_ENV !== 'production') ? 'http://' + window.location.hostname + ':28080/pds/v1/diary' : '/pds/v1/diary';
 
-    const { handleSubmit, errors, setError, control } = useForm({
+    const { handleSubmit, formState: { errors }, setError, control } = useForm({
         submitFocusError: true,
         nativeValidation: false,
     });
@@ -60,17 +60,16 @@ const DiaryAdd = props => {
                                 </CInputGroupPrepend>
                                 <Controller
                                     name="title"
-                                    key={"title" + props.dataFromParent.id}
                                     control={control}
                                     defaultValue={''}
-                                    render={(ctrlProps) => (
+                                    render={({ field }) => (
                                         <CInput
                                             type="text"
                                             name="title"
                                             placeholder="제목을 입력해 주세요."
                                             className={"form-control" + (errors.title ? " is-invalid" : " is-valid")}
-                                            value={ctrlProps.value}
-                                            onChange={ctrlProps.onChange}
+                                            value={field.value}
+                                            onChange={field.onChange}
                                         />
                                     )}
                                     rules={{
@@ -100,17 +99,16 @@ const DiaryAdd = props => {
                                 </CInputGroupPrepend>
                                 <Controller
                                     name="wdate"
-                                    key={"wdate" + props.dataFromParent.id}
                                     control={control}
                                     defaultValue={Helper.date.dateFormat(new Date(props.dataFromParent))}
-                                    render={(ctrlProps) => (
+                                    render={({ field }) => (
                                         <CInput
                                             type="date"
                                             name="wdate"
                                             placeholder="작성일을 선택해 주세요."
                                             className={"form-control" + (errors.wdate ? " is-invalid" : " is-valid")}
-                                            value={ctrlProps.value}
-                                            onChange={ctrlProps.onChange}
+                                            value={field.value}
+                                            onChange={field.onChange}
                                         />
                                     )}
                                     rules={{
@@ -132,17 +130,16 @@ const DiaryAdd = props => {
                                 </CInputGroupPrepend>
                                 <Controller
                                     name="weather"
-                                    key={"weather" + props.dataFromParent.id}
                                     control={control}
                                     defaultValue={1}
-                                    render={(ctrlProps) => (
+                                    render={({ field }) => (
                                         <CSelect
                                             type="select"
                                             name="weather"
                                             placeholder="날씨를 선택해 주세요."
                                             className={"form-control" + (errors.weather ? " is-invalid" : " is-valid")}
-                                            value={ctrlProps.value}
-                                            onChange={ctrlProps.onChange}
+                                            value={field.value}
+                                            onChange={field.onChange}
                                         >
                                             <option value={0}>눈</option>
                                             <option value={1}>맑음</option>
@@ -171,17 +168,16 @@ const DiaryAdd = props => {
                                 </CInputGroupPrepend>
                                 <Controller
                                     name="content"
-                                    key={"content" + props.dataFromParent.id}
                                     control={control}
                                     defaultValue={''}
-                                    render={(ctrlProps) => (
+                                    render={({ field }) => (
                                         <CTextarea
                                             name="content"
                                             placeholder="내용을 입력해 주세요."
                                             className={"form-control" + (errors.memo ? " is-invalid" : " is-valid")}
                                             style={{ minHeight: 120 }}
-                                            value={ctrlProps.value}
-                                            onChange={ctrlProps.onChange}
+                                            value={field.value}
+                                            onChange={field.onChange}
                                         />
                                     )}
                                     rules={{

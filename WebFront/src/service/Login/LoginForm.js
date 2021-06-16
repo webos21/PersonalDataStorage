@@ -16,7 +16,7 @@ const LoginForm = props => {
 
     const authError = useSelector(state => AllActions.auth.getAuthError(state));
 
-    const { handleSubmit, errors, setError, control } = useForm({
+    const { handleSubmit, formState: {errors}, setError, control } = useForm({
         submitFocusError: true,
         nativeValidation: false,
     });
@@ -46,7 +46,7 @@ const LoginForm = props => {
                         name="pbpwd"
                         control={control}
                         defaultValue={''}
-                        render={(ctrlProps) => (
+                        render={({field}) => (
                             <CInput
                                 type="password"
                                 name="pbpwd"
@@ -54,8 +54,8 @@ const LoginForm = props => {
                                 className={"form-control" + (errors.pbpwd ? " is-invalid" : " is-valid")}
                                 tabIndex="0"
                                 autoComplete="current-password"
-                                value={ctrlProps.value}
-                                onChange={ctrlProps.onChange}
+                                value={field.value}
+                                onChange={field.onChange}
                             />
                         )}
                         rules={{

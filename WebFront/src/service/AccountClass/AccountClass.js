@@ -158,7 +158,7 @@ class AccountClass extends Component {
     } else {
       return filteredData.map((data, index) => {
         return (
-          <tr key={'memo-' + data.id} onClick={this.handleEdit.bind(this, data)}>
+          <tr key={'accountClass-' + data.id} onClick={this.handleEdit.bind(this, data)}>
             <td>{data.id}</td>
             <td>{data.title}</td>
           </tr>
@@ -234,8 +234,8 @@ class AccountClass extends Component {
             </CCard>
           </CCol>
         </CRow>
-        <AccountClassAdd modalFlag={this.state.modalFlagAdd} modalToggle={this.modalToggleAdd} dataFromParent={this.state.currentData} callbackFromParent={this.dataChangedCallback} />
-        <AccountClassEdit modalFlag={this.state.modalFlagEdit} modalToggle={this.modalToggleEdit} dataFromParent={this.state.currentData} callbackFromParent={this.dataChangedCallback} />
+        <AccountClassAdd key={"AccountClassAdd-" + this.state.currentData.id} modalFlag={this.state.modalFlagAdd} modalToggle={this.modalToggleAdd} dataFromParent={this.state.currentData} callbackFromParent={this.dataChangedCallback} />
+        <AccountClassEdit key={"AccountClassEdit-" + this.state.currentData.id} modalFlag={this.state.modalFlagEdit} modalToggle={this.modalToggleEdit} dataFromParent={this.state.currentData} callbackFromParent={this.dataChangedCallback} />
 
       </>
 

@@ -14,7 +14,7 @@ const AnniversaryAdd = props => {
 
     const REQ_URI = (process.env.NODE_ENV !== 'production') ? 'http://' + window.location.hostname + ':28080/pds/v1/anniversary' : '/pds/v1/anniversary';
 
-    const { handleSubmit, errors, setError, control } = useForm({
+    const { handleSubmit, formState: {errors}, setError, control } = useForm({
         submitFocusError: true,
         nativeValidation: false,
     });
@@ -61,17 +61,16 @@ const AnniversaryAdd = props => {
                                 </CInputGroupPrepend>
                                 <Controller
                                     name="title"
-                                    key={"title" + props.dataFromParent.id}
                                     control={control}
                                     defaultValue={''}
-                                    render={(ctrlProps) => (
+                                    render={({field}) => (
                                         <CInput
                                             type="text"
                                             name="title"
                                             placeholder="제목을 입력해 주세요."
                                             className={"form-control" + (errors.title ? " is-invalid" : " is-valid")}
-                                            value={ctrlProps.value}
-                                            onChange={ctrlProps.onChange}
+                                            value={field.value}
+                                            onChange={field.onChange}
                                         />
                                     )}
                                     rules={{
@@ -101,17 +100,16 @@ const AnniversaryAdd = props => {
                                 </CInputGroupPrepend>
                                 <Controller
                                     name="adate"
-                                    key={"adate" + props.dataFromParent.id}
                                     control={control}
                                     defaultValue={''}
-                                    render={(ctrlProps) => (
+                                    render={({field}) => (
                                         <CInput
                                             type="text"
                                             name="adate"
                                             placeholder="적용일을 입력해 주세요. (월일 4자리)"
                                             className={"form-control" + (errors.adate ? " is-invalid" : " is-valid")}
-                                            value={ctrlProps.value}
-                                            onChange={ctrlProps.onChange}
+                                            value={field.value}
+                                            onChange={field.onChange}
                                         />
                                     )}
                                     rules={{
@@ -141,10 +139,9 @@ const AnniversaryAdd = props => {
                                 </CInputGroupPrepend>
                                 <Controller
                                     name="lunar"
-                                    key={"lunar" + props.dataFromParent.id}
                                     control={control}
                                     defaultValue={null}
-                                    render={(ctrlProps) => (
+                                    render={({field}) => (
                                         <CFormGroup className={"form-control" + (errors.lunar ? " is-invalid" : " is-valid")}>
                                             <CFormGroup variant="custom-radio" inline>
                                                 <CInputRadio
@@ -152,8 +149,8 @@ const AnniversaryAdd = props => {
                                                     name="lunar"
                                                     value="0"
                                                     id="lunar-add-radio1"
-                                                    checked={ctrlProps.value === '0'}
-                                                    onChange={ctrlProps.onChange}
+                                                    checked={field.value === '0'}
+                                                    onChange={field.onChange}
                                                 /><CLabel variant="custom-checkbox" htmlFor="lunar-add-radio1">양력</CLabel>
                                             </CFormGroup>
                                             <CFormGroup variant="custom-radio" inline>
@@ -162,8 +159,8 @@ const AnniversaryAdd = props => {
                                                     name="lunar"
                                                     value="1"
                                                     id="lunar-add-radio2"
-                                                    checked={ctrlProps.value === '1'}
-                                                    onChange={ctrlProps.onChange}
+                                                    checked={field.value === '1'}
+                                                    onChange={field.onChange}
                                                 /><CLabel variant="custom-checkbox" htmlFor="lunar-add-radio2">음력</CLabel>
                                             </CFormGroup>
                                         </CFormGroup>
@@ -187,10 +184,9 @@ const AnniversaryAdd = props => {
                                 </CInputGroupPrepend>
                                 <Controller
                                     name="holiday"
-                                    key={"holiday" + props.dataFromParent.id}
                                     control={control}
                                     defaultValue={null}
-                                    render={(ctrlProps) => (
+                                    render={({field}) => (
                                         <CFormGroup className={"form-control" + (errors.holiday ? " is-invalid" : " is-valid")}>
                                             <CFormGroup variant="custom-radio" inline>
                                                 <CInputRadio
@@ -198,8 +194,8 @@ const AnniversaryAdd = props => {
                                                     name="holiday"
                                                     value="0"
                                                     id="holiday-add-radio1"
-                                                    checked={ctrlProps.value === '0'}
-                                                    onChange={ctrlProps.onChange}
+                                                    checked={field.value === '0'}
+                                                    onChange={field.onChange}
                                                 /><CLabel variant="custom-checkbox" htmlFor="holiday-add-radio1">평일</CLabel>
                                             </CFormGroup>
                                             <CFormGroup variant="custom-radio" inline>
@@ -208,8 +204,8 @@ const AnniversaryAdd = props => {
                                                     name="holiday"
                                                     value="1"
                                                     id="holiday-add-radio2"
-                                                    checked={ctrlProps.value === '1'}
-                                                    onChange={ctrlProps.onChange}
+                                                    checked={field.value === '1'}
+                                                    onChange={field.onChange}
                                                 /><CLabel variant="custom-checkbox" htmlFor="holiday-add-radio2">휴일</CLabel>
                                             </CFormGroup>
                                         </CFormGroup>

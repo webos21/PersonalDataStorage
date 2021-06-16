@@ -14,7 +14,7 @@ const AbFormAdd = props => {
 
     const REQ_URI = (process.env.NODE_ENV !== 'production') ? 'http://' + window.location.hostname + ':28080/pds/v1/address' : '/pds/v1/address';
 
-    const { handleSubmit, errors, setError, control } = useForm({
+    const { handleSubmit, formState: {errors}, setError, control } = useForm({
         submitFocusError: true,
         nativeValidation: false,
     });
@@ -61,17 +61,16 @@ const AbFormAdd = props => {
                                 </CInputGroupPrepend>
                                 <Controller
                                     name="fullName"
-                                    key={"fullName" + props.dataFromParent.id}
                                     control={control}
                                     defaultValue={props.dataFromParent.fullName}
-                                    render={(ctrlProps) => (
+                                    render={({field}) => (
                                         <CInput
                                             type="text"
                                             name="fullName"
                                             placeholder="이름을 입력해 주세요."
                                             className={"form-control" + (errors.fullName ? " is-invalid" : " is-valid")}
-                                            value={ctrlProps.value}
-                                            onChange={ctrlProps.onChange}
+                                            value={field.value}
+                                            onChange={field.onChange}
                                         />
                                     )}
                                     rules={{
@@ -101,17 +100,16 @@ const AbFormAdd = props => {
                                 </CInputGroupPrepend>
                                 <Controller
                                     name="mobile"
-                                    key={"mobile" + props.dataFromParent.id}
                                     control={control}
                                     defaultValue={props.dataFromParent.mobile}
-                                    render={(ctrlProps) => (
+                                    render={({field}) => (
                                         <CInput
                                             type="tel"
                                             name="mobile"
                                             placeholder="핸드폰을 입력해 주세요."
                                             className={"form-control" + (errors.mobile ? " is-invalid" : " is-valid")}
-                                            value={ctrlProps.value}
-                                            onChange={ctrlProps.onChange}
+                                            value={field.value}
+                                            onChange={field.onChange}
                                         />
                                     )}
                                     rules={{
@@ -141,17 +139,16 @@ const AbFormAdd = props => {
                                 </CInputGroupPrepend>
                                 <Controller
                                     name="category"
-                                    key={"category" + props.dataFromParent.id}
                                     control={control}
                                     defaultValue={props.dataFromParent.category}
-                                    render={(ctrlProps) => (
+                                    render={({field}) => (
                                         <CInput
                                             type="text"
                                             name="category"
                                             placeholder="분류를 입력해 주세요."
                                             className={"form-control" + (errors.category ? " is-invalid" : " is-valid")}
-                                            value={ctrlProps.value}
-                                            onChange={ctrlProps.onChange}
+                                            value={field.value}
+                                            onChange={field.onChange}
 
                                         />
                                     )}
@@ -182,16 +179,15 @@ const AbFormAdd = props => {
                                 </CInputGroupPrepend>
                                 <Controller
                                     name="telephone"
-                                    key={"telephone" + props.dataFromParent.id}
                                     control={control}
                                     defaultValue={props.dataFromParent.telephone}
-                                    render={(ctrlProps) => (
+                                    render={({field}) => (
                                         <CInput
                                             type="tel"
                                             name="telephone" placeholder="전화번호를 입력해 주세요."
                                             className={"form-control" + (errors.telephone ? " is-invalid" : " is-valid")}
-                                            value={ctrlProps.value}
-                                            onChange={ctrlProps.onChange}
+                                            value={field.value}
+                                            onChange={field.onChange}
                                         />
                                     )}
                                     rules={{
@@ -212,17 +208,16 @@ const AbFormAdd = props => {
                                 </CInputGroupPrepend>
                                 <Controller
                                     name="fax"
-                                    key={"fax" + props.dataFromParent.id}
                                     control={control}
                                     defaultValue={props.dataFromParent.fax}
-                                    render={(ctrlProps) => (
+                                    render={({field}) => (
                                         <CInput
                                             type="tel"
                                             name="fax"
                                             placeholder="FAX번호를 입력해 주세요."
                                             className={"form-control" + (errors.fax ? " is-invalid" : " is-valid")}
-                                            value={ctrlProps.value}
-                                            onChange={ctrlProps.onChange}
+                                            value={field.value}
+                                            onChange={field.onChange}
                                         />
                                     )}
                                     rules={{
@@ -243,17 +238,16 @@ const AbFormAdd = props => {
                                 </CInputGroupPrepend>
                                 <Controller
                                     name="email"
-                                    key={"email" + props.dataFromParent.id}
                                     control={control}
                                     defaultValue={props.dataFromParent.email}
-                                    render={(ctrlProps) => (
+                                    render={({field}) => (
                                         <CInput
                                             type="email"
                                             name="email"
                                             placeholder="전자우편을 입력해 주세요."
                                             className={"form-control" + (errors.email ? " is-invalid" : " is-valid")}
-                                            value={ctrlProps.value}
-                                            onChange={ctrlProps.onChange}
+                                            value={field.value}
+                                            onChange={field.onChange}
                                         />
                                     )}
                                     rules={{
@@ -274,17 +268,16 @@ const AbFormAdd = props => {
                                 </CInputGroupPrepend>
                                 <Controller
                                     name="homepage"
-                                    key={"homepage" + props.dataFromParent.id}
                                     control={control}
                                     defaultValue={props.dataFromParent.homepage}
-                                    render={(ctrlProps) => (
+                                    render={({field}) => (
                                         <CInput
                                             type="url"
                                             name="homepage"
                                             placeholder="홈페이지 주소를 입력해 주세요."
                                             className={"form-control" + (errors.homepage ? " is-invalid" : " is-valid")}
-                                            value={ctrlProps.value}
-                                            onChange={ctrlProps.onChange}
+                                            value={field.value}
+                                            onChange={field.onChange}
                                         />
                                     )}
                                     rules={{
@@ -305,17 +298,16 @@ const AbFormAdd = props => {
                                 </CInputGroupPrepend>
                                 <Controller
                                     name="postcode"
-                                    key={"postcode" + props.dataFromParent.id}
                                     control={control}
                                     defaultValue={props.dataFromParent.postcode}
-                                    render={(ctrlProps) => (
+                                    render={({field}) => (
                                         <CInput
                                             type="postcode"
                                             name="postcode"
                                             placeholder="우편번호를 입력해 주세요."
                                             className={"form-control" + (errors.postcode ? " is-invalid" : " is-valid")}
-                                            value={ctrlProps.value}
-                                            onChange={ctrlProps.onChange}
+                                            value={field.value}
+                                            onChange={field.onChange}
                                         />
                                     )}
                                     rules={{
@@ -336,17 +328,16 @@ const AbFormAdd = props => {
                                 </CInputGroupPrepend>
                                 <Controller
                                     name="address"
-                                    key={"address" + props.dataFromParent.id}
                                     control={control}
                                     defaultValue={props.dataFromParent.address}
-                                    render={(ctrlProps) => (
+                                    render={({field}) => (
                                         <CInput
                                             type="text"
                                             name="address"
                                             placeholder="주소를 입력해 주세요."
                                             className={"form-control" + (errors.address ? " is-invalid" : " is-valid")}
-                                            value={ctrlProps.value}
-                                            onChange={ctrlProps.onChange}
+                                            value={field.value}
+                                            onChange={field.onChange}
                                         />
                                     )}
                                     rules={{
@@ -367,18 +358,17 @@ const AbFormAdd = props => {
                                 </CInputGroupPrepend>
                                 <Controller
                                     name="memo"
-                                    key={"memo" + props.dataFromParent.id}
                                     control={control}
                                     defaultValue={props.dataFromParent.memo}
-                                    render={(ctrlProps) => (
+                                    render={({field}) => (
                                         <CTextarea
                                             type="text"
                                             name="memo"
                                             placeholder="메모를 입력해 주세요."
                                             className={"form-control" + (errors.memo ? " is-invalid" : " is-valid")}
                                             style={{ minHeight: 120 }}
-                                            value={ctrlProps.value}
-                                            onChange={ctrlProps.onChange}
+                                            value={field.value}
+                                            onChange={field.onChange}
                                         />
                                     )}
                                     rules={{

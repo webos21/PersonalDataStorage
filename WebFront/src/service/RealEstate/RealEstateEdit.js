@@ -13,7 +13,7 @@ const RealEstateEdit = props => {
 
     const REQ_URI = (process.env.NODE_ENV !== 'production') ? 'http://' + window.location.hostname + ':28080/pds/v1/realestate' : '/pds/v1/realestate';
 
-    const { handleSubmit, errors, setError, control } = useForm({
+    const { handleSubmit, formState: {errors}, setError, control } = useForm({
         submitFocusError: true,
         nativeValidation: false,
     });
@@ -80,15 +80,14 @@ const RealEstateEdit = props => {
                         <CCol xs="12" md="12">
                             <Controller
                                 name="reId"
-                                key={"reId" + props.dataFromParent.id}
                                 control={control}
                                 defaultValue={props.dataFromParent.id}
-                                render={(ctrlProps) => (
+                                render={({field}) => (
                                     <CInput
                                         type="hidden"
                                         name="reId"
-                                        value={ctrlProps.value}
-                                        onChange={ctrlProps.onChange}
+                                        value={field.value}
+                                        onChange={field.onChange}
                                     />
                                 )}
                                 rules={{ required: true }} />
@@ -98,17 +97,16 @@ const RealEstateEdit = props => {
                                 </CInputGroupPrepend>
                                 <Controller
                                     name="estateType"
-                                    key={"estateType" + props.dataFromParent.id}
                                     control={control}
                                     defaultValue={props.dataFromParent.estateType}
-                                    render={(ctrlProps) => (
+                                    render={({field}) => (
                                         <CInput
                                             type="text"
                                             name="estateType"
                                             placeholder="자산유형을 입력해 주세요."
                                             className={"form-control" + (errors.estateType ? " is-invalid" : " is-valid")}
-                                            value={ctrlProps.value}
-                                            onChange={ctrlProps.onChange}
+                                            value={field.value}
+                                            onChange={field.onChange}
                                         />
                                     )}
                                     rules={{
@@ -139,17 +137,16 @@ const RealEstateEdit = props => {
                                 </CInputGroupPrepend>
                                 <Controller
                                     name="title"
-                                    key={"title" + props.dataFromParent.id}
                                     control={control}
                                     defaultValue={props.dataFromParent.title}
-                                    render={(ctrlProps) => (
+                                    render={({field}) => (
                                         <CInput
                                             type="text"
                                             name="title"
                                             placeholder="자산이름을 입력해 주세요."
                                             className={"form-control" + (errors.title ? " is-invalid" : " is-valid")}
-                                            value={ctrlProps.value}
-                                            onChange={ctrlProps.onChange}
+                                            value={field.value}
+                                            onChange={field.onChange}
                                         />
                                     )}
                                     rules={{
@@ -179,17 +176,16 @@ const RealEstateEdit = props => {
                                 </CInputGroupPrepend>
                                 <Controller
                                     name="holder"
-                                    key={"holder" + props.dataFromParent.id}
                                     control={control}
                                     defaultValue={props.dataFromParent.holder}
-                                    render={(ctrlProps) => (
+                                    render={({field}) => (
                                         <CInput
                                             type="text"
                                             name="holder"
                                             placeholder="소유자명을 입력해 주세요."
                                             className={"form-control" + (errors.holder ? " is-invalid" : " is-valid")}
-                                            value={ctrlProps.value}
-                                            onChange={ctrlProps.onChange}
+                                            value={field.value}
+                                            onChange={field.onChange}
                                         />
                                     )}
                                     rules={{
@@ -219,17 +215,16 @@ const RealEstateEdit = props => {
                                 </CInputGroupPrepend>
                                 <Controller
                                     name="estimate"
-                                    key={"estimate" + props.dataFromParent.id}
                                     control={control}
                                     defaultValue={props.dataFromParent.estimate}
-                                    render={(ctrlProps) => (
+                                    render={({field}) => (
                                         <CInput
                                             type="number"
                                             name="estimate"
                                             placeholder="예상가격을 입력해 주세요."
                                             className={"form-control" + (errors.estimate ? " is-invalid" : " is-valid")}
-                                            value={ctrlProps.value}
-                                            onChange={ctrlProps.onChange}
+                                            value={field.value}
+                                            onChange={field.onChange}
                                         />
                                     )}
                                     rules={{
@@ -259,17 +254,16 @@ const RealEstateEdit = props => {
                                 </CInputGroupPrepend>
                                 <Controller
                                     name="loan"
-                                    key={"loan" + props.dataFromParent.id}
                                     control={control}
                                     defaultValue={props.dataFromParent.loan}
-                                    render={(ctrlProps) => (
+                                    render={({field}) => (
                                         <CInput
                                             type="number"
                                             name="loan"
                                             placeholder="담보대출을 입력해 주세요."
                                             className={"form-control" + (errors.loan ? " is-invalid" : " is-valid")}
-                                            value={ctrlProps.value}
-                                            onChange={ctrlProps.onChange}
+                                            value={field.value}
+                                            onChange={field.onChange}
                                         />
                                     )}
                                     rules={{
@@ -299,17 +293,16 @@ const RealEstateEdit = props => {
                                 </CInputGroupPrepend>
                                 <Controller
                                     name="acquisitionDate"
-                                    key={"acquisitionDate" + props.dataFromParent.id}
                                     control={control}
                                     defaultValue={Helper.date.dateFormat(new Date(props.dataFromParent.acquisitionDate))}
-                                    render={(ctrlProps) => (
+                                    render={({field}) => (
                                         <CInput
                                             type="date"
                                             name="acquisitionDate"
                                             placeholder="취득일자를 선택해 주세요."
                                             className={"form-control" + (errors.acquisitionDate ? " is-invalid" : " is-valid")}
-                                            value={ctrlProps.value}
-                                            onChange={ctrlProps.onChange}
+                                            value={field.value}
+                                            onChange={field.onChange}
                                         />
                                     )}
                                     rules={{
@@ -330,17 +323,16 @@ const RealEstateEdit = props => {
                                 </CInputGroupPrepend>
                                 <Controller
                                     name="estimateDate"
-                                    key={"estimateDate" + props.dataFromParent.id}
                                     control={control}
                                     defaultValue={Helper.date.dateFormat(new Date(props.dataFromParent.estimateDate))}
-                                    render={(ctrlProps) => (
+                                    render={({field}) => (
                                         <CInput
                                             type="date"
                                             name="estimateDate"
                                             placeholder="산정일자를 선택해 주세요."
                                             className={"form-control" + (errors.estimateDate ? " is-invalid" : " is-valid")}
-                                            value={ctrlProps.value}
-                                            onChange={ctrlProps.onChange}
+                                            value={field.value}
+                                            onChange={field.onChange}
                                         />
                                     )}
                                     rules={{
@@ -361,17 +353,16 @@ const RealEstateEdit = props => {
                                 </CInputGroupPrepend>
                                 <Controller
                                     name="arrange"
-                                    key={"arrange" + props.dataFromParent.id}
                                     control={control}
                                     defaultValue={props.dataFromParent.arrange}
-                                    render={(ctrlProps) => (
+                                    render={({field}) => (
                                         <CInput
                                             type="number"
                                             name="arrange"
                                             placeholder="배열순서를 입력해 주세요."
                                             className={"form-control" + (errors.arrange ? " is-invalid" : " is-valid")}
-                                            value={ctrlProps.value}
-                                            onChange={ctrlProps.onChange}
+                                            value={field.value}
+                                            onChange={field.onChange}
                                         />
                                     )}
                                     rules={{
@@ -392,18 +383,17 @@ const RealEstateEdit = props => {
                                 </CInputGroupPrepend>
                                 <Controller
                                     name="memo"
-                                    key={"memo" + props.dataFromParent.id}
                                     control={control}
                                     defaultValue={props.dataFromParent.memo}
-                                    render={(ctrlProps) => (
+                                    render={({field}) => (
                                         <CTextarea
                                             type="text"
                                             name="memo"
                                             placeholder="메모를 입력해 주세요."
                                             className={"form-control" + (errors.memo ? " is-invalid" : " is-valid")}
                                             style={{ minHeight: 120 }}
-                                            value={ctrlProps.value}
-                                            onChange={ctrlProps.onChange}
+                                            value={field.value}
+                                            onChange={field.onChange}
                                         />
                                     )}
                                     rules={{

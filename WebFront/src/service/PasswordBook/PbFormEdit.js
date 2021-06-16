@@ -14,7 +14,7 @@ const PbFormEdit = props => {
 
     const REQ_URI = (process.env.NODE_ENV !== 'production') ? 'http://' + window.location.hostname + ':28080/pds/v1/pwbook' : '/pds/v1/pwbook';
 
-    const { handleSubmit, errors, setError, control } = useForm({
+    const { handleSubmit, formState: {errors}, setError, control } = useForm({
         submitFocusError: true,
         nativeValidation: false,
     });
@@ -81,15 +81,14 @@ const PbFormEdit = props => {
                         <CCol xs="12" md="12">
                             <Controller
                                 name="siteId"
-                                key={"siteId" + props.dataFromParent.id}
                                 control={control}
                                 defaultValue={props.dataFromParent.id}
-                                render={(ctrlProps) => (
+                                render={({field}) => (
                                     <CInput
                                         type="hidden"
                                         name="siteId"
-                                        value={ctrlProps.value}
-                                        onChange={ctrlProps.onChange}
+                                        value={field.value}
+                                        onChange={field.onChange}
                                     />
                                 )}
                                 rules={{ required: true }} />
@@ -99,17 +98,16 @@ const PbFormEdit = props => {
                                 </CInputGroupPrepend>
                                 <Controller
                                     name="siteUrl"
-                                    key={"siteUrl" + props.dataFromParent.id}
                                     control={control}
                                     defaultValue={props.dataFromParent.siteUrl}
-                                    render={(ctrlProps) => (
+                                    render={({field}) => (
                                         <CInput
                                             type="url"
                                             name="siteUrl"
                                             placeholder="URL을 입력해 주세요."
                                             className={"form-control" + (errors.siteUrl ? " is-invalid" : " is-valid")}
-                                            value={ctrlProps.value}
-                                            onChange={ctrlProps.onChange}
+                                            value={field.value}
+                                            onChange={field.onChange}
                                         />
                                     )}
                                     rules={{
@@ -139,17 +137,16 @@ const PbFormEdit = props => {
                                 </CInputGroupPrepend>
                                 <Controller
                                     name="siteName"
-                                    key={"siteName" + props.dataFromParent.id}
                                     control={control}
                                     defaultValue={props.dataFromParent.siteName}
-                                    render={(ctrlProps) => (
+                                    render={({field}) => (
                                         <CInput
                                             type="text"
                                             name="siteName"
                                             placeholder="사이트명을 입력해 주세요."
                                             className={"form-control" + (errors.siteName ? " is-invalid" : " is-valid")}
-                                            value={ctrlProps.value}
-                                            onChange={ctrlProps.onChange}
+                                            value={field.value}
+                                            onChange={field.onChange}
                                         />
                                     )}
                                     rules={{
@@ -179,17 +176,16 @@ const PbFormEdit = props => {
                                 </CInputGroupPrepend>
                                 <Controller
                                     name="siteType"
-                                    key={"siteType" + props.dataFromParent.id}
                                     control={control}
                                     defaultValue={props.dataFromParent.siteType}
-                                    render={(ctrlProps) => (
+                                    render={({field}) => (
                                         <CInput
                                             type="text"
                                             name="siteType"
                                             placeholder="유형을 입력해 주세요."
                                             className={"form-control" + (errors.siteType ? " is-invalid" : " is-valid")}
-                                            value={ctrlProps.value}
-                                            onChange={ctrlProps.onChange}
+                                            value={field.value}
+                                            onChange={field.onChange}
 
                                         />
                                     )}
@@ -220,16 +216,15 @@ const PbFormEdit = props => {
                                 </CInputGroupPrepend>
                                 <Controller
                                     name="myId"
-                                    key={"myId" + props.dataFromParent.id}
                                     control={control}
                                     defaultValue={props.dataFromParent.myId}
-                                    render={(ctrlProps) => (
+                                    render={({field}) => (
                                         <CInput
                                             type="text"
                                             name="myId" placeholder="아이디를 입력해 주세요."
                                             className={"form-control" + (errors.myId ? " is-invalid" : " is-valid")}
-                                            value={ctrlProps.value}
-                                            onChange={ctrlProps.onChange}
+                                            value={field.value}
+                                            onChange={field.onChange}
                                         />
                                     )}
                                     rules={{
@@ -259,17 +254,16 @@ const PbFormEdit = props => {
                                 </CInputGroupPrepend>
                                 <Controller
                                     name="myPw"
-                                    key={"myPw" + props.dataFromParent.id}
                                     control={control}
                                     defaultValue={props.dataFromParent.myPw}
-                                    render={(ctrlProps) => (
+                                    render={({field}) => (
                                         <CInput
                                             type="text"
                                             name="myPw"
                                             placeholder="비밀번호를 입력해 주세요."
                                             className={"form-control" + (errors.myPw ? " is-invalid" : " is-valid")}
-                                            value={ctrlProps.value}
-                                            onChange={ctrlProps.onChange}
+                                            value={field.value}
+                                            onChange={field.onChange}
                                         />
                                     )}
                                     rules={{
@@ -299,16 +293,15 @@ const PbFormEdit = props => {
                                 </CInputGroupPrepend>
                                 <Controller
                                     name="regDate"
-                                    key={"regDate" + props.dataFromParent.id}
                                     control={control}
                                     defaultValue={Helper.date.dateFormat(new Date(props.dataFromParent.regDate))}
-                                    render={(ctrlProps) => (
+                                    render={({field}) => (
                                         <CInput
                                             type="date"
                                             name="regDate" id="regDate" placeholder="가입일자를 선택해 주세요."
                                             className={"form-control" + (errors.regDate ? " is-invalid" : " is-valid")}
-                                            value={ctrlProps.value}
-                                            onChange={ctrlProps.onChange}
+                                            value={field.value}
+                                            onChange={field.onChange}
                                         />
                                     )}
                                     rules={{
@@ -330,18 +323,17 @@ const PbFormEdit = props => {
                                 </CInputGroupPrepend>
                                 <Controller
                                     name="memo"
-                                    key={"memo" + props.dataFromParent.id}
                                     control={control}
                                     defaultValue={props.dataFromParent.memo}
-                                    render={(ctrlProps) => (
+                                    render={({field}) => (
                                         <CTextarea
                                             type="text"
                                             name="memo"
                                             placeholder="메모를 입력해 주세요."
                                             className={"form-control" + (errors.memo ? " is-invalid" : " is-valid")}
                                             style={{ minHeight: 120 }}
-                                            value={ctrlProps.value}
-                                            onChange={ctrlProps.onChange}
+                                            value={field.value}
+                                            onChange={field.onChange}
                                         />
                                     )}
                                     rules={{

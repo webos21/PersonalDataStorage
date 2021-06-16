@@ -15,7 +15,7 @@ const RegularPayAdd = props => {
 
     const REQ_URI = (process.env.NODE_ENV !== 'production') ? 'http://' + window.location.hostname + ':28080/pds/v1/regularPay' : '/pds/v1/regularPay';
 
-    const { handleSubmit, errors, setError, setValue, control } = useForm({
+    const { handleSubmit, formState: {errors}, setError, setValue, control } = useForm({
         submitFocusError: true,
         nativeValidation: false,
     });
@@ -67,17 +67,16 @@ const RegularPayAdd = props => {
                                 </CInputGroupPrepend>
                                 <Controller
                                     name="title"
-                                    key={"title" + props.dataFromParent.id}
                                     control={control}
                                     defaultValue={props.dataFromParent.title}
-                                    render={(ctrlProps) => (
+                                    render={({field}) => (
                                         <CInput
                                             type="text"
                                             name="title"
                                             placeholder="정기납명을 입력해 주세요."
                                             className={"form-control" + (errors.title ? " is-invalid" : " is-valid")}
-                                            value={ctrlProps.value}
-                                            onChange={ctrlProps.onChange}
+                                            value={field.value}
+                                            onChange={field.onChange}
                                         />
                                     )}
                                     rules={{
@@ -108,17 +107,16 @@ const RegularPayAdd = props => {
                                 </CInputGroupPrepend>
                                 <Controller
                                     name="wdate"
-                                    key={"wdate" + props.dataFromParent.id}
                                     control={control}
                                     defaultValue={Helper.date.dateFormat(new Date(props.dataFromParent.wdate))}
-                                    render={(ctrlProps) => (
+                                    render={({field}) => (
                                         <CInput
                                             type="date"
                                             name="wdate"
                                             placeholder="수정일자을 선택해 주세요."
                                             className={"form-control" + (errors.wdate ? " is-invalid" : " is-valid")}
-                                            value={ctrlProps.value}
-                                            onChange={ctrlProps.onChange}
+                                            value={field.value}
+                                            onChange={field.onChange}
                                         />
                                     )}
                                     rules={{
@@ -139,17 +137,16 @@ const RegularPayAdd = props => {
                                 </CInputGroupPrepend>
                                 <Controller
                                     name="accountCode"
-                                    key={"accountCode" + props.dataFromParent.id}
                                     control={control}
                                     defaultValue={props.dataFromParent.accountCode}
-                                    render={(ctrlProps) => (
+                                    render={({field}) => (
                                         <CInput
                                             type="text"
                                             name="accountCode"
                                             placeholder="계정분류를 선택해 주세요."
                                             className={"form-control" + (errors.accountCode ? " is-invalid" : " is-valid")}
-                                            value={ctrlProps.value}
-                                            onChange={ctrlProps.onChange}
+                                            value={field.value}
+                                            onChange={field.onChange}
                                         />
                                     )}
                                     rules={{
@@ -172,16 +169,15 @@ const RegularPayAdd = props => {
                                 </CInputGroupPrepend>
                                 <Controller
                                     name="deposit"
-                                    key={"deposit" + props.dataFromParent.id}
                                     control={control}
                                     defaultValue={props.dataFromParent.deposit}
-                                    render={(ctrlProps) => (
+                                    render={({field}) => (
                                         <CInput
                                             type="number"
                                             name="deposit" placeholder="입금액을 입력해 주세요."
                                             className={"form-control" + (errors.deposit ? " is-invalid" : " is-valid")}
-                                            value={ctrlProps.value}
-                                            onChange={ctrlProps.onChange}
+                                            value={field.value}
+                                            onChange={field.onChange}
                                         />
                                     )}
                                     rules={{
@@ -211,17 +207,16 @@ const RegularPayAdd = props => {
                                 </CInputGroupPrepend>
                                 <Controller
                                     name="withdrawal"
-                                    key={"withdrawal" + props.dataFromParent.id}
                                     control={control}
                                     defaultValue={props.dataFromParent.withdrawal}
-                                    render={(ctrlProps) => (
+                                    render={({field}) => (
                                         <CInput
                                             type="number"
                                             name="withdrawal"
                                             placeholder="출금액을 입력해 주세요."
                                             className={"form-control" + (errors.withdrawal ? " is-invalid" : " is-valid")}
-                                            value={ctrlProps.value}
-                                            onChange={ctrlProps.onChange}
+                                            value={field.value}
+                                            onChange={field.onChange}
                                         />
                                     )}
                                     rules={{
@@ -251,17 +246,16 @@ const RegularPayAdd = props => {
                                 </CInputGroupPrepend>
                                 <Controller
                                     name="monthDay"
-                                    key={"monthDay" + props.dataFromParent.id}
                                     control={control}
                                     defaultValue={props.dataFromParent.monthDay}
-                                    render={(ctrlProps) => (
+                                    render={({field}) => (
                                         <CInput
                                             type="number"
                                             name="monthDay"
                                             placeholder="정기납일을 입력해 주세요."
                                             className={"form-control" + (errors.monthDay ? " is-invalid" : " is-valid")}
-                                            value={ctrlProps.value}
-                                            onChange={ctrlProps.onChange}
+                                            value={field.value}
+                                            onChange={field.onChange}
                                         />
                                     )}
                                     rules={{
@@ -292,17 +286,16 @@ const RegularPayAdd = props => {
                                 </CInputGroupPrepend>
                                 <Controller
                                     name="sdate"
-                                    key={"sdate" + props.dataFromParent.id}
                                     control={control}
                                     defaultValue={Helper.date.dateFormat(new Date(props.dataFromParent.sdate))}
-                                    render={(ctrlProps) => (
+                                    render={({field}) => (
                                         <CInput
                                             type="date"
                                             name="sdate"
                                             placeholder="납입 시작일을 선택해 주세요."
                                             className={"form-control" + (errors.sdate ? " is-invalid" : " is-valid")}
-                                            value={ctrlProps.value}
-                                            onChange={ctrlProps.onChange}
+                                            value={field.value}
+                                            onChange={field.onChange}
                                         />
                                     )}
                                     rules={{
@@ -323,17 +316,16 @@ const RegularPayAdd = props => {
                                 </CInputGroupPrepend>
                                 <Controller
                                     name="edate"
-                                    key={"edate" + props.dataFromParent.id}
                                     control={control}
                                     defaultValue={Helper.date.dateFormat(new Date(props.dataFromParent.edate))}
-                                    render={(ctrlProps) => (
+                                    render={({field}) => (
                                         <CInput
                                             type="date"
                                             name="edate"
                                             placeholder="납입 종료일을 선택해 주세요."
                                             className={"form-control" + (errors.edate ? " is-invalid" : " is-valid")}
-                                            value={ctrlProps.value}
-                                            onChange={ctrlProps.onChange}
+                                            value={field.value}
+                                            onChange={field.onChange}
                                         />
                                     )}
                                     rules={{
@@ -354,18 +346,17 @@ const RegularPayAdd = props => {
                                 </CInputGroupPrepend>
                                 <Controller
                                     name="memo"
-                                    key={"memo" + props.dataFromParent.id}
                                     control={control}
                                     defaultValue={props.dataFromParent.memo}
-                                    render={(ctrlProps) => (
+                                    render={({field}) => (
                                         <CTextarea
                                             type="text"
                                             name="memo"
                                             placeholder="메모를 입력해 주세요."
                                             className={"form-control" + (errors.memo ? " is-invalid" : " is-valid")}
                                             style={{ minHeight: 120 }}
-                                            value={ctrlProps.value}
-                                            onChange={ctrlProps.onChange}
+                                            value={field.value}
+                                            onChange={field.onChange}
                                         />
                                     )}
                                     rules={{

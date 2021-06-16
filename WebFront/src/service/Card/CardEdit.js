@@ -15,7 +15,7 @@ const CardEdit = props => {
 
     const REQ_URI = (process.env.NODE_ENV !== 'production') ? 'http://' + window.location.hostname + ':28080/pds/v1/card' : '/pds/v1/card';
 
-    const { handleSubmit, errors, setError, control } = useForm({
+    const { handleSubmit, formState: {errors}, setError, control } = useForm({
         submitFocusError: true,
         nativeValidation: false,
     });
@@ -84,15 +84,14 @@ const CardEdit = props => {
                         <CCol xs="12" md="12">
                             <Controller
                                 name="cardId"
-                                key={"cardId" + props.dataFromParent.id}
                                 control={control}
                                 defaultValue={props.dataFromParent.id}
-                                render={(ctrlProps) => (
+                                render={({field}) => (
                                     <CInput
                                         type="hidden"
                                         name="cardId"
-                                        value={ctrlProps.value}
-                                        onChange={ctrlProps.onChange}
+                                        value={field.value}
+                                        onChange={field.onChange}
                                     />
                                 )}
                                 rules={{ required: true }} />
@@ -102,17 +101,16 @@ const CardEdit = props => {
                                 </CInputGroupPrepend>
                                 <Controller
                                     name="company"
-                                    key={"company" + props.dataFromParent.id}
                                     control={control}
                                     defaultValue={props.dataFromParent.company}
-                                    render={(ctrlProps) => (
+                                    render={({field}) => (
                                         <CInput
                                             type="text"
                                             name="company"
                                             placeholder="카드사를 입력해 주세요."
                                             className={"form-control" + (errors.company ? " is-invalid" : " is-valid")}
-                                            value={ctrlProps.value}
-                                            onChange={ctrlProps.onChange}
+                                            value={field.value}
+                                            onChange={field.onChange}
                                         />
                                     )}
                                     rules={{
@@ -143,17 +141,16 @@ const CardEdit = props => {
                                 </CInputGroupPrepend>
                                 <Controller
                                     name="cardName"
-                                    key={"cardName" + props.dataFromParent.id}
                                     control={control}
                                     defaultValue={props.dataFromParent.cardName}
-                                    render={(ctrlProps) => (
+                                    render={({field}) => (
                                         <CInput
                                             type="text"
                                             name="cardName"
                                             placeholder="카드명을 입력해 주세요."
                                             className={"form-control" + (errors.cardName ? " is-invalid" : " is-valid")}
-                                            value={ctrlProps.value}
-                                            onChange={ctrlProps.onChange}
+                                            value={field.value}
+                                            onChange={field.onChange}
                                         />
                                     )}
                                     rules={{
@@ -183,17 +180,16 @@ const CardEdit = props => {
                                 </CInputGroupPrepend>
                                 <Controller
                                     name="cardNumber"
-                                    key={"cardNumber" + props.dataFromParent.id}
                                     control={control}
                                     defaultValue={props.dataFromParent.cardNumber}
-                                    render={(ctrlProps) => (
+                                    render={({field}) => (
                                         <CInput
                                             type="text"
                                             name="cardNumber"
                                             placeholder="카드번호를 입력해 주세요."
                                             className={"form-control" + (errors.cardNumber ? " is-invalid" : " is-valid")}
-                                            value={ctrlProps.value}
-                                            onChange={ctrlProps.onChange}
+                                            value={field.value}
+                                            onChange={field.onChange}
                                         />
                                     )}
                                     rules={{
@@ -223,10 +219,9 @@ const CardEdit = props => {
                                 </CInputGroupPrepend>
                                 <Controller
                                     name="cardPassword"
-                                    key={"cardPassword" + props.dataFromParent.id}
                                     control={control}
                                     defaultValue={props.dataFromParent.cardPassword}
-                                    render={(ctrlProps) => (
+                                    render={({field}) => (
                                         <CInput
                                             type="text"
                                             name="cardPassword"
@@ -234,8 +229,8 @@ const CardEdit = props => {
                                             className={"form-control" + (errors.cardPassword ? " is-invalid" : " is-valid")}
                                             minLength="4"
                                             maxLength="4"
-                                            value={ctrlProps.value}
-                                            onChange={ctrlProps.onChange}
+                                            value={field.value}
+                                            onChange={field.onChange}
                                         />
                                     )}
                                     rules={{
@@ -265,17 +260,16 @@ const CardEdit = props => {
                                 </CInputGroupPrepend>
                                 <Controller
                                     name="validYear"
-                                    key={"validYear" + props.dataFromParent.id}
                                     control={control}
                                     defaultValue={props.dataFromParent.validYear}
-                                    render={(ctrlProps) => (
+                                    render={({field}) => (
                                         <CInput
                                             type="text"
                                             name="validYear"
                                             placeholder="유효년도를 입력해 주세요."
                                             className={"form-control" + (errors.validYear ? " is-invalid" : " is-valid")}
-                                            value={ctrlProps.value}
-                                            onChange={ctrlProps.onChange}
+                                            value={field.value}
+                                            onChange={field.onChange}
                                         />
                                     )}
                                     rules={{
@@ -305,17 +299,16 @@ const CardEdit = props => {
                                 </CInputGroupPrepend>
                                 <Controller
                                     name="validMonth"
-                                    key={"validMonth" + props.dataFromParent.id}
                                     control={control}
                                     defaultValue={props.dataFromParent.validMonth}
-                                    render={(ctrlProps) => (
+                                    render={({field}) => (
                                         <CInput
                                             type="text"
                                             name="validMonth"
                                             placeholder="유효월을 입력해 주세요."
                                             className={"form-control" + (errors.validMonth ? " is-invalid" : " is-valid")}
-                                            value={ctrlProps.value}
-                                            onChange={ctrlProps.onChange}
+                                            value={field.value}
+                                            onChange={field.onChange}
                                         />
                                     )}
                                     rules={{
@@ -345,17 +338,16 @@ const CardEdit = props => {
                                 </CInputGroupPrepend>
                                 <Controller
                                     name="chargeDate"
-                                    key={"chargeDate" + props.dataFromParent.id}
                                     control={control}
                                     defaultValue={props.dataFromParent.chargeDate + 1}
-                                    render={(ctrlProps) => (
+                                    render={({field}) => (
                                         <CInput
                                             type="number"
                                             name="chargeDate"
                                             placeholder="결제일을 입력해 주세요."
                                             className={"form-control" + (errors.chargeDate ? " is-invalid" : " is-valid")}
-                                            value={ctrlProps.value}
-                                            onChange={ctrlProps.onChange}
+                                            value={field.value}
+                                            onChange={field.onChange}
                                         />
                                     )}
                                     rules={{
@@ -385,10 +377,9 @@ const CardEdit = props => {
                                 </CInputGroupPrepend>
                                 <Controller
                                     name="cvcNumber"
-                                    key={"cvcNumber" + props.dataFromParent.id}
                                     control={control}
                                     defaultValue={props.dataFromParent.cvcNumber}
-                                    render={(ctrlProps) => (
+                                    render={({field}) => (
                                         <CInput
                                             type="number"
                                             name="cvcNumber"
@@ -396,8 +387,8 @@ const CardEdit = props => {
                                             className={"form-control" + (errors.cvcNumber ? " is-invalid" : " is-valid")}
                                             minLength="3"
                                             maxLength="3"
-                                            value={ctrlProps.value}
-                                            onChange={ctrlProps.onChange}
+                                            value={field.value}
+                                            onChange={field.onChange}
                                         />
                                     )}
                                     rules={{
@@ -427,17 +418,16 @@ const CardEdit = props => {
                                 </CInputGroupPrepend>
                                 <Controller
                                     name="bankId"
-                                    key={"bankId" + props.dataFromParent.id}
                                     control={control}
                                     defaultValue={props.dataFromParent.bankId}
-                                    render={(ctrlProps) => (
+                                    render={({field}) => (
                                         <CSelect
                                             type="select"
                                             name="bankId"
                                             placeholder="계좌를 선택해 주세요."
                                             className={"form-control" + (errors.bankId ? " is-invalid" : " is-valid")}
-                                            value={ctrlProps.value}
-                                            onChange={ctrlProps.onChange}>
+                                            value={field.value}
+                                            onChange={field.onChange}>
                                             <option key={'bankId-item--1'} value={-1}>계좌를 선택해 주세요.</option>
                                             <option key={'bankId-item--2'} value={-2}>----------------</option>
                                             {
@@ -472,17 +462,16 @@ const CardEdit = props => {
                                 </CInputGroupPrepend>
                                 <Controller
                                     name="creditLimit"
-                                    key={"creditLimit" + props.dataFromParent.id}
                                     control={control}
                                     defaultValue={props.dataFromParent.creditLimit}
-                                    render={(ctrlProps) => (
+                                    render={({field}) => (
                                         <CInput
                                             type="number"
                                             name="creditLimit"
                                             placeholder="카드한도를 입력해 주세요."
                                             className={"form-control" + (errors.creditLimit ? " is-invalid" : " is-valid")}
-                                            value={ctrlProps.value}
-                                            onChange={ctrlProps.onChange}
+                                            value={field.value}
+                                            onChange={field.onChange}
                                         />
                                     )}
                                     rules={{
@@ -512,17 +501,16 @@ const CardEdit = props => {
                                 </CInputGroupPrepend>
                                 <Controller
                                     name="cashAdvance"
-                                    key={"cashAdvance" + props.dataFromParent.id}
                                     control={control}
                                     defaultValue={props.dataFromParent.cashAdvance}
-                                    render={(ctrlProps) => (
+                                    render={({field}) => (
                                         <CInput
                                             type="number"
                                             name="cashAdvance"
                                             placeholder="현금서비스 한도를 입력해 주세요."
                                             className={"form-control" + (errors.cashAdvance ? " is-invalid" : " is-valid")}
-                                            value={ctrlProps.value}
-                                            onChange={ctrlProps.onChange}
+                                            value={field.value}
+                                            onChange={field.onChange}
                                         />
                                     )}
                                     rules={{
@@ -552,17 +540,16 @@ const CardEdit = props => {
                                 </CInputGroupPrepend>
                                 <Controller
                                     name="cardLoan"
-                                    key={"cardLoan" + props.dataFromParent.id}
                                     control={control}
                                     defaultValue={props.dataFromParent.cardLoan}
-                                    render={(ctrlProps) => (
+                                    render={({field}) => (
                                         <CInput
                                             type="number"
                                             name="cardLoan"
                                             placeholder="카드론 한도를 입력해 주세요."
                                             className={"form-control" + (errors.cardLoan ? " is-invalid" : " is-valid")}
-                                            value={ctrlProps.value}
-                                            onChange={ctrlProps.onChange}
+                                            value={field.value}
+                                            onChange={field.onChange}
                                         />
                                     )}
                                     rules={{
@@ -592,17 +579,16 @@ const CardEdit = props => {
                                 </CInputGroupPrepend>
                                 <Controller
                                     name="issueDate"
-                                    key={"issueDate" + props.dataFromParent.id}
                                     control={control}
                                     defaultValue={Helper.date.dateFormat(new Date(props.dataFromParent.issueDate))}
-                                    render={(ctrlProps) => (
+                                    render={({field}) => (
                                         <CInput
                                             type="date"
                                             name="issueDate"
                                             placeholder="카드 발행일을 선택해 주세요."
                                             className={"form-control" + (errors.issueDate ? " is-invalid" : " is-valid")}
-                                            value={ctrlProps.value}
-                                            onChange={ctrlProps.onChange}
+                                            value={field.value}
+                                            onChange={field.onChange}
                                         />
                                     )}
                                     rules={{
@@ -623,17 +609,16 @@ const CardEdit = props => {
                                 </CInputGroupPrepend>
                                 <Controller
                                     name="refreshNormal"
-                                    key={"refreshNormal" + props.dataFromParent.id}
                                     control={control}
                                     defaultValue={props.dataFromParent.refreshNormal + 1}
-                                    render={(ctrlProps) => (
+                                    render={({field}) => (
                                         <CInput
                                             type="number"
                                             name="refreshNormal"
                                             placeholder="일반 갱신일을 입력해 주세요."
                                             className={"form-control" + (errors.refreshNormal ? " is-invalid" : " is-valid")}
-                                            value={ctrlProps.value}
-                                            onChange={ctrlProps.onChange}
+                                            value={field.value}
+                                            onChange={field.onChange}
                                         />
                                     )}
                                     rules={{
@@ -663,17 +648,16 @@ const CardEdit = props => {
                                 </CInputGroupPrepend>
                                 <Controller
                                     name="refreshShort"
-                                    key={"refreshShort" + props.dataFromParent.id}
                                     control={control}
                                     defaultValue={props.dataFromParent.refreshShort + 1}
-                                    render={(ctrlProps) => (
+                                    render={({field}) => (
                                         <CInput
                                             type="number"
                                             name="refreshShort"
                                             placeholder="단축 갱신일을 입력해 주세요."
                                             className={"form-control" + (errors.refreshShort ? " is-invalid" : " is-valid")}
-                                            value={ctrlProps.value}
-                                            onChange={ctrlProps.onChange}
+                                            value={field.value}
+                                            onChange={field.onChange}
                                         />
                                     )}
                                     rules={{
@@ -703,17 +687,16 @@ const CardEdit = props => {
                                 </CInputGroupPrepend>
                                 <Controller
                                     name="arrange"
-                                    key={"arrange" + props.dataFromParent.id}
                                     control={control}
                                     defaultValue={props.dataFromParent.arrange}
-                                    render={(ctrlProps) => (
+                                    render={({field}) => (
                                         <CInput
                                             type="number"
                                             name="arrange"
                                             placeholder="배열순서를 입력해 주세요."
                                             className={"form-control" + (errors.arrange ? " is-invalid" : " is-valid")}
-                                            value={ctrlProps.value}
-                                            onChange={ctrlProps.onChange}
+                                            value={field.value}
+                                            onChange={field.onChange}
                                         />
                                     )}
                                     rules={{
@@ -734,10 +717,9 @@ const CardEdit = props => {
                                 </CInputGroupPrepend>
                                 <Controller
                                     name="notUsed"
-                                    key={"notUsed" + props.dataFromParent.id}
                                     control={control}
                                     defaultValue={"" + props.dataFromParent.notUsed}
-                                    render={(ctrlProps) => (
+                                    render={({field}) => (
                                         <CFormGroup className={"form-control" + (errors.holiday ? " is-invalid" : " is-valid")}>
                                             <CFormGroup variant="custom-radio" inline>
                                                 <CInputRadio
@@ -745,8 +727,8 @@ const CardEdit = props => {
                                                     name="notUsed"
                                                     value="0"
                                                     id="notUsed-edit-radio1"
-                                                    checked={ctrlProps.value === '0'}
-                                                    onChange={ctrlProps.onChange}
+                                                    checked={field.value === '0'}
+                                                    onChange={field.onChange}
                                                 /><CLabel variant="custom-checkbox" htmlFor="notUsed-edit-radio1">사용중</CLabel>
                                             </CFormGroup>
                                             <CFormGroup variant="custom-radio" inline>
@@ -755,8 +737,8 @@ const CardEdit = props => {
                                                     name="notUsed"
                                                     value="1"
                                                     id="notUsed-edit-radio2"
-                                                    checked={ctrlProps.value === '1'}
-                                                    onChange={ctrlProps.onChange}
+                                                    checked={field.value === '1'}
+                                                    onChange={field.onChange}
                                                 /><CLabel variant="custom-checkbox" htmlFor="notUsed-edit-radio2">미사용</CLabel>
                                             </CFormGroup>
                                         </CFormGroup>
@@ -779,18 +761,17 @@ const CardEdit = props => {
                                 </CInputGroupPrepend>
                                 <Controller
                                     name="memo"
-                                    key={"memo" + props.dataFromParent.id}
                                     control={control}
                                     defaultValue={props.dataFromParent.memo}
-                                    render={(ctrlProps) => (
+                                    render={({field}) => (
                                         <CTextarea
                                             type="text"
                                             name="memo"
                                             placeholder="메모를 입력해 주세요."
                                             className={"form-control" + (errors.memo ? " is-invalid" : " is-valid")}
                                             style={{ minHeight: 120 }}
-                                            value={ctrlProps.value}
-                                            onChange={ctrlProps.onChange}
+                                            value={field.value}
+                                            onChange={field.onChange}
                                         />
                                     )}
                                     rules={{

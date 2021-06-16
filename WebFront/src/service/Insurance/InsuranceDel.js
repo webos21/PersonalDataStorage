@@ -12,7 +12,7 @@ const InsuranceDel = props => {
 
     const REQ_URI = (process.env.NODE_ENV !== 'production') ? 'http://' + window.location.hostname + ':28080/pds/v1/insurance' : '/pds/v1/insurance';
 
-    const { handleSubmit, errors, setError, control } = useForm({
+    const { handleSubmit, formState: {errors}, setError, control } = useForm({
         submitFocusError: true,
         nativeValidation: false,
     });
@@ -61,12 +61,12 @@ const InsuranceDel = props => {
                             name="insureId"
                             control={control}
                             defaultValue={props.dataFromParent.id}
-                            render={(ctrlProps) => (
+                            render={({field}) => (
                                 <CInput
                                     type="hidden"
                                     name="insureId"
-                                    value={ctrlProps.value}
-                                    onChange={ctrlProps.onChange}
+                                    value={field.value}
+                                    onChange={field.onChange}
                                 />
                             )}
                             rules={{ required: true }} />

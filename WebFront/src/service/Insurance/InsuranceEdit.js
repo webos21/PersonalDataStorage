@@ -13,7 +13,7 @@ const InsuranceEdit = props => {
 
     const REQ_URI = (process.env.NODE_ENV !== 'production') ? 'http://' + window.location.hostname + ':28080/pds/v1/insurance' : '/pds/v1/insurance';
 
-    const { handleSubmit, errors, setError, control } = useForm({
+    const { handleSubmit, formState: {errors}, setError, control } = useForm({
         submitFocusError: true,
         nativeValidation: false,
     });
@@ -56,15 +56,14 @@ const InsuranceEdit = props => {
                         <CCol xs="12" md="12">
                             <Controller
                                 name="insureId"
-                                key={"insureId" + props.dataFromParent.id}
                                 control={control}
                                 defaultValue={props.dataFromParent.id}
-                                render={(ctrlProps) => (
+                                render={({field}) => (
                                     <CInput
                                         type="hidden"
                                         name="insureId"
-                                        value={ctrlProps.value}
-                                        onChange={ctrlProps.onChange}
+                                        value={field.value}
+                                        onChange={field.onChange}
                                     />
                                 )}
                                 rules={{ required: true }} />
@@ -74,17 +73,16 @@ const InsuranceEdit = props => {
                                 </CInputGroupPrepend>
                                 <Controller
                                     name="company"
-                                    key={"company" + props.dataFromParent.id}
                                     control={control}
                                     defaultValue={props.dataFromParent.company}
-                                    render={(ctrlProps) => (
+                                    render={({field}) => (
                                         <CInput
                                             type="text"
                                             name="company"
                                             placeholder="보험사를 입력해 주세요."
                                             className={"form-control" + (errors.company ? " is-invalid" : " is-valid")}
-                                            value={ctrlProps.value}
-                                            onChange={ctrlProps.onChange}
+                                            value={field.value}
+                                            onChange={field.onChange}
                                         />
                                     )}
                                     rules={{
@@ -115,17 +113,16 @@ const InsuranceEdit = props => {
                                 </CInputGroupPrepend>
                                 <Controller
                                     name="product"
-                                    key={"product" + props.dataFromParent.id}
                                     control={control}
                                     defaultValue={props.dataFromParent.product}
-                                    render={(ctrlProps) => (
+                                    render={({field}) => (
                                         <CInput
                                             type="text"
                                             name="product"
                                             placeholder="상품명을 입력해 주세요."
                                             className={"form-control" + (errors.product ? " is-invalid" : " is-valid")}
-                                            value={ctrlProps.value}
-                                            onChange={ctrlProps.onChange}
+                                            value={field.value}
+                                            onChange={field.onChange}
                                         />
                                     )}
                                     rules={{
@@ -155,17 +152,16 @@ const InsuranceEdit = props => {
                                 </CInputGroupPrepend>
                                 <Controller
                                     name="insuranceType"
-                                    key={"insuranceType" + props.dataFromParent.id}
                                     control={control}
                                     defaultValue={props.dataFromParent.insuranceType}
-                                    render={(ctrlProps) => (
+                                    render={({field}) => (
                                         <CInput
                                             type="text"
                                             name="insuranceType"
                                             placeholder="보험종류를 입력해 주세요."
                                             className={"form-control" + (errors.insuranceType ? " is-invalid" : " is-valid")}
-                                            value={ctrlProps.value}
-                                            onChange={ctrlProps.onChange}
+                                            value={field.value}
+                                            onChange={field.onChange}
                                         />
                                     )}
                                     rules={{
@@ -195,17 +191,16 @@ const InsuranceEdit = props => {
                                 </CInputGroupPrepend>
                                 <Controller
                                     name="policyType"
-                                    key={"policyType" + props.dataFromParent.id}
                                     control={control}
                                     defaultValue={props.dataFromParent.policyType}
-                                    render={(ctrlProps) => (
+                                    render={({field}) => (
                                         <CInput
                                             type="text"
                                             name="policyType"
                                             placeholder="정책형태를 입력해 주세요."
                                             className={"form-control" + (errors.policyType ? " is-invalid" : " is-valid")}
-                                            value={ctrlProps.value}
-                                            onChange={ctrlProps.onChange}
+                                            value={field.value}
+                                            onChange={field.onChange}
                                         />
                                     )}
                                     rules={{
@@ -235,17 +230,16 @@ const InsuranceEdit = props => {
                                 </CInputGroupPrepend>
                                 <Controller
                                     name="contractId"
-                                    key={"contractId" + props.dataFromParent.id}
                                     control={control}
                                     defaultValue={props.dataFromParent.contractId}
-                                    render={(ctrlProps) => (
+                                    render={({field}) => (
                                         <CInput
                                             type="text"
                                             name="contractId"
                                             placeholder="계약번호를 입력해 주세요."
                                             className={"form-control" + (errors.contractId ? " is-invalid" : " is-valid")}
-                                            value={ctrlProps.value}
-                                            onChange={ctrlProps.onChange}
+                                            value={field.value}
+                                            onChange={field.onChange}
                                         />
                                     )}
                                     rules={{
@@ -275,17 +269,16 @@ const InsuranceEdit = props => {
                                 </CInputGroupPrepend>
                                 <Controller
                                     name="policyHolder"
-                                    key={"policyHolder" + props.dataFromParent.id}
                                     control={control}
                                     defaultValue={props.dataFromParent.policyHolder}
-                                    render={(ctrlProps) => (
+                                    render={({field}) => (
                                         <CInput
                                             type="text"
                                             name="policyHolder"
                                             placeholder="보험소유(계약자)를 입력해 주세요."
                                             className={"form-control" + (errors.policyHolder ? " is-invalid" : " is-valid")}
-                                            value={ctrlProps.value}
-                                            onChange={ctrlProps.onChange}
+                                            value={field.value}
+                                            onChange={field.onChange}
                                         />
                                     )}
                                     rules={{
@@ -315,17 +308,16 @@ const InsuranceEdit = props => {
                                 </CInputGroupPrepend>
                                 <Controller
                                     name="insured"
-                                    key={"insured" + props.dataFromParent.id}
                                     control={control}
                                     defaultValue={props.dataFromParent.insured}
-                                    render={(ctrlProps) => (
+                                    render={({field}) => (
                                         <CInput
                                             type="text"
                                             name="insured"
                                             placeholder="피보험자를 입력해 주세요."
                                             className={"form-control" + (errors.insured ? " is-invalid" : " is-valid")}
-                                            value={ctrlProps.value}
-                                            onChange={ctrlProps.onChange}
+                                            value={field.value}
+                                            onChange={field.onChange}
                                         />
                                     )}
                                     rules={{
@@ -355,17 +347,16 @@ const InsuranceEdit = props => {
                                 </CInputGroupPrepend>
                                 <Controller
                                     name="payCountTotal"
-                                    key={"payCountTotal" + props.dataFromParent.id}
                                     control={control}
                                     defaultValue={props.dataFromParent.payCountTotal}
-                                    render={(ctrlProps) => (
+                                    render={({field}) => (
                                         <CInput
                                             type="number"
                                             name="payCountTotal"
                                             placeholder="총납입횟수를 입력해 주세요."
                                             className={"form-control" + (errors.payCountTotal ? " is-invalid" : " is-valid")}
-                                            value={ctrlProps.value}
-                                            onChange={ctrlProps.onChange}
+                                            value={field.value}
+                                            onChange={field.onChange}
                                         />
                                     )}
                                     rules={{
@@ -395,17 +386,16 @@ const InsuranceEdit = props => {
                                 </CInputGroupPrepend>
                                 <Controller
                                     name="payCountDone"
-                                    key={"payCountDone" + props.dataFromParent.id}
                                     control={control}
                                     defaultValue={props.dataFromParent.payCountDone}
-                                    render={(ctrlProps) => (
+                                    render={({field}) => (
                                         <CInput
                                             type="number"
                                             name="payCountDone"
                                             placeholder="납입회차를 입력해 주세요."
                                             className={"form-control" + (errors.payCountDone ? " is-invalid" : " is-valid")}
-                                            value={ctrlProps.value}
-                                            onChange={ctrlProps.onChange}
+                                            value={field.value}
+                                            onChange={field.onChange}
                                         />
                                     )}
                                     rules={{
@@ -435,17 +425,16 @@ const InsuranceEdit = props => {
                                 </CInputGroupPrepend>
                                 <Controller
                                     name="premiumVolume"
-                                    key={"premiumVolume" + props.dataFromParent.id}
                                     control={control}
                                     defaultValue={props.dataFromParent.premiumVolume}
-                                    render={(ctrlProps) => (
+                                    render={({field}) => (
                                         <CInput
                                             type="number"
                                             name="premiumVolume"
                                             placeholder="납입금액을 입력해 주세요."
                                             className={"form-control" + (errors.premiumVolume ? " is-invalid" : " is-valid")}
-                                            value={ctrlProps.value}
-                                            onChange={ctrlProps.onChange}
+                                            value={field.value}
+                                            onChange={field.onChange}
                                         />
                                     )}
                                     rules={{
@@ -475,17 +464,16 @@ const InsuranceEdit = props => {
                                 </CInputGroupPrepend>
                                 <Controller
                                     name="premiumMode"
-                                    key={"premiumMode" + props.dataFromParent.id}
                                     control={control}
                                     defaultValue={props.dataFromParent.premiumMode}
-                                    render={(ctrlProps) => (
+                                    render={({field}) => (
                                         <CInput
                                             type="text"
                                             name="premiumMode"
                                             placeholder="납입방법을 입력해 주세요."
                                             className={"form-control" + (errors.premiumMode ? " is-invalid" : " is-valid")}
-                                            value={ctrlProps.value}
-                                            onChange={ctrlProps.onChange}
+                                            value={field.value}
+                                            onChange={field.onChange}
                                         />
                                     )}
                                     rules={{
@@ -515,10 +503,9 @@ const InsuranceEdit = props => {
                                 </CInputGroupPrepend>
                                 <Controller
                                     name="contractStatus"
-                                    key={"contractStatus" + props.dataFromParent.id}
                                     control={control}
                                     defaultValue={"" + props.dataFromParent.contractStatus}
-                                    render={(ctrlProps) => (
+                                    render={({field}) => (
                                         <CFormGroup className={"form-control" + (errors.holiday ? " is-invalid" : " is-valid")}>
                                             <CFormGroup variant="custom-radio" inline>
                                                 <CInputRadio
@@ -526,8 +513,8 @@ const InsuranceEdit = props => {
                                                     name="contractStatus"
                                                     value="0"
                                                     id="contractStatus-edit-radio1"
-                                                    checked={ctrlProps.value === '0'}
-                                                    onChange={ctrlProps.onChange}
+                                                    checked={field.value === '0'}
+                                                    onChange={field.onChange}
                                                 /><CLabel variant="custom-checkbox" htmlFor="contractStatus-edit-radio1">정지</CLabel>
                                             </CFormGroup>
                                             <CFormGroup variant="custom-radio" inline>
@@ -536,8 +523,8 @@ const InsuranceEdit = props => {
                                                     name="contractStatus"
                                                     value="1"
                                                     id="contractStatus-edit-radio2"
-                                                    checked={ctrlProps.value === '1'}
-                                                    onChange={ctrlProps.onChange}
+                                                    checked={field.value === '1'}
+                                                    onChange={field.onChange}
                                                 /><CLabel variant="custom-checkbox" htmlFor="contractStatus-edit-radio2">유지</CLabel>
                                             </CFormGroup>
                                         </CFormGroup>
@@ -560,17 +547,16 @@ const InsuranceEdit = props => {
                                 </CInputGroupPrepend>
                                 <Controller
                                     name="contractDate"
-                                    key={"contractDate" + props.dataFromParent.id}
                                     control={control}
                                     defaultValue={Helper.date.dateFormat(new Date(props.dataFromParent.contractDate))}
-                                    render={(ctrlProps) => (
+                                    render={({field}) => (
                                         <CInput
                                             type="date"
                                             name="contractDate"
                                             placeholder="계약일자를 선택해 주세요."
                                             className={"form-control" + (errors.contractDate ? " is-invalid" : " is-valid")}
-                                            value={ctrlProps.value}
-                                            onChange={ctrlProps.onChange}
+                                            value={field.value}
+                                            onChange={field.onChange}
                                         />
                                     )}
                                     rules={{
@@ -591,17 +577,16 @@ const InsuranceEdit = props => {
                                 </CInputGroupPrepend>
                                 <Controller
                                     name="maturityDate"
-                                    key={"maturityDate" + props.dataFromParent.id}
                                     control={control}
                                     defaultValue={Helper.date.dateFormat(new Date(props.dataFromParent.maturityDate))}
-                                    render={(ctrlProps) => (
+                                    render={({field}) => (
                                         <CInput
                                             type="date"
                                             name="maturityDate"
                                             placeholder="만료일자를 선택해 주세요."
                                             className={"form-control" + (errors.maturityDate ? " is-invalid" : " is-valid")}
-                                            value={ctrlProps.value}
-                                            onChange={ctrlProps.onChange}
+                                            value={field.value}
+                                            onChange={field.onChange}
                                         />
                                     )}
                                     rules={{
@@ -622,17 +607,16 @@ const InsuranceEdit = props => {
                                 </CInputGroupPrepend>
                                 <Controller
                                     name="arranger"
-                                    key={"arranger" + props.dataFromParent.id}
                                     control={control}
                                     defaultValue={props.dataFromParent.arranger}
-                                    render={(ctrlProps) => (
+                                    render={({field}) => (
                                         <CInput
                                             type="text"
                                             name="arranger"
                                             placeholder="계약담당을 입력해 주세요."
                                             className={"form-control" + (errors.arranger ? " is-invalid" : " is-valid")}
-                                            value={ctrlProps.value}
-                                            onChange={ctrlProps.onChange}
+                                            value={field.value}
+                                            onChange={field.onChange}
                                         />
                                     )}
                                     rules={{
@@ -662,18 +646,17 @@ const InsuranceEdit = props => {
                                 </CInputGroupPrepend>
                                 <Controller
                                     name="memo"
-                                    key={"memo" + props.dataFromParent.id}
                                     control={control}
                                     defaultValue={props.dataFromParent.memo}
-                                    render={(ctrlProps) => (
+                                    render={({field}) => (
                                         <CTextarea
                                             type="text"
                                             name="memo"
                                             placeholder="메모를 입력해 주세요."
                                             className={"form-control" + (errors.memo ? " is-invalid" : " is-valid")}
                                             style={{ minHeight: 120 }}
-                                            value={ctrlProps.value}
-                                            onChange={ctrlProps.onChange}
+                                            value={field.value}
+                                            onChange={field.onChange}
                                         />
                                     )}
                                     rules={{

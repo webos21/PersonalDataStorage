@@ -12,7 +12,7 @@ const DiaryDel = props => {
 
     const REQ_URI = (process.env.NODE_ENV !== 'production') ? 'http://localhost:28080/pds/v1/diary' : '/pds/v1/diary';
 
-    const { handleSubmit, errors, setError, control } = useForm({
+    const { handleSubmit, formState: { errors }, setError, control } = useForm({
         submitFocusError: true,
         nativeValidation: false,
     });
@@ -64,11 +64,17 @@ const DiaryDel = props => {
                         </ul>
                         <CFormGroup>
                             <Controller
-                                as={<CInput />}
-                                type="hidden"
+                                name="diaryId"
                                 control={control}
                                 defaultValue={props.dataFromParent.id}
-                                name="diaryId"
+                                render={({field}) => (
+                                    <CInput
+                                        type="hidden"
+                                        name="diaryId"
+                                        value={field.value}
+                                        onChange={field.onChange}
+                                    />
+                                )}
                                 rules={{ required: true }} />
                             {errors.diaryId && <CInvalidFeedback>{errors.diaryId.message}</CInvalidFeedback>}
                         </CFormGroup>

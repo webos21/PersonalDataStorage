@@ -12,7 +12,7 @@ const RegularPayDel = props => {
 
     const REQ_URI = (process.env.NODE_ENV !== 'production') ? 'http://' + window.location.hostname + ':28080/pds/v1/regularPay' : '/pds/v1/regularPay';
 
-    const { handleSubmit, errors, setError, control } = useForm({
+    const { handleSubmit, formState: {errors}, setError, control } = useForm({
         submitFocusError: true,
         nativeValidation: false,
     });
@@ -60,12 +60,12 @@ const RegularPayDel = props => {
                             name="rpId"
                             control={control}
                             defaultValue={props.dataFromParent.id}
-                            render={(ctrlProps) => (
+                            render={({field}) => (
                                 <CInput
                                     type="hidden"
                                     name="rpId"
-                                    value={ctrlProps.value}
-                                    onChange={ctrlProps.onChange}
+                                    value={field.value}
+                                    onChange={field.onChange}
                                 />
                             )}
                             rules={{ required: true }} />

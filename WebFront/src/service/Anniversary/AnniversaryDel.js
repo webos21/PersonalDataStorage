@@ -13,7 +13,7 @@ const AnniversaryDel = props => {
 
     const REQ_URI = (process.env.NODE_ENV !== 'production') ? 'http://localhost:28080/pds/v1/anniversary' : '/pds/v1/anniversary';
 
-    const { handleSubmit, errors, setError, control } = useForm({
+    const { handleSubmit, formState: {errors}, setError, control } = useForm({
         submitFocusError: true,
         nativeValidation: false,
     });
@@ -65,12 +65,12 @@ const AnniversaryDel = props => {
                             name="anniId"
                             control={control}
                             defaultValue={props.dataFromParent.id}
-                            render={(ctrlProps) => (
+                            render={({field}) => (
                                 <CInput
                                     type="hidden"
                                     name="anniId"
-                                    value={ctrlProps.value}
-                                    onChange={ctrlProps.onChange}
+                                    value={field.value}
+                                    onChange={field.onChange}
                                 />
                             )}
                             rules={{ required: true }} />

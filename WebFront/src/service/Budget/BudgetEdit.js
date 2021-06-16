@@ -15,7 +15,7 @@ const BudgetEdit = props => {
 
     const REQ_URI = (process.env.NODE_ENV !== 'production') ? 'http://' + window.location.hostname + ':28080/pds/v1/budget' : '/pds/v1/budget';
 
-    const { handleSubmit, errors, setError, setValue, control } = useForm({
+    const { handleSubmit, formState: {errors}, setError, setValue, control } = useForm({
         submitFocusError: true,
         nativeValidation: false,
     });
@@ -86,15 +86,14 @@ const BudgetEdit = props => {
                         <CCol xs="12" md="12">
                             <Controller
                                 name="bId"
-                                key={"bId" + props.dataFromParent.id}
                                 control={control}
                                 defaultValue={props.dataFromParent.id}
-                                render={(ctrlProps) => (
+                                render={({field}) => (
                                     <CInput
                                         type="hidden"
                                         name="bId"
-                                        value={ctrlProps.value}
-                                        onChange={ctrlProps.onChange}
+                                        value={field.value}
+                                        onChange={field.onChange}
                                     />
                                 )}
                                 rules={{ required: true }} />
@@ -104,17 +103,16 @@ const BudgetEdit = props => {
                                 </CInputGroupPrepend>
                                 <Controller
                                     name="budgetDate"
-                                    key={"budgetDate" + props.dataFromParent.id}
                                     control={control}
                                     defaultValue={Helper.date.monthFormat(new Date(props.dataFromParent.budgetDate))}
-                                    render={(ctrlProps) => (
+                                    render={({field}) => (
                                         <CInput
                                             type="month"
                                             name="budgetDate"
                                             placeholder="예산월을 선택해 주세요."
                                             className={"form-control" + (errors.budgetDate ? " is-invalid" : " is-valid")}
-                                            value={ctrlProps.value}
-                                            onChange={ctrlProps.onChange}
+                                            value={field.value}
+                                            onChange={field.onChange}
                                         />
                                     )}
                                     rules={{
@@ -137,17 +135,16 @@ const BudgetEdit = props => {
                                 </CInputGroupPrepend>
                                 <Controller
                                     name="accountCode"
-                                    key={"accountCode" + props.dataFromParent.id}
                                     control={control}
                                     defaultValue={props.dataFromParent.accountCode}
-                                    render={(ctrlProps) => (
+                                    render={({field}) => (
                                         <CInput
                                             type="text"
                                             name="accountCode"
                                             placeholder="계정분류를 선택해 주세요."
                                             className={"form-control" + (errors.accountCode ? " is-invalid" : " is-valid")}
-                                            value={ctrlProps.value}
-                                            onChange={ctrlProps.onChange}
+                                            value={field.value}
+                                            onChange={field.onChange}
                                         />
                                     )}
                                     rules={{
@@ -170,16 +167,15 @@ const BudgetEdit = props => {
                                 </CInputGroupPrepend>
                                 <Controller
                                     name="deposit"
-                                    key={"deposit" + props.dataFromParent.id}
                                     control={control}
                                     defaultValue={props.dataFromParent.deposit}
-                                    render={(ctrlProps) => (
+                                    render={({field}) => (
                                         <CInput
                                             type="number"
                                             name="deposit" placeholder="입금액을 입력해 주세요."
                                             className={"form-control" + (errors.deposit ? " is-invalid" : " is-valid")}
-                                            value={ctrlProps.value}
-                                            onChange={ctrlProps.onChange}
+                                            value={field.value}
+                                            onChange={field.onChange}
                                         />
                                     )}
                                     rules={{
@@ -209,17 +205,16 @@ const BudgetEdit = props => {
                                 </CInputGroupPrepend>
                                 <Controller
                                     name="withdrawal"
-                                    key={"withdrawal" + props.dataFromParent.id}
                                     control={control}
                                     defaultValue={props.dataFromParent.withdrawal}
-                                    render={(ctrlProps) => (
+                                    render={({field}) => (
                                         <CInput
                                             type="number"
                                             name="withdrawal"
                                             placeholder="출금액을 입력해 주세요."
                                             className={"form-control" + (errors.withdrawal ? " is-invalid" : " is-valid")}
-                                            value={ctrlProps.value}
-                                            onChange={ctrlProps.onChange}
+                                            value={field.value}
+                                            onChange={field.onChange}
                                         />
                                     )}
                                     rules={{
@@ -249,17 +244,16 @@ const BudgetEdit = props => {
                                 </CInputGroupPrepend>
                                 <Controller
                                     name="memo"
-                                    key={"memo" + props.dataFromParent.id}
                                     control={control}
                                     defaultValue={props.dataFromParent.memo}
-                                    render={(ctrlProps) => (
+                                    render={({field}) => (
                                         <CTextarea
                                             name="memo"
                                             placeholder="메모를 입력해 주세요."
                                             className={"form-control" + (errors.memo ? " is-invalid" : " is-valid")}
                                             style={{ minHeight: 120 }}
-                                            value={ctrlProps.value}
-                                            onChange={ctrlProps.onChange}
+                                            value={field.value}
+                                            onChange={field.onChange}
                                         />
                                     )}
                                     rules={{

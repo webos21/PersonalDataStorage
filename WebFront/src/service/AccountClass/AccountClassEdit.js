@@ -14,7 +14,7 @@ const AccountClassEdit = props => {
 
     const REQ_URI = (process.env.NODE_ENV !== 'production') ? 'http://' + window.location.hostname + ':28080/pds/v1/accountClass' : '/pds/v1/accountClass';
 
-    const { handleSubmit, errors, setError, control } = useForm({
+    const { handleSubmit, formState: {errors}, setError, control } = useForm({
         submitFocusError: true,
         nativeValidation: false,
     });
@@ -84,18 +84,18 @@ const AccountClassEdit = props => {
                                 </CInputGroupPrepend>
                                 <Controller
                                     name="acId"
-                                    key={"acId" + props.dataFromParent.id}
                                     control={control}
                                     defaultValue={props.dataFromParent.id}
-                                    render={(ctrlProps) => (
+                                    render={({field}) => (
                                         <CInput
                                             type="number"
                                             name="acId"
                                             readOnly
                                             placeholder="ID를 입력해 주세요."
                                             className={"form-control" + (errors.acId ? " is-invalid" : " is-valid")}
-                                            value={ctrlProps.value}
-                                            onChange={ctrlProps.onChange}
+                                            value={field.value}
+                                            alt={field.value}
+                                            onChange={field.onChange}
                                         />
                                     )}
                                     rules={{
@@ -125,17 +125,17 @@ const AccountClassEdit = props => {
                                 </CInputGroupPrepend>
                                 <Controller
                                     name="title"
-                                    key={"title" + props.dataFromParent.id}
                                     control={control}
                                     defaultValue={props.dataFromParent.title}
-                                    render={(ctrlProps) => (
+                                    render={({field}) => (
                                         <CInput
                                             type="text"
                                             name="title"
                                             placeholder="분류명을 입력해 주세요."
                                             className={"form-control" + (errors.title ? " is-invalid" : " is-valid")}
-                                            value={ctrlProps.value}
-                                            onChange={ctrlProps.onChange}
+                                            value={field.value}
+                                            alt={field.value}
+                                            onChange={field.onChange}
                                         />
                                     )}
                                     rules={{
