@@ -13,7 +13,7 @@ const ScheduleEdit = props => {
 
     const REQ_URI = (process.env.NODE_ENV !== 'production') ? 'http://' + window.location.hostname + ':28080/pds/v1/schedule' : '/pds/v1/schedule';
 
-    const { handleSubmit, errors, setError, control } = useForm({
+    const { handleSubmit, formState: {errors}, setError, control } = useForm({
         submitFocusError: true,
         nativeValidation: false,
     });
@@ -79,15 +79,14 @@ const ScheduleEdit = props => {
                         <CCol xs="12" md="12">
                             <Controller
                                 name="scheduleId"
-                                key={"scheduleId" + props.dataFromParent.id}
                                 control={control}
                                 defaultValue={props.dataFromParent.id}
-                                render={(ctrlProps) => (
+                                render={({field}) => (
                                     <CInput
                                         type="hidden"
                                         name="scheduleId"
-                                        value={ctrlProps.value}
-                                        onChange={ctrlProps.onChange}
+                                        value={field.value}
+                                        onChange={field.onChange}
                                     />
                                 )}
                                 rules={{ required: true }} />
@@ -97,17 +96,16 @@ const ScheduleEdit = props => {
                                 </CInputGroupPrepend>
                                 <Controller
                                     name="title"
-                                    key={"title" + props.dataFromParent.id}
                                     control={control}
                                     defaultValue={props.dataFromParent.title}
-                                    render={(ctrlProps) => (
+                                    render={({field}) => (
                                         <CInput
                                             type="text"
                                             name="title"
                                             placeholder="제목을 입력해 주세요."
                                             className={"form-control" + (errors.title ? " is-invalid" : " is-valid")}
-                                            value={ctrlProps.value}
-                                            onChange={ctrlProps.onChange}
+                                            value={field.value}
+                                            onChange={field.onChange}
                                         />
                                     )}
                                     rules={{
@@ -138,17 +136,16 @@ const ScheduleEdit = props => {
                                 </CInputGroupPrepend>
                                 <Controller
                                     name="pdate"
-                                    key={"pdate" + props.dataFromParent.id}
                                     control={control}
                                     defaultValue={Helper.date.datetimeFormat(new Date(props.dataFromParent.pdate))}
-                                    render={(ctrlProps) => (
+                                    render={({field}) => (
                                         <CInput
                                             type="datetime-local"
                                             name="pdate"
                                             placeholder="계획일시를 선택해 주세요."
                                             className={"form-control" + (errors.pdate ? " is-invalid" : " is-valid")}
-                                            value={ctrlProps.value}
-                                            onChange={ctrlProps.onChange}
+                                            value={field.value}
+                                            onChange={field.onChange}
                                         />
                                     )}
                                     rules={{
@@ -170,10 +167,9 @@ const ScheduleEdit = props => {
                                 </CInputGroupPrepend>
                                 <Controller
                                     name="readOk"
-                                    key={"readOk" + props.dataFromParent.id}
                                     control={control}
                                     defaultValue={"" + props.dataFromParent.readOk}
-                                    render={(ctrlProps) => (
+                                    render={({field}) => (
                                         <CFormGroup className={"form-control" + (errors.readOk ? " is-invalid" : " is-valid")}>
                                             <CFormGroup variant="custom-radio" inline>
                                                 <CInputRadio
@@ -181,8 +177,8 @@ const ScheduleEdit = props => {
                                                     name="readOk"
                                                     value="0"
                                                     id="readOk-edit-radio1"
-                                                    checked={ctrlProps.value === '0'}
-                                                    onChange={ctrlProps.onChange}
+                                                    checked={field.value === '0'}
+                                                    onChange={field.onChange}
                                                 /><CLabel variant="custom-checkbox" htmlFor="readOk-edit-radio1">미확인</CLabel>
                                             </CFormGroup>
                                             <CFormGroup variant="custom-radio" inline>
@@ -191,8 +187,8 @@ const ScheduleEdit = props => {
                                                     name="readOk"
                                                     value="1"
                                                     id="readOk-edit-radio2"
-                                                    checked={ctrlProps.value === '1'}
-                                                    onChange={ctrlProps.onChange}
+                                                    checked={field.value === '1'}
+                                                    onChange={field.onChange}
                                                 /><CLabel variant="custom-checkbox" htmlFor="readOk-edit-radio2">확인완료</CLabel>
                                             </CFormGroup>
                                         </CFormGroup>
@@ -215,18 +211,17 @@ const ScheduleEdit = props => {
                                 </CInputGroupPrepend>
                                 <Controller
                                     name="memo"
-                                    key={"memo" + props.dataFromParent.id}
                                     control={control}
                                     defaultValue={props.dataFromParent.memo}
-                                    render={(ctrlProps) => (
+                                    render={({field}) => (
                                         <CTextarea
                                             type="text"
                                             name="memo"
                                             placeholder="메모를 입력해 주세요."
                                             className={"form-control" + (errors.memo ? " is-invalid" : " is-valid")}
                                             style={{ minHeight: 120 }}
-                                            value={ctrlProps.value}
-                                            onChange={ctrlProps.onChange}
+                                            value={field.value}
+                                            onChange={field.onChange}
                                         />
                                     )}
                                     rules={{

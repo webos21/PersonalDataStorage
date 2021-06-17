@@ -16,7 +16,7 @@ const StockRecordEdit = props => {
 
     const REQ_URI = (process.env.NODE_ENV !== 'production') ? 'http://' + window.location.hostname + ':28080/pds/v1/stockRecord' : '/pds/v1/stockRecord';
 
-    const { handleSubmit, errors, setError, control } = useForm({
+    const { handleSubmit, formState: {errors}, setError, control } = useForm({
         submitFocusError: true,
         nativeValidation: false,
     });
@@ -85,15 +85,14 @@ const StockRecordEdit = props => {
                         <CCol xs="12" md="12">
                             <Controller
                                 name="srId"
-                                key={"srId" + props.dataFromParent.id}
                                 control={control}
                                 defaultValue={props.dataFromParent.id}
-                                render={(ctrlProps) => (
+                                render={({field}) => (
                                     <CInput
                                         type="hidden"
                                         name="srId"
-                                        value={ctrlProps.value}
-                                        onChange={ctrlProps.onChange}
+                                        value={field.value}
+                                        onChange={field.onChange}
                                     />
                                 )}
                                 rules={{ required: true }} />
@@ -103,17 +102,16 @@ const StockRecordEdit = props => {
                                 </CInputGroupPrepend>
                                 <Controller
                                     name="stockId"
-                                    key={"stockId" + props.dataFromParent.id}
                                     control={control}
                                     defaultValue={props.dataFromParent.stockId}
-                                    render={(ctrlProps) => (
+                                    render={({field}) => (
                                         <CSelect
                                             type="select"
                                             name="stockId"
                                             placeholder="증권ID를 선택해 주세요."
                                             className={"form-control" + (errors.stockId ? " is-invalid" : " is-valid")}
-                                            value={ctrlProps.value}
-                                            onChange={ctrlProps.onChange}>
+                                            value={field.value}
+                                            onChange={field.onChange}>
                                             <option key={'stockId-item--1'} value={-1}>증권ID를 선택해 주세요.</option>
                                             <option key={'stockId-item--2'} value={-2}>----------------</option>
                                             {
@@ -149,17 +147,16 @@ const StockRecordEdit = props => {
                                 </CInputGroupPrepend>
                                 <Controller
                                     name="transactionDate"
-                                    key={"transactionDate" + props.dataFromParent.id}
                                     control={control}
                                     defaultValue={Helper.date.dateFormat(new Date(props.dataFromParent.transactionDate))}
-                                    render={(ctrlProps) => (
+                                    render={({field}) => (
                                         <CInput
                                             type="date"
                                             name="transactionDate"
                                             placeholder="거래일을 입력해 주세요."
                                             className={"form-control" + (errors.transactionDate ? " is-invalid" : " is-valid")}
-                                            value={ctrlProps.value}
-                                            onChange={ctrlProps.onChange}
+                                            value={field.value}
+                                            onChange={field.onChange}
                                         />
                                     )}
                                     rules={{
@@ -189,17 +186,16 @@ const StockRecordEdit = props => {
                                 </CInputGroupPrepend>
                                 <Controller
                                     name="title"
-                                    key={"title" + props.dataFromParent.id}
                                     control={control}
                                     defaultValue={props.dataFromParent.title}
-                                    render={(ctrlProps) => (
+                                    render={({field}) => (
                                         <CInput
                                             type="text"
                                             name="title"
                                             placeholder="적요를 입력해 주세요."
                                             className={"form-control" + (errors.title ? " is-invalid" : " is-valid")}
-                                            value={ctrlProps.value}
-                                            onChange={ctrlProps.onChange}
+                                            value={field.value}
+                                            onChange={field.onChange}
 
                                         />
                                     )}
@@ -230,16 +226,15 @@ const StockRecordEdit = props => {
                                 </CInputGroupPrepend>
                                 <Controller
                                     name="deposit"
-                                    key={"deposit" + props.dataFromParent.id}
                                     control={control}
                                     defaultValue={props.dataFromParent.deposit}
-                                    render={(ctrlProps) => (
+                                    render={({field}) => (
                                         <CInput
                                             type="number"
                                             name="deposit" placeholder="입금액을 입력해 주세요."
                                             className={"form-control" + (errors.deposit ? " is-invalid" : " is-valid")}
-                                            value={ctrlProps.value}
-                                            onChange={ctrlProps.onChange}
+                                            value={field.value}
+                                            onChange={field.onChange}
                                         />
                                     )}
                                     rules={{
@@ -269,17 +264,16 @@ const StockRecordEdit = props => {
                                 </CInputGroupPrepend>
                                 <Controller
                                     name="withdrawal"
-                                    key={"withdrawal" + props.dataFromParent.id}
                                     control={control}
                                     defaultValue={props.dataFromParent.withdrawal}
-                                    render={(ctrlProps) => (
+                                    render={({field}) => (
                                         <CInput
                                             type="number"
                                             name="withdrawal"
                                             placeholder="출금액을 입력해 주세요."
                                             className={"form-control" + (errors.withdrawal ? " is-invalid" : " is-valid")}
-                                            value={ctrlProps.value}
-                                            onChange={ctrlProps.onChange}
+                                            value={field.value}
+                                            onChange={field.onChange}
                                         />
                                     )}
                                     rules={{
@@ -309,18 +303,17 @@ const StockRecordEdit = props => {
                                 </CInputGroupPrepend>
                                 <Controller
                                     name="memo"
-                                    key={"memo" + props.dataFromParent.id}
                                     control={control}
                                     defaultValue={props.dataFromParent.memo}
-                                    render={(ctrlProps) => (
+                                    render={({field}) => (
                                         <CTextarea
                                             type="text"
                                             name="memo"
                                             placeholder="메모를 입력해 주세요."
                                             className={"form-control" + (errors.memo ? " is-invalid" : " is-valid")}
                                             style={{ minHeight: 120 }}
-                                            value={ctrlProps.value}
-                                            onChange={ctrlProps.onChange}
+                                            value={field.value}
+                                            onChange={field.onChange}
                                         />
                                     )}
                                     rules={{
