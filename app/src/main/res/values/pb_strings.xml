@@ -2,6 +2,10 @@
     <string name="app_name">Personal Data Storage</string>
     <string name="app_info">Save your ID/PW, securely.</string>
 
+    <string name="title_home">Home</string>
+    <string name="title_dashboard">Dashboard</string>
+    <string name="title_notifications">Notifications</string>
+
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
