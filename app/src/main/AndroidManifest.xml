@@ -28,13 +28,14 @@
         android:label="@string/app_name"
         android:requestLegacyExternalStorage="true"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme.NoActionBar"
+        android:theme="@style/Theme.MyApplication"
         android:usesCleartextTraffic="true">
 
         <activity
             android:name=".MainActivity"
+            android:exported="true"
             android:launchMode="singleInstance"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:theme="@style/Theme.MyApplication">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -44,40 +45,45 @@
         <activity
             android:name=".AuthActivity"
             android:excludeFromRecents="true"
+            android:exported="false"
             android:launchMode="singleInstance"
             android:noHistory="true"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/Theme.MyApplication" />
 
         <activity
             android:name=".AuthConfigActivity"
             android:excludeFromRecents="true"
+            android:exported="false"
             android:launchMode="singleInstance"
             android:noHistory="true"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/Theme.MyApplication" />
 
         <activity
             android:name=".PbAddActivity"
             android:excludeFromRecents="true"
+            android:exported="false"
             android:launchMode="singleInstance"
             android:noHistory="true"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/Theme.MyApplication" />
 
         <activity
             android:name=".PbEditActivity"
             android:excludeFromRecents="true"
+            android:exported="false"
             android:launchMode="singleInstance"
             android:noHistory="true"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/Theme.MyApplication" />
 
         <activity
             android:name=".NanoActivity"
+            android:exported="false"
             android:launchMode="singleInstance"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/Theme.MyApplication" />
 
         <service
             android:name=".PdsWebService"
