@@ -9,17 +9,33 @@
         android:id="@+id/navigation_home"
         android:name="com.gmail.webos21.pds.app.ui.home.HomeFragment"
         android:label="@string/title_home"
-        tools:layout="@layout/fragment_home" />
+        tools:layout="@layout/fragment_home">
+
+        <action
+            android:id="@+id/action_Home_to_Dashboard"
+            app:destination="@id/navigation_dashboard" />
+    </fragment>
+
 
     <fragment
         android:id="@+id/navigation_dashboard"
         android:name="com.gmail.webos21.pds.app.ui.dashboard.DashboardFragment"
         android:label="@string/title_dashboard"
-        tools:layout="@layout/fragment_dashboard" />
+        tools:layout="@layout/fragment_dashboard">
+
+        <action
+            android:id="@+id/action_Dashboard_to_Notifications"
+            app:destination="@id/navigation_notifications" />
+    </fragment>
 
     <fragment
         android:id="@+id/navigation_notifications"
         android:name="com.gmail.webos21.pds.app.ui.notifications.NotificationsFragment"
         android:label="@string/title_notifications"
-        tools:layout="@layout/fragment_notifications" />
+        tools:layout="@layout/fragment_notifications">
+
+        <action
+            android:id="@+id/action_Notifications_to_Home"
+            app:destination="@id/navigation_home" />
+    </fragment>
 </navigation>
