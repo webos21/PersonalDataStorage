@@ -12,7 +12,6 @@ import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.GridView;
-import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -26,6 +25,7 @@ import androidx.core.content.ContextCompat;
 import com.gmail.webos21.pds.app.keypad.KeypadAdapter;
 import com.gmail.webos21.pds.app.keypad.KeypadButton;
 import com.gmail.webos21.pds.web.OnetimePass;
+import com.google.android.material.switchmaterial.SwitchMaterial;
 
 import java.util.concurrent.Executor;
 
@@ -44,7 +44,7 @@ public class AuthActivity extends AppCompatActivity {
     private TextView tvPass5;
     private TextView tvPass6;
 
-    private Switch swFinger;
+    private SwitchMaterial swFinger;
 
     private GridView gvInputPad;
 
@@ -71,7 +71,7 @@ public class AuthActivity extends AppCompatActivity {
         tvPass5 = (TextView) findViewById(R.id.tvPass5);
         tvPass6 = (TextView) findViewById(R.id.tvPass6);
 
-        swFinger = (Switch) findViewById(R.id.swFinger);
+        swFinger = (SwitchMaterial) findViewById(R.id.swFinger);
 
         gvInputPad = (GridView) findViewById(R.id.inputPad);
 

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <color name="actionBarColor">#ff333f48</color>
+    <color name="actionBarColorDark">#ff242d33</color>
+    <color name="actionBarColorDarker">#ff101417</color>
+    <color name="actionMode">#ff242d33</color>
+    <color name="actionModeDark">#ff161b1f</color>
+
+    <color name="listBackgroundDisabled">#ff202020</color>
+    <color name="listBackgroundNormal">#ff000000</color>
+    <color name="listBackgroundSelected">#ff333333</color>
+    <color name="listRemovableBackground">#ff242d33</color>
+
+</resources>

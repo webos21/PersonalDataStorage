@@ -4,18 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".NanoActivity">
-
-    <TextView
-        android:id="@+id/lbl_title"
-        android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:background="@color/colorPrimary"
-        android:gravity="center"
-        android:text="Web Service"
-        android:textColor="@color/colorPrimaryText"
-        android:textSize="30sp"
-        android:textStyle="bold" />
+    tools:context=".ui.webservice.WebserviceFragment">
 
     <LinearLayout
         style="@style/PreferenceCategoryLayout"
@@ -69,7 +58,7 @@
             android:layout_weight="4"
             android:text="암호책 서비스" />
 
-        <Switch
+        <com.google.android.material.switchmaterial.SwitchMaterial
             android:id="@+id/sw_pb_web"
             android:layout_width="0dip"
             android:layout_height="wrap_content"
@@ -90,7 +79,7 @@
             android:layout_weight="4"
             android:text="내장폴더 서비스" />
 
-        <Switch
+        <com.google.android.material.switchmaterial.SwitchMaterial
             android:id="@+id/sw_dir_web"
             android:layout_width="0dip"
             android:layout_height="wrap_content"
@@ -109,7 +98,7 @@
             style="@style/PreferenceCategory"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:gravity="left"
+            android:gravity="start"
             android:scrollbars="vertical"
             android:text="스위치를 켜면 내장 웹서비스가 시작됩니다.\n접속할 IP주소는 xx입니다." />
 

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <PreferenceCategory app:title="DB 가져오기 / 내보내기">
+
+        <Preference
+            app:icon="@drawable/ic_db_import_black_24"
+            app:key="db_import"
+            app:summary="외부 DB를 App으로 가져옵니다."
+            app:title="DB 가져오기" />
+
+        <Preference
+            app:icon="@drawable/ic_db_export_black_24"
+            app:key="db_export"
+            app:summary="App DB를 내보내기 합니다."
+            app:title="DB 내보내기" />
+
+    </PreferenceCategory>
+
+</PreferenceScreen>

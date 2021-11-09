@@ -337,11 +337,6 @@ public class PbFragmentActivity extends AppCompatActivity implements View.OnClic
                 case R.id.nav_password: {
                     break;
                 }
-                case R.id.nav_web: {
-                    Intent i = new Intent(PbFragmentActivity.this, NanoActivity.class);
-                    PbFragmentActivity.this.startActivity(i);
-                    break;
-                }
                 case R.id.nav_settings: {
                     Intent i = new Intent(PbFragmentActivity.this, AuthConfigActivity.class);
                     authCfgLauncher.launch(i);

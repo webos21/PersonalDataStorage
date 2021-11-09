@@ -13,7 +13,7 @@
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:layout_alignParentTop="true"
-        android:background="@color/colorPrimary"
+        android:background="@color/colorPrimaryDark"
         android:gravity="center"
         android:text="@string/auth_cfg_title"
         android:textColor="@color/colorPrimaryText"
@@ -28,7 +28,6 @@
         android:layout_marginTop="20dip"
         android:gravity="center"
         android:text="@string/auth_cfg_message"
-        android:textColor="@color/colorAccent"
         android:textSize="20sp" />
 
     <TextView

@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#ff1a557c</color>
-    <color name="colorPrimaryDark">#ff002245</color>
-    <color name="colorPrimaryText">#ffffffff</color>
-    <color name="colorAccent">#ff002245</color>
+    <color name="colorPrimary">#FFBB86FC</color>
+    <color name="colorPrimaryDark">#FF000000</color>
+    <color name="colorPrimaryText">#FFFFFFFF</color>
+    <color name="colorAccent">#FF3700B3</color>
 
     <color name="purple_200">#FFBB86FC</color>
     <color name="purple_500">#FF6200EE</color>
@@ -12,5 +12,17 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+
+    <color name="actionBarColor">#ff00a9ce</color>
+    <color name="actionBarColorDark">#ff0090b0</color>
+    <color name="actionBarColorDarker">#ff007993</color>
+    <color name="actionBarMenuTextColor">#ffffffff</color>
+    <color name="actionMode">#ff7e7e7e</color>
+    <color name="actionModeDark">#ff575757</color>
+
+    <color name="listBackgroundDisabled">#fff0f0f0</color>
+    <color name="listBackgroundNormal">#ffffffff</color>
+    <color name="listBackgroundSelected">#ffdddddd</color>
+    <color name="listRemovableBackground">#ff999999</color>
 
 </resources>

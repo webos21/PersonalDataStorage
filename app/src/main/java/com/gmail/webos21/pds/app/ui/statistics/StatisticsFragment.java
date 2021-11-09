@@ -1,4 +1,4 @@
-package com.gmail.webos21.pds.app.ui.home;
+package com.gmail.webos21.pds.app.ui.statistics;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -12,19 +12,19 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.gmail.webos21.pds.app.databinding.FragmentHomeBinding;
+import com.gmail.webos21.pds.app.databinding.FragmentStatisticsBinding;
 
-public class HomeFragment extends Fragment {
+public class StatisticsFragment extends Fragment {
 
-    private HomeViewModel homeViewModel;
-    private FragmentHomeBinding binding;
+    private StatisticsViewModel homeViewModel;
+    private FragmentStatisticsBinding binding;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         homeViewModel =
-                new ViewModelProvider(this).get(HomeViewModel.class);
+                new ViewModelProvider(this).get(StatisticsViewModel.class);
 
-        binding = FragmentHomeBinding.inflate(inflater, container, false);
+        binding = FragmentStatisticsBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
         final TextView textView = binding.textHome;

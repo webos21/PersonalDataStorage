@@ -7,20 +7,19 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 
+import androidx.appcompat.view.ContextThemeWrapper;
 import androidx.core.widget.TextViewCompat;
 
 public class KeypadAdapter extends BaseAdapter {
     private final Context mContext;
-
-    // Declare button click listener variable
-    private OnClickListener mOnButtonClick;
-
     // Create and populate keypad buttons array with CalculatorButton enum values
     private final KeypadButton[] mButtons = {
             KeypadButton.ONE, KeypadButton.TWO, KeypadButton.THREE,
             KeypadButton.FOUR, KeypadButton.FIVE, KeypadButton.SIX,
             KeypadButton.SEVEN, KeypadButton.EIGHT, KeypadButton.NINE,
             KeypadButton.DUMMY, KeypadButton.ZERO, KeypadButton.BACKSPACE};
+    // Declare button click listener variable
+    private OnClickListener mOnButtonClick;
 
     public KeypadAdapter(Context c) {
         mContext = c;
@@ -48,20 +47,20 @@ public class KeypadAdapter extends BaseAdapter {
         Button btn;
 
         if (convertView == null) { // if it's not recycled, initialize some attributes
-            btn = new Button(mContext);
+            btn = new Button(new ContextThemeWrapper(mContext, android.R.style.Widget_Material_Button));
             TextViewCompat.setTextAppearance(btn, android.R.style.TextAppearance_Large);
 
             KeypadButton keypadButton = mButtons[position];
 
             switch (keypadButton.mCategory) {
                 case DUMMY:
-                    btn.setBackgroundResource(android.R.drawable.btn_default);
+//                    btn.setBackgroundResource(android.R.drawable.btn_default);
                     btn.setEnabled(false);
                     break;
                 case OPERATOR:
                 case NUMBER:
                 default:
-                    btn.setBackgroundResource(android.R.drawable.btn_default);
+//                    btn.setBackgroundResource(android.R.drawable.btn_default);
                     break;
             }
 

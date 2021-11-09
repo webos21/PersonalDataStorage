@@ -66,12 +66,6 @@
             android:noHistory="true"
             android:screenOrientation="portrait"
             android:theme="@style/PbTheme.Normal" />
-        <activity
-            android:name=".NanoActivity"
-            android:exported="false"
-            android:launchMode="singleInstance"
-            android:screenOrientation="portrait"
-            android:theme="@style/PbTheme.Normal" />
 
         <service
             android:name=".PdsWebService"

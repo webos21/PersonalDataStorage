@@ -3,19 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mobile_navigation"
-    app:startDestination="@+id/navigation_home">
-
-    <fragment
-        android:id="@+id/navigation_home"
-        android:name="com.gmail.webos21.pds.app.ui.home.HomeFragment"
-        android:label="@string/title_home"
-        tools:layout="@layout/fragment_home">
-
-        <action
-            android:id="@+id/action_Home_to_Dashboard"
-            app:destination="@id/navigation_dashboard" />
-    </fragment>
-
+    app:startDestination="@+id/navigation_dashboard">
 
     <fragment
         android:id="@+id/navigation_dashboard"
@@ -24,18 +12,42 @@
         tools:layout="@layout/fragment_dashboard">
 
         <action
-            android:id="@+id/action_Dashboard_to_Notifications"
-            app:destination="@id/navigation_notifications" />
+            android:id="@+id/action_Dashboard_to_Statistics"
+            app:destination="@id/navigation_statistics" />
     </fragment>
 
     <fragment
-        android:id="@+id/navigation_notifications"
-        android:name="com.gmail.webos21.pds.app.ui.notifications.NotificationsFragment"
-        android:label="@string/title_notifications"
-        tools:layout="@layout/fragment_notifications">
+        android:id="@+id/navigation_statistics"
+        android:name="com.gmail.webos21.pds.app.ui.statistics.StatisticsFragment"
+        android:label="@string/title_statistics"
+        tools:layout="@layout/fragment_statistics">
 
         <action
-            android:id="@+id/action_Notifications_to_Home"
-            app:destination="@id/navigation_home" />
+            android:id="@+id/action_Statistics_to_Webservice"
+            app:destination="@id/navigation_webservice" />
     </fragment>
+
+    <fragment
+        android:id="@+id/navigation_webservice"
+        android:name="com.gmail.webos21.pds.app.ui.webservice.WebserviceFragment"
+        android:label="@string/title_webservice"
+        tools:layout="@layout/fragment_webservice">
+
+        <action
+            android:id="@+id/action_Webservice_to_More"
+            app:destination="@id/navigation_more" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/navigation_more"
+        android:name="com.gmail.webos21.pds.app.ui.more.MoreFragment"
+        android:label="@string/title_more"
+        tools:layout="@layout/fragment_more">
+
+        <action
+            android:id="@+id/action_More_to_Dashboard"
+            app:destination="@id/navigation_dashboard" />
+    </fragment>
+
+
 </navigation>
