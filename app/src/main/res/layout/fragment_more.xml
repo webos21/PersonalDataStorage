@@ -12,6 +12,25 @@
 
         <LinearLayout
             style="@style/PreferenceCategoryLayout"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                style="@style/PreferenceCategoryTitle"
+                android:text="UI" />
+
+            <TextView
+                android:id="@+id/theme"
+                style="@style/PreferenceCategory"
+                android:drawableLeft="@drawable/ic_brightness_black_24"
+                android:text="Theme" />
+        </LinearLayout>
+
+        <View style="@style/PreferenceCategoryDivider" />
+
+        <LinearLayout
+            style="@style/PreferenceCategoryLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
@@ -32,6 +51,8 @@
                 android:drawableLeft="@drawable/ic_db_export_black_24"
                 android:text="DB Export" />
         </LinearLayout>
+
+        <View style="@style/PreferenceCategoryDivider" />
 
     </LinearLayout>
 </ScrollView>

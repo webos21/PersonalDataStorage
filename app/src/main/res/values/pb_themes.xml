@@ -3,6 +3,8 @@
     <style name="ActionBarPopupThemeOverlayBase" parent="@style/ThemeOverlay.MaterialComponents.Light" />
 
     <style name="ActionBarPopupThemeOverlay" parent="@style/ActionBarPopupThemeOverlayBase">
+        <item name="android:textColorPrimary">#ff00a9ce</item>
+        <item name="android:textColorSecondary">#ff0090b0</item>
     </style>
 
     <style name="ActionBarThemeOverlay" parent="@style/ThemeOverlay.MaterialComponents.ActionBar">
@@ -24,13 +26,12 @@
         <item name="colorAccent">#ff0090b0</item>
         <item name="colorOnPrimary">@color/white</item>
         <item name="colorOnSecondary">@color/white</item>
-        <item name="colorPrimary">@color/actionBarColor</item>
-        <item name="colorPrimaryDark">@color/actionBarColorDark</item>
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorPrimaryVariant">#ff0090b0</item>
         <item name="colorSecondary">#ff0090b0</item>
         <item name="textInputStyle">@style/Widget.Design.TextInputLayout</item>
         <item name="windowActionModeOverlay">true</item>
-
     </style>
 
     <style name="PbTheme.DialogTheme" parent="@style/Theme.MaterialComponents.Light.Dialog.Alert">
