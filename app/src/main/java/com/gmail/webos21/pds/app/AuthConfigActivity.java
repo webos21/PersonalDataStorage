@@ -28,6 +28,10 @@ public class AuthConfigActivity extends AppCompatActivity implements View.OnClic
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        SharedPreferences shpref = getSharedPreferences(Consts.PREF_FILE, MODE_PRIVATE);
+        getDelegate().setLocalNightMode(shpref.getInt(Consts.PREF_THEME, -1));
+
         setContentView(R.layout.activity_auth_cfg);
 
         edPassNew = (EditText) findViewById(R.id.edPassNew);

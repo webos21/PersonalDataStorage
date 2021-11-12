@@ -3,7 +3,9 @@ package com.gmail.webos21.pds.app;
 import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -12,6 +14,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.gmail.webos21.pds.db.DbConsts;
@@ -46,10 +49,11 @@ public class PbAddActivity extends AppCompatActivity implements View.OnClickList
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_pbedit);
 
-        lblTitle = (TextView) findViewById(R.id.lbl_title);
-        lblTitle.setText(getResources().getString(R.string.pbe_title_add));
+        SharedPreferences shpref = getSharedPreferences(Consts.PREF_FILE, MODE_PRIVATE);
+        getDelegate().setLocalNightMode(shpref.getInt(Consts.PREF_THEME, -1));
+
+        setContentView(R.layout.activity_pbedit);
 
         panelId = (ViewGroup) findViewById(R.id.panel_id);
         panelId.setVisibility(View.GONE);
@@ -72,6 +76,10 @@ public class PbAddActivity extends AppCompatActivity implements View.OnClickList
         btnSave.setOnClickListener(this);
 
         dpl = new DatePickerListener();
+
+        ActionBar ab = getSupportActionBar();
+        ab.setTitle("암호 관리 > 계정 추가");
+        ab.setDisplayHomeAsUpEnabled(true);
     }
 
     @Override
@@ -82,6 +90,19 @@ public class PbAddActivity extends AppCompatActivity implements View.OnClickList
     @Override
     protected void onStop() {
         super.onStop();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        switch (id) {
+            case android.R.id.home:
+                finish();
+                return true;
+            default:
+                break;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override

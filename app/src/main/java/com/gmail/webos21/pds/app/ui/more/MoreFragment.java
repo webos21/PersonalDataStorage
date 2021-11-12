@@ -30,6 +30,7 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
 
 import com.gmail.webos21.pds.app.Consts;
+import com.gmail.webos21.pds.app.PbListActivity;
 import com.gmail.webos21.pds.app.PdsApp;
 import com.gmail.webos21.pds.app.R;
 import com.gmail.webos21.pds.app.databinding.FragmentMoreBinding;
@@ -63,12 +64,14 @@ public class MoreFragment extends Fragment {
 
         ClickEventHandler ceh = new ClickEventHandler();
 
+        TextView tvPbm = binding.pbm;
         TextView tvTheme = binding.theme;
         TextView tvDbImport = binding.dbImport;
         TextView tvDbExport = binding.dbExport;
         TextView tvAbout = binding.about;
         TextView tvTest = binding.test;
 
+        tvPbm.setOnClickListener(ceh);
         tvTheme.setOnClickListener(ceh);
         tvDbImport.setOnClickListener(ceh);
         tvDbExport.setOnClickListener(ceh);
@@ -179,6 +182,11 @@ public class MoreFragment extends Fragment {
         @Override
         public void onClick(View view) {
             switch (view.getId()) {
+                case R.id.pbm: {
+                    Intent i = new Intent(getActivity(), PbListActivity.class);
+                    getActivity().startActivity(i);
+                    break;
+                }
                 case R.id.theme: {
                     SharedPreferences shpref = getActivity().getSharedPreferences(Consts.PREF_FILE, Context.MODE_PRIVATE);
                     int currentMode = 1 + shpref.getInt(Consts.PREF_THEME, -1);

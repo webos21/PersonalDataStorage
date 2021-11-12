@@ -21,14 +21,11 @@ import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
-import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-import androidx.core.view.GravityCompat;
-import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.gmail.webos21.android.async.TaskRunner;
 import com.gmail.webos21.android.patch.PRNGFixes;
@@ -45,11 +42,10 @@ import com.google.android.material.navigation.NavigationView;
 import java.io.File;
 import java.util.concurrent.Executors;
 
-public class PbFragmentActivity extends AppCompatActivity implements View.OnClickListener {
+public class PbListActivity extends AppCompatActivity implements View.OnClickListener {
 
-    private static final String TAG = "MainActivity";
+    private static final String TAG = "PbListActivity";
 
-    private NavigationView navigationView;
     private TextView tvTotalSite;
     private PbRowAdapter pbAdapter;
     private TaskRunner tr;
@@ -62,6 +58,10 @@ public class PbFragmentActivity extends AppCompatActivity implements View.OnClic
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        SharedPreferences shpref = getSharedPreferences(Consts.PREF_FILE, MODE_PRIVATE);
+        getDelegate().setLocalNightMode(shpref.getInt(Consts.PREF_THEME, -1));
+
         setContentView(R.layout.activity_pblist);
 
         if (Consts.DEBUG) {
@@ -71,32 +71,9 @@ public class PbFragmentActivity extends AppCompatActivity implements View.OnClic
         // Android SecureRandom Fix!!! (No Dependency)
         PRNGFixes.apply();
 
-        // Set Tool-Bar
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-
-        // Set Drawer-Layout
-        DrawerLayout drawer = findViewById(R.id.drawer_layout);
-        if (drawer != null) {
-            ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                    this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-            drawer.addDrawerListener(toggle);
-            toggle.syncState();
-        }
-
-        // Set Navigation-View
-        navigationView = findViewById(R.id.nav_view);
-        if (navigationView != null) {
-            navigationView.setNavigationItemSelectedListener(new NavItemSelected());
-        }
-
         // Set FloatingActionButton
         FloatingActionButton fabInputOne = findViewById(R.id.fab_input_one);
         fabInputOne.setOnClickListener(this);
-        FloatingActionButton fabImportCsv = findViewById(R.id.fab_import_csv);
-        fabImportCsv.setOnClickListener(this);
-        FloatingActionButton fabExportCsv = findViewById(R.id.fab_export_csv);
-        fabExportCsv.setOnClickListener(this);
 
         // Get Shared Preferences
         SharedPreferences pref = getSharedPreferences(Consts.PREF_FILE, MODE_PRIVATE);
@@ -136,25 +113,29 @@ public class PbFragmentActivity extends AppCompatActivity implements View.OnClic
                         PdsApp app = (PdsApp) getApplicationContext();
                         app.setLoginRequired(false);
                     } else {
-                        PbFragmentActivity.this.finish();
+                        PbListActivity.this.finish();
                     }
                 });
 
         addLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
                 (result) -> {
                     if (result.getResultCode() == RESULT_OK) {
-                        PbFragmentActivity.this.pbAdapter.refresh();
+                        PbListActivity.this.pbAdapter.refresh();
                     }
                 });
 
         editLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
                 (result) -> {
                     if (result.getResultCode() == RESULT_OK) {
-                        PbFragmentActivity.this.pbAdapter.refresh();
+                        PbListActivity.this.pbAdapter.refresh();
                     }
                 });
 
         tr = new TaskRunner(Executors.newSingleThreadExecutor());
+
+        ActionBar ab = getSupportActionBar();
+        ab.setTitle("암호 관리");
+        ab.setDisplayHomeAsUpEnabled(true);
     }
 
     @Override
@@ -176,6 +157,9 @@ public class PbFragmentActivity extends AppCompatActivity implements View.OnClic
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         switch (id) {
+            case android.R.id.home:
+                finish();
+                return true;
             case R.id.action_search:
                 return true;
             default:
@@ -258,12 +242,6 @@ public class PbFragmentActivity extends AppCompatActivity implements View.OnClic
                 addLauncher.launch(i);
                 break;
             }
-            case R.id.fab_import_csv:
-                showFileDialog();
-                break;
-            case R.id.fab_export_csv:
-                exportCsv();
-                break;
             default:
                 break;
         }
@@ -287,10 +265,10 @@ public class PbFragmentActivity extends AppCompatActivity implements View.OnClic
     }
 
     private void refreshListView() {
-        PbFragmentActivity.this.runOnUiThread(() -> {
-            String totalSite = PbFragmentActivity.this.getResources().getString(R.string.cfg_total_item) + PbFragmentActivity.this.pbAdapter.getCount();
-            PbFragmentActivity.this.tvTotalSite.setText(totalSite);
-            PbFragmentActivity.this.pbAdapter.notifyDataSetChanged();
+        PbListActivity.this.runOnUiThread(() -> {
+            String totalSite = PbListActivity.this.getResources().getString(R.string.cfg_total_item) + PbListActivity.this.pbAdapter.getCount();
+            PbListActivity.this.tvTotalSite.setText(totalSite);
+            PbListActivity.this.pbAdapter.notifyDataSetChanged();
         });
     }
 
@@ -325,7 +303,7 @@ public class PbFragmentActivity extends AppCompatActivity implements View.OnClic
         PasswordBookRepo pbRepo = PdsDbManager.getInstance().getRepository(PasswordBookRepo.class);
 
         tr.executeAsync(new PbExporter(pbRepo, csvFile, () -> {
-            Toast.makeText(PbFragmentActivity.this, "File is exported!!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(PbListActivity.this, "File is exported!!", Toast.LENGTH_SHORT).show();
         }), Runnable::run);
     }
 
@@ -338,17 +316,13 @@ public class PbFragmentActivity extends AppCompatActivity implements View.OnClic
                     break;
                 }
                 case R.id.nav_settings: {
-                    Intent i = new Intent(PbFragmentActivity.this, AuthConfigActivity.class);
+                    Intent i = new Intent(PbListActivity.this, AuthConfigActivity.class);
                     authCfgLauncher.launch(i);
                     break;
                 }
                 default:
                     break;
             }
-
-            DrawerLayout drawer = findViewById(R.id.drawer_layout);
-            drawer.closeDrawer(GravityCompat.START);
-            navigationView.getMenu().getItem(0).setChecked(true);
 
             return true;
         }
@@ -362,7 +336,7 @@ public class PbFragmentActivity extends AppCompatActivity implements View.OnClic
                 case R.id.chk_icon_show: {
                     SharedPreferences pref = getSharedPreferences(Consts.PREF_FILE, MODE_PRIVATE);
                     pref.edit().putBoolean(Consts.PREF_SHOW_ICON, isChecked).apply();
-                    PbFragmentActivity.this.pbAdapter.setShowIcon(isChecked);
+                    PbListActivity.this.pbAdapter.setShowIcon(isChecked);
                     break;
                 }
                 default:
@@ -384,7 +358,7 @@ public class PbFragmentActivity extends AppCompatActivity implements View.OnClic
                     Log.i(TAG, "url = " + pbRow.getSiteUrl());
                 }
 
-                Intent i = new Intent(PbFragmentActivity.this, PbEditActivity.class);
+                Intent i = new Intent(PbListActivity.this, PbEditActivity.class);
                 i.putExtra(Consts.EXTRA_ARG_ID, pbRow.getId());
                 editLauncher.launch(i);
             } else {
@@ -408,14 +382,14 @@ public class PbFragmentActivity extends AppCompatActivity implements View.OnClic
                     Log.i(TAG, "url = " + pbRow.getSiteUrl());
                 }
 
-                String popupTitle = PbFragmentActivity.this.getResources().getString(R.string.pbp_delete);
-                String popupMessage = PbFragmentActivity.this.getResources().getString(R.string.pbp_delete_msg);
+                String popupTitle = PbListActivity.this.getResources().getString(R.string.pbp_delete);
+                String popupMessage = PbListActivity.this.getResources().getString(R.string.pbp_delete_msg);
                 popupMessage += "\n [" + pbRow.getSiteType() + "] " + pbRow.getSiteName();
 
-                String txtDelete = PbFragmentActivity.this.getResources().getString(R.string.delete);
-                String txtCancel = PbFragmentActivity.this.getResources().getString(R.string.cancel);
+                String txtDelete = PbListActivity.this.getResources().getString(R.string.delete);
+                String txtCancel = PbListActivity.this.getResources().getString(R.string.cancel);
 
-                AlertDialog.Builder adBuilder = new AlertDialog.Builder(PbFragmentActivity.this);
+                AlertDialog.Builder adBuilder = new AlertDialog.Builder(PbListActivity.this);
                 adBuilder.setTitle(popupTitle);
                 adBuilder.setMessage(popupMessage);
                 adBuilder.setPositiveButton(txtDelete,
@@ -424,7 +398,7 @@ public class PbFragmentActivity extends AppCompatActivity implements View.OnClic
                                     DialogInterface dialog, int id) {
                                 PasswordBookRepo pbRepo = PdsDbManager.getInstance().getRepository(PasswordBookRepo.class);
                                 pbRepo.deleteRow(pbRow);
-                                PbFragmentActivity.this.refreshListView();
+                                PbListActivity.this.refreshListView();
                             }
                         });
                 adBuilder.setNegativeButton(txtCancel,
@@ -476,9 +450,9 @@ public class PbFragmentActivity extends AppCompatActivity implements View.OnClic
         @Override
         public void onFileChosen(File chosenFile) {
             PasswordBookRepo pbRepo = PdsDbManager.getInstance().getRepository(PasswordBookRepo.class);
-            PbFragmentActivity.this.tr.executeAsync(new PbImporter(pbRepo, chosenFile, () -> {
-                Toast.makeText(PbFragmentActivity.this, "File is imported!!", Toast.LENGTH_SHORT).show();
-                PbFragmentActivity.this.refreshListView();
+            PbListActivity.this.tr.executeAsync(new PbImporter(pbRepo, chosenFile, () -> {
+                Toast.makeText(PbListActivity.this, "File is imported!!", Toast.LENGTH_SHORT).show();
+                PbListActivity.this.refreshListView();
             }), Runnable::run);
         }
     }

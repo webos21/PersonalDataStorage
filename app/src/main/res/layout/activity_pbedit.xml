@@ -4,18 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".PbAddActivity">
-
-    <TextView
-        android:id="@+id/lbl_title"
-        android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:background="@color/colorPrimary"
-        android:gravity="center"
-        android:text="@string/auth_title"
-        android:textColor="@color/colorPrimaryText"
-        android:textSize="30sp"
-        android:textStyle="bold" />
+    tools:context=".PbEditActivity">
 
     <ScrollView
         android:layout_width="match_parent"

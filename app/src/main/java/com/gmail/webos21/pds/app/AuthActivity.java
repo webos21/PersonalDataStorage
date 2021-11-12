@@ -56,6 +56,10 @@ public class AuthActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        SharedPreferences shpref = getSharedPreferences(Consts.PREF_FILE, MODE_PRIVATE);
+        getDelegate().setLocalNightMode(shpref.getInt(Consts.PREF_THEME, -1));
+
         setContentView(R.layout.activity_auth);
 
         if (Consts.DEBUG) {
@@ -91,7 +95,6 @@ public class AuthActivity extends AppCompatActivity {
 
         gvInputPad.setAdapter(mKeypadAdapter);
 
-        SharedPreferences shpref = getSharedPreferences(Consts.PREF_FILE, MODE_PRIVATE);
         passkey = shpref.getString(Consts.PREF_PASSKEY, "000000");
 
         BiometricManager biometricManager = BiometricManager.from(this);

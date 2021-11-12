@@ -10,6 +10,27 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
+        <!-- 여기서부터 고쳐야 한다 -->
+
+        <LinearLayout
+            style="@style/PreferenceCategoryLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                style="@style/PreferenceCategoryTitle"
+                android:text="Functionality" />
+
+            <TextView
+                android:id="@+id/pbm"
+                style="@style/PreferenceCategory"
+                android:drawableLeft="@drawable/ic_password_black_24"
+                android:text="암호 관리" />
+        </LinearLayout>
+
+        <View style="@style/PreferenceCategoryDivider" />
+
         <LinearLayout
             style="@style/PreferenceCategoryLayout"
             android:layout_width="match_parent"
@@ -23,7 +44,7 @@
             <TextView
                 android:id="@+id/theme"
                 style="@style/PreferenceCategory"
-                android:drawableLeft="@drawable/ic_brightness_black_24"
+                android:drawableLeft="@drawable/ic_daynight_black_24"
                 android:text="Theme" />
         </LinearLayout>
 
