@@ -5,6 +5,7 @@ import java.text.SimpleDateFormat;
 public class DbConsts {
     public static final boolean DB_DEBUG = false;
 
+    public static final String DB_FILE = "pds.mv.db";
     public static final String DB_PATH = "~/pds";
     public static final String DB_USER = "sa";
     public static final String DB_PASS = "filekey sa";

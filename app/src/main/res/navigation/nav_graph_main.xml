@@ -11,9 +11,7 @@
         android:label="@string/title_dashboard"
         tools:layout="@layout/fragment_dashboard">
 
-        <action
-            android:id="@+id/action_Dashboard_to_Statistics"
-            app:destination="@id/navigation_statistics" />
+
     </fragment>
 
     <fragment
@@ -22,9 +20,7 @@
         android:label="@string/title_statistics"
         tools:layout="@layout/fragment_statistics">
 
-        <action
-            android:id="@+id/action_Statistics_to_Webservice"
-            app:destination="@id/navigation_webservice" />
+
     </fragment>
 
     <fragment
@@ -33,9 +29,7 @@
         android:label="@string/title_webservice"
         tools:layout="@layout/fragment_webservice">
 
-        <action
-            android:id="@+id/action_Webservice_to_More"
-            app:destination="@id/navigation_more" />
+
     </fragment>
 
     <fragment
@@ -45,9 +39,22 @@
         tools:layout="@layout/fragment_more">
 
         <action
-            android:id="@+id/action_More_to_Dashboard"
-            app:destination="@id/navigation_dashboard" />
+            android:id="@+id/actionMoreToDetail"
+            app:destination="@id/navigation_more_detail" />
+
     </fragment>
 
+
+    <fragment
+        android:id="@+id/navigation_more_detail"
+        android:name="com.gmail.webos21.pds.app.ui.more.MoreFragmentPreference"
+        android:label="{more_detail_title}"
+        tools:layout="@layout/preference">
+
+        <argument
+            android:name="more_detail_title"
+            app:argType="string" />
+
+    </fragment>
 
 </navigation>

@@ -8,7 +8,7 @@ android {
     defaultConfig {
         applicationId "com.gmail.webos21.pds.app"
 
-        minSdkVersion 16
+        minSdkVersion 17
         targetSdkVersion 31
 
         versionCode 4

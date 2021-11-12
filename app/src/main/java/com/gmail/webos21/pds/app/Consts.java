@@ -28,4 +28,6 @@ public class Consts {
     public static final SimpleDateFormat SDF_TIME = new SimpleDateFormat("HH:mm:ss");
     public static final SimpleDateFormat SDF_DATETIME = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
+    public static final SimpleDateFormat SDF_DATETIME_FILE = new SimpleDateFormat("yyyyMMddHHmmss");
+
 }

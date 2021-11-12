@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MenuItem;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
@@ -35,7 +36,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         SharedPreferences shpref = getSharedPreferences(Consts.PREF_FILE, MODE_PRIVATE);
-        setTheme(shpref.getInt(Consts.PREF_THEME, -1));
+        getDelegate().setLocalNightMode(shpref.getInt(Consts.PREF_THEME, -1));
 
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
@@ -155,6 +156,19 @@ public class MainActivity extends AppCompatActivity {
             }
         }
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem menuitem) {
+        int mId = menuitem.getItemId();
+        switch (mId) {
+            case android.R.id.home:
+                onBackPressed();
+                return true;
+            default:
+                break;
+        }
+        return false;
     }
 
 }

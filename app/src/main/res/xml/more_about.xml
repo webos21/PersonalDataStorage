@@ -1,13 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen
-    xmlns:android="http://schemas.android.com/apk/res/android">
-    <Preference android:icon="@drawable/ic_db_import_black_24" android:title="About Github" android:summary="www.github.com/NordicSemiconductor/Android-nRF-Connect">
-        <intent android:action="android.intent.action.VIEW" android:data="https://github.com/NordicSemiconductor/Android-nRF-Connect" />
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <Preference
+        android:icon="@drawable/ic_db_import_black_24"
+        android:summary="www.github.com/NordicSemiconductor/Android-nRF-Connect"
+        android:title="About Github">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:data="https://github.com/NordicSemiconductor/Android-nRF-Connect" />
     </Preference>
-    <Preference android:icon="@drawable/ic_db_import_black_24" android:title="About Nordic" android:summary="www.nordicsemi.com">
-        <intent android:action="android.intent.action.VIEW" android:data="https://www.nordicsemi.com" />
+    <Preference
+        android:icon="@drawable/ic_db_import_black_24"
+        android:summary="www.nordicsemi.com"
+        android:title="About Nordic">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:data="https://www.nordicsemi.com" />
     </Preference>
-    <Preference android:icon="@drawable/ic_db_import_black_24" android:title="About thingy" android:summary="www.nordicsemi.com/thingy">
-        <intent android:action="android.intent.action.VIEW" android:data="https://www.nordicsemi.com/thingy" />
+    <Preference
+        android:icon="@drawable/ic_db_import_black_24"
+        android:summary="www.nordicsemi.com/thingy"
+        android:title="About thingy">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:data="https://www.nordicsemi.com/thingy" />
     </Preference>
 </PreferenceScreen>
