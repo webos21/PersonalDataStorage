@@ -30,6 +30,7 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
 
 import com.gmail.webos21.pds.app.Consts;
+import com.gmail.webos21.pds.app.MapActivity;
 import com.gmail.webos21.pds.app.PbListActivity;
 import com.gmail.webos21.pds.app.PdsApp;
 import com.gmail.webos21.pds.app.R;
@@ -65,6 +66,7 @@ public class MoreFragment extends Fragment {
         ClickEventHandler ceh = new ClickEventHandler();
 
         TextView tvPbm = binding.pbm;
+        TextView tvMap = binding.toMap;
         TextView tvTheme = binding.theme;
         TextView tvDbImport = binding.dbImport;
         TextView tvDbExport = binding.dbExport;
@@ -72,6 +74,7 @@ public class MoreFragment extends Fragment {
         TextView tvTest = binding.test;
 
         tvPbm.setOnClickListener(ceh);
+        tvMap.setOnClickListener(ceh);
         tvTheme.setOnClickListener(ceh);
         tvDbImport.setOnClickListener(ceh);
         tvDbExport.setOnClickListener(ceh);
@@ -184,6 +187,11 @@ public class MoreFragment extends Fragment {
             switch (view.getId()) {
                 case R.id.pbm: {
                     Intent i = new Intent(getActivity(), PbListActivity.class);
+                    getActivity().startActivity(i);
+                    break;
+                }
+                case R.id.to_map: {
+                    Intent i = new Intent(getActivity(), MapActivity.class);
                     getActivity().startActivity(i);
                     break;
                 }

@@ -7,6 +7,7 @@ public class Consts {
     public static final boolean DEBUG = true;
 
     public static final int PERM_REQ_EXTERNAL_STORAGE = 101;
+    public static final int PERM_REQ_FINE_LOCATION = 102;
 
     public static final String EXTRA_ARG_ID = "com.gmail.webos21.pb.id";
 

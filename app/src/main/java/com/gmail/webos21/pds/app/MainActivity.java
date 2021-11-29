@@ -111,13 +111,23 @@ public class MainActivity extends AppCompatActivity {
         if (Consts.DEBUG) {
             Log.i(TAG, "onStart::RequestPermission");
         }
-        // Request Permission
+        // Request Permission : WRITE_EXTERNAL_STORAGE
         if (ContextCompat.checkSelfPermission(this,
                 Manifest.permission.WRITE_EXTERNAL_STORAGE)
                 != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this,
                     new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
                     Consts.PERM_REQ_EXTERNAL_STORAGE);
+            return;
+        }
+
+        // Request Permission :
+        if (ContextCompat.checkSelfPermission(this,
+                Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                    Consts.PERM_REQ_FINE_LOCATION);
             return;
         }
 
@@ -152,6 +162,15 @@ public class MainActivity extends AppCompatActivity {
                 // OK, nothing to do
             } else {
                 Toast.makeText(this, getResources().getString(R.string.err_perm_exflah), Toast.LENGTH_LONG).show();
+                finish();
+            }
+        }
+        if (requestCode == Consts.PERM_REQ_FINE_LOCATION) {
+            if (grantResults.length > 0
+                    && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                // OK, nothing to do
+            } else {
+                Toast.makeText(this, getResources().getString(R.string.err_perm_location), Toast.LENGTH_LONG).show();
                 finish();
             }
         }
