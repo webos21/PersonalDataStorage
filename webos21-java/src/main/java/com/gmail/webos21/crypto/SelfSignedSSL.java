@@ -31,7 +31,7 @@ public class SelfSignedSSL {
 			Certificate ca = null;
 			try {
 				ca = cf.generateCertificate(caInput);
-				System.out.println("ca=" + ((X509Certificate) ca).getSubjectDN());
+				System.out.println("ca=" + ((X509Certificate) ca).getSubjectX500Principal());
 			} finally {
 				caInput.close();
 			}
