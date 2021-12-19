@@ -6,12 +6,17 @@ buildscript {
     }
   }
   dependencies {
-    classpath 'com.moowork.gradle:gradle-node-plugin:1.3.1'
+    classpath 'com.github.node-gradle:gradle-node-plugin:3.1.0'
   }
 }
 
+plugins {
+  id "com.github.node-gradle.node" version "3.1.0"
+
+}
+
 apply plugin: 'base'
-apply plugin: 'com.moowork.node' // gradle-node-plugin
+apply plugin: 'com.github.node-gradle.node'
 
 node {
   /* gradle-node-plugin configuration
@@ -21,10 +26,10 @@ node {
   */
 
   // Version of node to use.
-  version = "15.5.1"
+  version = "16.4.1"
 
   // Version of npm to use.
-  npmVersion = '7.3.0'
+  npmVersion = '7.19.1'
 
   // If true, it will download node using above parameters.
   // If false, it will try to use globally installed node.
@@ -76,9 +81,6 @@ String testsExecutedMarkerName = "${projectDir}/.tests.executed"
 
 task test(type: NpmTask) {
   dependsOn assemble
-
-  // force Jest test runner to execute tests once and finish the process instead of starting watch mode
-  environment CI: 'true'
 
   args = ['run', 'test']
 
