@@ -60,6 +60,7 @@ const authLogin = pwdValue => {
 
         let iv = Buffer.from("PasswordBook1234");
         let sha256 = crypto.createHash('sha256');
+  
         sha256.update('PasswordBook');
 
         let aesCipher = crypto.createCipheriv('aes-256-cbc', sha256.digest(), iv);

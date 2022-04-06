@@ -4,13 +4,18 @@ import android.Manifest;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.MenuItem;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -121,7 +126,7 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
 
-        // Request Permission :
+        // Request Permission : ACCESS_FINE_LOCATION
         if (ContextCompat.checkSelfPermission(this,
                 Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED) {
@@ -131,7 +136,26 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
 
+        // Request Permission : ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            if (!hasAllFilesPermission()) {
+                Uri uri = Uri.parse("package:" + BuildConfig.APPLICATION_ID);
+                Intent i = new Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION, uri);
+                startActivity(i);
+            }
+        }
+
+        // Request Permission : ACTION_MANAGE_WRITE_SETTINGS
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (!Settings.System.canWrite(this)) {
+                Intent intent = new Intent(android.provider.Settings.ACTION_MANAGE_WRITE_SETTINGS);
+                intent.setData(Uri.parse("package:" + this.getPackageName()));
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent);
+            }
+        }
     }
+
 
     @Override
     protected void onStop() {
@@ -152,7 +176,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                                           int[] grantResults) {
         if (Consts.DEBUG) {
             Log.i(TAG, "onRequestPermissionsResult!!!!!!!!!!!!!");
         }
@@ -188,6 +213,12 @@ public class MainActivity extends AppCompatActivity {
                 break;
         }
         return false;
+    }
+
+
+    @RequiresApi(api = Build.VERSION_CODES.R)
+    private boolean hasAllFilesPermission() {
+        return Environment.isExternalStorageManager();
     }
 
 }

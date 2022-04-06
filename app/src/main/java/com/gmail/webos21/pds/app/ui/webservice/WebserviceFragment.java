@@ -111,8 +111,23 @@ public class WebserviceFragment extends Fragment {
         PdsApp app = (PdsApp) getActivity().getApplicationContext();
         PdsWebHelper pwh = app.getPdsWebHelper();
 
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            if (!hasAllFilesPermission()) {
+                Uri uri = Uri.parse("package:" + BuildConfig.APPLICATION_ID);
+                Intent i = new Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION, uri);
+                startActivity(i);
+            }
+        }
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            requestIpAddress();
+            if (Settings.System.canWrite(getActivity())) {
+                requestIpAddress();
+            } else {
+                Intent intent = new Intent(android.provider.Settings.ACTION_MANAGE_WRITE_SETTINGS);
+                intent.setData(Uri.parse("package:" + getActivity().getPackageName()));
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent);
+            }
         }
 
         swPbWeb.setOnCheckedChangeListener(null);
@@ -200,7 +215,7 @@ public class WebserviceFragment extends Fragment {
             PdsApp app = (PdsApp) getActivity().getApplicationContext();
             PdsWebHelper pwh = app.getPdsWebHelper();
             if (isChecked) {
-                if (Build.VERSION.SDK_INT >= 30 && !WebserviceFragment.this.hasAllFilesPermission()) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R && !WebserviceFragment.this.hasAllFilesPermission()) {
                     Uri uri = Uri.parse("package:" + BuildConfig.APPLICATION_ID);
                     Intent i = new Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION, uri);
                     startActivity(i);

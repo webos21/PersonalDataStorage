@@ -30,14 +30,14 @@ public class NotificationUpdater implements Callable<Void> {
     public Void call() {
         Intent actionPlay = new Intent(Consts.NOTI_ACT_PLAY);
         Intent actionClose = new Intent(Consts.NOTI_ACT_CLOSE);
-        PendingIntent togglePlay = PendingIntent.getService(service, 0, actionPlay, 0);
-        PendingIntent close = PendingIntent.getService(service, 0, actionClose, 0);
+        PendingIntent togglePlay = PendingIntent.getService(service, 0, actionPlay, PendingIntent.FLAG_MUTABLE);
+        PendingIntent close = PendingIntent.getService(service, 0, actionClose, PendingIntent.FLAG_MUTABLE);
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(service, channelId);
         builder
                 .setContentTitle("[PDS Web Service]")
                 .setContentText(service.getUri())
-                .setContentIntent(PendingIntent.getActivity(service, 0, new Intent(service, MainActivity.class), 0));
+                .setContentIntent(PendingIntent.getActivity(service, 0, new Intent(service, MainActivity.class), PendingIntent.FLAG_MUTABLE));
 
         builder.addAction(new NotificationCompat.Action(service.isPlaying() ? android.R.drawable.ic_media_pause : android.R.drawable.ic_media_play, "Play", togglePlay));
         builder.addAction(new NotificationCompat.Action(android.R.drawable.ic_menu_close_clear_cancel, "Close", close));
