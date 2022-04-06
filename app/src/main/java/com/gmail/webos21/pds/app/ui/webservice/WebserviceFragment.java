@@ -1,6 +1,5 @@
 package com.gmail.webos21.pds.app.ui.webservice;
 
-import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
@@ -104,7 +103,7 @@ public class WebserviceFragment extends Fragment {
         super.onStart();
 
         File indexHtml = new File(pwdir, "index.html");
-        if (true || !indexHtml.exists()) {
+        if (!indexHtml.exists()) {
             TaskRunner tr = new TaskRunner(Executors.newSingleThreadExecutor());
             tr.executeAsync(new StaticResourceExtractor(getActivity(), "static", pwdir.getPath()));
         }
@@ -112,7 +111,7 @@ public class WebserviceFragment extends Fragment {
         PdsApp app = (PdsApp) getActivity().getApplicationContext();
         PdsWebHelper pwh = app.getPdsWebHelper();
 
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             requestIpAddress();
         }
 
@@ -136,7 +135,7 @@ public class WebserviceFragment extends Fragment {
         }
     }
 
-    @RequiresApi(Build.VERSION_CODES.S)
+    @RequiresApi(api = Build.VERSION_CODES.S)
     private void requestIpAddress() {
         final NetworkRequest request =
                 new NetworkRequest.Builder()
@@ -178,7 +177,7 @@ public class WebserviceFragment extends Fragment {
         return ipAddress;
     }
 
-    @RequiresApi(Build.VERSION_CODES.R)
+    @RequiresApi(api = Build.VERSION_CODES.R)
     private boolean hasAllFilesPermission() {
         return Environment.isExternalStorageManager();
     }
