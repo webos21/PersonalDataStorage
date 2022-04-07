@@ -60,7 +60,6 @@ const authLogin = pwdValue => {
         const REQ_URI = (process.env.NODE_ENV !== 'production') ? 'http://' + window.location.hostname + ':28080/pds/v1/auth' : '/pds/v1/auth';
 
         let base64Result = Cipher.encrypt(pwdValue);
-        console.log("Encrypt Result = " + base64Result);
 
         const formData = new FormData();
         formData.append("pbpwd", base64Result);

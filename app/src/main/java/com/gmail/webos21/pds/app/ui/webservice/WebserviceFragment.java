@@ -34,11 +34,18 @@ import com.gmail.webos21.pds.app.databinding.FragmentWebserviceBinding;
 import com.gmail.webos21.pds.app.web.StaticResourceExtractor;
 import com.google.android.material.switchmaterial.SwitchMaterial;
 
+import java.io.BufferedInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+import java.util.Arrays;
 import java.util.concurrent.Executors;
 
 public class WebserviceFragment extends Fragment {
@@ -103,7 +110,42 @@ public class WebserviceFragment extends Fragment {
         super.onStart();
 
         File indexHtml = new File(pwdir, "index.html");
-        if (!indexHtml.exists()) {
+        if (indexHtml.exists()) {
+            try {
+                byte[] chunk = new byte[1024];
+                int rb;
+
+                ByteArrayOutputStream fbaos = new ByteArrayOutputStream();
+                FileInputStream fis = new FileInputStream(indexHtml);
+                while ((rb = fis.read(chunk)) > 0) {
+                    fbaos.write(chunk, 0, rb);
+                }
+                byte[] filesBytes = fbaos.toByteArray();
+
+                fbaos.close();
+                fis.close();
+
+                ByteArrayOutputStream abaos = new ByteArrayOutputStream();
+                InputStream is = getActivity().getAssets().open("static/index.html");
+                BufferedInputStream bis = new BufferedInputStream(is);
+                while ((rb = bis.read(chunk)) > 0) {
+                    abaos.write(chunk, 0, rb);
+                }
+                byte[] assetBytes = abaos.toByteArray();
+
+                abaos.close();
+                bis.close();
+
+                if (!Arrays.equals(assetBytes, filesBytes)) {
+                    TaskRunner tr = new TaskRunner(Executors.newSingleThreadExecutor());
+                    tr.executeAsync(new StaticResourceExtractor(getActivity(), "static", pwdir.getPath()));
+                }
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } else {
             TaskRunner tr = new TaskRunner(Executors.newSingleThreadExecutor());
             tr.executeAsync(new StaticResourceExtractor(getActivity(), "static", pwdir.getPath()));
         }
