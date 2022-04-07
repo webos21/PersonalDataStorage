@@ -108,6 +108,11 @@
 
         <View style="@style/PreferenceCategoryDivider" />
 
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:tag="spaceForBottomMenu" />
+
     </LinearLayout>
 
 </ScrollView>
