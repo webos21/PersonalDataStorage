@@ -8,6 +8,8 @@ import * as RestateAction from './RealEstateAction'
 import * as RpayAction from './RegularPayAction'
 import * as StockAction from './StockAction'
 
+import Cipher from '../cipher'
+
 const AuthDebugLog = (args) => { };
 // const AuthDebugLog = console.log;
 
@@ -56,17 +58,9 @@ const authHome = () => {
 const authLogin = pwdValue => {
     return dispatch => {
         const REQ_URI = (process.env.NODE_ENV !== 'production') ? 'http://' + window.location.hostname + ':28080/pds/v1/auth' : '/pds/v1/auth';
-        const crypto = require('crypto');
 
-        let iv = Buffer.from("PasswordBook1234");
-        let sha256 = crypto.createHash('sha256');
-  
-        sha256.update('PasswordBook');
-
-        let aesCipher = crypto.createCipheriv('aes-256-cbc', sha256.digest(), iv);
-        aesCipher.update(pwdValue);
-        let cryptBytes = aesCipher.final();
-        let base64Result = cryptBytes.toString('base64');
+        let base64Result = Cipher.encrypt(pwdValue);
+        console.log("Encrypt Result = " + base64Result);
 
         const formData = new FormData();
         formData.append("pbpwd", base64Result);
