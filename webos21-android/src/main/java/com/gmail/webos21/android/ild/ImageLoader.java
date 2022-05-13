@@ -90,7 +90,7 @@ public class ImageLoader {
     private Bitmap getBitmap(String url) {
         File f = fileCache.getFile(url);
 
-        System.out.println("File = " + f.getAbsolutePath());
+        Log.i(TAG, "File = " + f.getAbsolutePath());
 
         // from SD cache
         // CHECK : if trying to decode file which not exist in cache return null

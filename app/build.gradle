@@ -3,6 +3,8 @@ apply plugin: 'com.google.gms.google-services'
 apply plugin: 'com.google.firebase.crashlytics'
 
 android {
+    namespace 'com.gmail.webos21.pds.app'
+
     compileSdkVersion 31
 
     defaultConfig {

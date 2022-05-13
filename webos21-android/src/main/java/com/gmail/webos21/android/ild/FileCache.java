@@ -29,7 +29,7 @@ public class FileCache {
 
     public File getFile(String url) {
         String cacheFileName = null;
-        if (url.startsWith("http://www.google.com/s2/favicons")) {
+        if (url.startsWith("https://t3.gstatic.com/faviconV2")) {
             cacheFileName = "R" + Integer.toHexString(url.hashCode()) + "-favicon.ico";
         } else {
             int posLastDot = url.lastIndexOf('.');

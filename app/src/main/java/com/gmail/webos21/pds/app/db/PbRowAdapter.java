@@ -76,7 +76,7 @@ public class PbRowAdapter extends BaseAdapter {
 
         // 아이템 내 각 위젯에 데이터 반영
         if (bShowIcon) {
-            imgLoader.DisplayImage("http://www.google.com/s2/favicons?domain_url=" + pbData.getSiteUrl(), iconImageView);
+            imgLoader.DisplayImage("https://t3.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=" + pbData.getSiteUrl(), iconImageView);
         } else {
             iconImageView.setImageDrawable(ResourcesCompat.getDrawable(context.getResources(), R.drawable.ic_gt, null));
         }
