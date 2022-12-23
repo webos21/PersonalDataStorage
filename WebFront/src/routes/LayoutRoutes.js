@@ -35,7 +35,6 @@ const Record = Loadable(lazy(() => import('../pages/Record')));
 const Schedule = Loadable(lazy(() => import('../pages/Schedule')));
 const FileSystem = Loadable(lazy(() => import('../pages/FileSystem')));
 
-const Login = Loadable(lazy(() => import('../pages/Login')));
 const Logout = Loadable(lazy(() => import('../pages/Logout')));
 
 // ==============================|| MAIN ROUTING ||============================== //

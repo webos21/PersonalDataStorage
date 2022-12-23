@@ -45,7 +45,7 @@ const App = () => {
     const renderNoUserInfo = () => (
         <ThemeCustomization>
             <ScrollTop>
-                <Routes locationArgs="/checking" />
+                <Routes locationArgs="/login" />
             </ScrollTop>
         </ThemeCustomization>
     );

@@ -6,6 +6,7 @@ import MinimalLayout from '../layout/MinimalLayout';
 
 // render - pages
 const Checking = Loadable(lazy(() => import('../pages/checking')));
+const Login = Loadable(lazy(() => import('../pages/Login')));
 
 // ==============================|| AUTH ROUTING ||============================== //
 
@@ -14,8 +15,8 @@ const BaseRoutes = {
     element: <MinimalLayout />,
     children: [
         {
-            path: '/checking',
-            element: <Checking />
+            path: '/login',
+            element: <Login />
         }
     ]
 };
