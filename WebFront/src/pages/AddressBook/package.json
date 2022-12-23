@@ -1,0 +1,6 @@
+{
+  "name": "AddressBook",
+  "version": "1.0.0",
+  "private": true,
+  "main": "./AddressBook.js"
+}
