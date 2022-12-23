@@ -1,74 +1,123 @@
 {
-  "name": "@webos21/PersonalDataStorage",
-  "version": "1.0.0",
-  "description": "Personal Data Service Web",
-  "author": "Cheolmin Jo",
-  "homepage": "/",
-  "copyright": "Copyright 2020 NeoFoundtion Cheolmin Jo",
-  "license": "MIT",
-  "private": true,
-  "repository": {
-    "type": "git",
-    "url": "git@github.com:webos21/PersonalDataStorage.git"
-  },
-  "dependencies": {
-    "@coreui/coreui": "^3.4.0",
-    "@coreui/icons-react": "^1.1.0",
-    "@coreui/react": "^3.3.4",
-    "@coreui/react-chartjs": "^1.1.0",
-    "@coreui/utils": "^1.3.1",
-    "@fullcalendar/core": "^5.5.1",
-    "@fullcalendar/daygrid": "^5.5.0",
-    "@fullcalendar/interaction": "^5.5.0",
-    "@fullcalendar/list": "^5.5.0",
-    "@fullcalendar/react": "^5.5.0",
-    "@fullcalendar/timegrid": "^5.5.1",
-    "@wojtekmaj/enzyme-adapter-react-17": "^0.6.2",
-    "buffer": "^6.0.3",
-    "classnames": "^2.2.6",
-    "core-js": "^3.8.0",
-    "crypto-js": "^4.1.1",
-    "enzyme": "^3.11.0",
-    "firebase": "^8.3.2",
-    "immutability-helper": "^3.1.1",
-    "prop-types": "^15.7.2",
-    "react": "^17.0.2",
-    "react-dom": "^17.0.2",
-    "react-hook-form": "^7.8.4",
-    "react-redux": "^7.2.2",
-    "react-router-dom": "^5.2.0",
-    "react-scripts": "^5.0.0",
-    "redux": "^4.0.5",
-    "redux-logger": "^3.0.6",
-    "redux-thunk": "^2.3.0",
-    "sass": "^1.49.9",
-    "web-vitals": "^2.1.4"
-  },
-  "browser": {
-    "crypto": false
-  },
-  "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
-  },
-  "eslintConfig": {
-    "extends": [
-      "react-app",
-      "react-app/jest"
-    ]
-  },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
-  }
+    "name": "auth",
+    "version": "1.0.0",
+    "private": true,
+    "homepage": "/auth",
+    "resolutions": {
+        "//": "See https://github.com/facebook/create-react-app/issues/11773",
+        "react-error-overlay": "6.0.9"
+    },
+    "dependencies": {
+        "@emotion/cache": "^11.7.1",
+        "@emotion/react": "^11.7.1",
+        "@emotion/styled": "^11.6.0",
+        "@hookform/resolvers": "^2.9.7",
+        "@mui/icons-material": "^5.8.4",
+        "@mui/lab": "^5.0.0-alpha.65",
+        "@mui/material": "^5.8.5",
+        "@mui/styles": "^5.3.0",
+        "@mui/x-data-grid": "^5.12.2",
+        "@reduxjs/toolkit": "^1.7.1",
+        "@testing-library/jest-dom": "^5.11.4",
+        "@testing-library/react": "^11.1.0",
+        "@testing-library/user-event": "^12.1.10",
+        "apexcharts": "^3.27.3",
+        "autoprefixer": "^10.4.12",
+        "chart.js": "^3.9.1",
+        "eslint-plugin-node": "^11.1.0",
+        "eslint-plugin-promise": "^6.0.1",
+        "eslint-plugin-standard": "^5.0.0",
+        "firebase": "^8.3.2",
+        "formik": "^2.2.9",
+        "framer-motion": "^4.1.17",
+        "history": "^5.0.0",
+        "leaflet": "^1.9.2",
+        "leaflet-rotatedmarker": "^0.2.0",
+        "lodash": "^4.17.21",
+        "prop-types": "^15.8.1",
+        "react": "^17.0.2",
+        "react-apexcharts": "^1.3.9",
+        "react-chartjs-2": "^4.3.1",
+        "react-copy-to-clipboard": "^5.0.4",
+        "react-datepicker": "^4.7.0",
+        "react-device-detect": "^2.1.2",
+        "react-dom": "^17.0.2",
+        "react-draggable": "^4.4.5",
+        "react-element-to-jsx-string": "^14.3.4",
+        "react-hook-form": "^7.34.2",
+        "react-js-pagination": "^3.0.3",
+        "react-leaflet": "^3.2.5",
+        "react-leaflet-markercluster": "^3.0.0-rc1",
+        "react-live-clock": "^6.0.6",
+        "react-number-format": "^4.9.1",
+        "react-perfect-scrollbar": "^1.5.8",
+        "react-redux": "^7.2.4",
+        "react-router": "^6.2.1",
+        "react-router-dom": "^6.2.1",
+        "react-scripts": "^5.0.1",
+        "react-swipeable-views": "^0.14.0",
+        "react-syntax-highlighter": "^15.4.5",
+        "react-window": "^1.8.6",
+        "redux": "^4.1.2",
+        "sass": "^1.49.9",
+        "simplebar": "^5.3.5",
+        "simplebar-react": "^2.3.6",
+        "styled-components": "^5.3.5",
+        "typescript": "^4.8.4",
+        "web-vitals": "^1.0.1",
+        "yup": "^0.32.11"
+    },
+    "overrides": {
+        "@base2/pretty-print-object": "1.0.2"
+    },
+    "scripts": {
+        "start": "react-scripts start",
+        "build": "react-scripts build",
+        "test": "react-scripts test",
+        "eject": "react-scripts eject"
+    },
+    "eslintConfig": {
+        "extends": [
+            "react-app",
+            "react-app/jest"
+        ]
+    },
+    "babel": {
+        "presets": [
+            "@babel/preset-react"
+        ]
+    },
+    "browserslist": {
+        "production": [
+            ">0.2%",
+            "not dead",
+            "not op_mini all"
+        ],
+        "development": [
+            ">0.2%",
+            "not dead",
+            "not op_mini all"
+        ]
+    },
+    "devDependencies": {
+        "@babel/core": "^7.14.3",
+        "@babel/eslint-parser": "^7.15.8",
+        "@testing-library/jest-dom": "^5.11.4",
+        "@testing-library/react": "^11.1.0",
+        "@testing-library/user-event": "^12.1.10",
+        "@types/leaflet": "^1.9.0",
+        "@types/react-dom": "^18.0.9",
+        "eslint": "^7.27.0",
+        "eslint-config-airbnb-typescript": "^12.3.1",
+        "eslint-config-prettier": "^8.3.0",
+        "eslint-config-react-app": "6.0.0",
+        "eslint-import-resolver-typescript": "2.4.0",
+        "eslint-plugin-flowtype": "^5.7.2",
+        "eslint-plugin-import": "^2.23.3",
+        "eslint-plugin-jsx-a11y": "6.3.1",
+        "eslint-plugin-prettier": "^3.4.0",
+        "eslint-plugin-react": "^7.26.1",
+        "eslint-plugin-react-hooks": "^4.6.0",
+        "prettier": "2.2.1"
+    }
 }

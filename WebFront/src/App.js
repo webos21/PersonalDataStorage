@@ -1,75 +1,56 @@
-import React, { Component } from 'react';
-import { HashRouter, Route, Switch, Redirect } from 'react-router-dom';
-import firebase from './firebase';
-import routes from './routes';
+// library import
+import { useDispatch, useSelector } from 'react-redux';
 
-import './scss/style.scss';
+// project import
+import ScrollTop from './components/ScrollTop';
+import config from './config';
+import Routes from './routes';
+import ThemeCustomization from './themes';
 
+// redux
+import { isLogin, setUserInfo } from './store/reducers/auth';
 
-// Containers
-const PdsLayout = React.lazy(() => import('./containers/PdsLayout'));
+// ==============================|| APP - THEME, ROUTER, LOCAL  ||============================== //
 
-// Pages
-const Page404 = React.lazy(() => import('./service/Page404'));
-const Page500 = React.lazy(() => import('./service/Page500'));
-const Logout = React.lazy(() => import('./service/Logout'));
-const Login = React.lazy(() => import('./service/Login'));
+const App = () => {
+    const hasUserInfo = useSelector(isLogin);
+    const dispatch = useDispatch();
 
-const isAuthenticated = () => {
-  let akey = localStorage.getItem('authKey');
-  let aval = localStorage.getItem('authVal');
-  return (akey !== undefined && akey !== null && aval !== undefined && aval !== null);
-}
-
-const AuthenticatedRoute = ({ component: Component, ...rest }) => {
-  if (isAuthenticated()) {
-    let routeObj = routes.find((r) => { return r.path === rest.location.pathname });
-    if (routeObj) {
-      let className = routeObj.name;
-      firebase.analytics().logEvent("screen_view", { screen_class: className, screen_name: rest.location.pathname });
+    if (config.ignoreAuth) {
+        dispatch(
+            setUserInfo({
+                userInfo: {
+                    email: 'test@syszone.kr',
+                    user: 'test',
+                    preferredUsername: '테스터',
+                    groups: ['Tester', 'access-account'],
+                    createAt: new Date().getTime(),
+                    expireOn: new Date().getTime() + 600000,
+                    accessToken: 'INVALID-TEST-TOKEN',
+                    idToken: 'INVALID-TEST-TOKEN',
+                    refreshToken: 'INVALID-TEST-TOKEN'
+                }
+            })
+        );
     }
-  }
-  return (
-    <Route {...rest} render={(props) => (
-      isAuthenticated()
-        ? <Component {...props} />
-        : <Redirect to="/login" />
-    )} />
-  );
-}
 
-const LoginRoute = ({ component: Component, ...rest }) => {
-  if (!isAuthenticated()) {
-    firebase.analytics().logEvent("screen_view", { screen_class: 'Login', screen_name: rest.location.pathname });
-  }
-  return (
-    <Route {...rest} render={(props) => (
-      !isAuthenticated()
-        ? <Component {...props} />
-        : <Redirect to="/" />
-    )} />
-  );
-}
-
-const loading = () => <div className="animated fadeIn pt-3 text-center">Loading...</div>;
-
-class App extends Component {
-
-  render() {
-    return (
-      <HashRouter>
-        <React.Suspense fallback={loading()}>
-          <Switch>
-            <Route path="/404" component={Page404} />
-            <Route path="/500" component={Page500} />
-            <Route path="/logout" component={Logout} />
-            <LoginRoute path="/login" component={Login} />
-            <AuthenticatedRoute path="/" component={PdsLayout} />
-          </Switch>
-        </React.Suspense>
-      </HashRouter>
+    const renderHasUserInfo = () => (
+        <ThemeCustomization>
+            <ScrollTop>
+                <Routes />
+            </ScrollTop>
+        </ThemeCustomization>
     );
-  }
-}
+
+    const renderNoUserInfo = () => (
+        <ThemeCustomization>
+            <ScrollTop>
+                <Routes locationArgs="/checking" />
+            </ScrollTop>
+        </ThemeCustomization>
+    );
+
+    return config.ignoreAuth ? renderHasUserInfo() : hasUserInfo ? renderHasUserInfo() : renderNoUserInfo();
+};
 
 export default App;

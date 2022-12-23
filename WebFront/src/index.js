@@ -1,22 +1,32 @@
-import React from 'react';
+import { StrictMode } from 'react';
 import ReactDOM from 'react-dom';
-import { Provider } from 'react-redux'
+import { BrowserRouter } from 'react-router-dom';
 
-import { icons } from './assets/icons'
+// scroll bar
+import 'simplebar/src/simplebar.css';
 
+// third-party
+import { Provider as ReduxProvider } from 'react-redux';
+
+// apex-chart
+import './assets/third-party/apex-chart.css';
+
+// project import
 import App from './App';
+import { store } from './store';
 import reportWebVitals from './reportWebVitals';
 
-import store from './store';
+// ==============================|| MAIN - REACT DOM RENDER  ||============================== //
 
-window.Buffer = window.Buffer || require("buffer").Buffer;
-
-React.icons = icons;
 ReactDOM.render(
-  <Provider store={store}>
-    <App />
-  </Provider>,
-  document.getElementById('root')
+    <StrictMode>
+        <ReduxProvider store={store}>
+            <BrowserRouter basename="auth">
+                <App />
+            </BrowserRouter>
+        </ReduxProvider>
+    </StrictMode>,
+    document.getElementById('root')
 );
 
 // If you want to start measuring performance in your app, pass a function

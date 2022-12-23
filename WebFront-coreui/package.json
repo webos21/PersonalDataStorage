@@ -1,0 +1,74 @@
+{
+  "name": "@webos21/PersonalDataStorage",
+  "version": "1.0.0",
+  "description": "Personal Data Service Web",
+  "author": "Cheolmin Jo",
+  "homepage": "/",
+  "copyright": "Copyright 2020 NeoFoundtion Cheolmin Jo",
+  "license": "MIT",
+  "private": true,
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:webos21/PersonalDataStorage.git"
+  },
+  "dependencies": {
+    "@coreui/coreui": "^3.4.0",
+    "@coreui/icons-react": "^1.1.0",
+    "@coreui/react": "^3.3.4",
+    "@coreui/react-chartjs": "^1.1.0",
+    "@coreui/utils": "^1.3.1",
+    "@fullcalendar/core": "^5.5.1",
+    "@fullcalendar/daygrid": "^5.5.0",
+    "@fullcalendar/interaction": "^5.5.0",
+    "@fullcalendar/list": "^5.5.0",
+    "@fullcalendar/react": "^5.5.0",
+    "@fullcalendar/timegrid": "^5.5.1",
+    "@wojtekmaj/enzyme-adapter-react-17": "^0.6.2",
+    "buffer": "^6.0.3",
+    "classnames": "^2.2.6",
+    "core-js": "^3.8.0",
+    "crypto-js": "^4.1.1",
+    "enzyme": "^3.11.0",
+    "firebase": "^8.3.2",
+    "immutability-helper": "^3.1.1",
+    "prop-types": "^15.7.2",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
+    "react-hook-form": "^7.8.4",
+    "react-redux": "^7.2.2",
+    "react-router-dom": "^5.2.0",
+    "react-scripts": "^5.0.0",
+    "redux": "^4.0.5",
+    "redux-logger": "^3.0.6",
+    "redux-thunk": "^2.3.0",
+    "sass": "^1.49.9",
+    "web-vitals": "^2.1.4"
+  },
+  "browser": {
+    "crypto": false
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  }
+}
