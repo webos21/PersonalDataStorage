@@ -25,8 +25,8 @@ import Cipher from '../../utils/Cipher';
 // redux
 import { authFailure, authRequest, authReset, authSuccess, getAuthError, getAuthStatus, setUserInfo } from '../../store/reducers/auth';
 
-//const AuthDebugLog = (args) => { };
-const AuthDebugLog = console.log;
+const AuthDebugLog = (args) => {};
+// const AuthDebugLog = console.log;
 
 const TEST_PORT = ':28080';
 const REQ_URI = process.env.NODE_ENV !== 'production' ? '//' + window.location.hostname + TEST_PORT + '/pds/v1/auth' : '/pds/v1/auth';

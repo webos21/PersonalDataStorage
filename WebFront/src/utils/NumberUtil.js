@@ -12,7 +12,4 @@ function formatDecimal(n) {
     return new Intl.NumberFormat('ko-KR', { style: 'decimal' }).format(n);
 }
 
-export {
-    formatCurrency,
-    formatDecimal,
-}
+export { formatCurrency, formatDecimal };

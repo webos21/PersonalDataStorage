@@ -10,8 +10,8 @@ const config = {
     mode: 'light',
     presetColor: 'default',
     themeDirection: 'ltr',
-    gitLink: 'https://github.com/SyszoneRDC/MoLIT10',
-    homeLink: 'https://www.valuekeeper.ai/'
+    gitLink: 'https://github.com/webos21/PersonalDataStorage',
+    homeLink: 'https://webos21.github.io/PersonalDataStorage/'
 };
 
 export default config;
