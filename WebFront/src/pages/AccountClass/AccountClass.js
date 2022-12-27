@@ -7,7 +7,8 @@ import { Button, Card, CardContent, CardHeader, Divider, Stack, Table, TableBody
 // redux
 import AddIcon from '@mui/icons-material/Add';
 //import DeleteIcon from '@mui/icons-material/Delete';
-import { aclassSuccess, getAclassError, getAclasses, getAclassStatus } from '../../store/reducers/aclass';
+import { aclassSuccess, getAclasses } from '../../store/reducers/aclass';
+//import { getAclassError, getAclassStatus } from '../../store/reducers/aclass';
 
 // project import
 import ComponentSkeleton from '../../components/ComponentSkeleton';
@@ -23,8 +24,8 @@ const AccountClass = () => {
     const dispatch = useDispatch();
 
     const aclasses = useSelector(getAclasses);
-    const aclassStatus = useSelector(getAclassStatus);
-    const aclassError = useSelector(getAclassError);
+    // const aclassStatus = useSelector(getAclassStatus);
+    // const aclassError = useSelector(getAclassError);
 
     const [pageData, setPageData] = useState({
         emptyId: -1,
@@ -74,7 +75,7 @@ const AccountClass = () => {
                 return res.json();
             })
             .then(function (resJson) {
-                console.log('AccountClass::fetch => ' + resJson.result);
+                // console.log('AccountClass::fetch => ' + resJson.result);
                 dispatch(aclassSuccess({ aclasses: resJson.data }));
                 setPageData({ keywordError: '' });
             })
@@ -119,14 +120,13 @@ const AccountClass = () => {
         setPageData({ keyword: e.target.searchKeyword.value });
     };
 
-    const handleAdd = (e) => {
-        e.preventDefault();
+    const handleAdd = () => {
         let newObj = genEmptyObj();
         setPageData({ currentData: newObj, modalFlagAdd: !pageData.modalFlagAdd });
     };
 
     const handleEdit = (data) => {
-        console.log('handleEdit', data);
+        // console.log('handleEdit', data);
         setPageData({ currentData: data, modalFlagEdit: !pageData.modalFlagEdit });
     };
 
@@ -149,7 +149,7 @@ const AccountClass = () => {
         } else {
             return filteredData.map((data, index) => {
                 return (
-                    <TableRow key={'accountClass-' + data.id} onClick={() => handleEdit(data)} hover>
+                    <TableRow key={'accountClass-' + index + '-' + data.id} onClick={() => handleEdit(data)} hover>
                         <TableCell>{data.id}</TableCell>
                         <TableCell>{data.title}</TableCell>
                     </TableRow>

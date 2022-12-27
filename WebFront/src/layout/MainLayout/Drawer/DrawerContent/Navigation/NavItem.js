@@ -43,7 +43,7 @@ const NavItem = ({ item, level }) => {
             .toString()
             .split('/')
             .findIndex((id) => id === item.id);
-        console.log('NavItem.js', currentIndex);
+        // console.log('NavItem.js', currentIndex);
         if (currentIndex > -1) {
             dispatch(activeItem({ openItem: [item.id] }));
         } else {
