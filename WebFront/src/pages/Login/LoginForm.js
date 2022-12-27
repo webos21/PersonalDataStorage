@@ -23,9 +23,9 @@ import {
 import Cipher from '../../utils/Cipher';
 
 // redux
-import { authFailure, authRequest, authReset, authSuccess, getAuthError, getAuthStatus, setUserInfo } from '../../store/reducers/auth';
+import { authFailure, authRequest, authReset, authSuccess, getAuthError, setUserInfo } from '../../store/reducers/auth';
 
-const AuthDebugLog = (args) => {};
+const AuthDebugLog = () => {};
 // const AuthDebugLog = console.log;
 
 const TEST_PORT = ':28080';
@@ -35,7 +35,6 @@ const LoginForm = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
-    const authStatus = useSelector(getAuthStatus);
     const authError = useSelector(getAuthError);
 
     const validationSchema = Yup.object().shape({

@@ -24,6 +24,8 @@ import CloseIcon from '@mui/icons-material/Close';
 import Utils from '../../utils';
 
 const AccountClassEdit = (props) => {
+    console.log('AccountClassEdit', props);
+
     const REQ_URI =
         process.env.NODE_ENV !== 'production'
             ? 'http://' + window.location.hostname + ':28080/pds/v1/accountClass'
@@ -139,7 +141,7 @@ const AccountClassEdit = (props) => {
                             )
                         }
                         action={
-                            <IconButton onClick={() => props.modalHandle(false)} aria-label="close">
+                            <IconButton onClick={() => props.modalToggle(false)} aria-label="close">
                                 <CloseIcon />
                             </IconButton>
                         }
@@ -157,7 +159,7 @@ const AccountClassEdit = (props) => {
                                     type="text"
                                     error={Boolean(errors.acId)}
                                     {...register('acId', { required: true, maxLength: 64 })}
-                                    defaultValue={props.dataFromParent?.sensor?.acId}
+                                    defaultValue={props.dataFromParent.id}
                                     placeholder="숫자 1자리"
                                 />
                                 {errors.acId && (
@@ -169,7 +171,7 @@ const AccountClassEdit = (props) => {
 
                             <FormControl fullWidth>
                                 <InputLabel htmlFor="title" error={Boolean(errors.title)}>
-                                    ID
+                                    분류명
                                 </InputLabel>
                                 <OutlinedInput
                                     fullWidth
@@ -177,7 +179,7 @@ const AccountClassEdit = (props) => {
                                     type="text"
                                     error={Boolean(errors.title)}
                                     {...register('title', { required: true, maxLength: 64 })}
-                                    defaultValue={props.dataFromParent?.sensor?.title}
+                                    defaultValue={props.dataFromParent.title}
                                     placeholder="숫자 1자리"
                                 />
                                 {errors.title && (
@@ -189,15 +191,13 @@ const AccountClassEdit = (props) => {
                         </Stack>
                     </CardContent>
                     <Divider />
-                    <CardActions>
-                        <Button color="danger" onClick={onDelete}>
-                            삭제
-                        </Button>
-                        <Button type="submit" color="success">
-                            수정
-                        </Button>
+                    <CardActions disableSpacing>
+                        <Button type="submit">수정</Button>
                         <Button color="secondary" onClick={() => props.modalToggle(false)}>
                             취소
+                        </Button>
+                        <Button sx={{ ml: 'auto' }} color="warning" onClick={onDelete}>
+                            삭제
                         </Button>
                     </CardActions>
                 </Card>

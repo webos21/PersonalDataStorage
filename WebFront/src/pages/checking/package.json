@@ -1,6 +1,0 @@
-{
-    "name": "checking",
-    "version": "1.0.0",
-    "private": true,
-    "main": "./checking.js"
-}

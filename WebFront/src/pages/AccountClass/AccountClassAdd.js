@@ -113,7 +113,7 @@ const AccountClassAdd = (props) => {
                             )
                         }
                         action={
-                            <IconButton onClick={() => props.modalHandle(false)} aria-label="close">
+                            <IconButton onClick={() => props.modalToggle(false)} aria-label="close">
                                 <CloseIcon />
                             </IconButton>
                         }
@@ -143,7 +143,7 @@ const AccountClassAdd = (props) => {
 
                             <FormControl fullWidth>
                                 <InputLabel htmlFor="title" error={Boolean(errors.title)}>
-                                    ID
+                                    분류명
                                 </InputLabel>
                                 <OutlinedInput
                                     fullWidth
@@ -152,7 +152,7 @@ const AccountClassAdd = (props) => {
                                     error={Boolean(errors.title)}
                                     {...register('title', { required: true, maxLength: 64 })}
                                     defaultValue={props.dataFromParent?.title}
-                                    placeholder="숫자 1자리"
+                                    placeholder="분류명"
                                 />
                                 {errors.title && (
                                     <FormHelperText id="fht-title" error>
@@ -164,9 +164,7 @@ const AccountClassAdd = (props) => {
                     </CardContent>
                     <Divider />
                     <CardActions>
-                        <Button type="submit" color="success">
-                            추가
-                        </Button>
+                        <Button type="submit">추가</Button>
                         <Button color="secondary" onClick={() => props.modalToggle(false)}>
                             취소
                         </Button>

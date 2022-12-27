@@ -11,7 +11,7 @@ const icons = {
 
 const pds = {
     id: 'group-pds',
-    title: 'PDS',
+    title: 'Personal Data Storage',
     type: 'group',
     children: [
         {

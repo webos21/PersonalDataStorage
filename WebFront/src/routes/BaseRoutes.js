@@ -5,7 +5,6 @@ import Loadable from '../components/Loadable';
 import MinimalLayout from '../layout/MinimalLayout';
 
 // render - pages
-const Checking = Loadable(lazy(() => import('../pages/checking')));
 const Login = Loadable(lazy(() => import('../pages/Login')));
 
 // ==============================|| AUTH ROUTING ||============================== //

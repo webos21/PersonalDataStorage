@@ -1,26 +1,18 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 // material-ui
-import { Button, Paper, Card, CardHeader, CardContent, IconButton, Icon, InputBase } from '@mui/material';
-import SearchIcon from '@mui/icons-material/Search';
+import { Button, Card, CardContent, CardHeader, Divider, Stack, Table, TableBody, TableCell, TableHead, TableRow } from '@mui/material';
 
 // redux
-import {
-    aclassClear,
-    aclassRequest,
-    aclassSuccess,
-    aclassFailure,
-    isDataSync,
-    getAclassStatus,
-    getAclassError,
-    getAclasses
-} from '../../store/reducers/aclass';
-import DeleteIcon from '@mui/icons-material/Delete';
 import AddIcon from '@mui/icons-material/Add';
+//import DeleteIcon from '@mui/icons-material/Delete';
+import { aclassSuccess, getAclassError, getAclasses, getAclassStatus } from '../../store/reducers/aclass';
 
 // project import
 import ComponentSkeleton from '../../components/ComponentSkeleton';
+
+import SearchBar from '../../components/SearchBar';
 
 import Utils from '../../utils';
 
@@ -36,7 +28,6 @@ const AccountClass = () => {
 
     const [pageData, setPageData] = useState({
         emptyId: -1,
-        dataSet: aclasses,
         currentData: {
             id: -1,
             title: ''
@@ -52,14 +43,13 @@ const AccountClass = () => {
         console.log('AccountClass::dataChangedCallback');
         if (modifiedData !== undefined && modifiedData !== null) {
             let newDataSet = [];
-            for (var i = 0; i < pageData.dataSet.length; i++) {
-                if (pageData.dataSet[i].id === modifiedData.id) {
+            for (var i = 0; i < aclasses.length; i++) {
+                if (aclasses[i].id === modifiedData.id) {
                     newDataSet[i] = modifiedData;
                 } else {
-                    newDataSet[i] = pageData.dataSet[i];
+                    newDataSet[i] = aclasses[i];
                 }
             }
-            setPageData({ dataSet: newDataSet });
             dispatch(aclassSuccess({ aclasses: newDataSet }));
         } else {
             this.requestFetch();
@@ -102,7 +92,7 @@ const AccountClass = () => {
     }, []);
 
     const genEmptyObj = () => {
-        let newEmptyId = this.state.emptyId ? this.state.emptyId - 1 : -1;
+        let newEmptyId = pageData.emptyId ? pageData.emptyId - 1 : -1;
         let emptyObj = {
             id: newEmptyId,
             title: ''
@@ -112,35 +102,32 @@ const AccountClass = () => {
     };
 
     const modalToggleAdd = () => {
-        setPageData({ currentData: this.genEmptyObj(), modalFlagAdd: !this.state.modalFlagAdd });
+        setPageData({ modalFlagAdd: !pageData.modalFlagAdd });
     };
 
     const modalToggleEdit = () => {
-        setPageData({ modalFlagEdit: !this.state.modalFlagEdit });
+        setPageData({ modalFlagEdit: !pageData.modalFlagEdit });
     };
 
     const handleViewAll = () => {
         setPageData({ keyword: '' });
-        document.getElementById('frmRefSearch').reset();
     };
 
-    const handleSearchGo = (event) => {
-        event.preventDefault();
-        setPageData({ keyword: event.target.keyword.value });
+    const handleSearchGo = (e) => {
+        e.preventDefault();
+        console.log('handleSearchGo', e.target.searchKeyword.value);
+        setPageData({ keyword: e.target.searchKeyword.value });
     };
 
     const handleAdd = (e) => {
         e.preventDefault();
         let newObj = genEmptyObj();
-        setPageData({ currentData: newObj });
-        modalToggleAdd();
+        setPageData({ currentData: newObj, modalFlagAdd: !pageData.modalFlagAdd });
     };
 
-    const handleEdit = (data, e) => {
-        e.preventDefault();
-        console.log('handleEdit', e, data);
-        setPageData({ currentData: data });
-        modalToggleEdit();
+    const handleEdit = (data) => {
+        console.log('handleEdit', data);
+        setPageData({ currentData: data, modalFlagEdit: !pageData.modalFlagEdit });
     };
 
     const renderTableList = (dataArray) => {
@@ -153,19 +140,19 @@ const AccountClass = () => {
                 : dataArray;
         if (filteredData === null || filteredData.length === 0) {
             return (
-                <tr key="row-nodata">
-                    <td colSpan="4" className="text-center align-middle" height="200">
+                <TableRow key="row-nodata" hover>
+                    <TableCell colSpan="2" height="200">
                         No Data
-                    </td>
-                </tr>
+                    </TableCell>
+                </TableRow>
             );
         } else {
             return filteredData.map((data, index) => {
                 return (
-                    <tr key={'accountClass-' + data.id} onClick={() => handleEdit(data)}>
-                        <td>{data.id}</td>
-                        <td>{data.title}</td>
-                    </tr>
+                    <TableRow key={'accountClass-' + data.id} onClick={() => handleEdit(data)} hover>
+                        <TableCell>{data.id}</TableCell>
+                        <TableCell>{data.title}</TableCell>
+                    </TableRow>
                 );
             });
         }
@@ -173,71 +160,48 @@ const AccountClass = () => {
 
     return (
         <ComponentSkeleton>
-            <Card>
-                <CardHeader>
-                    <strong>Search</strong>
-                    <small> Memo</small>
-                </CardHeader>
-                <CardContent>
-                    <Paper
-                        component="form"
-                        sx={{ p: '2px 4px', display: 'flex', alignItems: 'center', width: '100%' }}
-                        onSubmit={handleSearchGo}
-                    >
-                        <InputBase name="searchKeyword" sx={{ ml: 1, flex: 1 }} placeholder="검색어 입력" />
-                        <IconButton type="submit" sx={{ p: '10px' }} aria-label="search">
-                            <SearchIcon />
-                        </IconButton>
-                        {pageData.keyword !== '' && (
-                            <Button type="reset" color="success" onClick={handleViewAll}>
-                                전체보기
+            <SearchBar placeholder={'검색어 입력'} keyword={pageData.keyword} onSearchGo={handleSearchGo} onReset={handleViewAll} />
+
+            <Card sx={{ mt: 2 }}>
+                <CardHeader
+                    title={'AccountClass List'}
+                    action={
+                        <Stack direction="row" spacing={2}>
+                            {/* <Button color="warning" variant="outlined" startIcon={<DeleteIcon />}>
+                                삭제
+                            </Button> */}
+                            <Button onClick={handleAdd} color="success" variant="outlined" startIcon={<AddIcon />}>
+                                추가
                             </Button>
-                        )}
-                    </Paper>
-                </CardContent>
-            </Card>
-
-            <Card>
-                <CardHeader>
-                    <strong>AccountClass List</strong>
-                    <small> (Total : {pageData.totalCount})</small>
-                    <span className="float-right">
-                        <Button color="danger" size="sm" variant="ghost">
-                            <DeleteIcon size="small" />
-                            &nbsp;삭제
-                        </Button>
-                        &nbsp;
-                        <Button color="success" size="sm" variant="ghost" onClick={handleAdd}>
-                            <AddIcon size="small" />
-                            &nbsp;추가
-                        </Button>
-                    </span>
-                </CardHeader>
+                        </Stack>
+                    }
+                />
+                <Divider />
                 <CardContent>
-                    <table className="table table-sm table-striped table-hover">
-                        <thead>
-                            <tr>
-                                <th>ID</th>
-                                <th>분류명</th>
-                            </tr>
-                        </thead>
-                        <tbody>{renderTableList(aclasses)}</tbody>
-                    </table>
+                    <Table>
+                        <TableHead>
+                            <TableRow>
+                                <TableCell>ID</TableCell>
+                                <TableCell>분류명</TableCell>
+                            </TableRow>
+                        </TableHead>
+                        <TableBody>{renderTableList(aclasses)}</TableBody>
+                    </Table>
                 </CardContent>
             </Card>
 
-            {pageData.currentData && (
+            {pageData.modalFlagAdd && (
                 <AccountClassAdd
-                    key={'AccountClassAdd-' + pageData.currentData.id}
+                    key={'AccountClassAdd-' + pageData.currentData?.id}
                     modalFlag={pageData.modalFlagAdd}
                     modalToggle={modalToggleAdd}
                     dataFromParent={pageData.currentData}
                     callbackFromParent={dataChangedCallback}
                 />
             )}
-            {pageData.currentData && (
+            {pageData.modalFlagEdit && (
                 <AccountClassEdit
-                    key={'AccountClassEdit-' + pageData.currentData.id}
+                    key={'AccountClassEdit-' + pageData.currentData?.id}
                     modalFlag={pageData.modalFlagEdit}
                     modalToggle={modalToggleEdit}
                     dataFromParent={pageData.currentData}
