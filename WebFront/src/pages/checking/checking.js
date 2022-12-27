@@ -9,12 +9,12 @@ import { Box, Grid, Typography } from '@mui/material';
 import Logo from '../../components/Logo';
 
 // redux
-import { isLogin, setUserInfo } from '../../store/reducers/auth';
+import { isLogOn, setUserInfo } from '../../store/reducers/auth';
 
 const REQ_URI = '/api/v1/auth';
 
 const Checking = () => {
-    const hasUserInfo = useSelector(isLogin);
+    const hasUserInfo = useSelector(isLogOn);
     const dispatch = useDispatch();
 
     const navigate = useNavigate();

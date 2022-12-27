@@ -9,9 +9,9 @@ const icons = {
 
 // ==============================|| MENU ITEMS - TB ||============================== //
 
-const auth = {
-    id: 'group-auth',
-    title: 'Authentication',
+const pds = {
+    id: 'group-pds',
+    title: 'PDS',
     type: 'group',
     children: [
         {
@@ -21,6 +21,14 @@ const auth = {
             url: '/',
             icon: icons.HomeOutlined,
             breadcrumbs: false
+        },
+        {
+            id: 'accountClass',
+            title: 'AccountClass',
+            type: 'item',
+            url: '/accountClass',
+            icon: icons.HomeOutlined,
+            breadcrumbs: true
         },
         {
             id: 'test',
@@ -33,4 +41,4 @@ const auth = {
     ]
 };
 
-export default auth;
+export default pds;

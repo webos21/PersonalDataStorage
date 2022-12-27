@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types';
 import { useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 
 // material-ui
 import {
@@ -21,8 +22,8 @@ import {
 import { useTheme } from '@mui/material/styles';
 
 // project import
-import Transitions from '../../../../../components/Transitions';
 import MainCard from '../../../../../components/MainCard';
+import Transitions from '../../../../../components/Transitions';
 import ProfileTab from './ProfileTab';
 import SettingTab from './SettingTab';
 
@@ -31,7 +32,7 @@ import { LogoutOutlined, PersonOutlined, SettingsOutlined } from '@mui/icons-mat
 import avatar1 from '../../../../../assets/images/users/avatar-1.png';
 
 // redux
-import { removeUserInfo, getUserInfo } from '../../../../../store/reducers/auth';
+import { authLogout, getUserInfo } from '../../../../../store/reducers/auth';
 
 // tab panel wrapper
 function TabPanel({ children, value, index, ...other }) {
@@ -59,6 +60,7 @@ function a11yProps(index) {
 
 const Profile = () => {
     const theme = useTheme();
+    const navigate = useNavigate();
 
     const anchorRef = useRef(null);
 
@@ -80,15 +82,8 @@ const Profile = () => {
     };
 
     const handleLogout = () => {
-        dispatch(removeUserInfo());
-
-        let redirectUri = 'https://sso.valuekeeper.ai/realms/test-realm/protocol/openid-connect/logout';
-        redirectUri += '?client_id=TEST';
-        redirectUri += '&iss=' + 'http://httpbin.oauth2-proxy.localhost/auth';
-
-        let signOutUri = 'http://oauth2-proxy.oauth2-proxy.localhost/oauth2/sign_out?rd=' + encodeURI(redirectUri);
-
-        window.location = signOutUri;
+        dispatch(authLogout());
+        navigate('/');
     };
 
     const handleChange = (event, newValue) => {

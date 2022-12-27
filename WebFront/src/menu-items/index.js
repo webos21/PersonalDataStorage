@@ -1,10 +1,10 @@
 // project import
-import auth from './auth';
+import pds from './pds';
 
 // ==============================|| MENU ITEMS ||============================== //
 
 const menuItems = {
-    items: [auth]
+    items: [pds]
 };
 
 export default menuItems;

@@ -8,7 +8,7 @@ import ComponentSkeleton from '../../components/ComponentSkeleton';
 import TimeUtil from '../../utils/TimeUtil';
 
 // redux
-import { getUserInfo, removeUserInfo } from '../../store/reducers/auth';
+import { getUserInfo, authLogout } from '../../store/reducers/auth';
 
 const REQ_URI = '/api/v1/auth';
 
@@ -47,7 +47,7 @@ const Test = () => {
 
         // window.location = signOutUri;
 
-        dispatch(removeUserInfo());
+        dispatch(authLogout());
 
         let redirectUri = 'https://sso.valuekeeper.ai/realms/test-realm/protocol/openid-connect/logout';
         redirectUri += '?client_id=TEST';

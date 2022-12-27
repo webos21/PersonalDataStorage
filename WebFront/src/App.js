@@ -8,12 +8,12 @@ import Routes from './routes';
 import ThemeCustomization from './themes';
 
 // redux
-import { isLogin, setUserInfo } from './store/reducers/auth';
+import { isLogOn, setUserInfo } from './store/reducers/auth';
 
 // ==============================|| APP - THEME, ROUTER, LOCAL  ||============================== //
 
 const App = () => {
-    const hasUserInfo = useSelector(isLogin);
+    const logOn = useSelector(isLogOn);
     const dispatch = useDispatch();
 
     if (config.ignoreAuth) {
@@ -50,7 +50,7 @@ const App = () => {
         </ThemeCustomization>
     );
 
-    return config.ignoreAuth ? renderHasUserInfo() : hasUserInfo ? renderHasUserInfo() : renderNoUserInfo();
+    return config.ignoreAuth ? renderHasUserInfo() : logOn ? renderHasUserInfo() : renderNoUserInfo();
 };
 
 export default App;

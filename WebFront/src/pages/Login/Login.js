@@ -1,43 +1,47 @@
 import React from 'react';
 
-import { Card, CardBody, CardGroup, Col, Container, Row, Button } from '@mui/material';
+import { Grid, Card, CardContent, Button, Stack, Typography, Divider, Link } from '@mui/material';
 
 import LoginForm from './LoginForm';
 
 const Login = () => {
     return (
-        <div className="c-app c-default-layout flex-row align-items-center">
-            <Container>
-                <Row className="justify-content-center">
-                    <Col md="8">
-                        <CardGroup>
-                            <Card className="p-4">
-                                <CardBody>
-                                    <LoginForm />
-                                </CardBody>
-                            </Card>
-                            <Card className="text-white bg-primary py-5 d-md-down-none" style={{ width: '44%' }}>
-                                <CardBody className="text-center">
-                                    <div>
-                                        <h2>PersonalDataStorage Web</h2>
-                                        <hr />
-                                        <p className="text-left">
-                                            개인자료보관소 App은 개인의 다양한 데이터를 보관하게 하는 유용한 도구입니다. 여기에 사용
-                                            편의성을 돕는 웹페이지를 App이 서비스 해 줍니다.
-                                        </p>
-                                        <a href="https://webos21.github.io/PersonalDataStorage" target="_blank" rel="noopener noreferrer">
-                                            <Button color="primary" className="mt-3" active tabIndex={-1}>
-                                                홈페이지 가기
-                                            </Button>
-                                        </a>
-                                    </div>
-                                </CardBody>
-                            </Card>
-                        </CardGroup>
-                    </Col>
-                </Row>
-            </Container>
-        </div>
+        <Grid
+            item
+            md={12}
+            container
+            justifyContent="center"
+            alignItems="center"
+            sx={{
+                minHeight: '100vh'
+            }}
+        >
+            <Card sx={{ width: '350px' }}>
+                <CardContent sx={{ height: '300px', display: 'flex', alignItems: 'center' }}>
+                    <LoginForm />
+                </CardContent>
+            </Card>
+            <Card sx={{ width: '400px', bgcolor: '#321fdb', color: '#fff', textAlign: 'center' }}>
+                <CardContent sx={{ height: '300px', display: 'flex', alignItems: 'center' }}>
+                    <Stack spacing={1}>
+                        <Typography variant="h3">PersonalDataStorage Web</Typography>
+                        <Divider />
+                        <Typography sx={{ textAlign: 'left' }}>
+                            개인자료보관소 App은 개인의 다양한 데이터를 보관하게 하는 유용한 도구입니다. 여기에 사용 편의성을 돕는
+                            웹페이지를 App이 서비스 해 줍니다.
+                        </Typography>
+                        <Button
+                            href="https://webos21.github.io/PersonalDataStorage"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            color="primary"
+                        >
+                            홈페이지 가기
+                        </Button>
+                    </Stack>
+                </CardContent>
+            </Card>
+        </Grid>
     );
 };
 
