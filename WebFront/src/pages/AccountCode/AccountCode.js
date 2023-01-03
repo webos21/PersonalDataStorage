@@ -1,21 +1,28 @@
-import React, { Component } from 'react';
-import { connect } from 'react-redux'
-import update from 'immutability-helper';
+import { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 
-import {
-  CButton, CCard, CCardBody, CCardHeader, CCol, CRow,
-  CForm, CInput, CInputGroup, CInputGroupPrepend, CInputGroupAppend, CInputGroupText,
-} from '@coreui/react';
-import CIcon from '@coreui/icons-react'
-import { freeSet } from '@coreui/icons'
+// material-ui
+import { Button, Card, CardContent, CardHeader, Divider, Stack, Table, TableBody, TableCell, TableHead, TableRow } from '@mui/material';
 
+// redux
+import AddIcon from '@mui/icons-material/Add';
+//import DeleteIcon from '@mui/icons-material/Delete';
+import { aclassSuccess, getAclasses } from '../../store/reducers/aclass';
+//import { getAclassError, getAclassStatus } from '../../store/reducers/aclass';
+
+// project import
+import ComponentSkeleton from '../../components/ComponentSkeleton';
 import AcodeSelector from '../../components/AcodeSelector';
+
+import SearchBar from '../../components/SearchBar';
+
+import Utils from '../../utils';
+
+
 import AccountCodeAdd from './AccountCodeAdd.js';
 import AccountCodeEdit from './AccountCodeEdit.js';
-import AllActions from '../../actions'
-import Helper from '../../helpers'
 
-class AccountCode extends Component {
+const AccountCode = () => {
   constructor(props) {
     super(props);
 

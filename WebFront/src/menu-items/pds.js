@@ -31,6 +31,22 @@ const pds = {
             breadcrumbs: true
         },
         {
+            id: 'accountCode',
+            title: 'AccountCode',
+            type: 'item',
+            url: '/accountCode',
+            icon: icons.HomeOutlined,
+            breadcrumbs: true
+        },
+        {
+            id: 'addressBook',
+            title: 'AddressBook',
+            type: 'item',
+            url: '/addressBook',
+            icon: icons.HomeOutlined,
+            breadcrumbs: true
+        },
+        {
             id: 'test',
             title: 'Test',
             type: 'item',

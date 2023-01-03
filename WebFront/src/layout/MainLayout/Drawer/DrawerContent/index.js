@@ -1,19 +1,12 @@
 import Navigation from './Navigation';
-import SimpleBar from '../../../../components/third-party/SimpleBar';
+import CustomScroller from '../../../../components/CustomScroller';
 
 // ==============================|| DRAWER CONTENT ||============================== //
 
 const DrawerContent = () => (
-    <SimpleBar
-        sx={{
-            '& .simplebar-content': {
-                display: 'flex',
-                flexDirection: 'column'
-            }
-        }}
-    >
+    <CustomScroller style={{ maxHeight: 'calc(100vh - 60px)' }}>
         <Navigation />
-    </SimpleBar>
+    </CustomScroller>
 );
 
 export default DrawerContent;
