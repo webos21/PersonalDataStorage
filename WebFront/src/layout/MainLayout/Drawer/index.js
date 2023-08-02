@@ -9,7 +9,7 @@ import { Box, Drawer, useMediaQuery } from '@mui/material';
 import DrawerHeader from './DrawerHeader';
 import DrawerContent from './DrawerContent';
 import MiniDrawerStyled from './MiniDrawerStyled';
-import { drawerWidth } from '../../../config';
+import config from '../../../config';
 
 // ==============================|| MAIN LAYOUT - DRAWER ||============================== //
 
@@ -22,7 +22,7 @@ const MainDrawer = ({ open, handleDrawerToggle, window }) => {
 
     // header content
     const drawerContent = useMemo(() => <DrawerContent />, []);
-    const drawerHeader = useMemo(() => <DrawerHeader open={open} />, [open]);
+    const drawerHeader = useMemo(() => <DrawerHeader open={open} handleDrawerToggle={handleDrawerToggle} />, [open, handleDrawerToggle]);
 
     return (
         <Box component="nav" sx={{ flexShrink: { md: 0 }, zIndex: 1300 }} aria-label="mailbox folders">
@@ -42,7 +42,7 @@ const MainDrawer = ({ open, handleDrawerToggle, window }) => {
                         display: { xs: 'block', lg: 'none' },
                         '& .MuiDrawer-paper': {
                             boxSizing: 'border-box',
-                            width: drawerWidth,
+                            width: config.layout.drawerWidth,
                             borderRight: `1px solid ${theme.palette.divider}`,
                             backgroundImage: 'none',
                             boxShadow: 'inherit'

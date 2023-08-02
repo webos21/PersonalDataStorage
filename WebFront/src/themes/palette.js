@@ -96,7 +96,7 @@ const Palette = (mode) => {
             divider: grey.A100,
             background: {
                 paper: '#fff',
-                default: grey[50]
+                default: '#f6f7f9'
             }
         }
     });

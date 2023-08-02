@@ -4,12 +4,12 @@ import PropTypes from 'prop-types';
 import { useTheme } from '@mui/material/styles';
 import { AppBar, IconButton, Toolbar, useMediaQuery } from '@mui/material';
 
+// material-icon
+import { MenuOpen, Menu } from '@mui/icons-material';
+
 // project import
 import AppBarStyled from './AppBarStyled';
 import HeaderContent from './HeaderContent';
-
-// assets
-import { MenuOpen, Menu } from '@mui/icons-material';
 
 // ==============================|| MAIN LAYOUT - HEADER ||============================== //
 
@@ -23,16 +23,18 @@ const Header = ({ open, handleDrawerToggle }) => {
     // common header
     const mainHeader = (
         <Toolbar>
-            <IconButton
-                disableRipple
-                aria-label="open drawer"
-                onClick={handleDrawerToggle}
-                edge="start"
-                color="secondary"
-                sx={{ color: 'text.primary', bgcolor: open ? iconBackColorOpen : iconBackColor, ml: { xs: 0, lg: -2 } }}
-            >
-                {!open ? <Menu /> : <MenuOpen />}
-            </IconButton>
+            {!open && (
+                <IconButton
+                    disableRipple
+                    aria-label="open drawer"
+                    onClick={handleDrawerToggle}
+                    edge="start"
+                    color="secondary"
+                    sx={{ color: 'text.primary', bgcolor: open ? iconBackColorOpen : iconBackColor, ml: { xs: 0, lg: -2 } }}
+                >
+                    {!open ? <Menu /> : <MenuOpen />}
+                </IconButton>
+            )}
             <HeaderContent />
         </Toolbar>
     );
@@ -40,12 +42,8 @@ const Header = ({ open, handleDrawerToggle }) => {
     // app-bar params
     const appBar = {
         position: 'fixed',
-        color: 'inherit',
-        elevation: 0,
-        sx: {
-            borderBottom: `1px solid ${theme.palette.divider}`
-            // boxShadow: theme.customShadows.z1
-        }
+        color: 'transparent', // origin : inherit
+        elevation: 0
     };
 
     return (

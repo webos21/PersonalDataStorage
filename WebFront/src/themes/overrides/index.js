@@ -17,6 +17,10 @@ import Tab from './Tab';
 import TableCell from './TableCell';
 import Tabs from './Tabs';
 import Typography from './Typography';
+import Table from './Table';
+import TableContainer from './TableContainer';
+import TableRow from './TableRow';
+import Modal from './Modal';
 
 // ==============================|| OVERRIDES - MAIN ||============================== //
 
@@ -32,9 +36,13 @@ export default function ComponentsOverrides(theme) {
         LinearProgress(),
         Link(),
         ListItemIcon(),
+        Modal(theme),
         OutlinedInput(theme),
         Tab(theme),
+        Table(theme),
         TableCell(theme),
+        TableContainer(theme),
+        TableRow(theme),
         Tabs(),
         Typography()
     );

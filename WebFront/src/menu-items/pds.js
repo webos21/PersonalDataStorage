@@ -1,9 +1,8 @@
 // assets
-import { ElectricMeter, HomeOutlined } from '@mui/icons-material';
+import { ElectricMeter } from '@mui/icons-material';
 
 // icons
 const icons = {
-    HomeOutlined,
     ElectricMeter
 };
 
@@ -12,39 +11,31 @@ const icons = {
 const pds = {
     id: 'group-pds',
     title: 'Personal Data Storage',
-    type: 'group',
+    type: 'collapse-group',
+    icon: icons.ElectricMeter,
     children: [
-        {
-            id: 'home',
-            title: 'Home',
-            type: 'item',
-            url: '/',
-            icon: icons.HomeOutlined,
-            breadcrumbs: false
-        },
         {
             id: 'accountClass',
             title: 'AccountClass',
             type: 'item',
             url: '/accountClass',
-            icon: icons.HomeOutlined,
-            breadcrumbs: true
+            level: 1.0
         },
         {
             id: 'accountCode',
             title: 'AccountCode',
             type: 'item',
             url: '/accountCode',
-            icon: icons.HomeOutlined,
-            breadcrumbs: true
+            icon: icons.ElectricMeter,
+            level: 1.0
         },
         {
             id: 'addressBook',
             title: 'AddressBook',
             type: 'item',
             url: '/addressBook',
-            icon: icons.HomeOutlined,
-            breadcrumbs: true
+            icon: icons.ElectricMeter,
+            level: 1.0
         },
         {
             id: 'test',
@@ -52,7 +43,7 @@ const pds = {
             type: 'item',
             url: '/test',
             icon: icons.ElectricMeter,
-            breadcrumbs: true
+            level: 1.0
         }
     ]
 };

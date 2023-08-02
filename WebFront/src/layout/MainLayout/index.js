@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Outlet } from 'react-router-dom';
 
@@ -17,8 +17,8 @@ import { isDrawerOpened, openDrawer } from '../../store/reducers/menu';
 
 const MainLayout = () => {
     const theme = useTheme();
-    const matchDownLG = useMediaQuery(theme.breakpoints.down('xl'));
-
+    // eslint-disable-next-line
+    const matchDownLG = useMediaQuery(theme.breakpoints.down('md'));
     const drawerOpen = useSelector(isDrawerOpened);
     const dispatch = useDispatch();
 
@@ -29,9 +29,18 @@ const MainLayout = () => {
         dispatch(openDrawer({ drawerOpen: !open }));
     };
 
-    if (matchDownLG && drawerOpen) {
-        handleDrawerToggle();
-    }
+    useEffect(() => {
+        // console.log('matchDownLG : ', matchDownLG);
+        if (matchDownLG) {
+            setOpen(true);
+            dispatch(openDrawer({ drawerOpen: true }));
+        }
+    }, [matchDownLG]);
+
+    // if (matchDownLG && drawerOpen) {
+    //     console.log('matchDownLG : ', matchDownLG, drawerOpen);
+    //     handleDrawerToggle();
+    // }
 
     return (
         <Box sx={{ display: 'flex', width: '100%' }}>

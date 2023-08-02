@@ -1,12 +1,8 @@
+import * as React from 'react';
+import { Paper, InputBase, IconButton } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
-import { Button, IconButton, InputBase, Paper } from '@mui/material';
 
 const SearchBar = (props) => {
-    const handleReset = (e) => {
-        e.target.form.reset();
-        props.onReset(e);
-    };
-
     return (
         <Paper component="form" sx={{ p: '2px 4px', display: 'flex', alignItems: 'center', width: '100%' }} onSubmit={props.onSearchGo}>
             <InputBase
@@ -18,11 +14,6 @@ const SearchBar = (props) => {
             <IconButton type="submit" sx={{ p: '10px' }} aria-label="search">
                 <SearchIcon />
             </IconButton>
-            {props.keyword && props.keyword.length > 0 && (
-                <Button color="success" onClick={handleReset}>
-                    전체보기
-                </Button>
-            )}
         </Paper>
     );
 };

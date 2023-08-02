@@ -1,10 +1,11 @@
 // project import
+import home from './home';
 import pds from './pds';
 
 // ==============================|| MENU ITEMS ||============================== //
 
 const menuItems = {
-    items: [pds]
+    items: [home, pds]
 };
 
 export default menuItems;

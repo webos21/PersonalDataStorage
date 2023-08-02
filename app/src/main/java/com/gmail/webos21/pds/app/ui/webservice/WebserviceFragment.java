@@ -3,11 +3,12 @@ package com.gmail.webos21.pds.app.ui.webservice;
 import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
+import android.net.LinkAddress;
+import android.net.LinkProperties;
 import android.net.Network;
 import android.net.NetworkCapabilities;
 import android.net.NetworkRequest;
 import android.net.Uri;
-import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.os.Bundle;
@@ -46,6 +47,7 @@ import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.Arrays;
+import java.util.List;
 import java.util.concurrent.Executors;
 
 public class WebserviceFragment extends Fragment {
@@ -207,19 +209,27 @@ public class WebserviceFragment extends Fragment {
 
             @Override
             public void onCapabilitiesChanged(Network network, NetworkCapabilities networkCapabilities) {
-                WifiInfo wifiInfo = (WifiInfo) networkCapabilities.getTransportInfo();
-                ByteBuffer bb = ByteBuffer.allocate(4).order(ByteOrder.LITTLE_ENDIAN);
-                byte[] hostAddr = bb.putInt(wifiInfo.getIpAddress()).array();
-                try {
-                    ipAddress = InetAddress.getByAddress(hostAddr).getHostAddress();
-                } catch (UnknownHostException e) {
-                    e.printStackTrace();
+                LinkProperties lps = connectivityManager.getLinkProperties(network);
+                List<LinkAddress> las = lps.getLinkAddresses();
+                for (LinkAddress la : las) {
+                    ipAddress = la.getAddress().getHostAddress();
                 }
+
+//                WifiInfo wifiInfo = (WifiInfo) networkCapabilities.getTransportInfo();
+//                ByteBuffer bb = ByteBuffer.allocate(4).order(ByteOrder.LITTLE_ENDIAN);
+//                byte[] hostAddr = bb.putInt(wifiInfo.getIpAddress()).array();
+//                try {
+//                    ipAddress = InetAddress.getByAddress(hostAddr).getHostAddress();
+//                } catch (
+//                        UnknownHostException e) {
+//                    e.printStackTrace();
+//                }
             }
         };
         connectivityManager.requestNetwork(request, networkCallback); // For request
     }
 
+    @SuppressWarnings("deprecation")
     private String getIpAddress() {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S) {
             WifiManager wm = (WifiManager) getActivity().getApplicationContext().getSystemService(Context.WIFI_SERVICE);

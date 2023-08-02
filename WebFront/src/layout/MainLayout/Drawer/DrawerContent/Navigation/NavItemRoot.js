@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from 'react-redux';
 
 // material-ui
 import { useTheme } from '@mui/material/styles';
-import { Avatar, Chip, ListItemButton, ListItemText, Typography } from '@mui/material';
+import { Avatar, Chip, ListItemButton, ListItemIcon, ListItemText, Typography } from '@mui/material';
 
 // project import
 import { activeItem } from '../../../../../store/reducers/menu';
@@ -56,8 +56,6 @@ const NavItem = ({ item, level }) => {
     const textColor = 'text.primary';
     const iconSelectedColor = 'primary.main';
 
-    // console.log('NavItem', item, level);
-
     return (
         <ListItemButton
             {...listItemProps}
@@ -69,7 +67,7 @@ const NavItem = ({ item, level }) => {
             sx={{
                 zIndex: 1201,
                 pl: drawerOpen ? `${level * 28}px` : 1.5,
-                py: !drawerOpen && level === 1 ? 0.35 : 0.1,
+                py: !drawerOpen && level === 1 ? 1 : 0.75,
                 ...(drawerOpen && {
                     '&:hover': {
                         bgcolor: 'primary.lighter'
@@ -97,10 +95,37 @@ const NavItem = ({ item, level }) => {
                 })
             }}
         >
+            {itemIcon && (
+                <ListItemIcon
+                    sx={{
+                        minWidth: 28,
+                        color: isSelected ? iconSelectedColor : textColor,
+                        ...(!drawerOpen && {
+                            borderRadius: 1.5,
+                            width: 36,
+                            height: 24,
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            '&:hover': {
+                                bgcolor: 'secondary.lighter'
+                            }
+                        }),
+                        ...(!drawerOpen &&
+                            isSelected && {
+                                bgcolor: 'primary.lighter',
+                                '&:hover': {
+                                    bgcolor: 'primary.lighter'
+                                }
+                            })
+                    }}
+                >
+                    {itemIcon}
+                </ListItemIcon>
+            )}
             {(drawerOpen || (!drawerOpen && level !== 1)) && (
                 <ListItemText
                     primary={
-                        <Typography variant="h6" sx={{ ml: 1.5, color: isSelected ? iconSelectedColor : textColor, fontSize: 12 }}>
+                        <Typography variant="h6" sx={{ color: isSelected ? iconSelectedColor : textColor, fontSize: 12 }}>
                             {item.title}
                         </Typography>
                     }

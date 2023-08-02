@@ -13,7 +13,7 @@ import Profile from './Profile';
 
 const HeaderContent = () => {
     const matchesXs = useMediaQuery((theme) => theme.breakpoints.down('md'));
-
+    // console.log('matchesXs : ', matchesXs);
     return (
         <>
             {!matchesXs && (

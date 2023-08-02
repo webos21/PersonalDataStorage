@@ -3,6 +3,7 @@ package com.gmail.webos21.pds.app;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.app.Service;
 import android.content.Context;
 import android.graphics.Color;
 import android.os.Build;
@@ -41,11 +42,15 @@ public class NotificationPlayer {
         tr.executeAsync(new NotificationUpdater(pws, chId, fg));
     }
 
+    @SuppressWarnings("deprecation")
     public void removeNotificationPlayer() {
         Log.i(TAG, "[NotificationPlayer::removeNotificationPlayer] called...");
-        pws.stopForeground(true);
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            pws.stopForeground(Service.STOP_FOREGROUND_REMOVE);
             deleteNotificationChannel(chId);
+        } else {
+            pws.stopForeground(true);
         }
         chId = null;
         fg = false;

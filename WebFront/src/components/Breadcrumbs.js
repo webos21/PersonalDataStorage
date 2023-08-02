@@ -1,41 +1,56 @@
 import PropTypes from 'prop-types';
 import { useEffect, useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 
 // material-ui
-import MuiBreadcrumbs from '@mui/material/Breadcrumbs';
-import { Grid, Box, Typography } from '@mui/material';
-
-// project imports
-import MainCard from './MainCard';
+import { Box, Grid, Stack, Typography } from '@mui/material';
 
 // ==============================|| BREADCRUMBS ||============================== //
 
-const Breadcrumbs = ({ navigation, title, ...others }) => {
+const Breadcrumbs = ({ navigation, title, divider, ...others }) => {
     const location = useLocation();
     const [main, setMain] = useState();
     const [item, setItem] = useState();
 
     // set active item state
     const getCollapse = (menu) => {
+        // console.log('getCollapse menu : ', menu);
         if (menu.children) {
-            menu.children.filter((collapse) => {
-                if (collapse.type && collapse.type === 'collapse') {
-                    getCollapse(collapse);
-                } else if (collapse.type && collapse.type === 'item') {
+            menu.children.forEach((collapse) => {
+                if (collapse.children) {
+                    collapse.children.forEach((child) => {
+                        if (child.type && (child.type === 'item' || 'collapse-item')) {
+                            if (location.pathname === child.url) {
+                                // console.log('child : ', child, ' location.pathname : ', location.pathname);
+                                setMain(menu);
+                                setItem(child);
+                                return;
+                            }
+                        }
+                    });
+                }
+                if (collapse.type && (collapse.type === 'item' || 'collapse-item')) {
                     if (location.pathname === collapse.url) {
+                        // console.log('collapse : ', collapse, ' location.pathname : ', location.pathname);
                         setMain(menu);
                         setItem(collapse);
+                        return;
                     }
                 }
-                return false;
             });
+        } else {
+            if (menu && menu.type === 'item' && location.pathname === menu.url) {
+                // console.log('No Children menu : ', menu);
+                setMain(menu);
+                setItem(menu);
+            }
         }
     };
 
     useEffect(() => {
         navigation?.items?.map((menu) => {
-            if (menu.type && menu.type === 'group') {
+            if (menu.type && (menu.type === 'group' || 'collapse-group')) {
+                // console.log('useEffect menu: ', menu);
                 getCollapse(menu);
             }
             return false;
@@ -53,48 +68,42 @@ const Breadcrumbs = ({ navigation, title, ...others }) => {
     let itemTitle = '';
 
     // collapse item
-    if (main && main.type === 'collapse') {
-        mainContent = (
-            <Typography component={Link} to={document.location.pathname} variant="h6" sx={{ textDecoration: 'none' }} color="textSecondary">
-                {main.title}
-            </Typography>
-        );
+    if (main && (main.type === 'group' || 'collapse-group')) {
+        const ItemIcon = main.icon;
+        mainContent = <ItemIcon style={{ fontSize: '1.5rem', color: 'black' }} />;
+    }
+    // collapse item
+    if (main && main.type === 'item') {
+        const ItemIcon = item.icon;
+        mainContent = <ItemIcon style={{ fontSize: '1.5rem', color: 'black' }} />;
     }
 
     // items
-    if (item && item.type === 'item') {
+    if (item && (item.type === 'item' || 'collapse-item')) {
         itemTitle = item.title;
         itemContent = (
-            <Typography variant="subtitle1" color="textPrimary">
+            <Typography variant="h4" color="black">
                 {itemTitle}
             </Typography>
         );
 
         // main
-        if (item.breadcrumbs !== false) {
-            breadcrumbContent = (
-                <MainCard border={false} sx={{ mb: 3, bgcolor: 'transparent' }} {...others} content={false}>
-                    <Grid container direction="column" justifyContent="flex-start" alignItems="flex-start" spacing={1}>
-                        <Grid item>
-                            <MuiBreadcrumbs aria-label="breadcrumb">
-                                <Typography component={Link} to="/" color="textSecondary" variant="h6" sx={{ textDecoration: 'none' }}>
-                                    Home
-                                </Typography>
-                                {mainContent}
-                                {itemContent}
-                            </MuiBreadcrumbs>
+        breadcrumbContent = (
+            <Box {...others}>
+                <Grid container direction="column" justifyContent="flex-start" alignItems="flex-start" spacing={0.7}>
+                    <Stack direction="row" alignItems="center" gap={1} sx={{ pt: 1 }}>
+                        {mainContent}
+                        {itemContent}
+                    </Stack>
+                    {divider && <Grid item>-</Grid>}
+                    {title && (
+                        <Grid item sx={{ mt: 2 }}>
+                            <Typography variant="h2">{item.title}</Typography>
                         </Grid>
-                        {title && (
-                            <Grid item sx={{ mt: 2 }}>
-                                <Typography variant="h5">{item.title}</Typography>
-                            </Grid>
-                        )}
-                    </Grid>
-                </MainCard>
-            );
-        } else {
-            breadcrumbContent = <Box border={false} sx={{ width: '100%', ml: 1 }} />;
-        }
+                    )}
+                </Grid>
+            </Box>
+        );
     }
 
     return breadcrumbContent;
@@ -102,7 +111,8 @@ const Breadcrumbs = ({ navigation, title, ...others }) => {
 
 Breadcrumbs.propTypes = {
     navigation: PropTypes.object,
-    title: PropTypes.bool
+    title: PropTypes.bool,
+    divider: PropTypes.bool
 };
 
 export default Breadcrumbs;
