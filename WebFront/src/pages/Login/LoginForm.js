@@ -125,7 +125,7 @@ const LoginForm = () => {
         <Paper elevation={0} sx={{ padding: 0, width: '100%' }} component="form" onSubmit={handleSubmit(onSubmit)}>
             <Stack spacing={1}>
                 <Typography variant="h1">Login</Typography>
-                <Typography>Sign In to your PersonalDataStorage</Typography>
+                <Typography sx={{ pb: 3 }}>Sign In to your PersonalDataStorage</Typography>
                 <FormControl fullWidth>
                     <InputLabel htmlFor="pbpwd" error={Boolean(errors.id)}>
                         비밀번호

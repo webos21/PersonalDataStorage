@@ -117,6 +117,7 @@ const AccountClassEdit = (props) => {
                     props.modalToggle(false);
                 }
             }}
+            sx={{ backgroundColor: 'rgba(0, 0, 0, 0.5)', backdropFilter: 'blur(20px)', overflow: 'hidden' }}
         >
             <Paper sx={{ padding: 0, width: '100%' }} component="form" onSubmit={handleSubmit(onSubmit)}>
                 <Card
@@ -128,7 +129,11 @@ const AccountClassEdit = (props) => {
                         minWidth: 350,
                         maxHeight: 650,
                         overflow: 'auto',
-                        p: 0
+                        p: 0,
+                        backgroundColor: '#f6f7f9',
+                        opacity: 1,
+                        borderRadius: '12px',
+                        boxShadow: '0 10px 30px RGBA(0, 0, 0, 0.15)'
                     }}
                 >
                     <CardHeader
@@ -148,7 +153,7 @@ const AccountClassEdit = (props) => {
                     />
                     <Divider />
                     <CardContent>
-                        <Stack spacing={2}>
+                        <Stack spacing={3}>
                             <FormControl fullWidth>
                                 <InputLabel htmlFor="acId" error={Boolean(errors.acId)}>
                                     ID

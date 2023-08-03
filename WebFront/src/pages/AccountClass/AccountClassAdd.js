@@ -89,6 +89,7 @@ const AccountClassAdd = (props) => {
                     props.modalToggle(false);
                 }
             }}
+            sx={{ backgroundColor: 'rgba(0, 0, 0, 0.5)', backdropFilter: 'blur(20px)', overflow: 'hidden' }}
         >
             <Paper sx={{ padding: 0, width: '100%' }} component="form" onSubmit={handleSubmit(onSubmit)}>
                 <Card
@@ -100,7 +101,11 @@ const AccountClassAdd = (props) => {
                         minWidth: 350,
                         maxHeight: 650,
                         overflow: 'auto',
-                        p: 0
+                        p: 0,
+                        backgroundColor: '#f6f7f9',
+                        opacity: 1,
+                        borderRadius: '12px',
+                        boxShadow: '0 10px 30px RGBA(0, 0, 0, 0.15)'
                     }}
                 >
                     <CardHeader
@@ -120,9 +125,9 @@ const AccountClassAdd = (props) => {
                     />
                     <Divider />
                     <CardContent>
-                        <Stack spacing={2}>
+                        <Stack spacing={3}>
                             <FormControl fullWidth>
-                                <InputLabel htmlFor="acId" error={Boolean(errors.acId)}>
+                                <InputLabel htmlFor="acId" shrink={true} error={Boolean(errors.acId)}>
                                     ID
                                 </InputLabel>
                                 <OutlinedInput
@@ -142,7 +147,7 @@ const AccountClassAdd = (props) => {
                             </FormControl>
 
                             <FormControl fullWidth>
-                                <InputLabel htmlFor="title" error={Boolean(errors.title)}>
+                                <InputLabel htmlFor="title" shrink={true} error={Boolean(errors.title)}>
                                     분류명
                                 </InputLabel>
                                 <OutlinedInput

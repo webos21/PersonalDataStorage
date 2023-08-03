@@ -6,6 +6,7 @@ import MinimalLayout from '../layout/MinimalLayout';
 
 // render - pages
 const Login = Loadable(lazy(() => import('../pages/Login')));
+const Logout = Loadable(lazy(() => import('../pages/Logout')));
 
 // ==============================|| AUTH ROUTING ||============================== //
 
@@ -16,6 +17,10 @@ const BaseRoutes = {
         {
             path: '/login',
             element: <Login />
+        },
+        {
+            path: '/logout',
+            element: <Logout />
         }
     ]
 };

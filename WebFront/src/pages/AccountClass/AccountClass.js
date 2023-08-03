@@ -68,7 +68,7 @@ const AccountClass = () => {
             .then(function (res) {
                 if (!res.ok) {
                     if (res.status === 401) {
-                        //window.location = '/#/logout';
+                        window.location = '/logout';
                     }
                     throw Error('서버응답 : ' + res.statusText + '(' + res.status + ')');
                 }

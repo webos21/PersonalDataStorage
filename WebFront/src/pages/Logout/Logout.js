@@ -1,42 +1,51 @@
-import React, { useEffect } from 'react';
-import { useDispatch } from 'react-redux'
+import { useEffect } from 'react';
+import { useDispatch } from 'react-redux';
 
-import { CCol, CContainer, CRow } from '@coreui/react';
+// material-ui
+import { Grid, Card, CardContent, Typography } from '@mui/material';
 
-import AllActions from 'src/actions';
+// project import
+import { aclassClear } from '../../store/reducers/aclass';
 
-const Logout = props => {
-  const dispatch = useDispatch();
+const Logout = () => {
+    const dispatch = useDispatch();
 
-  useEffect(() => {
-    dispatch(AllActions.aclass.aclassClear());
-    dispatch(AllActions.acode.acodeClear());
-    dispatch(AllActions.anni.anniClear());
-    dispatch(AllActions.bank.bankClear());
-    dispatch(AllActions.card.cardClear());
-    dispatch(AllActions.insure.insureClear());
-    dispatch(AllActions.restate.restateClear());
-    dispatch(AllActions.rpay.rpayClear());
-    dispatch(AllActions.stock.stockClear());
-    dispatch(AllActions.auth.authLogout());
-    dispatch(AllActions.auth.authHome());
-  }, [dispatch]);
+    useEffect(() => {
+        dispatch(aclassClear());
+        //     dispatch(AllActions.acode.acodeClear());
+        //     dispatch(AllActions.anni.anniClear());
+        //     dispatch(AllActions.bank.bankClear());
+        //     dispatch(AllActions.card.cardClear());
+        //     dispatch(AllActions.insure.insureClear());
+        //     dispatch(AllActions.restate.restateClear());
+        //     dispatch(AllActions.rpay.rpayClear());
+        //     dispatch(AllActions.stock.stockClear());
+        //     dispatch(AllActions.auth.authLogout());
+        //     dispatch(AllActions.auth.authHome());
+    }, [dispatch]);
 
-  return (
-    <div className="c-app c-default-layout flex-row align-items-center">
-      <CContainer>
-        <CRow className="justify-content-center">
-          <CCol md="6">
-            <span className="clearfix">
-              <h1 className="float-left display-3 mr-4">Logout...</h1>
-              <h4 className="pt-3">Remove the login information...</h4>
-              <p className="text-muted float-left">The page you are looking for is temporarily unavailable.</p>
-            </span>
-          </CCol>
-        </CRow>
-      </CContainer>
-    </div>
-  );
-}
+    return (
+        <Grid
+            item
+            md={12}
+            container
+            justifyContent="center"
+            alignItems="center"
+            sx={{
+                minHeight: '100vh'
+            }}
+        >
+            <Card sx={{ width: '500px' }}>
+                <CardContent sx={{ height: '300px', display: 'flex', alignItems: 'center', pl: 5 }}>
+                    <Grid clearfix>
+                        <Typography variant="h1">Logout...</Typography>
+                        <Typography variant="h4">Remove the login information...</Typography>
+                        <Typography>The page you are looking for is temporarily unavailable.</Typography>
+                    </Grid>
+                </CardContent>
+            </Card>
+        </Grid>
+    );
+};
 
 export default Logout;
