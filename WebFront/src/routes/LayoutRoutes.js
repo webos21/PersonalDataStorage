@@ -10,7 +10,7 @@ const Test = Loadable(lazy(() => import('../pages/test')));
 
 // const Dashboard = Loadable(lazy(() => import('../pages/Dashboard')));
 const AccountClass = Loadable(lazy(() => import('../pages/AccountClass')));
-// const AccountCode = Loadable(lazy(() => import('../pages/AccountCode')));
+const AccountCode = Loadable(lazy(() => import('../pages/AccountCode')));
 // const Anniversary = Loadable(lazy(() => import('../pages/Anniversary')));
 // const Bank = Loadable(lazy(() => import('../pages/Bank')));
 // const BankRecord = Loadable(lazy(() => import('../pages/BankRecord')));
@@ -50,6 +50,10 @@ const LayoutRoutes = {
         {
             path: '/accountClass',
             element: <AccountClass />
+        },
+        {
+            path: '/accountCode',
+            element: <AccountCode />
         },
         {
             path: '/test',

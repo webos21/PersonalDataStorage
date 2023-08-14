@@ -1,22 +1,50 @@
-import React from 'react';
-import { useForm, Controller } from "react-hook-form";
+import { yupResolver } from '@hookform/resolvers/yup';
+import { useForm } from 'react-hook-form';
+import * as Yup from 'yup';
 
+// material-ui
 import {
-    CModal, CModalHeader, CModalBody, CModalFooter, CButton, CCol,
-    CForm, CFormGroup, CInvalidFeedback,
-    CInputGroup, CInputGroupPrepend, CInputGroupText, CInput,
-} from '@coreui/react';
+    Button,
+    Card,
+    CardActions,
+    CardContent,
+    CardHeader,
+    Divider,
+    FormControl,
+    FormHelperText,
+    IconButton,
+    InputLabel,
+    Modal,
+    OutlinedInput,
+    Paper,
+    Stack
+} from '@mui/material';
+import CloseIcon from '@mui/icons-material/Close';
 
-import Helper from '../../helpers'
+import Utils from '../../utils';
 
+const AccountCodeAdd = (props) => {
+    const REQ_URI =
+        process.env.NODE_ENV !== 'production' ? 'http://' + window.location.hostname + ':28080/pds/v1/accountCode' : '/pds/v1/accountCode';
 
-const AccountCodeAdd = props => {
+    const validationSchema = Yup.object().shape({
+        acodeId: Yup.string().max(2, 'ID는 2자리 숫자입니다.').required('ID는 필수 입력입니다.'),
+        title: Yup.string().max(255, '분류명은 최대 255자까지 입니다.').required('분류명은 필수 입력입니다.')
+    });
 
-    const REQ_URI = (process.env.NODE_ENV !== 'production') ? 'http://' + window.location.hostname + ':28080/pds/v1/accountCode' : '/pds/v1/accountCode';
-
-    const { handleSubmit, formState: {errors}, setError, control } = useForm({
-        submitFocusError: true,
-        nativeValidation: false,
+    const {
+        register,
+        handleSubmit,
+        formState: { errors },
+        setError
+    } = useForm({
+        mode: 'all',
+        reValidateMode: 'onChange',
+        resolver: yupResolver(validationSchema),
+        criteriaMode: 'firstError',
+        shouldFocusError: true,
+        shouldUnregister: false,
+        shouldUseNativeValidation: false
     });
 
     const onSubmit = (data, e) => {
@@ -24,121 +52,129 @@ const AccountCodeAdd = props => {
 
         fetch(REQ_URI, {
             method: 'POST',
-            headers: Helper.auth.makeAuthHeader(),
+            headers: Utils.auth.makeAuthHeader(),
             body: formData
-        }).then(function (res) {
-            if (!res.ok) {
-                if (res.status === 401) {
-                    window.location = "/#/logout";
+        })
+            .then(function (res) {
+                if (!res.ok) {
+                    if (res.status === 401) {
+                        window.location = '/#/logout';
+                    }
+                    throw Error('서버응답 : ' + res.statusText + '(' + res.status + ')');
                 }
-                throw Error("서버응답 : " + res.statusText + "(" + res.status + ")");
-            }
-            return res.json();
-        }).then(function (resJson) {
-            console.log("MemoAdd::fetch => " + resJson.result);
-            if (resJson.result === "OK") {
-                props.modalToggle();
-                props.callbackFromParent();
-            }
-        }).catch(function (error) {
-            console.log("MemoAdd::fetch => " + error);
-            setError("siteUrl", "serverResponse", error.message);
-            //e.target.reset();
-        });
+                return res.json();
+            })
+            .then(function (resJson) {
+                console.log('AccountCodeAdd::fetch [OK]', resJson);
+                if (resJson.result === 'OK') {
+                    props.modalToggle();
+                    props.callbackFromParent();
+                }
+            })
+            .catch(function (error) {
+                console.log('AccountCodeAdd::fetch => ' + error);
+                setError('siteUrl', 'serverResponse', error.message);
+                //e.target.reset();
+            });
     };
 
     return (
-        <CModal show={props.modalFlag} onClose={props.modalToggle}
-            className={'modal-success ' + props.className}>
-            <CModalHeader closeButton>계정코드 추가</CModalHeader>
-            <CForm onSubmit={handleSubmit(onSubmit)}>
-                <CModalBody>
-                <CFormGroup row>
-                        <CCol xs="12" md="12">
-                            <CInputGroup>
-                                <CInputGroupPrepend>
-                                    <CInputGroupText style={{ minWidth: 70 }}>코드</CInputGroupText>
-                                </CInputGroupPrepend>
-                                <Controller
-                                    name="acodeId"
-                                    control={control}
-                                    defaultValue={''}
-                                    render={({field}) => (
-                                        <CInput
-                                            type="text"
-                                            name="acodeId"
-                                            placeholder="코드를 입력해 주세요."
-                                            className={"form-control" + (errors.acodeId ? " is-invalid" : " is-valid")}
-                                            value={field.value}
-                                            onChange={field.onChange}
-                                        />
-                                    )}
-                                    rules={{
-                                        required: {
-                                            value: true,
-                                            message: "(Required) 코드를 입력해 주세요."
-                                        },
-                                        minLength: {
-                                            value: 2,
-                                            message: "(MinLength) 코드는 2자 입니다."
-                                        },
-                                        maxLength: {
-                                            value: 2,
-                                            message: "(MaxLength) 코드는 2자 입니다."
-                                        }
-                                    }}
+        <Modal
+            open={props.modalFlag}
+            disableScrollLock={false}
+            onClose={(_, reason) => {
+                if (reason !== 'backdropClick') {
+                    props.modalToggle(false);
+                }
+            }}
+            sx={{ backgroundColor: 'rgba(0, 0, 0, 0.5)', backdropFilter: 'blur(20px)', overflow: 'hidden' }}
+        >
+            <Paper sx={{ padding: 0, width: '100%' }} component="form" onSubmit={handleSubmit(onSubmit)}>
+                <Card
+                    sx={{
+                        position: 'absolute',
+                        top: '50%',
+                        left: '50%',
+                        transform: 'translate(-50%, -50%)',
+                        minWidth: 250,
+                        maxHeight: 650,
+                        overflow: 'auto',
+                        p: 0,
+                        backgroundColor: '#f6f7f9',
+                        opacity: 1,
+                        borderRadius: '12px',
+                        boxShadow: '0 10px 30px RGBA(0, 0, 0, 0.15)'
+                    }}
+                >
+                    <CardHeader
+                        title={'계정코드 추가'}
+                        subheader={
+                            errors.comm && (
+                                <FormHelperText error id="fht-comm">
+                                    {errors.comm?.message}
+                                </FormHelperText>
+                            )
+                        }
+                        action={
+                            <IconButton onClick={() => props.modalToggle(false)} aria-label="close">
+                                <CloseIcon />
+                            </IconButton>
+                        }
+                    />
+                    <Divider />
+                    <CardContent>
+                        <Stack spacing={3}>
+                            <FormControl fullWidth>
+                                <InputLabel htmlFor="acodeId" shrink={true} error={Boolean(errors.acodeId)}>
+                                    코드
+                                </InputLabel>
+                                <OutlinedInput
+                                    fullWidth
+                                    id="acodeId"
+                                    type="text"
+                                    error={Boolean(errors.acodeId)}
+                                    {...register('acodeId', { required: true, maxLength: 64 })}
+                                    defaultValue={props.dataFromParent?.accountCodeId}
+                                    placeholder="숫자 2자리"
                                 />
-                                {errors.acodeId && <CInvalidFeedback>{errors.acodeId.message}</CInvalidFeedback>}
-                            </CInputGroup>
-                        </CCol>
-                    </CFormGroup>
-                    <CFormGroup row>
-                        <CCol xs="12" md="12">
-                            <CInputGroup>
-                                <CInputGroupPrepend>
-                                    <CInputGroupText style={{ minWidth: 70 }}>코드명</CInputGroupText>
-                                </CInputGroupPrepend>
-                                <Controller
-                                    name="title"
-                                    control={control}
-                                    defaultValue={''}
-                                    render={({field}) => (
-                                        <CInput
-                                            type="text"
-                                            name="title"
-                                            placeholder="코드명을 입력해 주세요."
-                                            className={"form-control" + (errors.title ? " is-invalid" : " is-valid")}
-                                            value={field.value}
-                                            onChange={field.onChange}
-                                        />
-                                    )}
-                                    rules={{
-                                        required: {
-                                            value: true,
-                                            message: "코드명을 입력해 주세요."
-                                        },
-                                        minLength: {
-                                            value: 1,
-                                            message: "코드명은 1자 이상 입니다."
-                                        },
-                                        maxLength: {
-                                            value: 100,
-                                            message: "코드명은 100자 이내 입니다."
-                                        }
-                                    }}
-                                />
-                                {errors.title && <CInvalidFeedback>{errors.title.message}</CInvalidFeedback>}
-                            </CInputGroup>
-                        </CCol>
-                    </CFormGroup>
+                                {errors.acodeId && (
+                                    <FormHelperText id="fht-acodeId" error>
+                                        {errors.acodeId?.message}
+                                    </FormHelperText>
+                                )}
+                            </FormControl>
 
-                </CModalBody>
-                <CModalFooter>
-                    <CButton type="submit" color="success">추가</CButton>{' '}
-                    <CButton color="secondary" onClick={props.modalToggle}>취소</CButton>
-                </CModalFooter>
-            </CForm>
-        </CModal>
+                            <FormControl fullWidth>
+                                <InputLabel htmlFor="title" shrink={true} error={Boolean(errors.title)}>
+                                    코드명
+                                </InputLabel>
+                                <OutlinedInput
+                                    fullWidth
+                                    id="title"
+                                    type="text"
+                                    error={Boolean(errors.title)}
+                                    {...register('title', { required: true, maxLength: 64 })}
+                                    defaultValue={props.dataFromParent?.title}
+                                    placeholder="코드명"
+                                />
+                                {errors.title && (
+                                    <FormHelperText id="fht-title" error>
+                                        {errors.title?.message}
+                                    </FormHelperText>
+                                )}
+                            </FormControl>
+                        </Stack>
+                    </CardContent>
+                    <Divider />
+                    <CardActions>
+                        <Button type="submit">추가</Button>
+                        <Button color="secondary" onClick={() => props.modalToggle(false)}>
+                            취소
+                        </Button>
+                    </CardActions>
+                </Card>
+            </Paper>
+        </Modal>
     );
 };
 

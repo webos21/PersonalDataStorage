@@ -1,25 +1,42 @@
-import React, { useState, useRef, useImperativeHandle } from 'react';
-import { IconMenuItem } from './IconMenuItem';
+// react
+import {
+    ElementType,
+    FocusEvent,
+    forwardRef,
+    HTMLAttributes,
+    KeyboardEvent,
+    MouseEvent,
+    ReactNode,
+    RefAttributes,
+    useImperativeHandle,
+    useRef,
+    useState
+} from 'react';
+
+// material-ui
 import Menu, { MenuProps } from '@mui/material/Menu';
 import { MenuItemProps } from '@mui/material/MenuItem';
-import { ChevronRight } from '../icons/ChevronRight';
+import { ChevronRight } from '@mui/icons-material';
 
-export interface NestedMenuItemProps extends Omit<MenuItemProps, 'button'> {
+// in-package
+import { IconMenuItem } from './IconMenuItem';
+
+export type NestedMenuItemProps = Omit<MenuItemProps, 'button'> & {
     parentMenuOpen: boolean;
-    component?: React.ElementType;
+    component?: ElementType;
     label?: string;
-    rightIcon?: React.ReactNode;
-    leftIcon?: React.ReactNode;
-    children?: React.ReactNode;
+    rightIcon?: ReactNode;
+    leftIcon?: ReactNode;
+    children?: ReactNode;
     className?: string;
     tabIndex?: number;
     disabled?: boolean;
-    ContainerProps?: React.HTMLAttributes<HTMLElement> & React.RefAttributes<HTMLElement | null>;
+    ContainerProps?: HTMLAttributes<HTMLElement> & RefAttributes<HTMLElement | null>;
     MenuProps?: Partial<Omit<MenuProps, 'children'>>;
     button?: true | undefined;
-}
+};
 
-const NestedMenuItem = React.forwardRef<HTMLLIElement | null, NestedMenuItemProps>(function NestedMenuItem(props, ref) {
+const NestedMenuItem = forwardRef<HTMLLIElement | null, NestedMenuItemProps>(function NestedMenuItem(props, ref) {
     const {
         parentMenuOpen,
         label,
@@ -36,23 +53,23 @@ const NestedMenuItem = React.forwardRef<HTMLLIElement | null, NestedMenuItemProp
     const { ref: containerRefProp, ...ContainerProps } = ContainerPropsProp;
 
     const menuItemRef = useRef<HTMLLIElement | null>(null);
-    useImperativeHandle(ref, () => menuItemRef.current as HTMLLIElement);
+    useImperativeHandle(ref, () => menuItemRef.current!); // eslint-disable-line
 
     const containerRef = useRef<HTMLDivElement | null>(null);
-    useImperativeHandle(containerRefProp, () => containerRef.current as HTMLDivElement);
+    useImperativeHandle(containerRefProp, () => containerRef.current);
 
     const menuContainerRef = useRef<HTMLDivElement | null>(null);
 
     const [isSubMenuOpen, setIsSubMenuOpen] = useState(false);
 
-    const handleMouseEnter = (e: React.MouseEvent<HTMLElement>) => {
+    const handleMouseEnter = (e: MouseEvent<HTMLElement>) => {
         setIsSubMenuOpen(true);
 
         if (ContainerProps.onMouseEnter) {
             ContainerProps.onMouseEnter(e);
         }
     };
-    const handleMouseLeave = (e: React.MouseEvent<HTMLElement>) => {
+    const handleMouseLeave = (e: MouseEvent<HTMLElement>) => {
         setIsSubMenuOpen(false);
 
         if (ContainerProps.onMouseLeave) {
@@ -63,15 +80,17 @@ const NestedMenuItem = React.forwardRef<HTMLLIElement | null, NestedMenuItemProp
     // Check if any immediate children are active
     const isSubmenuFocused = () => {
         const active = containerRef.current?.ownerDocument.activeElement ?? null;
-        for (const child of (menuContainerRef.current as HTMLDivElement).children) {
+        // eslint-disable-next-line
+        for (const child of menuContainerRef.current!.children) {
             if (child === active) {
                 return true;
             }
         }
+
         return false;
     };
 
-    const handleFocus = (e: React.FocusEvent<HTMLElement>) => {
+    const handleFocus = (e: FocusEvent<HTMLElement>) => {
         if (e.target === containerRef.current) {
             setIsSubMenuOpen(true);
         }
@@ -81,7 +100,7 @@ const NestedMenuItem = React.forwardRef<HTMLLIElement | null, NestedMenuItemProp
         }
     };
 
-    const handleKeyDown = (e: React.KeyboardEvent) => {
+    const handleKeyDown = (e: KeyboardEvent) => {
         if (e.key === 'Escape') {
             return;
         }
@@ -113,6 +132,7 @@ const NestedMenuItem = React.forwardRef<HTMLLIElement | null, NestedMenuItemProp
     return (
         <div
             {...ContainerProps}
+            role="menuitem"
             ref={containerRef}
             onFocus={handleFocus}
             tabIndex={tabIndex}
@@ -134,10 +154,15 @@ const NestedMenuItem = React.forwardRef<HTMLLIElement | null, NestedMenuItemProp
                 // from capturing events for clicks and hovers
                 style={{ pointerEvents: 'none' }}
                 anchorEl={menuItemRef.current}
-                anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
-                transformOrigin={{ vertical: 'top', horizontal: 'left' }}
+                anchorOrigin={{
+                    horizontal: 'right',
+                    vertical: 'top'
+                }}
+                transformOrigin={{
+                    horizontal: 'left',
+                    vertical: 'top'
+                }}
                 open={open}
-                autoFocus={false}
                 disableAutoFocus
                 disableEnforceFocus
                 onClose={() => {
@@ -154,4 +179,5 @@ const NestedMenuItem = React.forwardRef<HTMLLIElement | null, NestedMenuItemProp
 });
 
 NestedMenuItem.displayName = 'NestedMenuItem';
-export { NestedMenuItem };
+
+export default NestedMenuItem;

@@ -1,22 +1,20 @@
+// react
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 // material-ui
-import { Button, Card, CardContent, CardHeader, Divider, Stack, Table, TableBody, TableCell, TableHead, TableRow } from '@mui/material';
+import { Button, Stack, Table, TableBody, TableCell, TableHead, TableRow } from '@mui/material';
 
 // redux
 import AddIcon from '@mui/icons-material/Add';
-//import DeleteIcon from '@mui/icons-material/Delete';
 import { aclassSuccess, getAclasses } from '../../store/reducers/aclass';
-//import { getAclassError, getAclassStatus } from '../../store/reducers/aclass';
 
 // project import
 import ComponentSkeleton from '../../components/ComponentSkeleton';
-
 import SearchBar from '../../components/SearchBar';
-
 import Utils from '../../utils';
 
+// in-package
 import AccountClassAdd from './AccountClassAdd.js';
 import AccountClassEdit from './AccountClassEdit.js';
 
@@ -53,7 +51,7 @@ const AccountClass = () => {
             }
             dispatch(aclassSuccess({ aclasses: newDataSet }));
         } else {
-            this.requestFetch();
+            requestFetch();
         }
     };
 
@@ -160,36 +158,30 @@ const AccountClass = () => {
 
     return (
         <ComponentSkeleton>
-            <SearchBar placeholder={'검색어 입력'} keyword={pageData.keyword} onSearchGo={handleSearchGo} onReset={handleViewAll} />
-
-            <Card sx={{ mt: 2 }}>
-                <CardHeader
-                    title={'AccountClass List'}
-                    action={
-                        <Stack direction="row" spacing={2}>
-                            {/* <Button color="warning" variant="outlined" startIcon={<DeleteIcon />}>
+            <Stack direction="row">
+                <SearchBar
+                    width="50%"
+                    placeholder={'검색어 입력'}
+                    keyword={pageData.keyword}
+                    onSearchGo={handleSearchGo}
+                    onReset={handleViewAll}
+                />
+                {/* <Button color="warning" variant="outlined" startIcon={<DeleteIcon />}>
                                 삭제
                             </Button> */}
-                            <Button onClick={handleAdd} color="success" variant="outlined" startIcon={<AddIcon />}>
-                                추가
-                            </Button>
-                        </Stack>
-                    }
-                />
-                <Divider />
-                <CardContent>
-                    <Table>
-                        <TableHead>
-                            <TableRow>
-                                <TableCell>ID</TableCell>
-                                <TableCell>분류명</TableCell>
-                            </TableRow>
-                        </TableHead>
-                        <TableBody>{renderTableList(aclasses)}</TableBody>
-                    </Table>
-                </CardContent>
-            </Card>
-
+                <Button onClick={handleAdd} color="success" variant="contained" startIcon={<AddIcon />} sx={{ ml: 'auto' }}>
+                    추가
+                </Button>
+            </Stack>
+            <Table>
+                <TableHead>
+                    <TableRow variant="head">
+                        <TableCell>ID</TableCell>
+                        <TableCell>분류명</TableCell>
+                    </TableRow>
+                </TableHead>
+                <TableBody>{renderTableList(aclasses)}</TableBody>
+            </Table>
             {pageData.modalFlagAdd && (
                 <AccountClassAdd
                     key={'AccountClassAdd-' + pageData.currentData?.id}
