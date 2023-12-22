@@ -207,7 +207,7 @@ public class MainActivity extends AppCompatActivity {
         int mId = menuitem.getItemId();
         switch (mId) {
             case android.R.id.home:
-                onBackPressed();
+                getOnBackPressedDispatcher().onBackPressed();
                 return true;
             default:
                 break;

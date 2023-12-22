@@ -5,6 +5,6 @@ targetCompatibility = JavaVersion.VERSION_1_8
 
 dependencies {
     implementation project(':webos21-java')
-    implementation 'com.h2database:h2:1.4.200'
+    implementation 'com.h2database:h2:2.2.224'
     testImplementation 'junit:junit:4.13.2'
 }

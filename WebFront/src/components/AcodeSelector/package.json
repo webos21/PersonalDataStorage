@@ -2,5 +2,5 @@
   "name": "AcodeSelector",
   "version": "1.0.0",
   "private": true,
-  "main": "./AcodeSelector.js"
+  "main": "./AcodeSelector.jsx"
 }

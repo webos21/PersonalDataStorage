@@ -12,7 +12,7 @@ import java.net.InetAddress;
 public class Main {
 
     public static void main(String[] args) {
-        String sitePath = "../WebFront/build/";
+        String sitePath = "../WebFront/dist/";
         String fsPath = "/";
         String dbPath = DbConsts.DB_PATH;
         String dbUser = DbConsts.DB_USER;
