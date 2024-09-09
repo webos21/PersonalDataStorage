@@ -45,15 +45,6 @@ public class AuthConfigActivity extends AppCompatActivity implements View.OnClic
     @Override
     protected void onStart() {
         super.onStart();
-
-        // Request Permission
-        if (ContextCompat.checkSelfPermission(this,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this,
-                    new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
-                    Consts.PERM_REQ_EXTERNAL_STORAGE);
-        }
     }
 
     @Override
@@ -63,15 +54,6 @@ public class AuthConfigActivity extends AppCompatActivity implements View.OnClic
 
     @Override
     public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
-        if (requestCode == Consts.PERM_REQ_EXTERNAL_STORAGE) {
-            if (grantResults.length > 0
-                    && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                // OK, nothing to do
-            } else {
-                Toast.makeText(this, getResources().getString(R.string.err_perm_exflah), Toast.LENGTH_LONG).show();
-                finish();
-            }
-        }
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 

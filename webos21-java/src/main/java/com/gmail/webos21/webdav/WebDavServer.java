@@ -1,5 +1,11 @@
 package com.gmail.webos21.webdav;
 
+import com.gmail.webos21.nano.NanoHTTPD;
+
+import org.kxml2.io.KXmlParser;
+import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
+
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -24,12 +30,6 @@ import java.util.TimeZone;
 import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import org.kxml2.io.KXmlParser;
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
-
-import com.gmail.webos21.nano.NanoHTTPD;
 
 public class WebDavServer extends NanoHTTPD {
 

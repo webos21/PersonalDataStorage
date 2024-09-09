@@ -52,7 +52,7 @@ public class MoreFragment extends Fragment {
     private MoreViewModel moreViewModel;
     private FragmentMoreBinding binding;
 
-    private ActivityResultLauncher<String> mGetContent;
+    private ActivityResultLauncher<String[]> mGetContent;
     private ActivityResultLauncher<Intent> mStartForResult;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -85,12 +85,11 @@ public class MoreFragment extends Fragment {
 //        aboutBundle.putString(ARG_PREFERENCE_ROOT, "more_about");
 //        tvAbout.setOnClickListener(Navigation.createNavigateOnClickListener(R.id.moreToAbout, aboutBundle));
 
-        mGetContent = registerForActivityResult(new ActivityResultContracts.GetContent(),
+        mGetContent = registerForActivityResult(new ActivityResultContracts.OpenDocument(),
                 new ActivityResultCallback<Uri>() {
                     @Override
                     public void onActivityResult(Uri uri) {
                         Log.d("MoreFragment", "DB Import URI = " + uri);
-
                         PdsApp app = (PdsApp) getActivity().getApplicationContext();
                         app.dbClose();
 
@@ -220,7 +219,7 @@ public class MoreFragment extends Fragment {
                     break;
                 }
                 case R.id.db_import: {
-                    mGetContent.launch("*/*");
+                    mGetContent.launch(new String[]{"*/*"});
                     break;
                 }
                 case R.id.db_export: {

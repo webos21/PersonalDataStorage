@@ -13,10 +13,11 @@
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
     <!-- For Accessing to External Storage -->
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
     <!-- For All File Access : after 2021-05 -->
-    <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE"
+        tools:ignore="ScopedStorage" />
 
     <!-- For Accessing to Finger-Print -->
     <uses-permission android:name="android.permission.USE_BIOMETRIC" />
@@ -52,40 +53,34 @@
             android:excludeFromRecents="true"
             android:exported="false"
             android:launchMode="singleInstance"
-            android:noHistory="true"
-            android:screenOrientation="portrait" />
+            android:noHistory="true" />
         <activity
             android:name=".AuthConfigActivity"
             android:excludeFromRecents="true"
             android:exported="false"
             android:launchMode="singleInstance"
-            android:noHistory="true"
-            android:screenOrientation="portrait" />
+            android:noHistory="true" />
         <activity
             android:name=".PbListActivity"
             android:exported="false"
-            android:launchMode="singleInstance"
-            android:screenOrientation="portrait" />
+            android:launchMode="singleInstance" />
         <activity
             android:name=".PbAddActivity"
             android:excludeFromRecents="true"
             android:exported="false"
             android:launchMode="singleInstance"
-            android:noHistory="true"
-            android:screenOrientation="portrait" />
+            android:noHistory="true" />
         <activity
             android:name=".PbEditActivity"
             android:excludeFromRecents="true"
             android:exported="false"
             android:launchMode="singleInstance"
-            android:noHistory="true"
-            android:screenOrientation="portrait" />
+            android:noHistory="true" />
 
         <activity
             android:name=".MapActivity"
             android:exported="false"
-            android:launchMode="singleInstance"
-            android:screenOrientation="portrait" />
+            android:launchMode="singleInstance" />
 
         <service
             android:name=".PdsWebService"

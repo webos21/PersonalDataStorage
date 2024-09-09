@@ -9,7 +9,7 @@ public class DbConsts {
     public static final String DB_PATH = "~/pds";
     public static final String DB_USER = "sa";
     public static final String DB_PASS = "filekey sa";
-    public static final String DB_OPTS = ";CIPHER=AES;TRACE_LEVEL_FILE=0;TRACE_LEVEL_SYSTEM_OUT=0";
+    public static final String DB_OPTS = ";CIPHER=AES;CACHE_SIZE=8192;TRACE_LEVEL_FILE=0";
 
     public static final int DB_VERSION = 1;
 

@@ -116,15 +116,6 @@ public class AuthActivity extends AppCompatActivity {
 
         inputPass = "";
 
-        // Request Permission
-        if (ContextCompat.checkSelfPermission(this,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this,
-                    new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
-                    Consts.PERM_REQ_EXTERNAL_STORAGE);
-        }
-
         SharedPreferences shpref = getSharedPreferences(Consts.PREF_FILE, MODE_PRIVATE);
         boolean useFinger = shpref.getBoolean(Consts.PREF_FINGER, false);
         if (useFinger) {
@@ -149,15 +140,6 @@ public class AuthActivity extends AppCompatActivity {
 
     @Override
     public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
-        if (requestCode == Consts.PERM_REQ_EXTERNAL_STORAGE) {
-            if (grantResults.length > 0
-                    && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                // OK, nothing to do
-            } else {
-                Toast.makeText(this, getResources().getString(R.string.err_perm_exflah), Toast.LENGTH_LONG).show();
-                AuthActivity.this.finish();
-            }
-        }
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 

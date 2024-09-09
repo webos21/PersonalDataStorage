@@ -1,4 +1,5 @@
 import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 
 // library import
 import { Button, Card, CardContent, CardHeader, Divider, Paper, Stack, Typography } from '@mui/material';
@@ -8,13 +9,16 @@ import ComponentSkeleton from '../../components/ComponentSkeleton';
 import TimeUtil from '../../utils/TimeUtil';
 
 // redux
-import { getUserInfo, authLogout } from '../../store/reducers/auth';
+import { authLogout, getUserInfo, removeUserInfo } from '../../store/reducers/auth';
 
-const REQ_URI = '/api/v1/auth';
+const TEST_PORT = ':28080';
+const REQ_URI = process.env.NODE_ENV !== 'production' ? '//' + window.location.hostname + TEST_PORT + '/pds/v1/auth' : '/pds/v1/auth';
 
 const Test = () => {
     const userInfo = useSelector(getUserInfo);
+
     const dispatch = useDispatch();
+    const navigate = useNavigate();
 
     const handleUserInfo = () => {
         let reqUri = REQ_URI + '/userInfo';
@@ -41,45 +45,9 @@ const Test = () => {
     };
 
     const handleLogout = () => {
-        // let signOutUri = 'https://sso.valuekeeper.ai/realms/test-realm/protocol/openid-connect/logout';
-        // signOutUri += '?client_id=VK-QA';
-        // signOutUri += '&post_logout_redirect_uri=' + encodeURI('http://oauth2-proxy.oauth2-proxy.localhost/oauth2/sign_out');
-
-        // window.location = signOutUri;
-
+        dispatch(removeUserInfo());
         dispatch(authLogout());
-
-        let redirectUri = 'https://sso.valuekeeper.ai/realms/test-realm/protocol/openid-connect/logout';
-        redirectUri += '?client_id=TEST';
-        redirectUri += '&iss=' + 'http://httpbin.oauth2-proxy.localhost/auth';
-
-        let signOutUri = 'http://oauth2-proxy.oauth2-proxy.localhost/oauth2/sign_out?rd=' + encodeURI(redirectUri);
-
-        window.location = signOutUri;
-
-        // let signOutUri = 'https://sso.valuekeeper.ai/realms/test-realm/protocol/openid-connect/logout/logout-confirm';
-        // signOutUri += '?client_id=VK-QA';
-
-        // fetch(signOutUri, {
-        //     method: 'POST'
-        // })
-        //     .then((res) => {
-        //         if (!res.ok) {
-        //             if (res.status === 401) {
-        //                 // window.location = '/#/logout';
-        //                 console.log('401 Error!!!');
-        //             }
-        //             throw Error('서버응답 : ' + res.statusText + '(' + res.status + ')');
-        //         }
-        //         return res.json();
-        //     })
-        //     .then((resJson) => {
-        //         console.log(resJson);
-        //         window.location = 'http://oauth2-proxy.oauth2-proxy.localhost/oauth2/sign_out';
-        //     })
-        //     .catch(function (error) {
-        //         console.log('Oauth2-SignOut::fetch => ' + error);
-        //     });
+        navigate('/logout');
     };
 
     return (

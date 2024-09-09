@@ -1,17 +1,22 @@
 import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 
 // material-ui
-import { Grid, Card, CardContent, Typography } from '@mui/material';
+import { Card, CardContent, Grid, Typography } from '@mui/material';
 
 // project import
 import { aclassClear } from '../../store/reducers/aclass';
+import { acodeClear } from '../../store/reducers/acode';
+import { authLogout, removeUserInfo } from '../../store/reducers/auth';
 
 const Logout = () => {
     const dispatch = useDispatch();
+    const navigate = useNavigate();
 
     useEffect(() => {
         dispatch(aclassClear());
+        dispatch(acodeClear());
         //     dispatch(AllActions.acode.acodeClear());
         //     dispatch(AllActions.anni.anniClear());
         //     dispatch(AllActions.bank.bankClear());
@@ -22,6 +27,9 @@ const Logout = () => {
         //     dispatch(AllActions.stock.stockClear());
         //     dispatch(AllActions.auth.authLogout());
         //     dispatch(AllActions.auth.authHome());
+        dispatch(removeUserInfo());
+        dispatch(authLogout());
+        navigate('/');
     }, [dispatch]);
 
     return (

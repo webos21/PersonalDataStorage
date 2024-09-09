@@ -16,55 +16,21 @@
 #   public *;
 #}
 
--keep class android.content.res.XmlResourceParser
--keep class org.xmlpull.v1.XmlPullParser
--dontwarn android.content.res.**
 
--dontwarn java.lang.management.GarbageCollectorMXBean
--dontwarn java.lang.management.LockInfo
--dontwarn java.lang.management.ManagementFactory
--dontwarn java.lang.management.MonitorInfo
--dontwarn java.lang.management.OperatingSystemMXBean
--dontwarn java.lang.management.ThreadInfo
--dontwarn java.lang.management.ThreadMXBean
--dontwarn javax.naming.Context
--dontwarn javax.script.Bindings
--dontwarn javax.script.Compilable
--dontwarn javax.script.CompiledScript
--dontwarn javax.script.ScriptEngine
--dontwarn javax.script.ScriptEngineManager
--dontwarn javax.security.auth.callback.NameCallback
--dontwarn javax.security.auth.login.LoginContext
--dontwarn javax.tools.DiagnosticListener
--dontwarn javax.tools.ForwardingJavaFileManager
--dontwarn javax.tools.JavaCompiler$CompilationTask
--dontwarn javax.tools.JavaCompiler
--dontwarn javax.tools.JavaFileManager$Location
--dontwarn javax.tools.JavaFileManager
--dontwarn javax.tools.JavaFileObject$Kind
--dontwarn javax.tools.SimpleJavaFileObject
--dontwarn javax.tools.StandardJavaFileManager
--dontwarn javax.tools.ToolProvider
--dontwarn javax.xml.stream.XMLInputFactory
--dontwarn javax.xml.stream.XMLOutputFactory
--dontwarn javax.xml.stream.XMLStreamReader
--dontwarn javax.xml.stream.XMLStreamWriter
--dontwarn javax.xml.transform.stax.StAXResult
--dontwarn javax.xml.transform.stax.StAXSource
--dontwarn org.locationtech.jts.geom.CoordinateSequence
--dontwarn org.locationtech.jts.geom.CoordinateSequenceFactory
--dontwarn org.locationtech.jts.geom.Geometry
--dontwarn org.locationtech.jts.geom.GeometryCollection
--dontwarn org.locationtech.jts.geom.GeometryFactory
--dontwarn org.locationtech.jts.geom.LineString
--dontwarn org.locationtech.jts.geom.LinearRing
--dontwarn org.locationtech.jts.geom.MultiLineString
--dontwarn org.locationtech.jts.geom.MultiPoint
--dontwarn org.locationtech.jts.geom.MultiPolygon
--dontwarn org.locationtech.jts.geom.Point
--dontwarn org.locationtech.jts.geom.Polygon
--dontwarn org.locationtech.jts.geom.PrecisionModel
--dontwarn org.locationtech.jts.geom.impl.CoordinateArraySequenceFactory
--dontwarn org.locationtech.jts.geom.impl.PackedCoordinateSequenceFactory
--dontwarn org.slf4j.Logger
--dontwarn org.slf4j.LoggerFactory
+# for XmlPull
+-keep class android.content.res.* {*;}
+-dontwarn android.content.res.**
+-keep class org.xmlpull.v1.** {*;}
+-dontwarn org.xmlpull.v1.**
+
+# for H2Database
+-keep class org.h2.** { *; }
+-dontwarn org.h2.**
+-dontnote org.h2.**
+
+# for PDS Web
+-keep class com.gmail.webos21.pds.web.** {*;}
+-keep class com.gmail.webos21.pds.db.** {*;}
+
+# for SLF4J
+-dontwarn org.slf4j.**

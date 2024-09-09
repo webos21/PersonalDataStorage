@@ -10,11 +10,11 @@ android {
     defaultConfig {
         applicationId "com.gmail.webos21.pds.app"
 
-        minSdkVersion 19
+        minSdkVersion 21
         targetSdkVersion 34
 
-        versionCode 5
-        versionName "1.0.5"
+        versionCode 7
+        versionName "1.0.7"
 
         multiDexEnabled true
 
@@ -38,6 +38,7 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
 
             shrinkResources true
+            signingConfig signingConfigs.debug  // for dev-phone test
         }
     }
 
@@ -49,25 +50,25 @@ android {
 }
 
 dependencies {
-    implementation 'androidx.navigation:navigation-fragment:2.7.6'
-    implementation 'androidx.navigation:navigation-ui:2.7.6'
     runtimeOnly project(":WebFront")
-    implementation project(':webos21-java')
-    implementation project(':webos21-android')
-    implementation project(':WebNano')
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    api project(':webos21-java')
+    api project(':webos21-android')
+    api project(':WebNano')
     implementation platform('org.jetbrains.kotlin:kotlin-bom:1.9.22')
-    implementation platform('com.google.firebase:firebase-bom:32.7.0')
+    implementation platform('com.google.firebase:firebase-bom:33.2.0')
     implementation 'com.google.firebase:firebase-crashlytics'
     implementation 'com.google.firebase:firebase-analytics'
     implementation 'com.google.firebase:firebase-perf'
-    implementation 'com.google.android.material:material:1.11.0'
-    implementation 'androidx.appcompat:appcompat:1.6.1'
+    implementation 'com.google.android.material:material:1.12.0'
+    implementation 'androidx.appcompat:appcompat:1.7.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
     implementation 'androidx.preference:preference:1.2.1'
     implementation 'androidx.media:media:1.7.0'
     implementation 'androidx.biometric:biometric:1.1.0'
+//    implementation "androidx.security:security-crypto:1.0.0"
+    implementation 'androidx.navigation:navigation-fragment:2.8.0'
+    implementation 'androidx.navigation:navigation-ui:2.8.0'
     implementation 'org.osmdroid:osmdroid-android:6.1.17'
     testImplementation 'junit:junit:4.13.2'
-    androidTestImplementation 'androidx.test.ext:junit:1.1.5'
+    androidTestImplementation 'androidx.test.ext:junit:1.2.1'
 }
