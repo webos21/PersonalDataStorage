@@ -25,6 +25,10 @@
     <!-- For Notification Player -->
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK" />
+
+    <!-- For Notification : api 33 (os 13) -->
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 
     <application
         android:name=".PdsApp"
@@ -85,8 +89,10 @@
         <service
             android:name=".PdsWebService"
             android:enabled="true"
-            android:exported="true"
-            android:label="PdsWebService">
+            android:exported="false"
+            android:foregroundServiceType="mediaPlayback"
+            android:label="PdsWebService"
+            android:permission="TODO">
             <intent-filter>
                 <action android:name="com.gmail.webos21.pds.app.action.PLAY" />
                 <action android:name="com.gmail.webos21.pds.app.action.CLOSE" />

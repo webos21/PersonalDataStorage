@@ -58,6 +58,7 @@
 
     <string name="err_perm_exflah">개인자료저장소는 &quot;외부 저장소&quot; 권한이 꼭 필요합니다.</string>
     <string name="err_perm_location">개인자료저장소는 &quot;위치&quot; 권한이 꼭 필요합니다.</string>
+    <string name="err_perm_notification">개인자료저장소는 &quot;알림&quot; 권한이 꼭 필요합니다.</string>
 
     <string name="err_input_new">&quot;신규 비밀번호&quot;를 입력해 주세요.</string>
     <string name="err_input_confirm">&quot;비밀번호 확인&quot;을 입력해 주세요.</string>

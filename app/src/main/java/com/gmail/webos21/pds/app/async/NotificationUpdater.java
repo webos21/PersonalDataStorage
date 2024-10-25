@@ -30,8 +30,8 @@ public class NotificationUpdater implements Callable<Void> {
     public Void call() {
         Intent actionPlay = new Intent(Consts.NOTI_ACT_PLAY);
         Intent actionClose = new Intent(Consts.NOTI_ACT_CLOSE);
-        PendingIntent togglePlay = PendingIntent.getService(service, 0, actionPlay, PendingIntent.FLAG_MUTABLE);
-        PendingIntent close = PendingIntent.getService(service, 0, actionClose, PendingIntent.FLAG_MUTABLE);
+        PendingIntent togglePlay = PendingIntent.getService(service, 0, actionPlay, PendingIntent.FLAG_IMMUTABLE);
+        PendingIntent close = PendingIntent.getService(service, 0, actionClose, PendingIntent.FLAG_IMMUTABLE);
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(service, channelId);
         builder

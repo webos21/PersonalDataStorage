@@ -58,6 +58,7 @@
 
     <string name="err_perm_exflah">This app needs the access permission of &quot;External Storage&quot;</string>
     <string name="err_perm_location">This app needs the access permission of &quot;Location&quot;</string>
+    <string name="err_perm_notification">This app needs the access permission of &quot;Notification&quot;</string>
 
     <string name="err_input_new">Please, input the &quot;New Passcode&quot;.</string>
     <string name="err_input_confirm">Please, input the &quot;Confirm Passcode&quot;.</string>
