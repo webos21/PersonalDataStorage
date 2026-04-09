@@ -1,11 +1,13 @@
 package com.gmail.webos21.pds.db.test;
 
 import java.util.Date;
+import org.junit.jupiter.api.Test;
 
 import com.gmail.webos21.pds.db.DbConsts;
 
 public class DateFormatTest {
 
+	@Test
 	public void testSDF() throws Exception {
 		int year = 2021;
 		int month = 12;
@@ -24,4 +26,5 @@ public class DateFormatTest {
 			e.printStackTrace();
 		}
 	}
+
 }

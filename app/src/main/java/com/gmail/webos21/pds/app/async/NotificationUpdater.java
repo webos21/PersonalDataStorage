@@ -1,11 +1,15 @@
 package com.gmail.webos21.pds.app.async;
 
+import android.Manifest;
 import android.app.Notification;
 import android.app.PendingIntent;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.widget.Toast;
 
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
+import androidx.core.content.ContextCompat;
 
 import com.gmail.webos21.pds.app.Consts;
 import com.gmail.webos21.pds.app.MainActivity;
@@ -37,15 +41,28 @@ public class NotificationUpdater implements Callable<Void> {
         builder
                 .setContentTitle("[PDS Web Service]")
                 .setContentText(service.getUri())
-                .setContentIntent(PendingIntent.getActivity(service, 0, new Intent(service, MainActivity.class), PendingIntent.FLAG_MUTABLE));
+                .setContentIntent(PendingIntent.getActivity(service, 0, new Intent(service, MainActivity.class),
+                        PendingIntent.FLAG_MUTABLE));
 
-        builder.addAction(new NotificationCompat.Action(service.isPlaying() ? android.R.drawable.ic_media_pause : android.R.drawable.ic_media_play, "Play", togglePlay));
+        builder.addAction(new NotificationCompat.Action(
+                service.isPlaying() ? android.R.drawable.ic_media_pause : android.R.drawable.ic_media_play, "Play",
+                togglePlay));
         builder.addAction(new NotificationCompat.Action(android.R.drawable.ic_menu_close_clear_cancel, "Close", close));
-        int[] actionsViewIndexs = new int[]{0, 1};
-        builder.setStyle(new androidx.media.app.NotificationCompat.MediaStyle().setShowActionsInCompactView(actionsViewIndexs));
+        int[] actionsViewIndexs = new int[] { 0, 1 };
+        builder.setStyle(
+                new androidx.media.app.NotificationCompat.MediaStyle().setShowActionsInCompactView(actionsViewIndexs));
         builder.setSmallIcon(R.mipmap.ic_launcher);
 
         Notification notification = builder.build();
+
+        if (ContextCompat.checkSelfPermission(service,
+                Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED) {
+            NotificationManagerCompat.from(service)
+                    .notify(Consts.NOTI_PLAYER_ID, notification);
+        } else {
+            Toast.makeText(service, "Notification permission not granted", Toast.LENGTH_SHORT).show();
+            return null;
+        }
 
         NotificationManagerCompat.from(service).notify(Consts.NOTI_PLAYER_ID, notification);
 
@@ -57,4 +74,3 @@ public class NotificationUpdater implements Callable<Void> {
         return null;
     }
 }
-
