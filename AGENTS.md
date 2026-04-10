@@ -13,6 +13,6 @@ The app includes a foreground Web Service displayed in the notification area, al
 |-----------------|-----------------------|----------------|--------------------------------------------------|
 | webos21-java    | JDK8 Compatible       | 1              | Base Java Library for encryption, nano web, ...  |
 | WebBack         | JDK8 Compatible       | 2              | Web Backend with Nano and H2 DB                  |
-| WebFront        | Node 25, React 19, Typescript, Vite, Tailwind CSS | 3 | Web Frontend, serviced by WebNano |
+| WebFront        | Node 25, React 19, Typescript 5, Vite 7, Tailwind CSS | 3 | Web Frontend, serviced by WebNano |
 | webos21-android | Android Library       | 4              | Android widgets and utilities                    |
 | app             | Android App           | 5              | Android main app                                 |
