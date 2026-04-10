@@ -1,52 +1,29 @@
-// react
-import React, { forwardRef, RefObject } from 'react';
+import { forwardRef, ReactNode } from 'react';
 
-// material-ui
-import { Typography, Box, MenuItem } from '@mui/material';
-import { styled } from '@mui/material/styles';
-import { MenuItemProps } from '@mui/material/MenuItem';
-import { SxProps } from '@mui/system/styleFunctionSx/styleFunctionSx';
-
-const StyledMenuItem = styled(MenuItem)({
-    display: 'flex',
-    justifyContent: 'space-between',
-    paddingLeft: '4px',
-    paddingRight: '4px'
-});
-
-const StyledTypography = styled(Typography)({
-    paddingLeft: '8px',
-    paddingRight: '8px',
-    textAlign: 'left'
-});
-
-const FlexBox = styled(Box)({
-    display: 'flex'
-});
-
-type IconMenuItemProps = {
-    MenuItemProps?: MenuItemProps;
-    className?: string;
-    disabled?: boolean;
+interface IconMenuItemProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
     label?: string;
-    leftIcon?: React.ReactNode;
-    onClick?: (event: React.MouseEvent<HTMLElement>) => void;
-    ref?: RefObject<HTMLLIElement>;
-    rightIcon?: React.ReactNode;
-    sx?: SxProps;
-};
+    leftIcon?: ReactNode;
+    rightIcon?: ReactNode;
+}
 
-export const IconMenuItem = forwardRef<HTMLLIElement, IconMenuItemProps>(function IconMenuItem(
-    { MenuItemProps, className, label, leftIcon, rightIcon, ...props },
-    ref
-) {
-    return (
-        <StyledMenuItem {...MenuItemProps} ref={ref} className={className} {...props}>
-            <FlexBox>
-                {leftIcon}
-                <StyledTypography>{label}</StyledTypography>
-            </FlexBox>
-            {rightIcon}
-        </StyledMenuItem>
-    );
-});
+export const IconMenuItem = forwardRef<HTMLButtonElement, IconMenuItemProps>(
+    function IconMenuItem(
+        { label, leftIcon, rightIcon, children, className = '', ...restProps }, 
+        ref
+    ) {
+        return (
+            <button 
+                ref={ref} 
+                className={`flex w-full items-center justify-between px-1 py-2 text-left transition-colors hover:bg-gray-100 disabled:opacity-50 ${className}`}
+                {...restProps}
+            >
+                <div className="flex items-center">
+                    {leftIcon && <span className="mr-2">{leftIcon}</span>}
+                    {label && <span className="px-2 text-left">{label}</span>}
+                </div>
+                {rightIcon && <span className="ml-2">{rightIcon}</span>}
+                {children}
+            </button>
+        );
+    }
+);

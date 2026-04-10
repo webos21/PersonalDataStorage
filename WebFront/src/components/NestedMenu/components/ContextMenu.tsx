@@ -1,5 +1,4 @@
-import React, { useState, forwardRef, useRef } from 'react';
-import Menu from '@mui/material/Menu';
+import React, { useState, forwardRef, useRef, MouseEvent } from 'react';
 import { nestedMenuItemsFromObject } from './nestedMenuItemsFromObject';
 import { MenuItemData } from '../definitions';
 
@@ -16,65 +15,49 @@ interface Position {
 
 const ContextMenu = forwardRef<HTMLDivElement, ContextMenuProps>(({ children, menuItems, menuItemsData }, ref) => {
     const wrapperRef = (ref as React.MutableRefObject<HTMLDivElement>) ?? useRef<HTMLDivElement>(null);
-
     const [menuPosition, setMenuPosition] = useState<Position | null>(null);
-
     const [mouseDownPosition, setMouseDownPosition] = useState<Position | null>(null);
 
     const handleItemClick = () => setMenuPosition(null);
 
-    const handleMouseDown = (e: React.MouseEvent) => {
+    const handleMouseDown = (e: MouseEvent) => {
         if (menuPosition !== null) setMenuPosition(null);
-
         if (e.button !== 2) return;
 
-        const wrapperBounds = wrapperRef.current.getBoundingClientRect();
-
-        // Check mouse coordinates are inside the rect
-        if (
+        const wrapperBounds = wrapperRef.current?.getBoundingClientRect();
+        if (!wrapperBounds ||
             e.clientX < wrapperBounds.left ||
             e.clientX > wrapperBounds.right ||
             e.clientY < wrapperBounds.top ||
             e.clientY > wrapperBounds.bottom
-        ) {
-            return;
-        }
+        ) return;
 
         setMouseDownPosition({ top: e.clientY, left: e.clientX });
     };
 
-    const handleMouseUp = (e: React.MouseEvent) => {
-        const top = e.clientY;
-        const left = e.clientX;
-
+    const handleMouseUp = (e: MouseEvent) => {
         if (mouseDownPosition === null) return;
-
-        if (mouseDownPosition.top === top && mouseDownPosition.left === left) {
+        if (mouseDownPosition.top === e.clientY && mouseDownPosition.left === e.clientX) {
             setMenuPosition({ top: e.clientY, left: e.clientX });
         }
     };
 
-    const menuContents =
-        menuItems ??
-        (menuItemsData &&
-            nestedMenuItemsFromObject({
-                menuItemsData: menuItemsData,
-                isOpen: !!menuPosition,
-                handleClose: handleItemClick
-            }));
+    const menuContents = menuItems ?? (menuItemsData && nestedMenuItemsFromObject({
+        menuItemsData,
+        isOpen: !!menuPosition,
+        handleClose: handleItemClick
+    }));
 
     return (
         <div ref={wrapperRef} onContextMenu={(e) => e.preventDefault()} onMouseDown={handleMouseDown} onMouseUp={handleMouseUp}>
             {menuPosition && (
-                <Menu
-                    onContextMenu={(e) => e.preventDefault()}
-                    open={!!menuPosition}
-                    onClose={() => setMenuPosition(null)}
-                    anchorReference="anchorPosition"
-                    anchorPosition={menuPosition}
+                <div 
+                    className="fixed z-50 bg-white border border-gray-200 shadow-xl rounded-md py-1"
+                    style={{ top: menuPosition.top, left: menuPosition.left }}
+                    onClick={() => setMenuPosition(null)}
                 >
                     {menuContents}
-                </Menu>
+                </div>
             )}
             {children}
         </div>

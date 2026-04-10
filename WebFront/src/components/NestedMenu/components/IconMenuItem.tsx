@@ -1,49 +1,28 @@
-import React, { forwardRef, RefObject } from 'react';
-import MenuItem, { MenuItemProps } from '@mui/material/MenuItem';
-import Typography from '@mui/material/Typography';
-import Box from '@mui/system/Box';
-import styled from '@mui/material/styles/styled';
-import { SxProps } from '@mui/system/styleFunctionSx/styleFunctionSx';
+import React, { forwardRef } from 'react';
 
-const StyledMenuItem = styled(MenuItem)({
-    paddingLeft: '4px',
-    paddingRight: '4px',
-    display: 'flex',
-    justifyContent: 'space-between'
-});
-
-const StyledTypography = styled(Typography)({
-    paddingLeft: '8px',
-    paddingRight: '8px',
-    textAlign: 'left'
-});
-
-const FlexBox = styled(Box)({
-    display: 'flex'
-});
-
-interface IconMenuItemProps {
+interface IconMenuItemProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
     leftIcon?: React.ReactNode;
     rightIcon?: React.ReactNode;
-    onClick?: () => void;
     label?: string;
     className?: string;
-    MenuItemProps?: MenuItemProps;
-    ref?: RefObject<HTMLLIElement>;
     disabled?: boolean;
-    sx?: SxProps;
 }
 
-const IconMenuItem = forwardRef<HTMLLIElement, IconMenuItemProps>(
-    ({ leftIcon, rightIcon, label, MenuItemProps, className, ...props }, ref) => {
+const IconMenuItem = forwardRef<HTMLButtonElement, IconMenuItemProps>(
+    ({ leftIcon, rightIcon, label, className = '', disabled, ...props }, ref) => {
         return (
-            <StyledMenuItem {...MenuItemProps} ref={ref} className={className} {...props}>
-                <FlexBox>
-                    {leftIcon}
-                    <StyledTypography>{label}</StyledTypography>
-                </FlexBox>
-                {rightIcon}
-            </StyledMenuItem>
+            <button
+                ref={ref}
+                className={`flex items-center justify-between w-full px-2 py-2 hover:bg-gray-100 disabled:opacity-50 ${className}`}
+                disabled={disabled}
+                {...props}
+            >
+                <div className="flex items-center">
+                    {leftIcon && <span className="mr-2">{leftIcon}</span>}
+                    <span className="px-2 text-left">{label}</span>
+                </div>
+                {rightIcon && <span className="ml-2">{rightIcon}</span>}
+            </button>
         );
     }
 );

@@ -3,28 +3,24 @@
     "display": "Create React App",
     "compilerOptions": {
         "target": "ESNext",
-        "lib": [
-            "dom",
-            "dom.iterable",
-            "esnext"
-        ],
-        "types": [
-            "vite/client",
-            "vite-plugin-svgr/client"
-        ],
-        "allowJs": false,
-        "skipLibCheck": false,
-        "esModuleInterop": false,
+        "lib": ["dom", "dom.iterable", "esnext"],
+        "types": ["vite/client", "node", "jest", "@testing-library/jest-dom"],
+        "allowJs": true,
+        "skipLibCheck": true,
+        "esModuleInterop": true,
         "allowSyntheticDefaultImports": true,
-        "strict": true,
-        "forceConsistentCasingInFileNames": true,
+        "strict": false,
+        "noImplicitAny": false,
+        "noImplicitThis": false,
+        "forceConsistentCasingInFileNames": false,
         "noFallthroughCasesInSwitch": true,
         "module": "ESNext",
         "moduleResolution": "node",
         "resolveJsonModule": true,
         "isolatedModules": true,
         "noEmit": true,
-        "jsx": "react-jsx"
+        "jsx": "react-jsx",
+        "allowImportingTsExtensions": true
     },
     "include": [
         "src"

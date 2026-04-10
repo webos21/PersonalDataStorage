@@ -1,7 +1,5 @@
-import React from 'react';
+import React, { useState, useRef } from 'react';
 import { nestedMenuItemsFromObject } from './nestedMenuItemsFromObject';
-import Button, { ButtonProps } from '@mui/material/Button';
-import Menu, { MenuProps } from '@mui/material/Menu';
 import { ChevronDown } from '../icons/ChevronDown';
 import { MenuItemData } from '../definitions';
 
@@ -9,36 +7,42 @@ interface NestedDropdownProps {
     children?: React.ReactNode;
     menuItemsData?: MenuItemData;
     onClick?: (e: React.MouseEvent<HTMLButtonElement>) => void;
-    ButtonProps?: Partial<ButtonProps>;
-    MenuProps?: Partial<MenuProps>;
+    className?: string;
 }
 
-export const NestedDropdown = React.forwardRef<HTMLDivElement | null, NestedDropdownProps>(function NestedDropdown(props, ref) {
-    const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(null);
-    const open = Boolean(anchorEl);
+export const NestedDropdown = React.forwardRef<HTMLDivElement, NestedDropdownProps>(function NestedDropdown(props, ref) {
+    const [isOpen, setIsOpen] = useState(false);
+    const containerRef = useRef<HTMLDivElement>(null);
 
-    const { menuItemsData: data, onClick, ButtonProps, MenuProps, ...rest } = props;
+    const { menuItemsData: data, onClick, className = '', ...rest } = props;
 
     const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
-        setAnchorEl(e.currentTarget);
+        setIsOpen(!isOpen);
         onClick && onClick(e);
     };
-    const handleClose = () => setAnchorEl(null);
+
+    const handleClose = () => setIsOpen(false);
 
     const menuItems = nestedMenuItemsFromObject({
         menuItemsData: data?.items ?? [],
-        isOpen: open,
+        isOpen: isOpen,
         handleClose
     });
 
     return (
-        <div ref={ref} {...rest}>
-            <Button onClick={handleClick} endIcon={<ChevronDown />} {...ButtonProps}>
+        <div ref={ref || containerRef} className={`relative inline-block ${className}`} {...rest}>
+            <button 
+                onClick={handleClick}
+                className="flex items-center px-4 py-2 bg-white border border-gray-300 rounded hover:bg-gray-50"
+            >
                 {data?.label ?? 'Menu'}
-            </Button>
-            <Menu anchorEl={anchorEl} open={open} onClose={handleClose} {...MenuProps}>
-                {menuItems}
-            </Menu>
+                <span className="ml-2"><ChevronDown /></span>
+            </button>
+            {isOpen && (
+                <div className="absolute left-0 mt-2 z-50 min-w-[200px] bg-white border border-gray-200 shadow-xl rounded-md">
+                    {menuItems}
+                </div>
+            )}
         </div>
     );
 });

@@ -16,7 +16,7 @@ const POSITION_CLASSES = {
     topright: 'leaflet-top leaflet-right'
 };
 
-const MapControlEx = (props: Props): JSX.Element => {
+const MapControlEx = (props: Props) => {
     const [portalRoot, setPortalRoot] = React.useState<any>(document.createElement('div'));
     const positionClass = (props.position && POSITION_CLASSES[props.position]) || POSITION_CLASSES.topright;
     const portalContainer = document.createElement('div');
