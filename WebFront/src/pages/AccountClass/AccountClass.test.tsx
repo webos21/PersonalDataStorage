@@ -1,5 +1,8 @@
+// library
 import { createRoot } from 'react-dom/client';
 import { MemoryRouter } from 'react-router-dom';
+
+// in-package
 import AccountClass from './AccountClass';
 
 it('renders without crashing', () => {

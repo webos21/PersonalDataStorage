@@ -1,92 +1,169 @@
-// react
-import { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+// library
+import { ClipboardType, Plus } from 'lucide-react';
+import { useMemo, useState } from 'react';
 
-// redux
-import { aclassSuccess, getAclasses } from '../../store/reducers/aclass';
-
-// project import
-import ComponentSkeleton from '../../components/ComponentSkeleton';
-import SearchBar from '../../components/SearchBar';
-import Utils from '../../utils/index';
+// in-project
+import { STORE_KEYS, usePaginationStore, useTableStore } from '@/shared/stores';
+import Button from '@/shared/ui/button/Button';
+import ConfirmDialog from '@/shared/ui/feedback/ConfirmDialog';
+import { useToast } from '@/shared/ui/feedback/Toast';
+import PageHeader from '@/shared/ui/layout/PageHeader';
+import PageLayout from '@/shared/ui/layout/PageLayout';
+import { DataTable, Pagination, TableToolbar } from '@/shared/ui/table';
 
 // in-package
-import AccountClassAdd from './AccountClassAdd';
-import AccountClassEdit from './AccountClassEdit';
+import AccountClassColumns from './AccountClassColumns';
+import AccountClassForm from './AccountClassForm';
+import api from './api';
 
 const AccountClass = () => {
-    const dispatch = useDispatch();
-    const aclasses = useSelector(getAclasses);
+    const FILTER_CONFIG = [
+        { id: 'id', label: '계정 분류', type: 'text', options: [] },
+        { id: 'title', label: '분류 명칭', type: 'text', options: [] }
+    ];
 
+    const { data: aclasses, isLoading, error } = api.useList();
     const [pageData, setPageData] = useState({
         emptyId: -1,
         currentData: { id: -1, title: '' },
         keyword: '',
         keywordError: '',
         modalFlagAdd: false,
-        modalFlagEdit: false
+        modalFlagEdit: false,
+        modalFlagDelete: false
     });
 
-    const dataChangedCallback = (modifiedData) => {
+    const {
+        page,
+        setPage, // pagination state + setter
+        size,
+        setSize, // page size state + setter
+        keyword,
+        setKeyword, // keyword state + setter
+        handleKeywordChange, // keyword change handler (resets page to 0)
+        handlePageSizeChange // page size change handler (resets page to 0)
+    } = usePaginationStore();
+
+    // Table Persistence (column visibility, sorting, filters, density)
+    const {
+        columnVisibility,
+        setColumnVisibility, // column visibility state + setter
+        sorting,
+        setSorting, // sorting state + setter
+        filters,
+        setFilters, //  filters state + setter
+        density,
+        setDensity, // density state + setter
+        resetAll
+    } = useTableStore(STORE_KEYS.TABLE.ACCOUNT_CLASS);
+
+    const { showToast } = useToast();
+
+    const dataChangedCallback = (modifiedData: any) => {
         if (modifiedData !== undefined && modifiedData !== null) {
-            let newDataSet = aclasses.map(ac => ac.id === modifiedData.id ? modifiedData : ac);
-            dispatch(aclassSuccess({ aclasses: newDataSet }));
-        } else {
-            requestFetch();
+            let newDataSet = aclasses?.map((ac: any) => (ac.id === modifiedData.id ? modifiedData : ac));
+            //setAclasses(newDataSet);
         }
     };
 
-    const requestFetch = () => {
-        const REQ_URI = process.env.NODE_ENV !== 'production' ? '//' + window.location.hostname + ':28080/pds/v1/accountClass' : '/pds/v1/accountClass';
-        fetch(REQ_URI, { method: 'GET', headers: Utils.auth.makeAuthHeader() })
-            .then(res => { if (!res.ok) throw Error(res.statusText); return res.json(); })
-            .then(resJson => dispatch(aclassSuccess({ aclasses: resJson.data })))
-            .catch(error => console.log('AccountClass::fetch => ' + error));
+    // Modal toggles
+    const modalToggleAdd = () => setPageData((p) => ({ ...p, modalFlagAdd: !p.modalFlagAdd }));
+    const modalToggleEdit = () => setPageData((p) => ({ ...p, modalFlagEdit: !p.modalFlagEdit }));
+    const modalToggleDelete = () => setPageData((p) => ({ ...p, modalFlagDelete: !p.modalFlagDelete }));
+
+    // Handlers
+    const handleSortingChange = (updater: any) => {
+        setSorting(updater);
+        setPage(0);
     };
-
-    useEffect(() => { requestFetch(); }, []);
-
-    const modalToggleAdd = () => setPageData(p => ({...p, modalFlagAdd: !p.modalFlagAdd}));
-    const modalToggleEdit = () => setPageData(p => ({...p, modalFlagEdit: !p.modalFlagEdit}));
-    const handleViewAll = () => setPageData(p => ({...p, keyword: ''}));
-    const handleSearchGo = (e) => { e.preventDefault(); setPageData(p => ({...p, keyword: e.target.searchKeyword.value })); };
     const handleAdd = () => {
-        let newId = pageData.emptyId - 1;
-        setPageData(p => ({...p, currentData: { id: newId, title: '' }, modalFlagAdd: !p.modalFlagAdd, emptyId: newId }));
+        setPageData((p) => ({
+            ...p,
+            currentData: { id: -1, title: '' },
+            modalFlagAdd: !p.modalFlagAdd
+        }));
     };
-    const handleEdit = (data) => setPageData(p => ({...p, currentData: data, modalFlagEdit: !p.modalFlagEdit }));
+    const handleEdit = (data: any) => {
+        setPageData((p) => ({
+            ...p,
+            currentData: data,
+            modalFlagEdit: !p.modalFlagEdit
+        }));
+    };
+    const handleDelete = (data: any) => {
+        setPageData((p) => ({
+            ...p,
+            currentData: data,
+            modalFlagDelete: !p.modalFlagDelete
+        }));
+    };
 
-    const renderTableList = (dataArray) => {
-        const filteredData = pageData.keyword ? dataArray.filter(i => i.title.includes(pageData.keyword)) : dataArray;
-        if (!filteredData.length) return (
-            <tr><td colSpan="2" className="p-4 text-center">No Data</td></tr>
-        );
-        return filteredData.map((data, index) => (
-            <tr key={data.id} onClick={() => handleEdit(data)} className="hover:bg-gray-100 cursor-pointer border-b">
-                <td className="p-2">{data.id}</td>
-                <td className="p-2">{data.title}</td>
-            </tr>
-        ));
-    };
+    // Memoized columns with action handlers
+    const columns = useMemo(() => AccountClassColumns(handleEdit, handleDelete), [handleEdit, handleDelete]);
 
     return (
-        <ComponentSkeleton>
-            <div className="flex justify-between items-center mb-4 gap-2">
-                <SearchBar width="50%" keyword={pageData.keyword} onSearchGo={handleSearchGo} onReset={handleViewAll} />
-                <button onClick={handleAdd} className="px-4 py-2 bg-green-600 text-white rounded">추가</button>
+        <PageLayout>
+            <PageHeader icon={ClipboardType} title="계정분류" desc="계정코드 중 분류 번호" iconClass="bg-blue-100 text-blue-600" />
+
+            <div className="fms-table-wrap flex-1 flex flex-col relative">
+                {/* Toolbar */}
+                <TableToolbar
+                    keyword={pageData.keyword}
+                    onKeywordChange={handleKeywordChange}
+                    searchPlaceholder="계정 분류 검색 (Ctrl+K)"
+                    filterConfig={FILTER_CONFIG}
+                    activeFilters={filters}
+                    onFilterChange={setFilters}
+                    density={density}
+                    onDensityChange={setDensity}
+                    actions={
+                        <Button onClick={handleAdd}>
+                            <Plus size={16} strokeWidth={2.5} />
+                            <span>계정 분류 추가</span>
+                        </Button>
+                    }
+                />
+
+                {/* Data Table */}
+                <DataTable
+                    columns={columns}
+                    data={aclasses}
+                    isLoading={isLoading}
+                    emptyMessage="등록된 차량이 없습니다."
+                    columnVisibility={columnVisibility}
+                    onColumnVisibilityChange={setColumnVisibility}
+                    sorting={sorting}
+                    onSortingChange={handleSortingChange}
+                    density={density}
+                    manualSorting
+                />
+
+                {/* Pagination */}
+                <Pagination
+                    currentPage={1}
+                    totalPages={1}
+                    totalElements={aclasses?.length || 0}
+                    pageSize={1}
+                    onPageChange={setPageData}
+                    onPageSizeChange={setPageData}
+                />
             </div>
-            <table className="w-full border-collapse">
-                <thead className="bg-gray-200">
-                    <tr>
-                        <th className="p-2 text-left">ID</th>
-                        <th className="p-2 text-left">분류명</th>
-                    </tr>
-                </thead>
-                <tbody>{renderTableList(aclasses)}</tbody>
-            </table>
-            {pageData.modalFlagAdd && <AccountClassAdd modalFlag={pageData.modalFlagAdd} modalToggle={modalToggleAdd} dataFromParent={pageData.currentData} callbackFromParent={dataChangedCallback} />}
-            {pageData.modalFlagEdit && <AccountClassEdit modalFlag={pageData.modalFlagEdit} modalToggle={modalToggleEdit} dataFromParent={pageData.currentData} callbackFromParent={dataChangedCallback} />}
-        </ComponentSkeleton>
+
+            <ConfirmDialog
+                isOpen={pageData.modalFlagDelete}
+                onConfirm={handleDelete}
+                onCancel={modalToggleDelete}
+                title="차량 삭제"
+                message={`"${pageData.currentData?.title}" 계정 분류를 삭제하시겠습니까?`}
+            />
+            <AccountClassForm modalFlag={pageData.modalFlagAdd} modalToggle={modalToggleAdd} callbackFromParent={dataChangedCallback} />
+            <AccountClassForm
+                modalFlag={pageData.modalFlagEdit}
+                modalToggle={modalToggleEdit}
+                dataFromParent={pageData.currentData}
+                callbackFromParent={dataChangedCallback}
+            />
+        </PageLayout>
     );
 };
 

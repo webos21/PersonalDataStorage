@@ -1,3 +1,214 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+
+@theme {
+  --font-sans: var(--font-dynamic), 'Pretendard Variable', Pretendard, -apple-system, BlinkMacSystemFont, system-ui, Roboto, 'Helvetica Neue', 'Segoe UI', 'Apple SD Gothic Neo', 'Noto Sans KR', 'Malgun Gothic', 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', sans-serif;
+
+
+  --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  /* OKLCH Palette (Perceptually Uniform) */
+  --color-primary: #f97316;
+  /* Orange — SynergyLo Brand */
+  --color-primary-light: #fff7ed;
+  --color-surface: oklch(1 0 0);
+  /* Pure White */
+  --color-background: oklch(0.985 0.002 240);
+  /* Cool Gray Tint */
+  --color-border: oklch(0.92 0.005 240);
+
+  /* Status Colors */
+  --color-status-running: oklch(0.65 0.18 145);
+  /* Green */
+  --color-status-idle: oklch(0.70 0.12 60);
+  /* Warning Orange */
+  --color-status-offline: oklch(0.55 0.02 260);
+  /* Slate Gray */
+  --color-status-alert: oklch(0.60 0.18 25);
+  /* Error Red */
+  --color-danger: oklch(0.60 0.18 25);
+}
+
+@layer utilities {
+  .tabular-nums {
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -0.02em;
+  }
+}
+
+@layer components {
+
+  /* Status Dot Pulse Animation */
+  .status-dot-pulse {
+    @apply relative flex h-2.5 w-2.5;
+  }
+
+  .status-dot-pulse span:first-child {
+    @apply absolute inline-flex h-full w-full animate-ping rounded-full opacity-75;
+  }
+
+  .status-dot-pulse span:last-child {
+    @apply relative inline-flex h-2.5 w-2.5 rounded-full;
+  }
+}
+
+@layer base {
+
+  html,
+  body,
+  #root {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    font-family: var(--font-sans);
+    background-color: var(--color-background);
+    color: #0f172a;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+}
+
+/* =============================================
+   FMS Table Design System (FDMS-Unified)
+   ============================================= */
+@layer components {
+
+  /* Container — Floated card style */
+  .fms-table-wrap {
+    @apply w-full rounded-xl bg-white border border-gray-200/60 shadow-sm overflow-hidden flex flex-col;
+  }
+
+  /* Header cell — Matching FDMS style */
+  .fms-th {
+    @apply h-11 px-4 text-left align-middle text-sm font-bold tracking-wider text-gray-700 select-none bg-gray-50 border-b border-gray-200;
+    border-right: 1px solid #e5e7eb;
+  }
+
+  .fms-th:last-child {
+    border-right: none;
+  }
+
+  /* Data cell — Compact & Readable */
+  .fms-td {
+    @apply px-4 py-3 align-middle text-[15px] text-gray-800 font-medium border-b border-gray-100/50;
+    font-variant-numeric: tabular-nums;
+    border-right: 1px solid #f3f4f6;
+  }
+
+  .fms-td:last-child {
+    border-right: none;
+  }
+
+  /* Row — Orange hover (FDMS-Unified) */
+  .fms-tr {
+    @apply transition-colors duration-200 hover:bg-orange-50/40;
+  }
+
+  /* Sticky header — FDMS gray bg */
+  .fms-thead {
+    @apply sticky top-0 z-10 bg-gray-50 border-b border-gray-200 shadow-sm;
+  }
+
+  /* Action buttons — always visible */
+  .fms-actions {
+    @apply flex items-center gap-1.5;
+  }
+}
+
+/* Custom scrollbar */
+.fms-table-wrap {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(0, 0, 0, 0.1) transparent;
+}
+
+.fms-table-wrap::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+.fms-table-wrap::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.fms-table-wrap::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 0.1);
+  border-radius: 3px;
+}
+
+.fms-table-wrap::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(0, 0, 0, 0.2);
+}
+
+/* =============================================
+   Skeleton pulse animation
+   ============================================= */
+@keyframes skeleton-pulse {
+
+  0%,
+  100% {
+    opacity: 0.4;
+  }
+
+  50% {
+    opacity: 0.8;
+  }
+}
+
+.skeleton-cell {
+  @apply rounded bg-zinc-100;
+  animation: skeleton-pulse 1.5s ease-in-out infinite;
+}
+
+/* =============================================
+   VWorld Map CSS Overrides
+   ============================================= */
+.ol-attribution,
+.vw-control-attribution,
+.vw-warning,
+.ol-control.ol-attribution {
+  display: none !important;
+}
+
+#realtime-map,
+.vmap {
+  width: 100%;
+  height: 100%;
+  overflow: hidden !important;
+}
+
+.vehicle-cluster-icon {
+  background: transparent;
+  border: 0;
+}
+
+.vehicle-cluster-marker {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9999px;
+  border: 3px solid rgba(255, 255, 255, 0.95);
+  background:
+    radial-gradient(circle at 32% 28%, #fdba74 0%, #f97316 38%, #c2410c 100%);
+  color: white;
+  font-weight: 800;
+  line-height: 1;
+  box-shadow: 0 10px 24px rgba(194, 65, 12, 0.32);
+}
+
+.vehicle-cluster-marker--sm {
+  width: 40px;
+  height: 40px;
+  font-size: 13px;
+}
+
+.vehicle-cluster-marker--md {
+  width: 46px;
+  height: 46px;
+  font-size: 14px;
+}
+
+.vehicle-cluster-marker--lg {
+  width: 52px;
+  height: 52px;
+  font-size: 15px;
+}

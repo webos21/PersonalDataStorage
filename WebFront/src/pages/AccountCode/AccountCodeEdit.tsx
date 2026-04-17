@@ -1,7 +1,10 @@
+// library
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useForm } from 'react-hook-form';
 import * as Yup from 'yup';
-import Utils from '../../utils';
+
+// in-project
+import Utils from '@/shared/utils2/index';
 
 const AccountCodeEdit = (props) => {
     const REQ_URI = process.env.NODE_ENV !== 'production' ? '//' + window.location.hostname + ':28080/pds/v1/accountCode' : '/pds/v1/accountCode';
