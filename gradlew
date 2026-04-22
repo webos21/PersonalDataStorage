@@ -62,6 +62,15 @@ cd "$SAVED" >/dev/null
 
 CLASSPATH=$APP_HOME/gradle/wrapper/gradle-wrapper.jar
 
+# Android builds in this repository are unstable on bleeding-edge JDKs (e.g. 26).
+# On macOS, prefer Android Studio's bundled JBR when JAVA_HOME is not explicitly set.
+if [ -z "$JAVA_HOME" ] && $darwin ; then
+    AS_JBR_HOME="/Applications/Android Studio.app/Contents/jbr/Contents/Home"
+    if [ -x "$AS_JBR_HOME/bin/java" ] ; then
+        JAVA_HOME="$AS_JBR_HOME"
+    fi
+fi
+
 # Determine the Java command to use to start the JVM.
 if [ -n "$JAVA_HOME" ] ; then
     if [ -x "$JAVA_HOME/jre/sh/java" ] ; then

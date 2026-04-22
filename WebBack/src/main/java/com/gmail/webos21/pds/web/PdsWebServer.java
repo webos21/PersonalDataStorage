@@ -175,11 +175,30 @@ public class PdsWebServer extends NanoHTTPD {
 		if (res == null) {
 			StringBuilder sb = new StringBuilder();
 			res = staticRouter.route(header, session, uri);
+			if (res != null && res.getStatus() == Response.Status.NOT_FOUND && isSpaFallbackRoute(uri)) {
+				res = staticRouter.route(header, session, "/");
+			}
 			RouteResult.print(res, sb);
 			log(sb.toString());
 		}
 
 		return routeToResponse(res);
+	}
+
+	private boolean isSpaFallbackRoute(String uri) {
+		if (uri == null || uri.isEmpty()) {
+			return false;
+		}
+		if (uri.startsWith("/pds/v1")) {
+			return false;
+		}
+		uri = uri.trim();
+		int q = uri.indexOf('?');
+		if (q >= 0) {
+			uri = uri.substring(0, q);
+		}
+		String lastSegment = uri.substring(uri.lastIndexOf('/') + 1);
+		return !lastSegment.contains(".");
 	}
 
 	private Response routeToResponse(RouteResult res) {
