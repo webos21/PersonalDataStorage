@@ -21,12 +21,12 @@ const AccountClassColumns = (onEdit: (e: any) => void, onDelete: (e: any) => voi
     }),
     c.display({
         id: '_actions',
-        header: '',
+        header: '작업',
         size: 100,
         enableSorting: false,
         cell: ({ row }) => {
             return (
-                <div className="fms-actions justify-end pr-2 gap-1.5">
+                <div className="fms-actions justify-center gap-1.5">
                     <Badge variant="edit" onClick={() => onEdit(row.original)}>
                         수정
                     </Badge>

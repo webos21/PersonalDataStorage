@@ -1,146 +1,110 @@
-import React, { Component } from 'react';
-import { connect } from 'react-redux'
-import update from 'immutability-helper';
+import { useMemo, useState } from 'react';
+import { ChartLine, Plus } from 'lucide-react';
+import PageLayout from '@/shared/ui/layout/PageLayout';
+import PageHeader from '@/shared/ui/layout/PageHeader';
+import Button from '@/shared/ui/button/Button';
+import { DataTable, Pagination, TableToolbar } from '@/shared/ui/table';
+import StockRecordForm, { FIELD_CONFIG as StockRecordFieldConfig } from './StockRecordForm';
+import StockRecordColumns from './StockRecordColumns';
+import api from './api';
 
-import StockRecordAdd from './StockRecordAdd';
-import StockRecordEdit from './StockRecordEdit';
-import AllActions from '../../store/reducers'
-import Utils from '../../utils/index'
 
-class StockRecord extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      emptyId: -1,
-      dataSet: [],
-      currentData: { id: -1, stockId: -1, transactionDate: new Date(), title: '', deposit: 0, withdrawal: 0, memo: '' },
-      stockMap: {},
-      stockBalance: {},
-      selectedStock: null,
-      totalCount: 0,
-      keyword: "",
-      keywordError: "",
-      modalFlagAdd: false,
-      modalFlagEdit: false,
-    };
-  }
+const StockRecord = () => {
+    const [page, setPage] = useState(1);
+    const [size, setSize] = useState(10);
+    const [keyword, setKeyword] = useState('');
+    const [formState, setFormState] = useState<{ open: boolean; mode: 'add' | 'edit' | 'delete'; currentData: any }>({
+        open: false,
+        mode: 'add',
+        currentData: {}
+    });
 
-  dataChangedCallback(modifiedData) {
-    if (modifiedData) {
-      for (var i = 0; i < this.state.dataSet.length; i++) {
-        if (this.state.dataSet[i].id === modifiedData.id) {
-          var newDataSet = update(this.state.dataSet, { $splice: [[i, 1, modifiedData]] });
-          this.setState({ dataSet: newDataSet });
-          break;
-        }
-      }
-    } else {
-      this.requestFetch(this.state.keyword);
-    }
-  }
+    const { data: listResult, isLoading } = api.useList(page, size, keyword || undefined);
+    const rows = listResult?.data || [];
 
-  requestFetch(query) {
-    const REQ_URI = (process.env.NODE_ENV !== 'production') ? 'http://' + window.location.hostname + ':28080/pds/v1/stockRecord' : '/pds/v1/stockRecord';
-    const reqUri = REQ_URI + ((query === null || query === undefined) ? '' : '?q=' + query);
-
-    fetch(reqUri, { method: 'GET', headers: Utils.auth.makeAuthHeader() })
-      .then(res => res.json())
-      .then(resJson => {
-        let sortedData = [].concat(resJson.data).sort((a, b) => a.transactionDate > b.transactionDate ? -1 : 1);
-        let calcBalance = {};
-        sortedData.forEach(data => {
-            if (!calcBalance[data.stockId]) calcBalance[data.stockId] = 0;
-            calcBalance[data.stockId] += (data.deposit - data.withdrawal);
-        });
-        this.setState({ dataSet: sortedData, stockBalance: calcBalance, totalCount: sortedData.length, keywordError: '' });
-      }).catch(error => this.setState({ keywordError: error.message }));
-  }
-
-  componentDidMount() {
-    if (!this.props.storeDataSync) this.props.stockFetch();
-    let cmap = this.props.storeStocks.reduce((map, obj) => { map[obj.id] = obj; return map; }, {});
-    this.setState({ stockMap: cmap });
-    this.requestFetch();
-  }
-
-  modalToggleAdd = () => this.setState({ currentData: this.genEmptyObj(), modalFlagAdd: !this.state.modalFlagAdd });
-  modalToggleEdit = () => this.setState({ modalFlagEdit: !this.state.modalFlagEdit });
-  handleViewAll = () => { this.setState({ keyword: "" }); document.getElementById("frmRefSearch").reset(); }
-  handleSearchGo = (e) => { e.preventDefault(); this.setState({ keyword: e.target.keyword.value }); this.requestFetch(e.target.keyword.value); }
-  handleAdd = (e) => { e.preventDefault(); this.modalToggleAdd(); }
-  handleEdit = (data, e) => { e.preventDefault(); this.setState({ currentData: data }); this.modalToggleEdit(); }
-  handleStockSelect = (dataId) => this.setState({ selectedStock: dataId });
-
-  genEmptyObj() {
-    let newId = this.state.emptyId - 1;
-    this.setState({ emptyId: newId });
-    return { id: newId, stockId: -1, transactionDate: new Date(), title: '', deposit: 0, withdrawal: 0, memo: '' };
-  }
-
-  renderCardList(dataArray) {
-    return dataArray.map(data => (data.notUsed === 1) ? null : (
-        <button key={"stock-" + data.id} onClick={() => this.handleStockSelect(data.id)} className={`p-2 border rounded shadow-sm w-full ${this.state.selectedStock === data.id ? 'bg-blue-100 border-blue-500' : 'bg-white'}`}>
-            <div className="font-semibold">{data.company} - {data.cardName}</div>
-            <div className={`text-right font-bold ${this.state.stockBalance[data.id] < 0 ? 'text-blue-600' : 'text-black'}`}>
-                {Utils.num.formatDecimal(this.state.stockBalance[data.id] || 0)}
-            </div>
-        </button>
-    ));
-  }
-
-  renderTableList(dataArray) {
-    const filteredData = dataArray.filter(data => !this.state.selectedStock || data.stockId === this.state.selectedStock);
-    return filteredData.length === 0 ? <tr><td colSpan="7" className="p-4 text-center">No Data</td></tr> :
-      filteredData.map(data => (
-        <tr key={'stockRecordData-' + data.id} onClick={(e) => this.handleEdit(data, e)} className="hover:bg-gray-50 cursor-pointer border-b">
-          <td className="p-2 border">{data.id}</td>
-          <td className="p-2 border">[{this.state.stockMap[data.stockId]?.company}] {this.state.stockMap[data.stockId]?.cardName}</td>
-          <td className="p-2 border">{Utils.date.dateFormat(new Date(data.transactionDate))}</td>
-          <td className="p-2 border">{data.title}</td>
-          <td className="p-2 border text-right">{Utils.num.formatDecimal(data.deposit)}</td>
-          <td className="p-2 border text-right text-blue-600">{Utils.num.formatDecimal(data.withdrawal)}</td>
-          <td className="p-2 border truncate max-w-[140px]">{data.memo}</td>
-        </tr>
-      ));
-  }
-
-  render() {
-    return (
-      <div className="space-y-6">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          {this.state.selectedStock && <button onClick={() => this.handleStockSelect(null)} className="p-2 border rounded bg-gray-100">모든 주식 보기</button>}
-          {this.renderCardList(this.props.storeStocks)}
-        </div>
-
-        <div className="bg-white p-4 shadow rounded">
-          <div className="font-bold text-lg mb-2">Search <small className="text-gray-500">Stock Record</small></div>
-          <form onSubmit={this.handleSearchGo} id="frmRefSearch" className="flex gap-2">
-            <input type="text" name="keyword" placeholder="Enter keyword" className="border p-2 flex-grow rounded" />
-            <button type="submit" className="px-4 py-2 bg-blue-600 text-white rounded">Search</button>
-            {this.state.keyword !== "" && <button type="reset" onClick={this.handleViewAll} className="px-4 py-2 bg-green-600 text-white rounded">전체보기</button>}
-          </form>
-          {this.state.keywordError && <p className="text-red-500 text-sm mt-2">{this.state.keywordError}</p>}
-        </div>
-
-        <div className="bg-white p-4 shadow rounded">
-          <div className="flex justify-between items-center mb-4">
-            <h2 className="font-bold text-lg">Stock Record List <small className="text-gray-500">(Total: {this.state.totalCount})</small></h2>
-            <button onClick={this.handleAdd} className="px-4 py-2 bg-green-600 text-white rounded">+ 추가</button>
-          </div>
-          <table className="w-full border-collapse">
-            <thead className="bg-gray-100">
-              <tr><th className="p-2 border">ID</th><th className="p-2 border">주식명</th><th className="p-2 border">거래일</th><th className="p-2 border">적요</th><th className="p-2 border">입금액</th><th className="p-2 border">출금액</th><th className="p-2 border">메모</th></tr>
-            </thead>
-            <tbody>{this.renderTableList(this.props.storeStocks)}</tbody>
-          </table>
-        </div>
-        <StockRecordAdd key={"StockRecordAdd-" + this.state.currentData.id} modalFlag={this.state.modalFlagAdd} modalToggle={this.modalToggleAdd} dataFromParent={this.state.currentData} callbackFromParent={this.dataChangedCallback} />
-        <StockRecordEdit key={"StockRecordEdit-" + this.state.currentData.id} modalFlag={this.state.modalFlagEdit} modalToggle={this.modalToggleEdit} dataFromParent={this.state.currentData} callbackFromParent={this.dataChangedCallback} />
-      </div>
+    const labelByKey = useMemo(
+        () => Object.fromEntries(StockRecordFieldConfig.map((field: any) => [field.name, field.label])),
+        []
     );
-  }
-}
 
-const mapStateToProps = (state) => ({ storeDataSync: state.stock.dataSync, storeStocks: state.stock.cards });
-const mapDispatchToProps = (dispatch) => ({ stockFetch: () => dispatch(AllActions.stock.stockFetch()) });
-export default connect(mapStateToProps, mapDispatchToProps)(StockRecord);
+    const tableKeys = useMemo(() => Object.keys(rows?.[0] || {}).slice(0, 6), [rows]);
+    const formKeys = useMemo(
+        () => Object.keys(rows?.[0] || {}).filter((key) => key !== 'id' && key !== 'srId'),
+        [rows, labelByKey]
+    );
+
+    const openForm = (mode: 'add' | 'edit' | 'delete', row?: any) => {
+        setFormState({ open: true, mode, currentData: row || {} });
+    };
+
+    const closeForm = () => {
+        setFormState((prev) => ({ ...prev, open: false }));
+    };
+
+    const columns = useMemo(() => StockRecordColumns(tableKeys, labelByKey, openForm), [tableKeys, labelByKey]);
+
+    const filterConfig = useMemo(
+        () => Object.keys(rows?.[0] || {}).slice(0, 4).map((key) => ({ id: key, label: labelByKey[key] || key, type: 'text', options: [] })),
+        [rows]
+    );
+
+    return (
+        <PageLayout>
+            <PageHeader icon={ChartLine} title="주식기록" desc="주식 거래 기록 관리" iconClass="bg-blue-100 text-blue-600" />
+            <div className="fms-table-wrap flex-1 flex flex-col relative">
+                <TableToolbar
+                    keyword={keyword}
+                    onKeywordChange={(v) => {
+                        setKeyword(v);
+                        setPage(1);
+                    }}
+                    searchPlaceholder="주식기록 검색 (Ctrl+K)"
+                    filterConfig={filterConfig}
+                    activeFilters={{}}
+                    onFilterChange={() => {}}
+                    actions={
+                        <Button type="button" onClick={() => openForm('add')}>
+                            <Plus size={16} strokeWidth={2.5} />
+                            <span>주식기록 추가</span>
+                        </Button>
+                    }
+                />
+
+                <DataTable
+                    columns={columns}
+                    data={rows}
+                    isLoading={isLoading}
+                    emptyMessage="등록된 주식기록 데이터가 없습니다."
+                    manualSorting
+                />
+
+                <Pagination
+                    currentPage={Math.max((listResult?.pagination?.currentPage || 1) - 1, 0)}
+                    totalPages={listResult?.pagination?.totalPages || 1}
+                    totalElements={listResult?.pagination?.totalCount || 0}
+                    pageSize={size}
+                    onPageChange={(next) => setPage(next + 1)}
+                    onPageSizeChange={(nextSize) => {
+                        setSize(nextSize);
+                        setPage(1);
+                    }}
+                />
+            </div>
+
+            {formState.open && (
+                <StockRecordForm
+                    modalFlag={formState.open}
+                    modalToggle={closeForm}
+                    mode={formState.mode}
+                    dataFromParent={formState.currentData}
+                    fieldKeys={formKeys}
+                    idParam="srId"
+                    entityLabel="주식기록"
+                    callbackFromParent={() => {}}
+                />
+            )}
+        </PageLayout>
+    );
+};
+
+export default StockRecord;
