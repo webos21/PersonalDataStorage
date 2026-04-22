@@ -1,42 +1,62 @@
 // library
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
 // in-project
 import ApiClient from '@/shared/api/ApiClient';
 
-const KEY = 'accountClass';
+const ENDPOINT = '/accountClass';
+const QUERY_KEY = 'account-class';
 
-const api = {
-    list: () => ApiClient.get('/accountClass'),
-    get: (id: number) => ApiClient.get(`/accountClass/${id}`),
-    create: (data: { title: string }) => ApiClient.post('/accountClass', data),
-    update: (id: number, data: { title: string }) => ApiClient.put(`/accountClass/${id}`, data),
-    delete: (id: number) => ApiClient.delete(`/accountClass/${id}`)
-};
+const accountClassService = {
+    async list(page: number, perPage: number, q: string | undefined) {
+        const response = await ApiClient.get(ENDPOINT, { params: { page, perPage, q } });
+        return response.data ?? {};
+    },
 
-const ApiHooks = {
-    useList: () => {
-        return useQuery({ queryKey: [KEY], queryFn: () => api.list().then((res) => res.data.data) });
+    async create(payload: FormData) {
+        const response = await ApiClient.post(ENDPOINT, payload);
+        return response.data?.data ?? null;
     },
-    useGet: (id: number) => useQuery([KEY, id], () => api.get(id)),
-    useCreate: () => {
-        const queryClient = useQueryClient();
-        return useMutation(api.create, {
-            onSuccess: () => queryClient.invalidateQueries([KEY])
-        });
+
+    async update(payload: FormData) {
+        const response = await ApiClient.put(ENDPOINT, payload);
+        return response.data?.data ?? null;
     },
-    useUpdate: (id: number) => {
-        const queryClient = useQueryClient();
-        return useMutation((data: { title: string }) => api.update(id, data), {
-            onSuccess: () => queryClient.invalidateQueries([KEY])
-        });
-    },
-    useDelete: (id: number) => {
-        const queryClient = useQueryClient();
-        return useMutation(() => api.delete(id), {
-            onSuccess: () => queryClient.invalidateQueries([KEY])
-        });
+
+    async delete(id: string | number) {
+        const response = await ApiClient.delete(ENDPOINT, { params: { acId: id } });
+        return response.data?.data;
     }
 };
 
-export default ApiHooks;
+const useList = (page: number, perPage: number, q: string | undefined) =>
+    useQuery({
+        queryKey: [QUERY_KEY, page, perPage, q],
+        queryFn: () => accountClassService.list(page, perPage, q)
+    });
+
+const useCreate = () => {
+    const qc = useQueryClient();
+    return useMutation({
+        mutationFn: (payload: FormData) => accountClassService.create(payload),
+        onSuccess: () => qc.invalidateQueries({ queryKey: [QUERY_KEY] })
+    });
+};
+
+const useUpdate = () => {
+    const qc = useQueryClient();
+    return useMutation({
+        mutationFn: (payload: FormData) => accountClassService.update(payload),
+        onSuccess: () => qc.invalidateQueries({ queryKey: [QUERY_KEY] })
+    });
+};
+
+const useDelete = () => {
+    const qc = useQueryClient();
+    return useMutation({
+        mutationFn: (id: string | number) => accountClassService.delete(id),
+        onSuccess: () => qc.invalidateQueries({ queryKey: [QUERY_KEY] })
+    });
+};
+
+export default { useList, useCreate, useUpdate, useDelete };

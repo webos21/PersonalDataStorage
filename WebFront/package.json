@@ -15,6 +15,7 @@
     "scripts": {
         "dev": "vite",
         "build": "vite build",
+        "test": "vite test",
         "lint": "eslint .",
         "preview": "vite preview"
     },

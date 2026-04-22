@@ -19,18 +19,18 @@ interface PaginationState {
  * @returns Pagination state and handlers
  */
 const usePaginationStore = (defaultSize: number = 10): PaginationState => {
-    const [page, setPage] = useState<number>(0);
+    const [page, setPage] = useState<number>(1);
     const [size, setSize] = useState<number>(defaultSize);
     const [keyword, setKeyword] = useState<string>('');
 
     const handleKeywordChange = useCallback((v: string) => {
         setKeyword(v);
-        setPage(0);
+        setPage(1);
     }, []);
 
     const handlePageSizeChange = useCallback((s: number) => {
         setSize(s);
-        setPage(0);
+        setPage(1);
     }, []);
 
     return {
