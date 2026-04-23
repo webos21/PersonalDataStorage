@@ -1,6 +1,0 @@
-{
-  "name": "CardRecord",
-  "version": "1.0.0",
-  "private": true,
-  "main": "./CardRecord.js"
-}

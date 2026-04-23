@@ -1,6 +1,0 @@
-{
-  "name": "AccountCode",
-  "version": "1.0.0",
-  "private": true,
-  "main": "./AccountCode.js"
-}

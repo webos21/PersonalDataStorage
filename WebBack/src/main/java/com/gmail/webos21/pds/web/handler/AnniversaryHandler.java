@@ -204,15 +204,7 @@ public class AnniversaryHandler implements UriHandler {
 					sb.append(',').append('\n');
 				}
 
-				String thisYear = null;
-				int month = Integer.parseInt(r.getApplyDate().substring(0, 2));
-				int day = Integer.parseInt(r.getApplyDate().substring(2, 4));
-				if (r.getLunar() == 1) {
-					klc.setLunarDate(year, month, day, false);
-					thisYear = klc.getSolarIsoFormat();
-				} else {
-					thisYear = String.format("%04d-%02d-%02d", year, month, day);
-				}
+				String thisYear = calcThisYearDate(r, year, klc);
 
 				sb.append('{').append('\n');
 				sb.append("  \"id\": ").append(r.getId()).append(",\n");
@@ -232,21 +224,7 @@ public class AnniversaryHandler implements UriHandler {
 					sb.append(',').append('\n');
 				}
 
-				String thisYear = null;
-				int month = Integer.parseInt(r.getApplyDate().substring(0, 2));
-				int day = Integer.parseInt(r.getApplyDate().substring(2, 4));
-				if (r.getLunar() == 1) {
-					if (month == 12 && day == 31) {
-						if (!klc.setLunarDate(year - 1, 12, 30, false)) {
-							klc.setLunarDate(year - 1, 12, 29, false);
-						}
-					} else {
-						klc.setLunarDate(year, month, day, false);
-					}
-					thisYear = klc.getSolarIsoFormat();
-				} else {
-					thisYear = String.format("%04d-%02d-%02d", year, month, day);
-				}
+				String thisYear = calcThisYearDate(r, year, klc);
 
 				sb.append('{').append('\n');
 				sb.append("  \"id\": ").append(r.getId()).append(",\n");
@@ -271,6 +249,32 @@ public class AnniversaryHandler implements UriHandler {
 		System.out.println(sb.toString());
 
 		return rr;
+	}
+
+	private String calcThisYearDate(Anniversary row, int year, KoreanLunarCalendar klc) {
+		int month = Integer.parseInt(row.getApplyDate().substring(0, 2));
+		int day = Integer.parseInt(row.getApplyDate().substring(2, 4));
+
+		if (row.getLunar() != 1) {
+			return String.format("%04d-%02d-%02d", year, month, day);
+		}
+
+		boolean converted;
+		// 음력 12/31은 해당 양력년 기준 설 직전(전년도 음력 12월 말일)로 계산한다.
+		if (month == 12 && day == 31) {
+			converted = klc.setLunarDate(year - 1, 12, 30, false);
+			if (!converted) {
+				converted = klc.setLunarDate(year - 1, 12, 29, false);
+			}
+		} else {
+			converted = klc.setLunarDate(year, month, day, false);
+		}
+
+		if (converted) {
+			return klc.getSolarIsoFormat();
+		}
+
+		return String.format("%04d-%02d-%02d", year, month, day);
 	}
 
 }

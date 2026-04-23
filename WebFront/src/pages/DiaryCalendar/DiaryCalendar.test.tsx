@@ -6,6 +6,7 @@ import { ToastProvider } from '@/shared/ui/feedback/Toast';
 
 import DiaryCalendar from './DiaryCalendar';
 import api from './api';
+import anniversaryApi from '@/pages/Anniversary/api';
 
 vi.mock('./api', () => ({
     default: {
@@ -13,6 +14,12 @@ vi.mock('./api', () => ({
         useCreate: vi.fn(),
         useUpdate: vi.fn(),
         useDelete: vi.fn()
+    }
+}));
+
+vi.mock('@/pages/Anniversary/api', () => ({
+    default: {
+        useList: vi.fn()
     }
 }));
 
@@ -28,6 +35,14 @@ beforeEach(() => {
     (api.useCreate as any).mockReturnValue({ mutateAsync: vi.fn(), isPending: false });
     (api.useUpdate as any).mockReturnValue({ mutateAsync: vi.fn(), isPending: false });
     (api.useDelete as any).mockReturnValue({ mutateAsync: vi.fn(), isPending: false });
+    (anniversaryApi.useList as any).mockReturnValue({
+        data: {
+            result: 'OK',
+            pagination: { totalCount: 0, totalPages: 1, currentPage: 1 },
+            data: []
+        },
+        isLoading: false
+    });
 });
 
 it('renders without crashing', () => {

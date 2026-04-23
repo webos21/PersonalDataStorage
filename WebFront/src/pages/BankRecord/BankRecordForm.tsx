@@ -3,6 +3,7 @@ import Modal from '@/shared/ui/feedback/Modal';
 import ModalFooter from '@/shared/ui/feedback/ModalFooter';
 import FormField from '@/shared/ui/form/FormField';
 import { useToast } from '@/shared/ui/feedback/Toast';
+import { normalizeDateInputValue, normalizeDatePayloadValue } from '@/shared/utils2/DateValue';
 import api from './api';
 
 type FieldOption = { value: string; label: string };
@@ -125,6 +126,17 @@ const toFieldDef = (name: string, data: any): FieldDef => {
     };
 };
 
+const normalizeFormValue = (field: FieldDef, raw: unknown): string => {
+    if (raw == null) {
+        return field.type === 'select' && field.options?.length ? field.options[0].value : '';
+    }
+    return normalizeDateInputValue(field.type, raw);
+};
+
+const normalizePayloadValue = (field: FieldDef, value: string): string => {
+    return normalizeDatePayloadValue(field.type, value);
+};
+
 const BankRecordForm = ({ modalFlag, modalToggle, mode = 'add', dataFromParent, fieldKeys = [], idParam = 'brId', entityLabel = '은행기록', callbackFromParent }: any) => {
     const { showToast } = useToast();
     const creater = api.useCreate();
@@ -154,11 +166,7 @@ const BankRecordForm = ({ modalFlag, modalToggle, mode = 'add', dataFromParent, 
         const next: Record<string, string> = {};
         resolvedFields.forEach((field) => {
             const raw = dataFromParent?.[field.name];
-            if (raw == null) {
-                next[field.name] = field.type === 'select' && field.options?.length ? field.options[0].value : '';
-            } else {
-                next[field.name] = String(raw);
-            }
+            next[field.name] = normalizeFormValue(field, raw);
         });
         setForm(next);
         setErrors({});
@@ -245,7 +253,7 @@ const BankRecordForm = ({ modalFlag, modalToggle, mode = 'add', dataFromParent, 
             }
 
             resolvedFields.forEach((field) => {
-                payload.append(field.name, form[field.name] ?? '');
+                payload.append(field.name, normalizePayloadValue(field, form[field.name] ?? ''));
             });
 
             if (isEdit) {

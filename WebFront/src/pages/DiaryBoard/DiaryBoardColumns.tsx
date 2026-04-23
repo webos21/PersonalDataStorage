@@ -1,5 +1,6 @@
 import { createColumnHelper } from '@tanstack/react-table';
 import Badge from '@/shared/ui/data-display/Badge';
+import { formatDateCellValue } from '@/shared/utils2/DateValue';
 
 const c = createColumnHelper<any>();
 
@@ -13,7 +14,7 @@ const DiaryBoardColumns = (
             header: labelByKey[key] || key,
             size: 140,
             enableSorting: false,
-            cell: (info) => <span className="text-sm text-zinc-800">{`${info.getValue?.() ?? ''}`}</span>
+            cell: (info) => <span className="text-sm text-zinc-800">{formatDateCellValue(key, info.getValue?.(), labelByKey[key] || key)}</span>
         })
     );
 

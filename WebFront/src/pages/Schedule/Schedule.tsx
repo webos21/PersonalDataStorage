@@ -3,7 +3,9 @@ import { CalendarClock, ChevronLeft, ChevronRight, Plus } from 'lucide-react';
 import PageLayout from '@/shared/ui/layout/PageLayout';
 import PageHeader from '@/shared/ui/layout/PageHeader';
 import Button from '@/shared/ui/button/Button';
+import { solar2lunar } from '@/shared/utils2/DateUtil';
 import ScheduleForm, { FIELD_CONFIG as ScheduleFieldConfig } from './ScheduleForm';
+import anniversaryApi from '@/pages/Anniversary/api';
 import api from './api';
 
 const WEEKDAY_LABELS = ['일', '월', '화', '수', '목', '금', '토'];
@@ -29,6 +31,95 @@ const parseDateSafe = (raw: any) => {
     const parsed = new Date(raw);
     if (Number.isNaN(parsed.getTime())) return null;
     return parsed;
+};
+
+type AnniversaryItem = {
+    id?: number | string;
+    title?: string;
+    applyDate?: string;
+    lunar?: number | string;
+    holiday?: number | string;
+};
+
+type AnniversaryBadge = {
+    title: string;
+    holiday: boolean;
+};
+
+const toLunarKey = (year: number, month: number, day: number) => `${year}-${month}-${day}`;
+
+const buildAnniversaryByDay = (calendarDays: Date[], anniversaries: AnniversaryItem[]) => {
+    const map: Record<string, AnniversaryBadge[]> = {};
+    if (calendarDays.length === 0 || anniversaries.length === 0) return map;
+
+    const rangeStart = new Date(calendarDays[0].getFullYear(), calendarDays[0].getMonth(), calendarDays[0].getDate());
+    const rangeEndExclusive = new Date(
+        calendarDays[calendarDays.length - 1].getFullYear(),
+        calendarDays[calendarDays.length - 1].getMonth(),
+        calendarDays[calendarDays.length - 1].getDate() + 1
+    );
+
+    const lunarCalendar: Record<string, Date> = {};
+    for (let time = rangeStart.getTime(); time < rangeEndExclusive.getTime(); time += 86400000) {
+        const solarDate = new Date(time);
+        const lunarDate = solar2lunar(solarDate);
+        lunarCalendar[toLunarKey(lunarDate.year, lunarDate.month, lunarDate.day)] = solarDate;
+    }
+
+    const lunarStartBase = solar2lunar(rangeStart);
+    const lunarEndBase = solar2lunar(rangeEndExclusive);
+    const lunarStart = new Date(lunarStartBase.year, lunarStartBase.month, lunarStartBase.day);
+    const lunarEnd = new Date(lunarEndBase.year, lunarEndBase.month, lunarEndBase.day);
+    const lunarYearDiff = lunarStartBase.year !== lunarEndBase.year;
+    const solarYearDiff = rangeStart.getFullYear() !== rangeEndExclusive.getFullYear();
+
+    anniversaries.forEach((anni) => {
+        const rawApplyDate = `${anni?.applyDate ?? ''}`.padStart(4, '0');
+        if (!/^\d{4}$/.test(rawApplyDate)) return;
+
+        const dataMon = Number.parseInt(rawApplyDate.slice(0, 2), 10) - 1;
+        const dataDay = Number.parseInt(rawApplyDate.slice(2, 4), 10);
+        if (Number.isNaN(dataMon) || Number.isNaN(dataDay) || dataMon < 0 || dataMon > 11 || dataDay < 1 || dataDay > 31) return;
+
+        const isLunar = Number(anni?.lunar ?? 0) === 1;
+        const isHoliday = Number(anni?.holiday ?? 0) === 1;
+        const titleText = `${anni?.title ?? '기념일'}`.trim();
+        let targetDate: Date | null = null;
+        let viewTitle = titleText;
+
+        if (isLunar) {
+            let yearVal = lunarEnd.getFullYear();
+            if (lunarYearDiff && dataMon === 11) yearVal -= 1;
+            let lunarDate = new Date(yearVal, dataMon, dataDay);
+            if (lunarDate < lunarStart || lunarDate >= lunarEnd) return;
+
+            let foundSolar = lunarCalendar[toLunarKey(lunarDate.getFullYear(), lunarDate.getMonth(), lunarDate.getDate())];
+            if (!foundSolar) {
+                lunarDate = new Date(yearVal, dataMon, dataDay - 1);
+                foundSolar = lunarCalendar[toLunarKey(lunarDate.getFullYear(), lunarDate.getMonth(), lunarDate.getDate())];
+            }
+            if (!foundSolar) {
+                lunarDate = new Date(yearVal, dataMon, dataDay - 2);
+                foundSolar = lunarCalendar[toLunarKey(lunarDate.getFullYear(), lunarDate.getMonth(), lunarDate.getDate())];
+            }
+            if (!foundSolar) return;
+
+            targetDate = foundSolar;
+            viewTitle = `${titleText}(음 ${lunarDate.getMonth() + 1}.${lunarDate.getDate()})`;
+        } else {
+            let yearVal = rangeEndExclusive.getFullYear();
+            if (solarYearDiff && dataMon === 11) yearVal -= 1;
+            const solarDate = new Date(yearVal, dataMon, dataDay);
+            if (solarDate < rangeStart || solarDate >= rangeEndExclusive) return;
+            targetDate = solarDate;
+        }
+
+        const dayKey = toDayKey(targetDate);
+        if (!map[dayKey]) map[dayKey] = [];
+        map[dayKey].push({ title: viewTitle, holiday: isHoliday });
+    });
+
+    return map;
 };
 
 const buildCalendarDays = (monthDate: Date) => {
@@ -62,6 +153,8 @@ const Schedule = () => {
         month: viewMonth
     });
     const rows = listResult?.data || [];
+    const { data: anniversaryResult } = anniversaryApi.useList(1, 1000, undefined);
+    const anniversaries: AnniversaryItem[] = anniversaryResult?.data || [];
 
     const calendarDays = useMemo(() => buildCalendarDays(currentMonth), [currentMonth]);
     const formKeys = useMemo(() => ScheduleFieldConfig.map((field: any) => field.name), []);
@@ -96,6 +189,8 @@ const Schedule = () => {
 
         return map;
     }, [filteredRows]);
+
+    const anniversariesByDay = useMemo(() => buildAnniversaryByDay(calendarDays, anniversaries), [calendarDays, anniversaries]);
 
     const openForm = (mode: 'add' | 'edit' | 'delete', row?: any) => {
         setFormState({ open: true, mode, currentData: row || {} });
@@ -178,8 +273,19 @@ const Schedule = () => {
                         {calendarDays.map((day) => {
                             const key = toDayKey(day);
                             const dayEvents = eventsByDay[key] || [];
+                            const dayAnniversaries = anniversariesByDay[key] || [];
                             const isCurrentMonth = day.getMonth() === currentMonth.getMonth();
                             const isToday = key === toDayKey(new Date());
+                            const isSunday = day.getDay() === 0;
+                            const isSaturday = day.getDay() === 6;
+                            const firstAnniversary = dayAnniversaries[0];
+                            const dateTextClass = isToday
+                                ? 'bg-primary text-white'
+                                : isSunday
+                                  ? 'text-red-500'
+                                  : isSaturday
+                                    ? 'text-blue-500'
+                                    : 'text-zinc-700';
 
                             return (
                                 <div
@@ -197,17 +303,26 @@ const Schedule = () => {
                                         isCurrentMonth ? 'bg-white hover:bg-zinc-50' : 'bg-zinc-50/60 text-zinc-400 hover:bg-zinc-100/60'
                                     }`}
                                 >
-                                    <div className="flex items-center justify-between mb-1">
-                                        <span
-                                            className={`inline-flex h-6 min-w-6 items-center justify-center rounded-full px-1 text-xs ${
-                                                isToday ? 'bg-primary text-white' : 'text-zinc-700'
-                                            }`}
-                                        >
-                                            {day.getDate()}
-                                        </span>
-                                        {dayEvents.length > 0 && (
-                                            <span className="text-[10px] text-zinc-400">{dayEvents.length}</span>
-                                        )}
+                                    <div className="flex items-center justify-between gap-1 mb-1">
+                                        <div className="flex min-w-0 items-center gap-1">
+                                            <span className={`inline-flex h-6 min-w-6 items-center justify-center rounded-full px-1 text-xs ${dateTextClass}`}>
+                                                {day.getDate()}
+                                            </span>
+                                            {firstAnniversary && (
+                                                <span
+                                                    className={`max-w-[84px] truncate rounded px-1 py-0.5 text-[10px] ${
+                                                        firstAnniversary.holiday ? 'bg-red-50 text-red-500' : 'bg-blue-50 text-blue-600'
+                                                    }`}
+                                                    title={firstAnniversary.title}
+                                                >
+                                                    {firstAnniversary.title}
+                                                </span>
+                                            )}
+                                        </div>
+                                        <div className="flex items-center gap-1">
+                                            {dayAnniversaries.length > 1 && <span className="text-[10px] text-zinc-400">+{dayAnniversaries.length - 1}</span>}
+                                            {dayEvents.length > 0 && <span className="text-[10px] text-zinc-400">{dayEvents.length}</span>}
+                                        </div>
                                     </div>
 
                                     <div className="space-y-1">

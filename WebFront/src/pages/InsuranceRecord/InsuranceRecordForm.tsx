@@ -3,6 +3,7 @@ import Modal from '@/shared/ui/feedback/Modal';
 import ModalFooter from '@/shared/ui/feedback/ModalFooter';
 import FormField from '@/shared/ui/form/FormField';
 import { useToast } from '@/shared/ui/feedback/Toast';
+import { normalizeDateInputValue, normalizeDatePayloadValue } from '@/shared/utils2/DateValue';
 import api from './api';
 
 type FieldOption = { value: string; label: string };
@@ -79,6 +80,13 @@ const toFieldDef = (name: string, data: any): FieldDef => {
     };
 };
 
+const normalizeFormValue = (field: FieldDef, raw: unknown): string => {
+    if (raw == null) {
+        return field.type === 'select' && field.options?.length ? field.options[0].value : '';
+    }
+    return normalizeDateInputValue(field.type, raw);
+};
+
 const InsuranceRecordForm = ({ modalFlag, modalToggle, mode = 'add', dataFromParent, fieldKeys = [], idParam = 'irId', entityLabel = '보험기록', callbackFromParent }: any) => {
     const { showToast } = useToast();
     const creater = api.useCreate();
@@ -108,11 +116,7 @@ const InsuranceRecordForm = ({ modalFlag, modalToggle, mode = 'add', dataFromPar
         const next: Record<string, string> = {};
         resolvedFields.forEach((field) => {
             const raw = dataFromParent?.[field.name];
-            if (raw == null) {
-                next[field.name] = field.type === 'select' && field.options?.length ? field.options[0].value : '';
-            } else {
-                next[field.name] = String(raw);
-            }
+            next[field.name] = normalizeFormValue(field, raw);
         });
         setForm(next);
         setErrors({});
@@ -199,7 +203,7 @@ const InsuranceRecordForm = ({ modalFlag, modalToggle, mode = 'add', dataFromPar
             }
 
             resolvedFields.forEach((field) => {
-                payload.append(field.name, form[field.name] ?? '');
+                payload.append(field.name, normalizeDatePayloadValue(field.type, form[field.name] ?? ''));
             });
 
             if (isEdit) {

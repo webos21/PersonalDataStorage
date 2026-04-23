@@ -1,6 +1,0 @@
-{
-  "name": "FileSystem",
-  "version": "1.0.0",
-  "private": true,
-  "main": "./FileSystem.js"
-}

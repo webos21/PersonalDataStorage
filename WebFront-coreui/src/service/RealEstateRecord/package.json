@@ -1,6 +1,0 @@
-{
-  "name": "RealEstateRecord",
-  "version": "1.0.0",
-  "private": true,
-  "main": "./RealEstateRecord.js"
-}
