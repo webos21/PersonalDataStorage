@@ -4,23 +4,26 @@ import PageLayout from '@/shared/ui/layout/PageLayout';
 import PageHeader from '@/shared/ui/layout/PageHeader';
 import Button from '@/shared/ui/button/Button';
 import { DataTable, Pagination, TableToolbar } from '@/shared/ui/table';
-import BankRecordForm, { FIELD_CONFIG as BankRecordFieldConfig } from './BankRecordForm';
+import BankRecordForm from './BankRecordForm';
+import { FIELD_CONFIG as BankRecordFieldConfig } from './BankRecordField';
 import BankRecordColumns from './BankRecordColumns';
+import { usePaginationStore } from '@/shared/stores';
 import api from './api';
+import bankApi from '@/pages/Bank/api';
 
 
 const BankRecord = () => {
-    const [page, setPage] = useState(1);
-    const [size, setSize] = useState(10);
-    const [keyword, setKeyword] = useState('');
+    const { pageCurrent, setPageCurrent, pageItems, setPageItems, pageKeyword, setPageKeyword } = usePaginationStore(10);
     const [formState, setFormState] = useState<{ open: boolean; mode: 'add' | 'edit' | 'delete'; currentData: any }>({
         open: false,
         mode: 'add',
         currentData: {}
     });
 
-    const { data: listResult, isLoading } = api.useList(page, size, keyword || undefined);
+    const { data: listResult, isLoading } = api.useList(pageCurrent, pageItems, pageKeyword || undefined);
     const rows = listResult?.data || [];
+    const { data: bankResult } = bankApi.useList(1, 1000, undefined);
+    const banks = bankResult?.data || [];
 
     const labelByKey = useMemo(
         () => Object.fromEntries(BankRecordFieldConfig.map((field: any) => [field.name, field.label])),
@@ -41,7 +44,16 @@ const BankRecord = () => {
         setFormState((prev) => ({ ...prev, open: false }));
     };
 
-    const columns = useMemo(() => BankRecordColumns(tableKeys, labelByKey, openForm), [tableKeys, labelByKey]);
+    const bankNameById = useMemo(() => {
+        return Object.fromEntries(
+            (banks || []).map((bank: any) => {
+                const bankLabel = [bank?.bankName, bank?.accountName].filter(Boolean).join(' / ');
+                return [String(bank?.id), bankLabel || `계좌 ${bank?.id}`];
+            })
+        );
+    }, [banks]);
+
+    const columns = useMemo(() => BankRecordColumns(tableKeys, labelByKey, bankNameById, openForm), [tableKeys, labelByKey, bankNameById]);
 
     const filterConfig = useMemo(
         () => Object.keys(rows?.[0] || {}).slice(0, 4).map((key) => ({ id: key, label: labelByKey[key] || key, type: 'text', options: [] })),
@@ -53,10 +65,10 @@ const BankRecord = () => {
             <PageHeader icon={Banknote} title="계좌기록" desc="은행 거래 기록 관리" iconClass="bg-blue-100 text-blue-600" />
             <div className="fms-table-wrap flex-1 flex flex-col relative">
                 <TableToolbar
-                    keyword={keyword}
+                    keyword={pageKeyword}
                     onKeywordChange={(v) => {
-                        setKeyword(v);
-                        setPage(1);
+                        setPageKeyword(v);
+                        setPageCurrent(1);
                     }}
                     searchPlaceholder="은행기록 검색 (Ctrl+K)"
                     filterConfig={filterConfig}
@@ -82,11 +94,11 @@ const BankRecord = () => {
                     currentPage={Math.max((listResult?.pagination?.currentPage || 1) - 1, 0)}
                     totalPages={listResult?.pagination?.totalPages || 1}
                     totalElements={listResult?.pagination?.totalCount || 0}
-                    pageSize={size}
-                    onPageChange={(next) => setPage(next + 1)}
+                    pageSize={pageItems}
+                    onPageChange={(next) => setPageCurrent(next + 1)}
                     onPageSizeChange={(nextSize) => {
-                        setSize(nextSize);
-                        setPage(1);
+                        setPageItems(nextSize);
+                        setPageCurrent(1);
                     }}
                 />
             </div>

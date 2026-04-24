@@ -4,23 +4,29 @@ import PageLayout from '@/shared/ui/layout/PageLayout';
 import PageHeader from '@/shared/ui/layout/PageHeader';
 import Button from '@/shared/ui/button/Button';
 import { DataTable, Pagination, TableToolbar } from '@/shared/ui/table';
-import BudgetForm, { FIELD_CONFIG as BudgetFieldConfig } from './BudgetForm';
+import BudgetForm from './BudgetForm';
+import { FIELD_CONFIG as BudgetFieldConfig } from './BudgetField';
 import BudgetColumns from './BudgetColumns';
+import { usePaginationStore } from '@/shared/stores';
 import api from './api';
+import accountClassApi from '@/pages/AccountClass/api';
+import accountCodeApi from '@/pages/AccountCode/api';
 
 
 const Budget = () => {
-    const [page, setPage] = useState(1);
-    const [size, setSize] = useState(10);
-    const [keyword, setKeyword] = useState('');
+    const { pageCurrent, setPageCurrent, pageItems, setPageItems, pageKeyword, setPageKeyword } = usePaginationStore(10);
     const [formState, setFormState] = useState<{ open: boolean; mode: 'add' | 'edit' | 'delete'; currentData: any }>({
         open: false,
         mode: 'add',
         currentData: {}
     });
 
-    const { data: listResult, isLoading } = api.useList(page, size, keyword || undefined);
+    const { data: listResult, isLoading } = api.useList(pageCurrent, pageItems, pageKeyword || undefined);
     const rows = listResult?.data || [];
+    const { data: aclassResult } = accountClassApi.useList(1, 1000, undefined);
+    const { data: acodeResult } = accountCodeApi.useList(1, 3000, undefined);
+    const aclasses = aclassResult?.data || [];
+    const acodes = acodeResult?.data || [];
 
     const labelByKey = useMemo(
         () => Object.fromEntries(BudgetFieldConfig.map((field: any) => [field.name, field.label])),
@@ -41,7 +47,24 @@ const Budget = () => {
         setFormState((prev) => ({ ...prev, open: false }));
     };
 
-    const columns = useMemo(() => BudgetColumns(tableKeys, labelByKey, openForm), [tableKeys, labelByKey]);
+    const accountCodeLabelByCode = useMemo(() => {
+        const classMap = Object.fromEntries((aclasses || []).map((aclass: any) => [String(aclass?.id), aclass?.title || '']));
+        return Object.fromEntries(
+            (acodes || []).map((acode: any) => {
+                const code = String(acode?.accountCode || '');
+                const classId =
+                    Object.keys(classMap)
+                        .filter((id) => code.startsWith(id))
+                        .sort((a, b) => b.length - a.length)[0] || '';
+                const classTitle = classMap[classId] || '';
+                const codeTitle = acode?.title || '';
+                const label = [classTitle, codeTitle].filter(Boolean).join(' / ');
+                return [code, label || code];
+            })
+        );
+    }, [aclasses, acodes]);
+
+    const columns = useMemo(() => BudgetColumns(tableKeys, labelByKey, accountCodeLabelByCode, openForm), [tableKeys, labelByKey, accountCodeLabelByCode]);
 
     const filterConfig = useMemo(
         () => Object.keys(rows?.[0] || {}).slice(0, 4).map((key) => ({ id: key, label: labelByKey[key] || key, type: 'text', options: [] })),
@@ -53,10 +76,10 @@ const Budget = () => {
             <PageHeader icon={DollarSign} title="예산" desc="예산 정보 관리" iconClass="bg-blue-100 text-blue-600" />
             <div className="fms-table-wrap flex-1 flex flex-col relative">
                 <TableToolbar
-                    keyword={keyword}
+                    keyword={pageKeyword}
                     onKeywordChange={(v) => {
-                        setKeyword(v);
-                        setPage(1);
+                        setPageKeyword(v);
+                        setPageCurrent(1);
                     }}
                     searchPlaceholder="예산 검색 (Ctrl+K)"
                     filterConfig={filterConfig}
@@ -82,11 +105,11 @@ const Budget = () => {
                     currentPage={Math.max((listResult?.pagination?.currentPage || 1) - 1, 0)}
                     totalPages={listResult?.pagination?.totalPages || 1}
                     totalElements={listResult?.pagination?.totalCount || 0}
-                    pageSize={size}
-                    onPageChange={(next) => setPage(next + 1)}
+                    pageSize={pageItems}
+                    onPageChange={(next) => setPageCurrent(next + 1)}
                     onPageSizeChange={(nextSize) => {
-                        setSize(nextSize);
-                        setPage(1);
+                        setPageItems(nextSize);
+                        setPageCurrent(1);
                     }}
                 />
             </div>

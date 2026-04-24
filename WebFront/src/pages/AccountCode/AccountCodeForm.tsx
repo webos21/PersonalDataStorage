@@ -1,118 +1,165 @@
-// library
-import { useEffect, useState } from 'react';
-
-// in-project
+import { useEffect, useMemo, useState } from 'react';
 import Modal from '@/shared/ui/feedback/Modal';
 import ModalFooter from '@/shared/ui/feedback/ModalFooter';
 import FormField from '@/shared/ui/form/FormField';
 import { useToast } from '@/shared/ui/feedback/Toast';
-
-// in-package
 import api from './api';
+import { FIELD_CONFIG } from './AccountCodeField';
+import type { FieldDef, FieldType } from './AccountCodeField';
 
-const AccountCodeForm = ({ modalFlag, modalToggle, dataFromParent, callbackFromParent }: any) => {
+const EXCLUDED_KEYS = ['id', 'createdAt', 'updatedAt'];
+
+const fallbackType = (key: string, value: unknown): FieldType => {
+    const lower = key.toLowerCase();
+    if (lower.includes('date')) return 'date';
+    if (lower.includes('password') || lower.includes('passwd') || lower.includes('pw')) return 'password';
+    if (lower.includes('memo') || lower.includes('content') || lower.includes('desc')) return 'textarea';
+    if (typeof value === 'number') return 'number';
+    return 'text';
+};
+
+const toFieldDef = (name: string, data: any): FieldDef => {
+    const fromConfig = FIELD_CONFIG.find((f) => f.name === name);
+    if (fromConfig) return fromConfig;
+    return { name, label: name, type: fallbackType(name, data?.[name]), required: false };
+};
+
+const AccountCodeForm = ({
+    modalFlag,
+    modalToggle,
+    mode = 'add',
+    dataFromParent,
+    fieldKeys = [],
+    idParam = 'accId',
+    entityLabel = '계정 코드',
+    callbackFromParent
+}: any) => {
     const { showToast } = useToast();
     const creater = api.useCreate();
     const updater = api.useUpdate();
+    const deleter = api.useDelete();
 
-    const [form, setForm] = useState({
-        accId: '',
-        acodeId: '',
-        title: ''
-    });
-    const [errors, setErrors] = useState({
-        acodeId: '',
-        title: ''
-    });
+    const isDelete = mode === 'delete';
+    const isEdit = mode === 'edit';
+    const currentId = dataFromParent?.id ?? dataFromParent?.[idParam];
 
-    const isEdit = !!dataFromParent;
+    const resolvedFields = useMemo(() => {
+        const names = new Set<string>();
+        FIELD_CONFIG.forEach((f) => names.add(f.name));
+        fieldKeys.forEach((k: string) => names.add(k));
+        Object.keys(dataFromParent || {}).forEach((k) => names.add(k));
+        return [...names].filter((key) => !EXCLUDED_KEYS.includes(key) && key !== idParam).map((name) => toFieldDef(name, dataFromParent));
+    }, [fieldKeys, dataFromParent, idParam]);
+
+    const [form, setForm] = useState<Record<string, string>>({});
+    const [errors, setErrors] = useState<Record<string, string>>({});
 
     useEffect(() => {
         if (!modalFlag) return;
-        setForm({
-            accId: dataFromParent?.id ? `${dataFromParent.id}` : '',
-            acodeId: dataFromParent?.accountCode || '',
-            title: dataFromParent?.title || ''
+        const next: Record<string, string> = {};
+        resolvedFields.forEach((field) => {
+            const raw = dataFromParent?.[field.name];
+            if (raw == null) next[field.name] = field.type === 'select' && field.options?.length ? field.options[0].value : '';
+            else next[field.name] = String(raw);
         });
-        setErrors({ acodeId: '', title: '' });
-    }, [modalFlag, dataFromParent]);
+        setForm(next);
+        setErrors({});
+    }, [modalFlag, resolvedFields, dataFromParent]);
 
     if (!modalFlag) return null;
 
     const handleChange = (e: any) => {
         const { name, value } = e.target ?? {};
-        if (name) {
-            setForm((p) => ({ ...p, [name]: value }));
-            setErrors((p) => ({ ...p, [name]: '' }));
-        }
+        if (!name) return;
+        setForm((prev) => ({ ...prev, [name]: value }));
+        setErrors((prev) => ({ ...prev, [name]: '' }));
     };
 
     const validate = () => {
-        const next = { acodeId: '', title: '' };
-
-        if (!form.acodeId || form.acodeId.trim().length === 0) {
-            next.acodeId = 'ID는 필수 입력입니다.';
-        } else if (form.acodeId.length > 2) {
-            next.acodeId = 'ID는 2자리 숫자입니다.';
-        }
-
-        if (!form.title || form.title.trim().length === 0) {
-            next.title = '분류명은 필수 입력입니다.';
-        } else if (form.title.length > 255) {
-            next.title = '분류명은 최대 255자까지 입니다.';
-        }
-
+        if (isDelete) return true;
+        const next: Record<string, string> = {};
+        resolvedFields.forEach((field) => {
+            const value = (form[field.name] ?? '').trim();
+            if (field.required && value.length === 0) {
+                next[field.name] = '필수 입력 항목입니다.';
+                return;
+            }
+            if (value.length === 0) return;
+            if (field.maxLength && value.length > field.maxLength) {
+                next[field.name] = `최대 ${field.maxLength}자까지 입력할 수 있습니다.`;
+                return;
+            }
+        });
         setErrors(next);
-        return !next.acodeId && !next.title;
+        return Object.keys(next).length === 0;
     };
 
     const handleSubmit = async (e: any) => {
         e.preventDefault();
         if (!validate()) return;
 
-        const payload = new FormData();
-        if (isEdit) payload.append('accId', form.accId);
-        payload.append('acodeId', form.acodeId);
-        payload.append('title', form.title);
-
         try {
-            if (isEdit) {
-                const updated = await updater.mutateAsync(payload);
-                callbackFromParent?.(updated);
-                showToast('계정 코드가 수정되었습니다.', 'success');
-            } else {
-                const created = await creater.mutateAsync(payload);
-                callbackFromParent?.(created);
-                showToast('계정 코드가 등록되었습니다.', 'success');
+            if (isDelete) {
+                if (currentId == null) {
+                    showToast('삭제할 데이터의 ID를 찾을 수 없습니다.', 'error');
+                    return;
+                }
+                await deleter.mutateAsync(currentId);
+                callbackFromParent?.();
+                showToast(`${entityLabel}가 삭제되었습니다.`, 'success');
+                modalToggle();
+                return;
             }
+
+            const payload = new FormData();
+            if (isEdit) payload.append(idParam, String(currentId));
+            resolvedFields.forEach((field) => {
+                if (field.name === 'accountCode') payload.append('acodeId', form[field.name] ?? '');
+                else payload.append(field.name, form[field.name] ?? '');
+            });
+
+            if (isEdit) {
+                await updater.mutateAsync(payload);
+                showToast(`${entityLabel}가 수정되었습니다.`, 'success');
+            } else {
+                await creater.mutateAsync(payload);
+                showToast(`${entityLabel}가 등록되었습니다.`, 'success');
+            }
+            callbackFromParent?.();
             modalToggle();
         } catch (err: any) {
             showToast(err?.response?.data?.message || '처리 중 오류가 발생했습니다.', 'error');
         }
     };
 
+    const modalTitle = isDelete ? `${entityLabel} 삭제` : isEdit ? `${entityLabel} 수정` : `${entityLabel} 추가`;
+    const submitLabel = isDelete ? '삭제' : isEdit ? '수정' : '추가';
+    const isPending = creater.isPending || updater.isPending || deleter.isPending;
+
     return (
-        <Modal isOpen={modalFlag} onClose={modalToggle} title={isEdit ? '계정코드 수정' : '계정코드 추가'}>
+        <Modal isOpen={modalFlag} onClose={modalToggle} title={modalTitle}>
             <form onSubmit={handleSubmit} className="space-y-4">
-                <FormField
-                    label="코드"
-                    name="acodeId"
-                    value={form.acodeId}
-                    onChange={handleChange}
-                    required
-                    error={errors.acodeId}
-                    placeholder="01"
-                />
-                <FormField
-                    label="코드명"
-                    name="title"
-                    value={form.title}
-                    onChange={handleChange}
-                    required
-                    error={errors.title}
-                    placeholder="식비"
-                />
-                <ModalFooter onCancel={modalToggle} submitLabel={isEdit ? '수정' : '추가'} isPending={creater.isPending || updater.isPending} />
+                {isDelete ? (
+                    <div className="text-sm text-zinc-700">선택한 {entityLabel} 데이터를 삭제하시겠습니까?</div>
+                ) : (
+                    <div className="space-y-3 max-h-[60vh] overflow-y-auto pr-1">
+                        {resolvedFields.map((field) => (
+                            <FormField
+                                key={field.name}
+                                label={field.label}
+                                name={field.name}
+                                type={field.type || 'text'}
+                                value={form[field.name] ?? ''}
+                                onChange={handleChange}
+                                required={field.required}
+                                error={errors[field.name]}
+                                placeholder={field.placeholder}
+                                options={field.options}
+                            />
+                        ))}
+                    </div>
+                )}
+                <ModalFooter onCancel={modalToggle} submitLabel={submitLabel} isPending={isPending} />
             </form>
         </Modal>
     );

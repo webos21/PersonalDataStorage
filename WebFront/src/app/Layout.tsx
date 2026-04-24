@@ -1,11 +1,11 @@
 // library
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Outlet, NavLink } from 'react-router';
 import { LogOut, ChevronDown, ChevronRight, ChevronLeft, Settings } from 'lucide-react';
 
 // in-project
 import { MENU_CONFIG } from '@/app/menuConfig';
-import { useAuthStore } from '@/shared/stores';
+import { useAuthStore, useMenuStateStore } from '@/shared/stores';
 
 // import UserFormModal from '@/features/system/users/components/UserFormModal';
 // import { useUpdateUser } from '@/features/system/users/hooks/useUsers';
@@ -15,19 +15,17 @@ import NotificationBell from '@/shared/ui/layout/NotificationBell';
 
 function Layout() {
     const { logout } = useAuthStore();
+    const collapsed = useMenuStateStore((state) => state.collapsed);
+    const openGroups = useMenuStateStore((state) => state.openGroups);
+    const toggleCollapsed = useMenuStateStore((state) => state.toggleCollapsed);
+    const toggleGroup = useMenuStateStore((state) => state.toggleGroup);
+    const initializeGroups = useMenuStateStore((state) => state.initializeGroups);
 
     const typeCode = 'admin';
-    const [collapsed, setCollapsed] = useState<boolean>(false);
-    const [openGroups, setOpenGroups] = useState<Record<string, boolean>>({
-        fleet: true,
-        asset: true,
-        ops: true,
-        system: true
-    });
 
-    const toggleGroup = (groupId: string) => {
-        setOpenGroups((prev) => ({ ...prev, [groupId]: !prev[groupId] }));
-    };
+    useEffect(() => {
+        initializeGroups(MENU_CONFIG.map((group) => group.id));
+    }, [initializeGroups]);
 
     const handleLogout = () => {
         logout();
@@ -51,10 +49,10 @@ function Layout() {
     };
 
     return (
-        <div className="flex h-screen bg-zinc-100">
+        <div className="flex h-[100dvh] overflow-hidden bg-zinc-100">
             {/* 사이드바 */}
             <aside
-                className={`${collapsed ? 'w-16' : 'w-56'} text-white flex flex-col h-full border-r border-neutral-700/50 bg-neutral-800 transition-all duration-300`}
+                className={`${collapsed ? 'w-16' : 'w-56'} text-white flex h-[100dvh] flex-col border-r border-neutral-700/50 bg-neutral-800 transition-all duration-300`}
             >
                 {/* Logo area */}
                 <div className="p-3 border-b border-neutral-700/50 flex items-center justify-between">
@@ -65,7 +63,7 @@ function Layout() {
                         </div>
                     )}
                     <button
-                        onClick={() => setCollapsed(!collapsed)}
+                        onClick={toggleCollapsed}
                         className={`p-2 rounded-md hover:bg-neutral-700 transition-colors text-neutral-400 hover:text-white ${collapsed ? 'mx-auto' : ''}`}
                         title={collapsed ? '메뉴 펼치기' : '메뉴 접기'}
                     >
@@ -132,7 +130,7 @@ function Layout() {
                 </nav>
 
                 {/* User Profile / Footer */}
-                <div className="p-3 border-t border-neutral-700/50 bg-neutral-900/50">
+                <div className="border-t border-neutral-700/50 bg-neutral-900/50 p-3 pb-[calc(0.75rem+env(safe-area-inset-bottom))]">
                     {!collapsed && (
                         <div className="flex items-center gap-2.5 mb-3">
                             <div className="w-8 h-8 rounded-full bg-orange-500 flex items-center justify-center text-xs font-bold flex-shrink-0">
@@ -167,7 +165,7 @@ function Layout() {
             </aside>
 
             {/* 메인 콘텐츠 */}
-            <main className="flex-1 overflow-auto relative">
+            <main className="relative flex-1 overflow-auto">
                 <Outlet />
                 {/* 알림 벨 — 우상단 고정 (지도 페이지에서도 떠있음) */}
                 <div className="fixed top-4 right-6 z-[9998]">

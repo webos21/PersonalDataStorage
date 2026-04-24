@@ -3,8 +3,9 @@ import { ChevronLeft, ChevronRight, Notebook, Plus } from 'lucide-react';
 import PageLayout from '@/shared/ui/layout/PageLayout';
 import PageHeader from '@/shared/ui/layout/PageHeader';
 import Button from '@/shared/ui/button/Button';
-import { solar2lunar } from '@/shared/utils2/DateUtil';
-import DiaryCalendarForm, { FIELD_CONFIG as DiaryCalendarFieldConfig } from './DiaryCalendarForm';
+import { solar2lunar } from '@/shared/utils/DateUtil';
+import DiaryCalendarForm from './DiaryCalendarForm';
+import { FIELD_CONFIG as DiaryCalendarFieldConfig } from './DiaryCalendarField';
 import anniversaryApi from '@/pages/Anniversary/api';
 import api from './api';
 

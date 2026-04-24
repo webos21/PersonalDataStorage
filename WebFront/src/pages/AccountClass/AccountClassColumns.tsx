@@ -4,39 +4,42 @@ import { createColumnHelper } from '@tanstack/react-table';
 // in-project
 import Badge from '@/shared/ui/data-display/Badge';
 
-const c = createColumnHelper();
+const c = createColumnHelper<any>();
 
-const AccountClassColumns = (onEdit: (e: any) => void, onDelete: (e: any) => void) => [
-    c.accessor('id', {
-        header: '계정 분류',
-        size: 100,
-        enableSorting: false,
-        cell: (info) => <span className="text-sm text-zinc-800">{info.getValue() ?? '-'}</span>
-    }),
-    c.accessor('title', {
-        header: '분류 명칭',
-        size: 100,
-        enableSorting: false,
-        cell: (info) => <span className="text-sm text-zinc-800">{info.getValue() ?? '-'}</span>
-    }),
-    c.display({
-        id: '_actions',
-        header: '작업',
-        size: 100,
-        enableSorting: false,
-        cell: ({ row }) => {
-            return (
+const AccountClassColumns = (
+    tableKeys: string[],
+    labelByKey: Record<string, string>,
+    onOpenForm: (mode: 'add' | 'edit' | 'delete', row?: any) => void
+) => {
+    const dataColumns = (tableKeys.length ? tableKeys : ['id', 'title']).map((key) =>
+        c.accessor(key, {
+            header: labelByKey[key] || key,
+            size: 120,
+            enableSorting: false,
+            cell: (info) => <span className="text-sm text-zinc-800">{`${info.getValue?.() ?? '-'}`}</span>
+        })
+    );
+
+    dataColumns.push(
+        c.display({
+            id: 'actions',
+            header: '작업',
+            size: 100,
+            enableSorting: false,
+            cell: ({ row }) => (
                 <div className="fms-actions justify-center gap-1.5">
-                    <Badge variant="edit" onClick={() => onEdit(row.original)}>
+                    <Badge variant="edit" onClick={() => onOpenForm('edit', row.original)}>
                         수정
                     </Badge>
-                    <Badge variant="delete" onClick={() => onDelete(row.original)}>
+                    <Badge variant="delete" onClick={() => onOpenForm('delete', row.original)}>
                         삭제
                     </Badge>
                 </div>
-            );
-        }
-    })
-];
+            )
+        })
+    );
+
+    return dataColumns;
+};
 
 export default AccountClassColumns;

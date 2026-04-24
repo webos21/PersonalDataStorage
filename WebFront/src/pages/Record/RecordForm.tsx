@@ -3,62 +3,14 @@ import Modal from '@/shared/ui/feedback/Modal';
 import ModalFooter from '@/shared/ui/feedback/ModalFooter';
 import FormField from '@/shared/ui/form/FormField';
 import { useToast } from '@/shared/ui/feedback/Toast';
-import { normalizeDateInputValue, normalizeDatePayloadValue } from '@/shared/utils2/DateValue';
-import AcodeSelector from '@/shared/ui/code-selector/AcodeSelector';
+import { normalizeDateInputValue, normalizeDatePayloadValue } from '@/shared/utils/DateUtil';
+import AcodeSelector from '@/shared/ui/select/AcodeSelector';
 import api from './api';
-
-type FieldOption = { value: string; label: string };
-type FieldType = 'text' | 'tel' | 'email' | 'url' | 'password' | 'number' | 'date' | 'month' | 'datetime-local' | 'textarea' | 'select';
-type FieldDef = {
-    name: string;
-    label: string;
-    type?: FieldType;
-    required?: boolean;
-    placeholder?: string;
-    maxLength?: number;
-    min?: number;
-    max?: number;
-    options?: FieldOption[];
-};
+import { FIELD_CONFIG } from './RecordField';
+import type { FieldDef, FieldType } from './RecordField';
 
 const EXCLUDED_KEYS = ['id', 'createdAt', 'updatedAt'];
-export const FIELD_CONFIG: FieldDef[] = [
-    {
-        "name": "accountCode",
-        "label": "계정코드",
-        "type": "text"
-    },
-    {
-        "name": "wdate",
-        "label": "등록일",
-        "type": "datetime-local",
-        "required": true
-    },
-    {
-        "name": "title",
-        "label": "적요",
-        "type": "text",
-        "required": true,
-        "maxLength": 255
-    },
-    {
-        "name": "deposit",
-        "label": "입금액",
-        "type": "number",
-        "min": 0
-    },
-    {
-        "name": "withdrawal",
-        "label": "출금액",
-        "type": "number",
-        "min": 0
-    },
-    {
-        "name": "memo",
-        "label": "메모",
-        "type": "textarea"
-    }
-];
+
 
 const fallbackType = (key: string, value: unknown): FieldType => {
     const lower = key.toLowerCase();

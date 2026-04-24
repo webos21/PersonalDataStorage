@@ -3,78 +3,13 @@ import Modal from '@/shared/ui/feedback/Modal';
 import ModalFooter from '@/shared/ui/feedback/ModalFooter';
 import FormField from '@/shared/ui/form/FormField';
 import { useToast } from '@/shared/ui/feedback/Toast';
+import { normalizeDateInputValue } from '@/shared/utils/DateUtil';
 import api from './api';
-
-type FieldOption = { value: string; label: string };
-type FieldType = 'text' | 'tel' | 'email' | 'url' | 'password' | 'number' | 'date' | 'month' | 'datetime-local' | 'textarea' | 'select';
-type FieldDef = {
-    name: string;
-    label: string;
-    type?: FieldType;
-    required?: boolean;
-    placeholder?: string;
-    maxLength?: number;
-    min?: number;
-    max?: number;
-    options?: FieldOption[];
-};
+import { FIELD_CONFIG } from './RealEstateField';
+import type { FieldDef, FieldType } from './RealEstateField';
 
 const EXCLUDED_KEYS = ['id', 'createdAt', 'updatedAt'];
-export const FIELD_CONFIG: FieldDef[] = [
-    {
-        "name": "estateType",
-        "label": "자산유형",
-        "type": "text",
-        "required": true,
-        "maxLength": 60
-    },
-    {
-        "name": "title",
-        "label": "자산이름",
-        "type": "text",
-        "required": true,
-        "maxLength": 80
-    },
-    {
-        "name": "holder",
-        "label": "소유자명",
-        "type": "text",
-        "maxLength": 60
-    },
-    {
-        "name": "estimate",
-        "label": "예상가격",
-        "type": "number",
-        "min": 0
-    },
-    {
-        "name": "loan",
-        "label": "담보대출",
-        "type": "number",
-        "min": 0
-    },
-    {
-        "name": "acquisitionDate",
-        "label": "취득일자",
-        "type": "date"
-    },
-    {
-        "name": "estimateDate",
-        "label": "산정일자",
-        "type": "date"
-    },
-    {
-        "name": "arrange",
-        "label": "배열순서",
-        "type": "number",
-        "min": 0
-    },
-    {
-        "name": "memo",
-        "label": "메모",
-        "type": "textarea"
-    }
-];
+
 
 const fallbackType = (key: string, value: unknown): FieldType => {
     const lower = key.toLowerCase();
@@ -94,6 +29,13 @@ const toFieldDef = (name: string, data: any): FieldDef => {
         type: fallbackType(name, data?.[name]),
         required: false
     };
+};
+
+const normalizeFormValue = (field: FieldDef, raw: unknown): string => {
+    if (raw == null) {
+        return field.type === 'select' && field.options?.length ? field.options[0].value : '';
+    }
+    return normalizeDateInputValue(field.type, raw);
 };
 
 const RealEstateForm = ({ modalFlag, modalToggle, mode = 'add', dataFromParent, fieldKeys = [], idParam = 'reId', entityLabel = '부동산', callbackFromParent }: any) => {
@@ -125,11 +67,7 @@ const RealEstateForm = ({ modalFlag, modalToggle, mode = 'add', dataFromParent, 
         const next: Record<string, string> = {};
         resolvedFields.forEach((field) => {
             const raw = dataFromParent?.[field.name];
-            if (raw == null) {
-                next[field.name] = field.type === 'select' && field.options?.length ? field.options[0].value : '';
-            } else {
-                next[field.name] = String(raw);
-            }
+            next[field.name] = normalizeFormValue(field, raw);
         });
         setForm(next);
         setErrors({});

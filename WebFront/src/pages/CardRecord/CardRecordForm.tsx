@@ -3,92 +3,15 @@ import Modal from '@/shared/ui/feedback/Modal';
 import ModalFooter from '@/shared/ui/feedback/ModalFooter';
 import FormField from '@/shared/ui/form/FormField';
 import { useToast } from '@/shared/ui/feedback/Toast';
-import { normalizeDateInputValue, normalizeDatePayloadValue } from '@/shared/utils2/DateValue';
+import { normalizeDateInputValue, normalizeDatePayloadValue } from '@/shared/utils/DateUtil';
+import AcodeSelector from '@/shared/ui/select/AcodeSelector';
 import api from './api';
-
-type FieldOption = { value: string; label: string };
-type FieldType = 'text' | 'tel' | 'email' | 'url' | 'password' | 'number' | 'date' | 'month' | 'datetime-local' | 'textarea' | 'select';
-type FieldDef = {
-    name: string;
-    label: string;
-    type?: FieldType;
-    required?: boolean;
-    placeholder?: string;
-    maxLength?: number;
-    min?: number;
-    max?: number;
-    options?: FieldOption[];
-};
+import cardApi from '@/pages/Card/api';
+import { FIELD_CONFIG } from './CardRecordField';
+import type { FieldDef, FieldOption, FieldType } from './CardRecordField';
 
 const EXCLUDED_KEYS = ['id', 'createdAt', 'updatedAt'];
-export const FIELD_CONFIG: FieldDef[] = [
-    {
-        "name": "cardId",
-        "label": "카드ID",
-        "type": "number",
-        "required": true,
-        "min": 1
-    },
-    {
-        "name": "transactionDate",
-        "label": "거래일",
-        "type": "datetime-local",
-        "required": true
-    },
-    {
-        "name": "title",
-        "label": "적요",
-        "type": "text",
-        "required": true,
-        "maxLength": 255
-    },
-    {
-        "name": "price",
-        "label": "결제금액",
-        "type": "number",
-        "min": 0
-    },
-    {
-        "name": "commission",
-        "label": "수수료",
-        "type": "number",
-        "min": 0
-    },
-    {
-        "name": "settlementDate",
-        "label": "납부일",
-        "type": "date"
-    },
-    {
-        "name": "installmentId",
-        "label": "할부 ID",
-        "type": "number",
-        "min": 0
-    },
-    {
-        "name": "installmentTurn",
-        "label": "할부회차",
-        "type": "number",
-        "min": 0
-    },
-    {
-        "name": "amount",
-        "label": "납부금액",
-        "type": "number",
-        "min": 0
-    },
-    {
-        "name": "remainder",
-        "label": "잔여금액",
-        "type": "number",
-        "min": 0
-    },
-    {
-        "name": "memo",
-        "label": "메모",
-        "type": "textarea"
-    }
-];
+
 
 const fallbackType = (key: string, value: unknown): FieldType => {
     const lower = key.toLowerCase();
@@ -122,11 +45,18 @@ const CardRecordForm = ({ modalFlag, modalToggle, mode = 'add', dataFromParent, 
     const creater = api.useCreate();
     const updater = api.useUpdate();
     const deleter = api.useDelete();
+    const { data: cardResult } = cardApi.useList(1, 1000, undefined);
+    const cards = cardResult?.data || [];
 
     const isDelete = mode === 'delete';
     const isEdit = mode === 'edit';
 
     const resolvedFields = useMemo(() => {
+        const cardOptions: FieldOption[] = (cards || []).map((card: any) => ({
+            value: String(card?.id ?? ''),
+            label: [card?.company, card?.cardName].filter(Boolean).join(' / ') || `카드 ${card?.id}`
+        }));
+
         const names = new Set<string>();
         FIELD_CONFIG.forEach((f) => names.add(f.name));
         fieldKeys.forEach((k: string) => names.add(k));
@@ -134,8 +64,14 @@ const CardRecordForm = ({ modalFlag, modalToggle, mode = 'add', dataFromParent, 
 
         return [...names]
             .filter((key) => !EXCLUDED_KEYS.includes(key) && key !== idParam)
-            .map((name) => toFieldDef(name, dataFromParent));
-    }, [fieldKeys, dataFromParent, idParam]);
+            .map((name) => {
+                const field = toFieldDef(name, dataFromParent);
+                if (name === 'cardId') {
+                    return { ...field, type: 'select' as const, options: cardOptions };
+                }
+                return field;
+            });
+    }, [fieldKeys, dataFromParent, idParam, cards]);
 
     const [form, setForm] = useState<Record<string, string>>({});
     const [errors, setErrors] = useState<Record<string, string>>({});
@@ -266,20 +202,41 @@ const CardRecordForm = ({ modalFlag, modalToggle, mode = 'add', dataFromParent, 
                         {resolvedFields.length === 0 ? (
                             <p className="text-sm text-zinc-500">입력 가능한 필드가 없습니다. 목록 데이터가 로드된 뒤 다시 시도해 주세요.</p>
                         ) : (
-                            resolvedFields.map((field) => (
-                                <FormField
-                                    key={field.name}
-                                    label={field.label}
-                                    name={field.name}
-                                    type={field.type || 'text'}
-                                    value={form[field.name] ?? ''}
-                                    onChange={handleChange}
-                                    required={field.required}
-                                    error={errors[field.name]}
-                                    placeholder={field.placeholder}
-                                    options={field.options}
-                                />
-                            ))
+                            resolvedFields.map((field) => {
+                                if (field.name === 'accountCode') {
+                                    return (
+                                        <div key={field.name} className="space-y-1.5">
+                                            <label htmlFor="field-accountCode" className="block text-sm font-medium text-zinc-700">
+                                                {field.label}
+                                                {field.required && <span className="text-danger ml-0.5">*</span>}
+                                            </label>
+                                            <AcodeSelector
+                                                value={form.accountCode ?? ''}
+                                                onChange={(code) => {
+                                                    setForm((prev) => ({ ...prev, accountCode: code }));
+                                                    setErrors((prev) => ({ ...prev, accountCode: '' }));
+                                                }}
+                                            />
+                                            {errors.accountCode && <p className="text-xs text-danger">{errors.accountCode}</p>}
+                                        </div>
+                                    );
+                                }
+
+                                return (
+                                    <FormField
+                                        key={field.name}
+                                        label={field.label}
+                                        name={field.name}
+                                        type={field.type || 'text'}
+                                        value={form[field.name] ?? ''}
+                                        onChange={handleChange}
+                                        required={field.required}
+                                        error={errors[field.name]}
+                                        placeholder={field.placeholder}
+                                        options={field.options}
+                                    />
+                                );
+                            })
                         )}
                     </div>
                 )}

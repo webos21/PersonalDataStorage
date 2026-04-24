@@ -4,23 +4,26 @@ import PageLayout from '@/shared/ui/layout/PageLayout';
 import PageHeader from '@/shared/ui/layout/PageHeader';
 import Button from '@/shared/ui/button/Button';
 import { DataTable, Pagination, TableToolbar } from '@/shared/ui/table';
-import CardRecordForm, { FIELD_CONFIG as CardRecordFieldConfig } from './CardRecordForm';
+import CardRecordForm from './CardRecordForm';
+import { FIELD_CONFIG as CardRecordFieldConfig } from './CardRecordField';
 import CardRecordColumns from './CardRecordColumns';
+import { usePaginationStore } from '@/shared/stores';
 import api from './api';
+import cardApi from '@/pages/Card/api';
 
 
 const CardRecord = () => {
-    const [page, setPage] = useState(1);
-    const [size, setSize] = useState(10);
-    const [keyword, setKeyword] = useState('');
+    const { pageCurrent, setPageCurrent, pageItems, setPageItems, pageKeyword, setPageKeyword } = usePaginationStore(10);
     const [formState, setFormState] = useState<{ open: boolean; mode: 'add' | 'edit' | 'delete'; currentData: any }>({
         open: false,
         mode: 'add',
         currentData: {}
     });
 
-    const { data: listResult, isLoading } = api.useList(page, size, keyword || undefined);
+    const { data: listResult, isLoading } = api.useList(pageCurrent, pageItems, pageKeyword || undefined);
     const rows = listResult?.data || [];
+    const { data: cardResult } = cardApi.useList(1, 1000, undefined);
+    const cards = cardResult?.data || [];
 
     const labelByKey = useMemo(
         () => Object.fromEntries(CardRecordFieldConfig.map((field: any) => [field.name, field.label])),
@@ -41,7 +44,16 @@ const CardRecord = () => {
         setFormState((prev) => ({ ...prev, open: false }));
     };
 
-    const columns = useMemo(() => CardRecordColumns(tableKeys, labelByKey, openForm), [tableKeys, labelByKey]);
+    const cardLabelById = useMemo(() => {
+        return Object.fromEntries(
+            (cards || []).map((card: any) => {
+                const label = [card?.company, card?.cardName].filter(Boolean).join(' / ');
+                return [String(card?.id), label || `카드 ${card?.id}`];
+            })
+        );
+    }, [cards]);
+
+    const columns = useMemo(() => CardRecordColumns(tableKeys, labelByKey, cardLabelById, openForm), [tableKeys, labelByKey, cardLabelById]);
 
     const filterConfig = useMemo(
         () => Object.keys(rows?.[0] || {}).slice(0, 4).map((key) => ({ id: key, label: labelByKey[key] || key, type: 'text', options: [] })),
@@ -53,10 +65,10 @@ const CardRecord = () => {
             <PageHeader icon={CreditCard} title="카드기록" desc="카드 거래 기록 관리" iconClass="bg-blue-100 text-blue-600" />
             <div className="fms-table-wrap flex-1 flex flex-col relative">
                 <TableToolbar
-                    keyword={keyword}
+                    keyword={pageKeyword}
                     onKeywordChange={(v) => {
-                        setKeyword(v);
-                        setPage(1);
+                        setPageKeyword(v);
+                        setPageCurrent(1);
                     }}
                     searchPlaceholder="카드기록 검색 (Ctrl+K)"
                     filterConfig={filterConfig}
@@ -82,11 +94,11 @@ const CardRecord = () => {
                     currentPage={Math.max((listResult?.pagination?.currentPage || 1) - 1, 0)}
                     totalPages={listResult?.pagination?.totalPages || 1}
                     totalElements={listResult?.pagination?.totalCount || 0}
-                    pageSize={size}
-                    onPageChange={(next) => setPage(next + 1)}
+                    pageSize={pageItems}
+                    onPageChange={(next) => setPageCurrent(next + 1)}
                     onPageSizeChange={(nextSize) => {
-                        setSize(nextSize);
-                        setPage(1);
+                        setPageItems(nextSize);
+                        setPageCurrent(1);
                     }}
                 />
             </div>

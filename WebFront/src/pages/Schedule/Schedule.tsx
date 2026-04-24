@@ -3,8 +3,9 @@ import { CalendarClock, ChevronLeft, ChevronRight, Plus } from 'lucide-react';
 import PageLayout from '@/shared/ui/layout/PageLayout';
 import PageHeader from '@/shared/ui/layout/PageHeader';
 import Button from '@/shared/ui/button/Button';
-import { solar2lunar } from '@/shared/utils2/DateUtil';
-import ScheduleForm, { FIELD_CONFIG as ScheduleFieldConfig } from './ScheduleForm';
+import { solar2lunar } from '@/shared/utils/DateUtil';
+import ScheduleForm from './ScheduleForm';
+import { FIELD_CONFIG as ScheduleFieldConfig } from './ScheduleField';
 import anniversaryApi from '@/pages/Anniversary/api';
 import api from './api';
 

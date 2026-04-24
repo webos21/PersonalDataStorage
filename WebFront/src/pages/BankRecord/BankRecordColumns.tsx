@@ -1,12 +1,13 @@
 import { createColumnHelper } from '@tanstack/react-table';
 import Badge from '@/shared/ui/data-display/Badge';
-import { formatDateCellValue } from '@/shared/utils2/DateValue';
+import { formatDateCellValue } from '@/shared/utils/DateUtil';
 
 const c = createColumnHelper<any>();
 
 const BankRecordColumns = (
     tableKeys: string[],
     labelByKey: Record<string, string>,
+    bankNameById: Record<string, string>,
     onOpenForm: (mode: 'add' | 'edit' | 'delete', row?: any) => void
 ) => {
     const dataColumns = (tableKeys.length ? tableKeys : ['id']).map((key) =>
@@ -14,7 +15,14 @@ const BankRecordColumns = (
             header: labelByKey[key] || key,
             size: 140,
             enableSorting: false,
-            cell: (info) => <span className="text-sm text-zinc-800">{formatDateCellValue(key, info.getValue?.(), labelByKey[key] || key)}</span>
+            cell: (info) => {
+                if (key === 'accountId') {
+                    const raw = info.getValue?.();
+                    const accountId = raw == null ? '' : String(raw);
+                    return <span className="text-sm text-zinc-800">{bankNameById[accountId] || accountId || '-'}</span>;
+                }
+                return <span className="text-sm text-zinc-800">{formatDateCellValue(key, info.getValue?.(), labelByKey[key] || key)}</span>;
+            }
         })
     );
 

@@ -4,22 +4,22 @@ import PageLayout from '@/shared/ui/layout/PageLayout';
 import PageHeader from '@/shared/ui/layout/PageHeader';
 import Button from '@/shared/ui/button/Button';
 import { DataTable, Pagination, TableToolbar } from '@/shared/ui/table';
-import InsuranceRecordForm, { FIELD_CONFIG as InsuranceRecordFieldConfig } from './InsuranceRecordForm';
+import InsuranceRecordForm from './InsuranceRecordForm';
+import { FIELD_CONFIG as InsuranceRecordFieldConfig } from './InsuranceRecordField';
 import InsuranceRecordColumns from './InsuranceRecordColumns';
+import { usePaginationStore } from '@/shared/stores';
 import api from './api';
 
 
 const InsuranceRecord = () => {
-    const [page, setPage] = useState(1);
-    const [size, setSize] = useState(10);
-    const [keyword, setKeyword] = useState('');
+    const { pageCurrent, setPageCurrent, pageItems, setPageItems, pageKeyword, setPageKeyword } = usePaginationStore(10);
     const [formState, setFormState] = useState<{ open: boolean; mode: 'add' | 'edit' | 'delete'; currentData: any }>({
         open: false,
         mode: 'add',
         currentData: {}
     });
 
-    const { data: listResult, isLoading } = api.useList(page, size, keyword || undefined);
+    const { data: listResult, isLoading } = api.useList(pageCurrent, pageItems, pageKeyword || undefined);
     const rows = listResult?.data || [];
 
     const labelByKey = useMemo(
@@ -53,10 +53,10 @@ const InsuranceRecord = () => {
             <PageHeader icon={ScanHeart} title="보험기록" desc="보험 거래 기록 관리" iconClass="bg-blue-100 text-blue-600" />
             <div className="fms-table-wrap flex-1 flex flex-col relative">
                 <TableToolbar
-                    keyword={keyword}
+                    keyword={pageKeyword}
                     onKeywordChange={(v) => {
-                        setKeyword(v);
-                        setPage(1);
+                        setPageKeyword(v);
+                        setPageCurrent(1);
                     }}
                     searchPlaceholder="보험기록 검색 (Ctrl+K)"
                     filterConfig={filterConfig}
@@ -82,11 +82,11 @@ const InsuranceRecord = () => {
                     currentPage={Math.max((listResult?.pagination?.currentPage || 1) - 1, 0)}
                     totalPages={listResult?.pagination?.totalPages || 1}
                     totalElements={listResult?.pagination?.totalCount || 0}
-                    pageSize={size}
-                    onPageChange={(next) => setPage(next + 1)}
+                    pageSize={pageItems}
+                    onPageChange={(next) => setPageCurrent(next + 1)}
                     onPageSizeChange={(nextSize) => {
-                        setSize(nextSize);
-                        setPage(1);
+                        setPageItems(nextSize);
+                        setPageCurrent(1);
                     }}
                 />
             </div>

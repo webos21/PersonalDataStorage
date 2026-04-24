@@ -1,12 +1,13 @@
 import { createColumnHelper } from '@tanstack/react-table';
 import Badge from '@/shared/ui/data-display/Badge';
-import { formatDateCellValue } from '@/shared/utils2/DateValue';
+import { formatDateCellValue } from '@/shared/utils/DateUtil';
 
 const c = createColumnHelper<any>();
 
 const CardRecordColumns = (
     tableKeys: string[],
     labelByKey: Record<string, string>,
+    cardLabelById: Record<string, string>,
     onOpenForm: (mode: 'add' | 'edit' | 'delete', row?: any) => void
 ) => {
     const dataColumns = (tableKeys.length ? tableKeys : ['id']).map((key) =>
@@ -14,7 +15,14 @@ const CardRecordColumns = (
             header: labelByKey[key] || key,
             size: 140,
             enableSorting: false,
-            cell: (info) => <span className="text-sm text-zinc-800">{formatDateCellValue(key, info.getValue?.(), labelByKey[key] || key)}</span>
+            cell: (info) => {
+                if (key === 'cardId') {
+                    const raw = info.getValue?.();
+                    const cardId = raw == null ? '' : String(raw);
+                    return <span className="text-sm text-zinc-800">{cardLabelById[cardId] || cardId || '-'}</span>;
+                }
+                return <span className="text-sm text-zinc-800">{formatDateCellValue(key, info.getValue?.(), labelByKey[key] || key)}</span>;
+            }
         })
     );
 

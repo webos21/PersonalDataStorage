@@ -1,116 +1,56 @@
-// library
-import { BookType, Plus } from 'lucide-react';
 import { useMemo, useState } from 'react';
-
-// project import
-import { STORE_KEYS, usePaginationStore, useTableStore } from '@/shared/stores';
-import Button from '@/shared/ui/button/Button';
-import ConfirmDialog from '@/shared/ui/feedback/ConfirmDialog';
+import { BookType, Plus } from 'lucide-react';
 import PageLayout from '@/shared/ui/layout/PageLayout';
 import PageHeader from '@/shared/ui/layout/PageHeader';
-import { useToast } from '@/shared/ui/feedback/Toast';
+import Button from '@/shared/ui/button/Button';
 import { DataTable, Pagination, TableToolbar } from '@/shared/ui/table';
-
-// in-package
-import AccountCodeColumns from './AccountCodeColumns';
 import AccountCodeForm from './AccountCodeForm';
+import { FIELD_CONFIG as AccountCodeFieldConfig } from './AccountCodeField';
+import AccountCodeColumns from './AccountCodeColumns';
+import { usePaginationStore } from '@/shared/stores';
 import api from './api';
 
 const AccountCode = () => {
-    const FILTER_CONFIG = [
-        { id: 'id', label: 'ID', type: 'text', options: [] },
-        { id: 'accountCode', label: '계정코드', type: 'text', options: [] },
-        { id: 'title', label: '코드명', type: 'text', options: [] }
-    ];
-
-    const [pageData, setPageData] = useState({
-        currentData: { id: -1, accountCode: '', title: '' },
-        modalFlagAdd: false,
-        modalFlagEdit: false,
-        modalFlagDelete: false
+    const { pageCurrent, setPageCurrent, pageItems, setPageItems, pageKeyword, setPageKeyword } = usePaginationStore(10);
+    const [formState, setFormState] = useState<{ open: boolean; mode: 'add' | 'edit' | 'delete'; currentData: any }>({
+        open: false,
+        mode: 'add',
+        currentData: {}
     });
 
-    const {
-        page,
-        setPage,
-        size,
-        setSize,
-        keyword,
-        setKeyword
-    } = usePaginationStore();
-    const { showToast } = useToast();
+    const { data: listResult, isLoading } = api.useList(pageCurrent, pageItems, pageKeyword || undefined);
+    const rows = listResult?.data || [];
 
-    const { data: listResult, isLoading } = api.useList(page, size, keyword || undefined);
-    const deleter = api.useDelete();
+    const labelByKey = useMemo(() => Object.fromEntries(AccountCodeFieldConfig.map((field: any) => [field.name, field.label])), []);
+    const tableKeys = useMemo(() => Object.keys(rows?.[0] || {}).slice(0, 3), [rows]);
+    const formKeys = useMemo(() => Object.keys(rows?.[0] || {}).filter((key) => key !== 'accId'), [rows]);
 
-    const modalToggleAdd = () => setPageData((p) => ({ ...p, modalFlagAdd: !p.modalFlagAdd }));
-    const modalToggleEdit = () => setPageData((p) => ({ ...p, modalFlagEdit: !p.modalFlagEdit }));
-    const modalToggleDelete = () => setPageData((p) => ({ ...p, modalFlagDelete: !p.modalFlagDelete }));
+    const openForm = (mode: 'add' | 'edit' | 'delete', row?: any) => setFormState({ open: true, mode, currentData: row || {} });
+    const closeForm = () => setFormState((prev) => ({ ...prev, open: false }));
 
-    // Table Persistence (column visibility, sorting, filters, density)
-    const { columnVisibility, setColumnVisibility, sorting, setSorting, filters, setFilters, density, setDensity } = useTableStore(
-        STORE_KEYS.TABLE.ACCOUNT_CODE
+    const columns = useMemo(() => AccountCodeColumns(tableKeys, labelByKey, openForm), [tableKeys, labelByKey]);
+
+    const filterConfig = useMemo(
+        () => Object.keys(rows?.[0] || {}).slice(0, 3).map((key) => ({ id: key, label: labelByKey[key] || key, type: 'text', options: [] })),
+        [rows]
     );
-
-    const handleAdd = () => {
-        setPageData((p) => ({
-            ...p,
-            currentData: { id: -1, accountCode: '', title: '' },
-            modalFlagAdd: !p.modalFlagAdd
-        }));
-    };
-
-    const handleEdit = (data: any) => {
-        setPageData((p) => ({ ...p, currentData: data, modalFlagEdit: !p.modalFlagEdit }));
-    };
-
-    const handleOpenDelete = (data: any) => {
-        setPageData((p) => ({ ...p, currentData: data, modalFlagDelete: !p.modalFlagDelete }));
-    };
-
-    const handleDelete = async () => {
-        try {
-            await deleter.mutateAsync(pageData.currentData.id);
-            modalToggleDelete();
-            showToast('계정 코드가 삭제되었습니다.', 'success');
-        } catch (err: any) {
-            showToast(err?.response?.data?.message || '처리 중 오류가 발생했습니다.', 'error');
-        }
-    };
-
-    const handleSortingChange = (updater: any) => {
-        setSorting(updater);
-        setPage(1);
-    };
-
-    const handleKeywordChange = (v: string) => {
-        setKeyword(v);
-        setPage(1);
-    };
-
-    const handlePageSizeChange = (nextSize: number) => {
-        setSize(nextSize);
-        setPage(1);
-    };
-
-    const columns = useMemo(() => AccountCodeColumns(handleEdit, handleOpenDelete), [handleEdit, handleOpenDelete]);
 
     return (
         <PageLayout>
             <PageHeader icon={BookType} title="계정코드" desc="계정 분류 하위 코드 관리" iconClass="bg-blue-100 text-blue-600" />
-
             <div className="fms-table-wrap flex-1 flex flex-col relative">
                 <TableToolbar
-                    keyword={keyword}
-                    onKeywordChange={handleKeywordChange}
+                    keyword={pageKeyword}
+                    onKeywordChange={(v) => {
+                        setPageKeyword(v);
+                        setPageCurrent(1);
+                    }}
                     searchPlaceholder="계정 코드 검색 (Ctrl+K)"
-                    filterConfig={FILTER_CONFIG}
-                    activeFilters={filters}
-                    onFilterChange={setFilters}
-                    density={density}
-                    onDensityChange={setDensity}
+                    filterConfig={filterConfig}
+                    activeFilters={{}}
+                    onFilterChange={() => {}}
                     actions={
-                        <Button onClick={handleAdd}>
+                        <Button type="button" onClick={() => openForm('add')}>
                             <Plus size={16} strokeWidth={2.5} />
                             <span>계정 코드 추가</span>
                         </Button>
@@ -119,14 +59,9 @@ const AccountCode = () => {
 
                 <DataTable
                     columns={columns}
-                    data={listResult?.data || []}
+                    data={rows}
                     isLoading={isLoading}
                     emptyMessage="등록된 계정 코드가 없습니다."
-                    columnVisibility={columnVisibility}
-                    onColumnVisibilityChange={setColumnVisibility}
-                    sorting={sorting}
-                    onSortingChange={handleSortingChange}
-                    density={density}
                     manualSorting
                 />
 
@@ -134,37 +69,27 @@ const AccountCode = () => {
                     currentPage={Math.max((listResult?.pagination?.currentPage || 1) - 1, 0)}
                     totalPages={listResult?.pagination?.totalPages || 1}
                     totalElements={listResult?.pagination?.totalCount || 0}
-                    pageSize={size}
-                    onPageChange={(nextPageIndex) => setPage(nextPageIndex + 1)}
+                    pageSize={pageItems}
+                    onPageChange={(next) => setPageCurrent(next + 1)}
                     onPageSizeChange={(nextSize) => {
-                        handlePageSizeChange(nextSize);
+                        setPageItems(nextSize);
+                        setPageCurrent(1);
                     }}
                 />
             </div>
 
-            {pageData.modalFlagAdd && (
+            {formState.open && (
                 <AccountCodeForm
-                    modalFlag={pageData.modalFlagAdd}
-                    modalToggle={modalToggleAdd}
+                    modalFlag={formState.open}
+                    modalToggle={closeForm}
+                    mode={formState.mode}
+                    dataFromParent={formState.currentData}
+                    fieldKeys={formKeys}
+                    idParam="accId"
+                    entityLabel="계정 코드"
                     callbackFromParent={() => {}}
                 />
             )}
-            {pageData.modalFlagEdit && (
-                <AccountCodeForm
-                    modalFlag={pageData.modalFlagEdit}
-                    modalToggle={modalToggleEdit}
-                    dataFromParent={pageData.currentData}
-                    callbackFromParent={() => {}}
-                />
-            )}
-
-            <ConfirmDialog
-                isOpen={pageData.modalFlagDelete}
-                onConfirm={handleDelete}
-                onCancel={modalToggleDelete}
-                title="계정 코드 삭제"
-                message={`"${pageData.currentData?.title}" 계정 코드를 삭제하시겠습니까?`}
-            />
         </PageLayout>
     );
 };

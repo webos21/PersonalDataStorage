@@ -3,127 +3,13 @@ import Modal from '@/shared/ui/feedback/Modal';
 import ModalFooter from '@/shared/ui/feedback/ModalFooter';
 import FormField from '@/shared/ui/form/FormField';
 import { useToast } from '@/shared/ui/feedback/Toast';
+import { normalizeDateInputValue, normalizeDatePayloadValue } from '@/shared/utils/DateUtil';
 import api from './api';
-
-type FieldOption = { value: string; label: string };
-type FieldType = 'text' | 'tel' | 'email' | 'url' | 'password' | 'number' | 'date' | 'month' | 'datetime-local' | 'textarea' | 'select';
-type FieldDef = {
-    name: string;
-    label: string;
-    type?: FieldType;
-    required?: boolean;
-    placeholder?: string;
-    maxLength?: number;
-    min?: number;
-    max?: number;
-    options?: FieldOption[];
-};
+import { FIELD_CONFIG } from './InsuranceField';
+import type { FieldDef, FieldType } from './InsuranceField';
 
 const EXCLUDED_KEYS = ['id', 'createdAt', 'updatedAt'];
-export const FIELD_CONFIG: FieldDef[] = [
-    {
-        "name": "company",
-        "label": "보험사",
-        "type": "text",
-        "required": true,
-        "maxLength": 60
-    },
-    {
-        "name": "product",
-        "label": "상품명",
-        "type": "text",
-        "required": true,
-        "maxLength": 80
-    },
-    {
-        "name": "insuranceType",
-        "label": "보험종류",
-        "type": "text"
-    },
-    {
-        "name": "policyType",
-        "label": "정책형태",
-        "type": "text"
-    },
-    {
-        "name": "contractId",
-        "label": "계약번호",
-        "type": "text",
-        "maxLength": 60
-    },
-    {
-        "name": "policyHolder",
-        "label": "보험소유",
-        "type": "text",
-        "maxLength": 60
-    },
-    {
-        "name": "insured",
-        "label": "피보험자",
-        "type": "text",
-        "maxLength": 60
-    },
-    {
-        "name": "payCountTotal",
-        "label": "총납입수",
-        "type": "number",
-        "min": 0
-    },
-    {
-        "name": "payCountDone",
-        "label": "납입회차",
-        "type": "number",
-        "min": 0
-    },
-    {
-        "name": "premiumVolume",
-        "label": "납입금액",
-        "type": "number",
-        "min": 0
-    },
-    {
-        "name": "premiumMode",
-        "label": "납입방법",
-        "type": "text"
-    },
-    {
-        "name": "contractDate",
-        "label": "계약일자",
-        "type": "date"
-    },
-    {
-        "name": "maturityDate",
-        "label": "만료일자",
-        "type": "date"
-    },
-    {
-        "name": "arranger",
-        "label": "계약담당",
-        "type": "text",
-        "maxLength": 60
-    },
-    {
-        "name": "contractStatus",
-        "label": "계약상태",
-        "type": "select",
-        "required": true,
-        "options": [
-            {
-                "value": "0",
-                "label": "정지"
-            },
-            {
-                "value": "1",
-                "label": "유지"
-            }
-        ]
-    },
-    {
-        "name": "memo",
-        "label": "메모",
-        "type": "textarea"
-    }
-];
+
 
 const fallbackType = (key: string, value: unknown): FieldType => {
     const lower = key.toLowerCase();
@@ -143,6 +29,13 @@ const toFieldDef = (name: string, data: any): FieldDef => {
         type: fallbackType(name, data?.[name]),
         required: false
     };
+};
+
+const normalizeFormValue = (field: FieldDef, raw: unknown): string => {
+    if (raw == null) {
+        return field.type === 'select' && field.options?.length ? field.options[0].value : '';
+    }
+    return normalizeDateInputValue(field.type, raw);
 };
 
 const InsuranceForm = ({ modalFlag, modalToggle, mode = 'add', dataFromParent, fieldKeys = [], idParam = 'insureId', entityLabel = '보험', callbackFromParent }: any) => {
@@ -174,11 +67,7 @@ const InsuranceForm = ({ modalFlag, modalToggle, mode = 'add', dataFromParent, f
         const next: Record<string, string> = {};
         resolvedFields.forEach((field) => {
             const raw = dataFromParent?.[field.name];
-            if (raw == null) {
-                next[field.name] = field.type === 'select' && field.options?.length ? field.options[0].value : '';
-            } else {
-                next[field.name] = String(raw);
-            }
+            next[field.name] = normalizeFormValue(field, raw);
         });
         setForm(next);
         setErrors({});
@@ -265,7 +154,7 @@ const InsuranceForm = ({ modalFlag, modalToggle, mode = 'add', dataFromParent, f
             }
 
             resolvedFields.forEach((field) => {
-                payload.append(field.name, form[field.name] ?? '');
+                payload.append(field.name, normalizeDatePayloadValue(field.type, form[field.name] ?? ''));
             });
 
             if (isEdit) {

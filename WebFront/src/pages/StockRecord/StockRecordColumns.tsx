@@ -1,6 +1,6 @@
 import { createColumnHelper } from '@tanstack/react-table';
 import Badge from '@/shared/ui/data-display/Badge';
-import { formatDateCellValue } from '@/shared/utils2/DateValue';
+import { formatDateCellValue } from '@/shared/utils/DateUtil';
 
 const c = createColumnHelper<any>();
 

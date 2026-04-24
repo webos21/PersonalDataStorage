@@ -3,108 +3,14 @@ import Modal from '@/shared/ui/feedback/Modal';
 import ModalFooter from '@/shared/ui/feedback/ModalFooter';
 import FormField from '@/shared/ui/form/FormField';
 import { useToast } from '@/shared/ui/feedback/Toast';
-import { normalizeDateInputValue, normalizeDatePayloadValue } from '@/shared/utils2/DateValue';
+import { normalizeDateInputValue, normalizeDatePayloadValue } from '@/shared/utils/DateUtil';
 import api from './api';
-
-type FieldOption = { value: string; label: string };
-type FieldType = 'text' | 'tel' | 'email' | 'url' | 'password' | 'number' | 'date' | 'month' | 'datetime-local' | 'textarea' | 'select';
-type FieldDef = {
-    name: string;
-    label: string;
-    type?: FieldType;
-    required?: boolean;
-    placeholder?: string;
-    maxLength?: number;
-    min?: number;
-    max?: number;
-    options?: FieldOption[];
-};
+import bankApi from '@/pages/Bank/api';
+import { FIELD_CONFIG } from './BankRecordField';
+import type { FieldDef, FieldOption, FieldType } from './BankRecordField';
 
 const EXCLUDED_KEYS = ['id', 'createdAt', 'updatedAt'];
-export const FIELD_CONFIG: FieldDef[] = [
-    {
-        "name": "accountId",
-        "label": "계좌ID",
-        "type": "number",
-        "required": true,
-        "min": 1
-    },
-    {
-        "name": "transactionDate",
-        "label": "거래일",
-        "type": "datetime-local",
-        "required": true
-    },
-    {
-        "name": "title",
-        "label": "적요",
-        "type": "text",
-        "required": true,
-        "maxLength": 255,
-        "placeholder": "적요를 입력해 주세요."
-    },
-    {
-        "name": "deposit",
-        "label": "입금액",
-        "type": "number",
-        "min": 0,
-        "placeholder": "입금액을 입력해 주세요."
-    },
-    {
-        "name": "withdrawal",
-        "label": "출금액",
-        "type": "number",
-        "min": 0,
-        "placeholder": "출금액을 입력해 주세요."
-    },
-    {
-        "name": "price",
-        "label": "결제금액",
-        "type": "number",
-        "min": 0
-    },
-    {
-        "name": "commission",
-        "label": "수수료",
-        "type": "number",
-        "min": 0
-    },
-    {
-        "name": "settlementDate",
-        "label": "납부일",
-        "type": "date"
-    },
-    {
-        "name": "installmentId",
-        "label": "할부 ID",
-        "type": "number",
-        "min": 0
-    },
-    {
-        "name": "installmentTurn",
-        "label": "할부회차",
-        "type": "number",
-        "min": 0
-    },
-    {
-        "name": "amount",
-        "label": "납부금액",
-        "type": "number",
-        "min": 0
-    },
-    {
-        "name": "remainder",
-        "label": "잔여금액",
-        "type": "number",
-        "min": 0
-    },
-    {
-        "name": "memo",
-        "label": "메모",
-        "type": "textarea",
-        "placeholder": "메모를 입력해 주세요."
-    }
-];
+
 
 const fallbackType = (key: string, value: unknown): FieldType => {
     const lower = key.toLowerCase();
@@ -142,11 +48,18 @@ const BankRecordForm = ({ modalFlag, modalToggle, mode = 'add', dataFromParent, 
     const creater = api.useCreate();
     const updater = api.useUpdate();
     const deleter = api.useDelete();
+    const { data: bankResult } = bankApi.useList(1, 1000, undefined);
+    const banks = bankResult?.data || [];
 
     const isDelete = mode === 'delete';
     const isEdit = mode === 'edit';
 
     const resolvedFields = useMemo(() => {
+        const bankOptions: FieldOption[] = (banks || []).map((bank: any) => ({
+            value: String(bank?.id ?? ''),
+            label: [bank?.bankName, bank?.accountName].filter(Boolean).join(' / ') || `계좌 ${bank?.id}`
+        }));
+
         const names = new Set<string>();
         FIELD_CONFIG.forEach((f) => names.add(f.name));
         fieldKeys.forEach((k: string) => names.add(k));
@@ -154,8 +67,14 @@ const BankRecordForm = ({ modalFlag, modalToggle, mode = 'add', dataFromParent, 
 
         return [...names]
             .filter((key) => !EXCLUDED_KEYS.includes(key) && key !== idParam)
-            .map((name) => toFieldDef(name, dataFromParent));
-    }, [fieldKeys, dataFromParent, idParam]);
+            .map((name) => {
+                const field = toFieldDef(name, dataFromParent);
+                if (name === 'accountId') {
+                    return { ...field, type: 'select' as const, options: bankOptions };
+                }
+                return field;
+            });
+    }, [fieldKeys, dataFromParent, idParam, banks]);
 
     const [form, setForm] = useState<Record<string, string>>({});
     const [errors, setErrors] = useState<Record<string, string>>({});
