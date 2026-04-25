@@ -3,7 +3,7 @@ import Modal from '@/shared/ui/feedback/Modal';
 import ModalFooter from '@/shared/ui/feedback/ModalFooter';
 import FormField from '@/shared/ui/form/FormField';
 import { useToast } from '@/shared/ui/feedback/Toast';
-import { normalizeDateInputValue } from '@/shared/utils/DateUtil';
+import { normalizeDateInputValue, normalizeDatePayloadValue } from '@/shared/utils/DateUtil';
 import api from './api';
 import { FIELD_CONFIG } from './RealEstateField';
 import type { FieldDef, FieldType } from './RealEstateField';
@@ -154,7 +154,7 @@ const RealEstateForm = ({ modalFlag, modalToggle, mode = 'add', dataFromParent, 
             }
 
             resolvedFields.forEach((field) => {
-                payload.append(field.name, form[field.name] ?? '');
+                payload.append(field.name, normalizeDatePayloadValue(field.type, form[field.name] ?? ''));
             });
 
             if (isEdit) {

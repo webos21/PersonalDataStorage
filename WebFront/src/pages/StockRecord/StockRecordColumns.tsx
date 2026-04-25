@@ -1,6 +1,7 @@
 import { createColumnHelper } from '@tanstack/react-table';
 import Badge from '@/shared/ui/data-display/Badge';
 import { formatDateCellValue } from '@/shared/utils/DateUtil';
+import { formatDecimalByField } from '@/shared/utils/NumberUtil';
 
 const c = createColumnHelper<any>();
 
@@ -14,7 +15,11 @@ const StockRecordColumns = (
             header: labelByKey[key] || key,
             size: 140,
             enableSorting: false,
-            cell: (info) => <span className="text-sm text-zinc-800">{formatDateCellValue(key, info.getValue?.(), labelByKey[key] || key)}</span>
+            cell: (info) => {
+                const money = formatDecimalByField(key, info.getValue?.(), labelByKey[key] || key);
+                if (money !== null) return <span className="text-sm text-zinc-800">{money}</span>;
+                return <span className="text-sm text-zinc-800">{formatDateCellValue(key, info.getValue?.(), labelByKey[key] || key)}</span>;
+            }
         })
     );
 

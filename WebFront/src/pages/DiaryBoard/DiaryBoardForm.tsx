@@ -3,6 +3,7 @@ import Modal from '@/shared/ui/feedback/Modal';
 import ModalFooter from '@/shared/ui/feedback/ModalFooter';
 import FormField from '@/shared/ui/form/FormField';
 import { useToast } from '@/shared/ui/feedback/Toast';
+import { dateFormat, normalizeDateInputValue } from '@/shared/utils/DateUtil';
 import api from './api';
 import { FIELD_CONFIG } from './DiaryBoardField';
 import type { FieldDef, FieldType } from './DiaryBoardField';
@@ -28,6 +29,16 @@ const toFieldDef = (name: string, data: any): FieldDef => {
         type: fallbackType(name, data?.[name]),
         required: false
     };
+};
+
+const normalizeFormValue = (field: FieldDef, raw: unknown): string => {
+    if (raw == null) {
+        if (field.name === 'wdate') {
+            return dateFormat(new Date());
+        }
+        return field.type === 'select' && field.options?.length ? field.options[0].value : '';
+    }
+    return normalizeDateInputValue(field.type, raw);
 };
 
 const DiaryBoardForm = ({ modalFlag, modalToggle, mode = 'add', dataFromParent, fieldKeys = [], idParam = 'diaryId', entityLabel = '다이어리', callbackFromParent }: any) => {
@@ -59,11 +70,7 @@ const DiaryBoardForm = ({ modalFlag, modalToggle, mode = 'add', dataFromParent, 
         const next: Record<string, string> = {};
         resolvedFields.forEach((field) => {
             const raw = dataFromParent?.[field.name];
-            if (raw == null) {
-                next[field.name] = field.type === 'select' && field.options?.length ? field.options[0].value : '';
-            } else {
-                next[field.name] = String(raw);
-            }
+            next[field.name] = normalizeFormValue(field, raw);
         });
         setForm(next);
         setErrors({});
@@ -150,6 +157,16 @@ const DiaryBoardForm = ({ modalFlag, modalToggle, mode = 'add', dataFromParent, 
             }
 
             resolvedFields.forEach((field) => {
+                if (field.name === 'wdate') {
+                    const current = (form[field.name] ?? '').trim();
+                    if (current) {
+                        payload.append(field.name, current); // yyyy-MM-dd
+                    } else {
+                        const fallback = normalizeDateInputValue('date', dataFromParent?.wdate);
+                        payload.append(field.name, fallback || dateFormat(new Date()));
+                    }
+                    return;
+                }
                 payload.append(field.name, form[field.name] ?? '');
             });
 

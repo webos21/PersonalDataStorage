@@ -27,7 +27,7 @@ const InsuranceRecord = () => {
         []
     );
 
-    const tableKeys = useMemo(() => Object.keys(rows?.[0] || {}).slice(0, 6), [rows]);
+    const tableKeys = useMemo(() => Object.keys(rows?.[0] || {}).filter((key) => key !== 'id').slice(0, 6), [rows]);
     const formKeys = useMemo(
         () => Object.keys(rows?.[0] || {}).filter((key) => key !== 'id' && key !== 'irId'),
         [rows, labelByKey]
@@ -44,7 +44,7 @@ const InsuranceRecord = () => {
     const columns = useMemo(() => InsuranceRecordColumns(tableKeys, labelByKey, openForm), [tableKeys, labelByKey]);
 
     const filterConfig = useMemo(
-        () => Object.keys(rows?.[0] || {}).slice(0, 4).map((key) => ({ id: key, label: labelByKey[key] || key, type: 'text', options: [] })),
+        () => Object.keys(rows?.[0] || {}).filter((key) => key !== 'id').slice(0, 4).map((key) => ({ id: key, label: labelByKey[key] || key, type: 'text', options: [] })),
         [rows]
     );
 

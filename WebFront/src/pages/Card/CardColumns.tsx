@@ -9,11 +9,30 @@ const CardColumns = (
     onOpenForm: (mode: 'add' | 'edit' | 'delete', row?: any) => void
 ) => {
     const dataColumns = (tableKeys.length ? tableKeys : ['id']).map((key) =>
-        c.accessor(key, {
+        c.display({
+            id: key,
             header: labelByKey[key] || key,
             size: 140,
             enableSorting: false,
-            cell: (info) => <span className="text-sm text-zinc-800">{`${info.getValue?.() ?? ''}`}</span>
+            cell: ({ row }) => {
+                const raw = row.original?.[key];
+
+                if (key === 'validPeriod') {
+                    const mmRaw = String(row.original?.validMonth ?? '').trim();
+                    const yyRaw = String(row.original?.validYear ?? '').trim();
+                    const mm = mmRaw ? mmRaw.padStart(2, '0') : '';
+                    const yy = yyRaw ? (yyRaw.length >= 2 ? yyRaw.slice(-2) : yyRaw.padStart(2, '0')) : '';
+                    const value = mm && yy ? `${mm}/${yy}` : '';
+                    return <span className="text-sm text-zinc-800">{value}</span>;
+                }
+
+                if (key === 'notUsed') {
+                    const value = `${raw ?? ''}` === '1' ? '미사용' : '사용중';
+                    return <span className="text-sm text-zinc-800">{value}</span>;
+                }
+
+                return <span className="text-sm text-zinc-800">{`${raw ?? ''}`}</span>;
+            }
         })
     );
 

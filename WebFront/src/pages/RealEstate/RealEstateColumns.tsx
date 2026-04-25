@@ -1,5 +1,7 @@
 import { createColumnHelper } from '@tanstack/react-table';
 import Badge from '@/shared/ui/data-display/Badge';
+import { formatDateCellValue } from '@/shared/utils/DateUtil';
+import { formatDecimal } from '@/shared/utils/NumberUtil';
 
 const c = createColumnHelper<any>();
 
@@ -13,7 +15,22 @@ const RealEstateColumns = (
             header: labelByKey[key] || key,
             size: 140,
             enableSorting: false,
-            cell: (info) => <span className="text-sm text-zinc-800">{`${info.getValue?.() ?? ''}`}</span>
+            cell: (info) => {
+                if (key === 'estimate' || key === 'loan') {
+                    const raw = info.getValue?.();
+                    if (raw == null || raw === '') return <span className="text-sm text-zinc-800"></span>;
+                    const asNumber = typeof raw === 'number' ? raw : Number(raw);
+                    return <span className="text-sm text-zinc-800">{`${Number.isNaN(asNumber) ? raw : formatDecimal(asNumber)}`}</span>;
+                }
+
+                if (key === 'holder') {
+                    const raw = info.getValue?.();
+                    const normalized = raw == null || raw === 'null' ? '' : raw;
+                    return <span className="text-sm text-zinc-800">{`${normalized}`}</span>;
+                }
+
+                return <span className="text-sm text-zinc-800">{formatDateCellValue(key, info.getValue?.(), labelByKey[key] || key)}</span>;
+            }
         })
     );
 

@@ -7,7 +7,7 @@ import { DataTable, Pagination, TableToolbar } from '@/shared/ui/table';
 import CardRecordForm from './CardRecordForm';
 import { FIELD_CONFIG as CardRecordFieldConfig } from './CardRecordField';
 import CardRecordColumns from './CardRecordColumns';
-import { usePaginationStore } from '@/shared/stores';
+import { useAccountCatalog, usePaginationStore } from '@/shared/stores';
 import api from './api';
 import cardApi from '@/pages/Card/api';
 
@@ -24,15 +24,19 @@ const CardRecord = () => {
     const rows = listResult?.data || [];
     const { data: cardResult } = cardApi.useList(1, 1000, undefined);
     const cards = cardResult?.data || [];
+    const { accountCodeLabelByCode } = useAccountCatalog();
 
     const labelByKey = useMemo(
         () => Object.fromEntries(CardRecordFieldConfig.map((field: any) => [field.name, field.label])),
         []
     );
 
-    const tableKeys = useMemo(() => Object.keys(rows?.[0] || {}).slice(0, 6), [rows]);
+    const tableKeys = useMemo(
+        () => ['cardId', 'transactionDate', 'title', 'price', 'settlementDate', 'accountCode', 'memo'],
+        []
+    );
     const formKeys = useMemo(
-        () => Object.keys(rows?.[0] || {}).filter((key) => key !== 'id' && key !== 'brId'),
+        () => Object.keys(rows?.[0] || {}).filter((key) => key !== 'id' && key !== 'crId'),
         [rows, labelByKey]
     );
 
@@ -53,10 +57,13 @@ const CardRecord = () => {
         );
     }, [cards]);
 
-    const columns = useMemo(() => CardRecordColumns(tableKeys, labelByKey, cardLabelById, openForm), [tableKeys, labelByKey, cardLabelById]);
+    const columns = useMemo(
+        () => CardRecordColumns(tableKeys, labelByKey, cardLabelById, accountCodeLabelByCode, openForm),
+        [tableKeys, labelByKey, cardLabelById, accountCodeLabelByCode]
+    );
 
     const filterConfig = useMemo(
-        () => Object.keys(rows?.[0] || {}).slice(0, 4).map((key) => ({ id: key, label: labelByKey[key] || key, type: 'text', options: [] })),
+        () => Object.keys(rows?.[0] || {}).filter((key) => key !== 'id').slice(0, 4).map((key) => ({ id: key, label: labelByKey[key] || key, type: 'text', options: [] })),
         [rows]
     );
 
@@ -110,7 +117,7 @@ const CardRecord = () => {
                     mode={formState.mode}
                     dataFromParent={formState.currentData}
                     fieldKeys={formKeys}
-                    idParam="brId"
+                    idParam="crId"
                     entityLabel="카드기록"
                     callbackFromParent={() => {}}
                 />

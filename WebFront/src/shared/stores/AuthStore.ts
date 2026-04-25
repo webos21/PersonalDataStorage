@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
+import { useAccountCatalogStore } from './AccountCatalogStore';
 
 interface AuthState {
     authKey: string | null;
@@ -21,7 +22,10 @@ const useAuthStore = create<AuthState>()(
 
             setUser: (user: any) => set({ user }),
 
-            logout: () => set({ authKey: null, authVal: null, user: null })
+            logout: () => {
+                useAccountCatalogStore.getState().clearCatalog();
+                set({ authKey: null, authVal: null, user: null });
+            }
         }),
         {
             name: 'pds-auth' // localStorage key

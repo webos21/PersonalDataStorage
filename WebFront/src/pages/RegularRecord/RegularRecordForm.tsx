@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import Modal from '@/shared/ui/feedback/Modal';
 import ModalFooter from '@/shared/ui/feedback/ModalFooter';
 import FormField from '@/shared/ui/form/FormField';
+import AcodeSelector from '@/shared/ui/select/AcodeSelector';
 import { useToast } from '@/shared/ui/feedback/Toast';
 import { normalizeDateInputValue, normalizeDatePayloadValue } from '@/shared/utils/DateUtil';
 import api from './api';
@@ -187,20 +188,41 @@ const RegularRecordForm = ({ modalFlag, modalToggle, mode = 'add', dataFromParen
                         {resolvedFields.length === 0 ? (
                             <p className="text-sm text-zinc-500">입력 가능한 필드가 없습니다. 목록 데이터가 로드된 뒤 다시 시도해 주세요.</p>
                         ) : (
-                            resolvedFields.map((field) => (
-                                <FormField
-                                    key={field.name}
-                                    label={field.label}
-                                    name={field.name}
-                                    type={field.type || 'text'}
-                                    value={form[field.name] ?? ''}
-                                    onChange={handleChange}
-                                    required={field.required}
-                                    error={errors[field.name]}
-                                    placeholder={field.placeholder}
-                                    options={field.options}
-                                />
-                            ))
+                            resolvedFields.map((field) => {
+                                if (field.name === 'accountCode') {
+                                    return (
+                                        <div key={field.name} className="space-y-1.5">
+                                            <label htmlFor="field-accountCode" className="block text-sm font-medium text-zinc-700">
+                                                {field.label}
+                                                {field.required && <span className="text-danger ml-0.5">*</span>}
+                                            </label>
+                                            <AcodeSelector
+                                                value={form.accountCode ?? ''}
+                                                onChange={(code) => {
+                                                    setForm((prev) => ({ ...prev, accountCode: code }));
+                                                    setErrors((prev) => ({ ...prev, accountCode: '' }));
+                                                }}
+                                            />
+                                            {errors.accountCode && <p className="text-xs text-danger">{errors.accountCode}</p>}
+                                        </div>
+                                    );
+                                }
+
+                                return (
+                                    <FormField
+                                        key={field.name}
+                                        label={field.label}
+                                        name={field.name}
+                                        type={field.type || 'text'}
+                                        value={form[field.name] ?? ''}
+                                        onChange={handleChange}
+                                        required={field.required}
+                                        error={errors[field.name]}
+                                        placeholder={field.placeholder}
+                                        options={field.options}
+                                    />
+                                );
+                            })
                         )}
                     </div>
                 )}

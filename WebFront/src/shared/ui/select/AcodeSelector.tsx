@@ -1,7 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { ChevronRight, ChevronsUpDown } from 'lucide-react';
-import accountClassApi from '@/pages/AccountClass/api';
-import accountCodeApi from '@/pages/AccountCode/api';
+import { useAccountCatalog } from '@/shared/stores';
 
 type Aclass = { id: number | string; title?: string };
 type Acode = { id: number | string; accountCode?: string; title?: string };
@@ -17,11 +16,7 @@ const baseControl =
     'w-full px-3 py-2 text-sm border rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-colors disabled:bg-zinc-50 disabled:text-zinc-400';
 
 const AcodeSelector = ({ value = '', onChange, placeholder = '계정코드를 선택해 주세요.', disabled = false }: Props) => {
-    const { data: classResult } = accountClassApi.useList(1, 1000, undefined);
-    const { data: codeResult } = accountCodeApi.useList(1, 3000, undefined);
-
-    const aclasses: Aclass[] = classResult?.data || [];
-    const acodes: Acode[] = codeResult?.data || [];
+    const { aclasses, acodes } = useAccountCatalog();
 
     const containerRef = useRef<HTMLDivElement | null>(null);
     const [open, setOpen] = useState(false);

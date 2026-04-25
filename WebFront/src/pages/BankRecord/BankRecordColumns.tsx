@@ -1,6 +1,7 @@
 import { createColumnHelper } from '@tanstack/react-table';
 import Badge from '@/shared/ui/data-display/Badge';
 import { formatDateCellValue } from '@/shared/utils/DateUtil';
+import { formatDecimalByField } from '@/shared/utils/NumberUtil';
 
 const c = createColumnHelper<any>();
 
@@ -21,6 +22,8 @@ const BankRecordColumns = (
                     const accountId = raw == null ? '' : String(raw);
                     return <span className="text-sm text-zinc-800">{bankNameById[accountId] || accountId || '-'}</span>;
                 }
+                const money = formatDecimalByField(key, info.getValue?.(), labelByKey[key] || key);
+                if (money !== null) return <span className="text-sm text-zinc-800">{money}</span>;
                 return <span className="text-sm text-zinc-800">{formatDateCellValue(key, info.getValue?.(), labelByKey[key] || key)}</span>;
             }
         })

@@ -3,7 +3,7 @@ import Modal from '@/shared/ui/feedback/Modal';
 import ModalFooter from '@/shared/ui/feedback/ModalFooter';
 import FormField from '@/shared/ui/form/FormField';
 import { useToast } from '@/shared/ui/feedback/Toast';
-import { normalizeDateInputValue, normalizeDatePayloadValue } from '@/shared/utils/DateUtil';
+import { dateFormat, normalizeDateInputValue, normalizeDatePayloadValue } from '@/shared/utils/DateUtil';
 import api from './api';
 import { FIELD_CONFIG } from './PasswordBookField';
 import type { FieldDef, FieldType } from './PasswordBookField';
@@ -154,6 +154,16 @@ const PasswordBookForm = ({ modalFlag, modalToggle, mode = 'add', dataFromParent
             }
 
             resolvedFields.forEach((field) => {
+                if (field.name === 'regDate') {
+                    const current = (form[field.name] ?? '').trim();
+                    if (current) {
+                        payload.append(field.name, current); // yyyy-MM-dd
+                        return;
+                    }
+                    const fallback = normalizeDateInputValue('date', dataFromParent?.regDate);
+                    payload.append(field.name, fallback || dateFormat(new Date()));
+                    return;
+                }
                 payload.append(field.name, normalizeDatePayloadValue(field.type, form[field.name] ?? ''));
             });
 

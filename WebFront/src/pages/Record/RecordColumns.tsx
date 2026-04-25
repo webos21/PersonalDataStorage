@@ -1,12 +1,14 @@
 import { createColumnHelper } from '@tanstack/react-table';
 import Badge from '@/shared/ui/data-display/Badge';
 import { formatDateCellValue } from '@/shared/utils/DateUtil';
+import { formatDecimalByField } from '@/shared/utils/NumberUtil';
 
 const c = createColumnHelper<any>();
 
 const RecordColumns = (
     tableKeys: string[],
     labelByKey: Record<string, string>,
+    accountCodeLabelByCode: Record<string, string>,
     onOpenForm: (mode: 'add' | 'edit' | 'delete', row?: any) => void
 ) => {
     const dataColumns = (tableKeys.length ? tableKeys : ['id']).map((key) =>
@@ -14,7 +16,15 @@ const RecordColumns = (
             header: labelByKey[key] || key,
             size: 140,
             enableSorting: false,
-            cell: (info) => <span className="text-sm text-zinc-800">{formatDateCellValue(key, info.getValue?.(), labelByKey[key] || key)}</span>
+            cell: (info) => {
+                if (key === 'accountCode') {
+                    const code = `${info.getValue?.() ?? ''}`;
+                    return <span className="text-sm text-zinc-800">{accountCodeLabelByCode[code] || code || '-'}</span>;
+                }
+                const money = formatDecimalByField(key, info.getValue?.(), labelByKey[key] || key);
+                if (money !== null) return <span className="text-sm text-zinc-800">{money}</span>;
+                return <span className="text-sm text-zinc-800">{formatDateCellValue(key, info.getValue?.(), labelByKey[key] || key)}</span>;
+            }
         })
     );
 

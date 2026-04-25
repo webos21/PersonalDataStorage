@@ -3,6 +3,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
 // in-project
 import ApiClient from '@/shared/api/ApiClient';
+import { useAccountCatalogStore } from '@/shared/stores';
 
 const ENDPOINT = '/accountCode';
 const QUERY_KEY = 'account-code';
@@ -39,7 +40,10 @@ const useCreate = () => {
     const qc = useQueryClient();
     return useMutation({
         mutationFn: (payload: FormData) => accountCodeService.create(payload),
-        onSuccess: () => qc.invalidateQueries({ queryKey: [QUERY_KEY] })
+        onSuccess: () => {
+            qc.invalidateQueries({ queryKey: [QUERY_KEY] });
+            void useAccountCatalogStore.getState().syncCatalog(true);
+        }
     });
 };
 
@@ -47,7 +51,10 @@ const useUpdate = () => {
     const qc = useQueryClient();
     return useMutation({
         mutationFn: (payload: FormData) => accountCodeService.update(payload),
-        onSuccess: () => qc.invalidateQueries({ queryKey: [QUERY_KEY] })
+        onSuccess: () => {
+            qc.invalidateQueries({ queryKey: [QUERY_KEY] });
+            void useAccountCatalogStore.getState().syncCatalog(true);
+        }
     });
 };
 
@@ -55,7 +62,10 @@ const useDelete = () => {
     const qc = useQueryClient();
     return useMutation({
         mutationFn: (id: string | number) => accountCodeService.delete(id),
-        onSuccess: () => qc.invalidateQueries({ queryKey: [QUERY_KEY] })
+        onSuccess: () => {
+            qc.invalidateQueries({ queryKey: [QUERY_KEY] });
+            void useAccountCatalogStore.getState().syncCatalog(true);
+        }
     });
 };
 

@@ -27,7 +27,12 @@ const Memo = () => {
         []
     );
 
-    const tableKeys = useMemo(() => Object.keys(rows?.[0] || {}).slice(0, 6), [rows]);
+    const tableKeys = useMemo(() => {
+        const preferredOrder = ['title', 'content', 'wdate'];
+        const rowKeys = Object.keys(rows?.[0] || {});
+        const ordered = preferredOrder.filter((key) => rowKeys.length === 0 || rowKeys.includes(key));
+        return ordered.length ? ordered : preferredOrder;
+    }, [rows]);
     const formKeys = useMemo(
         () => Object.keys(rows?.[0] || {}).filter((key) => key !== 'id' && key !== 'memoId'),
         [rows, labelByKey]
@@ -44,7 +49,7 @@ const Memo = () => {
     const columns = useMemo(() => MemoColumns(tableKeys, labelByKey, openForm), [tableKeys, labelByKey]);
 
     const filterConfig = useMemo(
-        () => Object.keys(rows?.[0] || {}).slice(0, 4).map((key) => ({ id: key, label: labelByKey[key] || key, type: 'text', options: [] })),
+        () => Object.keys(rows?.[0] || {}).filter((key) => key !== 'id').slice(0, 4).map((key) => ({ id: key, label: labelByKey[key] || key, type: 'text', options: [] })),
         [rows]
     );
 

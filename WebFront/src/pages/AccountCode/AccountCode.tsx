@@ -22,7 +22,7 @@ const AccountCode = () => {
     const rows = listResult?.data || [];
 
     const labelByKey = useMemo(() => Object.fromEntries(AccountCodeFieldConfig.map((field: any) => [field.name, field.label])), []);
-    const tableKeys = useMemo(() => Object.keys(rows?.[0] || {}).slice(0, 3), [rows]);
+    const tableKeys = useMemo(() => Object.keys(rows?.[0] || {}).filter((key) => key !== 'id').slice(0, 3), [rows]);
     const formKeys = useMemo(() => Object.keys(rows?.[0] || {}).filter((key) => key !== 'accId'), [rows]);
 
     const openForm = (mode: 'add' | 'edit' | 'delete', row?: any) => setFormState({ open: true, mode, currentData: row || {} });
@@ -31,7 +31,7 @@ const AccountCode = () => {
     const columns = useMemo(() => AccountCodeColumns(tableKeys, labelByKey, openForm), [tableKeys, labelByKey]);
 
     const filterConfig = useMemo(
-        () => Object.keys(rows?.[0] || {}).slice(0, 3).map((key) => ({ id: key, label: labelByKey[key] || key, type: 'text', options: [] })),
+        () => Object.keys(rows?.[0] || {}).filter((key) => key !== 'id').slice(0, 3).map((key) => ({ id: key, label: labelByKey[key] || key, type: 'text', options: [] })),
         [rows]
     );
 

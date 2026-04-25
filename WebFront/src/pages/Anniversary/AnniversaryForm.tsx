@@ -7,7 +7,7 @@ import api from './api';
 import { FIELD_CONFIG } from './AnniversaryField';
 import type { FieldDef, FieldType } from './AnniversaryField';
 
-const EXCLUDED_KEYS = ['id', 'createdAt', 'updatedAt'];
+const EXCLUDED_KEYS = ['id', 'createdAt', 'updatedAt', 'applyDate', 'thisYear'];
 
 
 const fallbackType = (key: string, value: unknown): FieldType => {
@@ -58,11 +58,16 @@ const AnniversaryForm = ({ modalFlag, modalToggle, mode = 'add', dataFromParent,
         if (!modalFlag) return;
         const next: Record<string, string> = {};
         resolvedFields.forEach((field) => {
-            const raw = dataFromParent?.[field.name];
+            const raw = field.name === 'adate'
+                ? (dataFromParent?.adate ?? dataFromParent?.applyDate)
+                : dataFromParent?.[field.name];
             if (raw == null) {
                 next[field.name] = field.type === 'select' && field.options?.length ? field.options[0].value : '';
             } else {
-                next[field.name] = String(raw);
+                const rawString = String(raw);
+                next[field.name] = field.name === 'adate'
+                    ? rawString.padStart(4, '0').slice(-4)
+                    : rawString;
             }
         });
         setForm(next);

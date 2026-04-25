@@ -23,7 +23,7 @@ export const FIELD_CONFIG: FieldDef[] = [
     {
         "name": "transactionDate",
         "label": "거래일",
-        "type": "datetime-local",
+        "type": "date",
         "required": true
     },
     {

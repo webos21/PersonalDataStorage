@@ -2,7 +2,9 @@ import { useEffect, useMemo, useState } from 'react';
 import Modal from '@/shared/ui/feedback/Modal';
 import ModalFooter from '@/shared/ui/feedback/ModalFooter';
 import FormField from '@/shared/ui/form/FormField';
+import AcodeSelector from '@/shared/ui/select/AcodeSelector';
 import { useToast } from '@/shared/ui/feedback/Toast';
+import { normalizeDateInputValue, normalizeDatePayloadValue } from '@/shared/utils/DateUtil';
 import api from './api';
 import { FIELD_CONFIG } from './RegularPayField';
 import type { FieldDef, FieldType } from './RegularPayField';
@@ -28,6 +30,13 @@ const toFieldDef = (name: string, data: any): FieldDef => {
         type: fallbackType(name, data?.[name]),
         required: false
     };
+};
+
+const normalizeFormValue = (field: FieldDef, raw: unknown): string => {
+    if (raw == null) {
+        return field.type === 'select' && field.options?.length ? field.options[0].value : '';
+    }
+    return normalizeDateInputValue(field.type, raw);
 };
 
 const RegularPayForm = ({ modalFlag, modalToggle, mode = 'add', dataFromParent, fieldKeys = [], idParam = 'rpId', entityLabel = '정기납입', callbackFromParent }: any) => {
@@ -59,11 +68,7 @@ const RegularPayForm = ({ modalFlag, modalToggle, mode = 'add', dataFromParent, 
         const next: Record<string, string> = {};
         resolvedFields.forEach((field) => {
             const raw = dataFromParent?.[field.name];
-            if (raw == null) {
-                next[field.name] = field.type === 'select' && field.options?.length ? field.options[0].value : '';
-            } else {
-                next[field.name] = String(raw);
-            }
+            next[field.name] = normalizeFormValue(field, raw);
         });
         setForm(next);
         setErrors({});
@@ -150,7 +155,7 @@ const RegularPayForm = ({ modalFlag, modalToggle, mode = 'add', dataFromParent, 
             }
 
             resolvedFields.forEach((field) => {
-                payload.append(field.name, form[field.name] ?? '');
+                payload.append(field.name, normalizeDatePayloadValue(field.type, form[field.name] ?? ''));
             });
 
             if (isEdit) {
@@ -183,20 +188,41 @@ const RegularPayForm = ({ modalFlag, modalToggle, mode = 'add', dataFromParent, 
                         {resolvedFields.length === 0 ? (
                             <p className="text-sm text-zinc-500">입력 가능한 필드가 없습니다. 목록 데이터가 로드된 뒤 다시 시도해 주세요.</p>
                         ) : (
-                            resolvedFields.map((field) => (
-                                <FormField
-                                    key={field.name}
-                                    label={field.label}
-                                    name={field.name}
-                                    type={field.type || 'text'}
-                                    value={form[field.name] ?? ''}
-                                    onChange={handleChange}
-                                    required={field.required}
-                                    error={errors[field.name]}
-                                    placeholder={field.placeholder}
-                                    options={field.options}
-                                />
-                            ))
+                            resolvedFields.map((field) => {
+                                if (field.name === 'accountCode') {
+                                    return (
+                                        <div key={field.name} className="space-y-1.5">
+                                            <label htmlFor="field-accountCode" className="block text-sm font-medium text-zinc-700">
+                                                {field.label}
+                                                {field.required && <span className="text-danger ml-0.5">*</span>}
+                                            </label>
+                                            <AcodeSelector
+                                                value={form.accountCode ?? ''}
+                                                onChange={(code) => {
+                                                    setForm((prev) => ({ ...prev, accountCode: code }));
+                                                    setErrors((prev) => ({ ...prev, accountCode: '' }));
+                                                }}
+                                            />
+                                            {errors.accountCode && <p className="text-xs text-danger">{errors.accountCode}</p>}
+                                        </div>
+                                    );
+                                }
+
+                                return (
+                                    <FormField
+                                        key={field.name}
+                                        label={field.label}
+                                        name={field.name}
+                                        type={field.type || 'text'}
+                                        value={form[field.name] ?? ''}
+                                        onChange={handleChange}
+                                        required={field.required}
+                                        error={errors[field.name]}
+                                        placeholder={field.placeholder}
+                                        options={field.options}
+                                    />
+                                );
+                            })
                         )}
                     </div>
                 )}

@@ -12,6 +12,7 @@ import api from './api';
 const WEEKDAY_LABELS = ['일', '월', '화', '수', '목', '금', '토'];
 const WEATHER_META: Record<string, { emoji: string; label: string }> = {
     '0': { emoji: '❄️', label: '눈' },
+    '7': { emoji: '❄️', label: '눈' },
     '1': { emoji: '☀️', label: '맑음' },
     '2': { emoji: '⛅', label: '구름조금' },
     '3': { emoji: '☁️', label: '흐림' },
@@ -357,9 +358,6 @@ const DiaryCalendar = () => {
                     </div>
                 </div>
 
-                {!isLoading && filteredRows.length === 0 && (
-                    <div className="text-center text-sm text-zinc-500 py-6">선택한 월에 등록된 일기가 없습니다.</div>
-                )}
             </div>
 
             {formState.open && (

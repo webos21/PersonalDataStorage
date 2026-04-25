@@ -1,6 +1,7 @@
 import { createColumnHelper } from '@tanstack/react-table';
 import Badge from '@/shared/ui/data-display/Badge';
 import { formatDateCellValue } from '@/shared/utils/DateUtil';
+import { formatDecimalByField } from '@/shared/utils/NumberUtil';
 
 const c = createColumnHelper<any>();
 
@@ -8,6 +9,7 @@ const CardRecordColumns = (
     tableKeys: string[],
     labelByKey: Record<string, string>,
     cardLabelById: Record<string, string>,
+    accountCodeLabelByCode: Record<string, string>,
     onOpenForm: (mode: 'add' | 'edit' | 'delete', row?: any) => void
 ) => {
     const dataColumns = (tableKeys.length ? tableKeys : ['id']).map((key) =>
@@ -21,6 +23,12 @@ const CardRecordColumns = (
                     const cardId = raw == null ? '' : String(raw);
                     return <span className="text-sm text-zinc-800">{cardLabelById[cardId] || cardId || '-'}</span>;
                 }
+                if (key === 'accountCode') {
+                    const code = `${info.getValue?.() ?? ''}`;
+                    return <span className="text-sm text-zinc-800">{accountCodeLabelByCode[code] || code || '-'}</span>;
+                }
+                const money = formatDecimalByField(key, info.getValue?.(), labelByKey[key] || key);
+                if (money !== null) return <span className="text-sm text-zinc-800">{money}</span>;
                 return <span className="text-sm text-zinc-800">{formatDateCellValue(key, info.getValue?.(), labelByKey[key] || key)}</span>;
             }
         })

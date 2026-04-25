@@ -23,11 +23,17 @@ const Insurance = () => {
     const rows = listResult?.data || [];
 
     const labelByKey = useMemo(
-        () => Object.fromEntries(InsuranceFieldConfig.map((field: any) => [field.name, field.label])),
+        () => ({
+            ...Object.fromEntries(InsuranceFieldConfig.map((field: any) => [field.name, field.label])),
+            payCountDone: '납입횟수'
+        }),
         []
     );
 
-    const tableKeys = useMemo(() => Object.keys(rows?.[0] || {}).slice(0, 6), [rows]);
+    const tableKeys = useMemo(
+        () => ['company', 'product', 'insuranceType', 'policyType', 'payCountTotal', 'payCountDone', 'premiumVolume', 'memo'],
+        []
+    );
     const formKeys = useMemo(
         () => Object.keys(rows?.[0] || {}).filter((key) => key !== 'id' && key !== 'insureId'),
         [rows, labelByKey]
@@ -44,7 +50,7 @@ const Insurance = () => {
     const columns = useMemo(() => InsuranceColumns(tableKeys, labelByKey, openForm), [tableKeys, labelByKey]);
 
     const filterConfig = useMemo(
-        () => Object.keys(rows?.[0] || {}).slice(0, 4).map((key) => ({ id: key, label: labelByKey[key] || key, type: 'text', options: [] })),
+        () => Object.keys(rows?.[0] || {}).filter((key) => key !== 'id').slice(0, 4).map((key) => ({ id: key, label: labelByKey[key] || key, type: 'text', options: [] })),
         [rows]
     );
 

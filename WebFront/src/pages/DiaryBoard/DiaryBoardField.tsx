@@ -38,6 +38,10 @@ export const FIELD_CONFIG: FieldDef[] = [
                 "label": "눈"
             },
             {
+                "value": "7",
+                "label": "눈"
+            },
+            {
                 "value": "1",
                 "label": "맑음"
             },

@@ -4,6 +4,7 @@ import ConfirmDialog from '@/shared/ui/feedback/ConfirmDialog';
 import FormField from '@/shared/ui/form/FormField';
 import Button from '@/shared/ui/button/Button';
 import { useToast } from '@/shared/ui/feedback/Toast';
+import { normalizeDateInputValue, normalizeDatePayloadValue } from '@/shared/utils/DateUtil';
 import api from './api';
 import { FIELD_CONFIG } from './DiaryCalendarField';
 import type { FieldDef, FieldType } from './DiaryCalendarField';
@@ -29,6 +30,13 @@ const toFieldDef = (name: string, data: any): FieldDef => {
         type: fallbackType(name, data?.[name]),
         required: false
     };
+};
+
+const normalizeFormValue = (field: FieldDef, raw: unknown): string => {
+    if (raw == null) {
+        return field.type === 'select' && field.options?.length ? field.options[0].value : '';
+    }
+    return normalizeDateInputValue(field.type, raw);
 };
 
 const DiaryCalendarForm = ({ modalFlag, modalToggle, mode = 'add', dataFromParent, fieldKeys = [], idParam = 'diaryId', entityLabel = '다이어리', callbackFromParent }: any) => {
@@ -61,11 +69,7 @@ const DiaryCalendarForm = ({ modalFlag, modalToggle, mode = 'add', dataFromParen
         const next: Record<string, string> = {};
         resolvedFields.forEach((field) => {
             const raw = dataFromParent?.[field.name];
-            if (raw == null) {
-                next[field.name] = field.type === 'select' && field.options?.length ? field.options[0].value : '';
-            } else {
-                next[field.name] = String(raw);
-            }
+            next[field.name] = normalizeFormValue(field, raw);
         });
         setForm(next);
         setErrors({});
@@ -153,7 +157,7 @@ const DiaryCalendarForm = ({ modalFlag, modalToggle, mode = 'add', dataFromParen
             }
 
             resolvedFields.forEach((field) => {
-                payload.append(field.name, form[field.name] ?? '');
+                payload.append(field.name, normalizeDatePayloadValue(field.type, form[field.name] ?? ''));
             });
 
             if (isEdit) {

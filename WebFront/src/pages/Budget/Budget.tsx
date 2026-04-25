@@ -7,10 +7,8 @@ import { DataTable, Pagination, TableToolbar } from '@/shared/ui/table';
 import BudgetForm from './BudgetForm';
 import { FIELD_CONFIG as BudgetFieldConfig } from './BudgetField';
 import BudgetColumns from './BudgetColumns';
-import { usePaginationStore } from '@/shared/stores';
+import { useAccountCatalog, usePaginationStore } from '@/shared/stores';
 import api from './api';
-import accountClassApi from '@/pages/AccountClass/api';
-import accountCodeApi from '@/pages/AccountCode/api';
 
 
 const Budget = () => {
@@ -23,17 +21,14 @@ const Budget = () => {
 
     const { data: listResult, isLoading } = api.useList(pageCurrent, pageItems, pageKeyword || undefined);
     const rows = listResult?.data || [];
-    const { data: aclassResult } = accountClassApi.useList(1, 1000, undefined);
-    const { data: acodeResult } = accountCodeApi.useList(1, 3000, undefined);
-    const aclasses = aclassResult?.data || [];
-    const acodes = acodeResult?.data || [];
+    const { accountCodeLabelByCode } = useAccountCatalog();
 
     const labelByKey = useMemo(
         () => Object.fromEntries(BudgetFieldConfig.map((field: any) => [field.name, field.label])),
         []
     );
 
-    const tableKeys = useMemo(() => Object.keys(rows?.[0] || {}).slice(0, 6), [rows]);
+    const tableKeys = useMemo(() => Object.keys(rows?.[0] || {}).filter((key) => key !== 'id').slice(0, 6), [rows]);
     const formKeys = useMemo(
         () => Object.keys(rows?.[0] || {}).filter((key) => key !== 'id' && key !== 'bId'),
         [rows, labelByKey]
@@ -47,27 +42,10 @@ const Budget = () => {
         setFormState((prev) => ({ ...prev, open: false }));
     };
 
-    const accountCodeLabelByCode = useMemo(() => {
-        const classMap = Object.fromEntries((aclasses || []).map((aclass: any) => [String(aclass?.id), aclass?.title || '']));
-        return Object.fromEntries(
-            (acodes || []).map((acode: any) => {
-                const code = String(acode?.accountCode || '');
-                const classId =
-                    Object.keys(classMap)
-                        .filter((id) => code.startsWith(id))
-                        .sort((a, b) => b.length - a.length)[0] || '';
-                const classTitle = classMap[classId] || '';
-                const codeTitle = acode?.title || '';
-                const label = [classTitle, codeTitle].filter(Boolean).join(' / ');
-                return [code, label || code];
-            })
-        );
-    }, [aclasses, acodes]);
-
     const columns = useMemo(() => BudgetColumns(tableKeys, labelByKey, accountCodeLabelByCode, openForm), [tableKeys, labelByKey, accountCodeLabelByCode]);
 
     const filterConfig = useMemo(
-        () => Object.keys(rows?.[0] || {}).slice(0, 4).map((key) => ({ id: key, label: labelByKey[key] || key, type: 'text', options: [] })),
+        () => Object.keys(rows?.[0] || {}).filter((key) => key !== 'id').slice(0, 4).map((key) => ({ id: key, label: labelByKey[key] || key, type: 'text', options: [] })),
         [rows]
     );
 

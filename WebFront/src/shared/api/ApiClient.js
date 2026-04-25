@@ -2,7 +2,7 @@
 import axios from 'axios';
 
 // in-project
-import { useAuthStore } from '@/shared/stores';
+import useAuthStore from '@/shared/stores/AuthStore';
 import logger from '@/shared/utils/logger';
 
 /**

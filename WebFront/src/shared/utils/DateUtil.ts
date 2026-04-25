@@ -203,7 +203,10 @@ const toDateFromUnknown = (raw: unknown): Date | null => {
     }
 
     if (typeof raw === 'number' && Number.isFinite(raw)) {
-        const millis = Math.abs(raw) < 1_000_000_000_000 ? raw * 1000 : raw;
+        // Epoch seconds are typically 10 digits (~1.7e9 at 2026).
+        // Epoch milliseconds are 13 digits and can be < 1e12 for old dates (e.g. 1999),
+        // so 1e12 threshold is unsafe. Use 1e10 to distinguish sec vs ms.
+        const millis = Math.abs(raw) < 10_000_000_000 ? raw * 1000 : raw;
         const date = new Date(millis);
         return Number.isNaN(date.getTime()) ? null : date;
     }
@@ -215,7 +218,7 @@ const toDateFromUnknown = (raw: unknown): Date | null => {
         if (/^-?\d+$/.test(trimmed)) {
             const parsed = Number(trimmed);
             if (Number.isFinite(parsed)) {
-                const millis = Math.abs(parsed) < 1_000_000_000_000 ? parsed * 1000 : parsed;
+                const millis = Math.abs(parsed) < 10_000_000_000 ? parsed * 1000 : parsed;
                 const date = new Date(millis);
                 if (!Number.isNaN(date.getTime())) return date;
             }
@@ -235,6 +238,7 @@ const isDateLikeField = (fieldName: string) => {
 
 const formatDateCellValue = (fieldName: string, value: unknown, label?: string): string => {
     if (value == null) return '';
+
     if (!isDateLikeField(fieldName)) return `${value}`;
 
     const date = toDateFromUnknown(value);
@@ -271,7 +275,9 @@ const normalizeDatePayloadValue = (fieldType: string | undefined, value: string)
     const date = toDateFromUnknown(value);
     if (!date) return value;
 
-    return String(date.getTime());
+    if (fieldType === 'datetime-local') return datetimeFormat(date);
+    if (fieldType === 'month') return monthFormat(date);
+    return dateFormat(date);
 };
 
 export {

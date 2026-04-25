@@ -40,7 +40,7 @@ const normalizeFormValue = (field: FieldDef, raw: unknown): string => {
     return normalizeDateInputValue(field.type, raw);
 };
 
-const CardRecordForm = ({ modalFlag, modalToggle, mode = 'add', dataFromParent, fieldKeys = [], idParam = 'brId', entityLabel = '카드기록', callbackFromParent }: any) => {
+const CardRecordForm = ({ modalFlag, modalToggle, mode = 'add', dataFromParent, fieldKeys = [], idParam = 'crId', entityLabel = '카드기록', callbackFromParent }: any) => {
     const { showToast } = useToast();
     const creater = api.useCreate();
     const updater = api.useUpdate();

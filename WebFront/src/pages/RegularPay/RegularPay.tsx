@@ -7,7 +7,7 @@ import { DataTable, Pagination, TableToolbar } from '@/shared/ui/table';
 import RegularPayForm from './RegularPayForm';
 import { FIELD_CONFIG as RegularPayFieldConfig } from './RegularPayField';
 import RegularPayColumns from './RegularPayColumns';
-import { usePaginationStore } from '@/shared/stores';
+import { useAccountCatalog, usePaginationStore } from '@/shared/stores';
 import api from './api';
 
 
@@ -21,13 +21,14 @@ const RegularPay = () => {
 
     const { data: listResult, isLoading } = api.useList(pageCurrent, pageItems, pageKeyword || undefined);
     const rows = listResult?.data || [];
+    const { accountCodeLabelByCode } = useAccountCatalog();
 
     const labelByKey = useMemo(
         () => Object.fromEntries(RegularPayFieldConfig.map((field: any) => [field.name, field.label])),
         []
     );
 
-    const tableKeys = useMemo(() => Object.keys(rows?.[0] || {}).slice(0, 6), [rows]);
+    const tableKeys = useMemo(() => Object.keys(rows?.[0] || {}).filter((key) => key !== 'id').slice(0, 6), [rows]);
     const formKeys = useMemo(
         () => Object.keys(rows?.[0] || {}).filter((key) => key !== 'id' && key !== 'rpId'),
         [rows, labelByKey]
@@ -41,10 +42,13 @@ const RegularPay = () => {
         setFormState((prev) => ({ ...prev, open: false }));
     };
 
-    const columns = useMemo(() => RegularPayColumns(tableKeys, labelByKey, openForm), [tableKeys, labelByKey]);
+    const columns = useMemo(
+        () => RegularPayColumns(tableKeys, labelByKey, accountCodeLabelByCode, openForm),
+        [tableKeys, labelByKey, accountCodeLabelByCode]
+    );
 
     const filterConfig = useMemo(
-        () => Object.keys(rows?.[0] || {}).slice(0, 4).map((key) => ({ id: key, label: labelByKey[key] || key, type: 'text', options: [] })),
+        () => Object.keys(rows?.[0] || {}).filter((key) => key !== 'id').slice(0, 4).map((key) => ({ id: key, label: labelByKey[key] || key, type: 'text', options: [] })),
         [rows]
     );
 

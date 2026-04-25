@@ -39,10 +39,6 @@ const normalizeFormValue = (field: FieldDef, raw: unknown): string => {
     return normalizeDateInputValue(field.type, raw);
 };
 
-const normalizePayloadValue = (field: FieldDef, value: string): string => {
-    return normalizeDatePayloadValue(field.type, value);
-};
-
 const BankRecordForm = ({ modalFlag, modalToggle, mode = 'add', dataFromParent, fieldKeys = [], idParam = 'brId', entityLabel = '은행기록', callbackFromParent }: any) => {
     const { showToast } = useToast();
     const creater = api.useCreate();
@@ -172,7 +168,7 @@ const BankRecordForm = ({ modalFlag, modalToggle, mode = 'add', dataFromParent, 
             }
 
             resolvedFields.forEach((field) => {
-                payload.append(field.name, normalizePayloadValue(field, form[field.name] ?? ''));
+                payload.append(field.name, normalizeDatePayloadValue(field.type, form[field.name] ?? ''));
             });
 
             if (isEdit) {

@@ -368,9 +368,6 @@ const Schedule = () => {
                     </div>
                 </div>
 
-                {!isLoading && filteredRows.length === 0 && (
-                    <div className="text-center text-sm text-zinc-500 py-6">선택한 월에 등록된 일정이 없습니다.</div>
-                )}
             </div>
 
             {formState.open && (

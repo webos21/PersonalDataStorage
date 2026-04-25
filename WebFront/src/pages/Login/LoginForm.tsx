@@ -5,7 +5,7 @@ import type { FormEvent } from 'react';
 
 // in-project
 import Cipher from '@/shared//utils/Cipher';
-import { useAuthStore } from '@/shared/stores';
+import { useAccountCatalogStore, useAuthStore } from '@/shared/stores';
 
 // in-package
 import api from './api';
@@ -16,6 +16,7 @@ const LoginForm = () => {
 
     const navigate = useNavigate();
     const { setAuth } = useAuthStore();
+    const syncAccountCatalog = useAccountCatalogStore((s) => s.syncCatalog);
 
     const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -35,6 +36,7 @@ const LoginForm = () => {
             console.log(response.data);
             const { ckey, cval } = response.data.auth;
             setAuth(ckey, cval);
+            await syncAccountCatalog(true);
             navigate('/');
         } catch (err) {
             setError(err.response?.data?.error?.errorDescription || '로그인에 실패했습니다.');
