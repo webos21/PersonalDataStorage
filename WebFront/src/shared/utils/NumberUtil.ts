@@ -24,13 +24,20 @@ const MONEY_KEYWORDS = [
     'estimate',
     'limit',
     'cashadvance',
-    'remainder',
-    'budget'
+    'remainder'
 ];
 
-const MONEY_LABEL_PATTERN = /(금액|가격|대출|한도|잔액|예산|입금|출금|수수료|보험료)/;
+const MONEY_LABEL_PATTERN = /(금액|가격|대출|한도|잔액|입금|출금|수수료|보험료)/;
+const DATE_LABEL_PATTERN = /(월|일|일자)$/;
+
+function isDateLikeField(fieldName: string, label?: string): boolean {
+    const lower = fieldName.toLowerCase();
+    if (lower.includes('date') || lower.includes('time')) return true;
+    return DATE_LABEL_PATTERN.test((label || '').trim());
+}
 
 function isMoneyLikeField(fieldName: string, label?: string): boolean {
+    if (isDateLikeField(fieldName, label)) return false;
     const lower = fieldName.toLowerCase();
     if (MONEY_KEYWORDS.some((token) => lower.includes(token))) return true;
     return MONEY_LABEL_PATTERN.test((label || '').trim());
