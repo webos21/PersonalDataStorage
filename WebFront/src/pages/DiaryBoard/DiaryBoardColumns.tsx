@@ -4,13 +4,15 @@ import { formatDateCellValue } from '@/shared/utils/DateUtil';
 
 const c = createColumnHelper<any>();
 const WEATHER_META: Record<string, { emoji: string; label: string }> = {
-    '0': { emoji: '❄️', label: '눈' },
-    '7': { emoji: '❄️', label: '눈' },
     '1': { emoji: '☀️', label: '맑음' },
-    '2': { emoji: '⛅', label: '구름조금' },
+    '2': { emoji: '🌤️', label: '구름 조금' },
     '3': { emoji: '☁️', label: '흐림' },
-    '4': { emoji: '🌦️', label: '비온뒤갬' },
-    '5': { emoji: '🌧️', label: '비' }
+    '4': { emoji: '🌦️', label: '소니기' },
+    '5': { emoji: '🌧️', label: '비' },
+    '6': { emoji: '🌤️', label: '비 온후 갬' },
+    '7': { emoji: '❄️', label: '눈' },
+    '8': { emoji: '🌨️', label: '비 또는 눈' },
+    '9': { emoji: '⛈️', label: '천둥번개' }
 };
 
 const DiaryBoardColumns = (

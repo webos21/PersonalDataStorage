@@ -34,32 +34,40 @@ export const FIELD_CONFIG: FieldDef[] = [
         "required": true,
         "options": [
             {
-                "value": "0",
-                "label": "눈"
-            },
-            {
-                "value": "7",
-                "label": "눈"
-            },
-            {
                 "value": "1",
-                "label": "맑음"
+                "label": "☀️ 맑음"
             },
             {
                 "value": "2",
-                "label": "구름조금"
+                "label": "🌤️ 구름 조금"
             },
             {
                 "value": "3",
-                "label": "흐림"
+                "label": "☁️ 흐림"
             },
             {
                 "value": "4",
-                "label": "비온뒤갬"
+                "label": "🌦️ 소니기"
             },
             {
                 "value": "5",
-                "label": "비"
+                "label": "🌧️ 비"
+            },
+            {
+                "value": "6",
+                "label": "🌤️ 비 온후 갬"
+            },
+            {
+                "value": "7",
+                "label": "❄️ 눈"
+            },
+            {
+                "value": "8",
+                "label": "🌨️ 비 또는 눈"
+            },
+            {
+                "value": "9",
+                "label": "⛈️ 천둥번개"
             }
         ]
     },
